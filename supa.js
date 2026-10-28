@@ -1,3 +1,3 @@
-/* Najma database connection. Empty = database not set up yet (the app uses the GitHub settings file instead).
-   The "anon" key is meant to be public: the database's own rules decide who can see what. */
-window.SUPA={url:"",key:""};
+/* Najma database connection (Supabase). The publishable key is meant to be public:
+   the database's own security rules decide who can see what. */
+window.SUPA={url:"https://parsqbzznwufnvzhplkq.supabase.co",key:"sb_publishable_xU_fltoMTNxbuboSiMxp_w_znk36vn5"};
