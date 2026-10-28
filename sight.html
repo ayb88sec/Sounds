@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<title>Sight Words</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap">
+<style>
+:root{--ink:#2b2340}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{font-family:"Andika",system-ui,sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
+  background:linear-gradient(160deg,#ff9a3c,#ff6f91 45%,#8a5cff);background-attachment:fixed}
+.bubbles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bubbles span{position:absolute;bottom:-80px;border-radius:50%;background:rgba(255,255,255,.18);animation:rise linear infinite}
+@keyframes rise{to{transform:translateY(-120vh) translateX(30px)}}
+main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:16px 12px 50px}
+h1{font-family:"Baloo 2";font-weight:800;font-size:clamp(40px,10vw,62px);margin:0;line-height:1.1;color:#fff;text-align:center;text-shadow:0 4px 0 rgba(0,0,0,.18)}
+.mascotWrap{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:6px 0 0}
+#pip{width:84px;height:84px;cursor:pointer;animation:bob 2s ease-in-out infinite;filter:drop-shadow(0 6px 0 rgba(0,0,0,.15));flex:none}
+#pip.jump{animation:jump .7s ease}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
+@keyframes jump{0%{transform:none}30%{transform:translateY(-30px) scale(1.1) rotate(-12deg)}60%{transform:translateY(0) scale(.95,1.05)}100%{transform:none}}
+.bubble{position:relative;background:#fff;border-radius:22px;padding:10px 16px;font-family:"Baloo 2";font-weight:600;font-size:20px;max-width:250px;box-shadow:0 5px 0 rgba(0,0,0,.12);margin-bottom:30px}
+.bubble::after{content:"";position:absolute;left:-12px;bottom:16px;border:10px solid transparent;border-right:14px solid #fff;border-left:0}
+.pop{animation:pop .4s}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.15)}100%{transform:scale(1)}}
+.groups{display:flex;gap:10px;overflow-x:auto;padding:14px 4px 10px;scrollbar-width:none}
+.groups::-webkit-scrollbar{display:none}
+.g{flex:none;border:0;border-radius:22px;padding:8px 14px 10px;font-family:"Baloo 2";font-weight:800;font-size:18px;color:#fff;cursor:pointer;
+  box-shadow:0 5px 0 rgba(0,0,0,.18);display:flex;flex-direction:column;align-items:center;min-width:86px;opacity:.75;transition:transform .12s}
+.g span{font-size:30px;line-height:1.1}
+.g small{font-family:"Andika";font-size:13px;font-weight:700}
+.g.on{opacity:1;transform:translateY(-4px) scale(1.06);box-shadow:0 0 0 4px #fff,0 8px 0 rgba(0,0,0,.18)}
+.g.full::after{content:"🏆";position:absolute}
+section{background:rgba(255,255,255,.93);border-radius:30px;padding:14px 14px 20px;margin-top:8px;box-shadow:0 10px 0 rgba(0,0,0,.08)}
+h2{font-family:"Baloo 2";font-size:26px;margin:0 6px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+h2 small{font-family:"Andika";font-weight:700;font-size:16px;color:#7a7090}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px}
+.tile{position:relative;border:0;border-radius:24px;aspect-ratio:1.5;color:#fff;font-family:"Andika";font-weight:700;font-size:40px;cursor:pointer;
+  box-shadow:0 7px 0 rgba(0,0,0,.2);transition:transform .12s;animation:enter .45s backwards;text-shadow:0 3px 0 rgba(0,0,0,.15)}
+.tile:active{transform:translateY(5px) scale(.96)}
+.tile.done::after{content:"⭐";position:absolute;top:4px;right:6px;font-size:20px}
+.tile.rec::before{content:"🎤";position:absolute;top:4px;left:6px;font-size:16px}
+@keyframes enter{from{transform:scale(0) rotate(-12deg);opacity:0}}
+.bar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0 4px}
+.btn{font-family:"Baloo 2";font-size:20px;font-weight:800;border:0;border-radius:999px;padding:10px 20px;cursor:pointer;color:var(--ink);background:#ffe066;box-shadow:0 6px 0 #d9a400}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 #d9a400}
+.btn.pink{background:#a66bff;box-shadow:0 6px 0 #7a46d0;color:#fff}
+.btn.teal{background:#22c7b8;box-shadow:0 6px 0 #149488;color:#fff}
+.btn.ghost{background:#fff;box-shadow:0 6px 0 #e0d6ff;font-size:17px}
+.modal{position:fixed;inset:0;background:rgba(40,15,70,.55);display:none;align-items:center;justify-content:center;z-index:20;padding:14px}
+.modal.show{display:flex}
+.card{background:#fff;border-radius:34px;padding:20px 18px;text-align:center;max-width:420px;width:100%;max-height:96vh;overflow:auto;animation:zoom .45s cubic-bezier(.3,1.6,.5,1);position:relative}
+@keyframes zoom{from{transform:scale(.3) rotate(-10deg);opacity:0}}
+.x{position:absolute;top:10px;right:12px;border:0;background:#f0edf7;border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer}
+.big{font-size:96px;font-weight:700;line-height:1.3;border-radius:28px;color:#fff;margin:26px 0 10px;cursor:pointer;text-shadow:0 4px 0 rgba(0,0,0,.15)}
+.spell{display:flex;gap:6px;justify-content:center;margin:6px 0 4px;flex-wrap:wrap}
+.spell button{font-family:"Andika";font-size:30px;font-weight:700;border:0;border-radius:14px;min-width:50px;height:58px;background:#f3f0fa;cursor:pointer;color:var(--ink)}
+.spell button.lit{background:#ffe066;transform:translateY(-4px)}
+.lbl{font-size:16px;color:#7a7090;margin:12px 0 6px}
+.prow{display:flex;gap:10px;justify-content:center}
+.pbtn{font-family:"Baloo 2";font-size:20px;font-weight:800;border:0;border-radius:999px;padding:10px 18px;cursor:pointer;color:#fff;background:#ff5d73;box-shadow:0 5px 0 #c93a50}
+.pbtn.me{background:#22c7b8;box-shadow:0 5px 0 #149488}
+.pbtn:disabled{opacity:.4}
+.pbtn.on{animation:pop 1s infinite;background:#a66bff;box-shadow:0 5px 0 #7a46d0}
+.navrow{display:flex;justify-content:space-between;margin-top:16px}
+.q{font-family:"Baloo 2";font-size:26px;font-weight:800;margin:26px 0 4px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.opts button{font-family:"Andika";font-size:40px;font-weight:700;border:0;border-radius:24px;aspect-ratio:1.4;cursor:pointer;color:#fff;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.opts button.wrong{animation:shake .4s;opacity:.35}
+.opts button.right{box-shadow:0 0 0 6px #ffe066,0 6px 0 rgba(0,0,0,.18);transform:scale(1.06)}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+.flash{font-size:110px;font-weight:700;margin:30px 0 10px;line-height:1.2}
+.score{font-family:"Baloo 2";font-size:20px;font-weight:700;color:#7a7090}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:30}
+footer{text-align:center;color:#fff;font-size:15px;margin-top:24px}
+footer button{color:#fff;background:none;border:0;font:inherit;text-decoration:underline;cursor:pointer}
+</style>
+</head>
+<body>
+<a href="home.html" id="homeBtn" aria-label="Home" style="position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;z-index:15;width:52px;height:52px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18)">🏠</a>
+<div class="bubbles" id="bubbles"></div>
+<canvas id="fx"></canvas>
+<main>
+  <h1>Sight Words</h1>
+  <div class="mascotWrap">
+    <svg id="pip" viewBox="0 0 100 100">
+      <path d="M50 6 L62 36 L94 38 L69 58 L77 90 L50 72 L23 90 L31 58 L6 38 L38 36 Z" fill="#ffe066" stroke="#e0a800" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="41" cy="48" r="5" fill="#2b2340"/><circle cx="59" cy="48" r="5" fill="#2b2340"/>
+      <circle cx="43" cy="46" r="1.8" fill="#fff"/><circle cx="61" cy="46" r="1.8" fill="#fff"/>
+      <circle cx="34" cy="58" r="4" fill="#ff8fab" opacity=".7"/><circle cx="66" cy="58" r="4" fill="#ff8fab" opacity=".7"/>
+      <path d="M42 59 Q50 67 58 59" fill="none" stroke="#2b2340" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+    <div class="bubble" id="say">Pick a group and read the words with me!</div>
+  </div>
+
+  <div class="groups" id="groups"></div>
+
+  <section>
+    <h2><span id="gTitle"></span><small id="gCount"></small></h2>
+    <div class="grid" id="grid"></div>
+    <div class="bar">
+      <button class="btn pink" id="game">🎧 Listen &amp; find</button>
+      <button class="btn teal" id="flash">⚡ Flash cards</button>
+    </div>
+  </section>
+  <footer><button id="reset">Start again</button></footer>
+</main>
+
+<div class="modal" id="wordModal"><div class="card">
+  <button class="x" data-close>✕</button>
+  <div class="big" id="wBig"></div>
+  <div class="bar" style="margin-top:0"><button class="btn" id="wSay">🔊 Hear it</button></div>
+  <div class="lbl">Tap the letters to spell it</div>
+  <div class="spell" id="spell"></div>
+  <div id="practice"></div>
+  <div class="navrow"><button class="btn ghost" id="wPrev">⬅️ Back</button><button class="btn ghost" id="wNext">Next ➡️</button></div>
+</div></div>
+
+<div class="modal" id="gameModal"><div class="card">
+  <button class="x" data-close>✕</button>
+  <div class="q">Which word is it?</div>
+  <button class="btn ghost" id="gAgain">🔊 Hear again</button>
+  <div class="opts" id="gOpts"></div>
+  <div class="score" id="gScore"></div>
+</div></div>
+
+<div class="modal" id="flashModal"><div class="card">
+  <button class="x" data-close>✕</button>
+  <div class="q" id="fQ">Read it out loud!</div>
+  <div class="flash" id="fWord"></div>
+  <div class="bar"><button class="btn" id="fCheck">🔊 Check</button><button class="btn teal" id="fNext">Next ➡️</button></div>
+  <div class="score" id="fScore"></div>
+</div></div>
+
+<script>window.AUDIO_S={};</script>
+<script src="audio/sight.js"></script>
+<script>
+const GROUPS=[
+ {n:"Group 1",e:"🐣",w:["a","and","away","big","blue","can","come","down","find","for"]},
+ {n:"Group 2",e:"🐥",w:["funny","go","help","here","I","in","is","it","jump","little"]},
+ {n:"Group 3",e:"🐰",w:["look","make","me","my","not","one","play","red","run","said"]},
+ {n:"Group 4",e:"🦊",w:["see","the","three","to","two","up","we","where","yellow","you"]},
+ {n:"Group 5",e:"🐼",w:["all","am","are","at","ate","be","black","brown","but","came"]},
+ {n:"Group 6",e:"🦁",w:["did","do","eat","four","get","good","have","he","into","like"]},
+ {n:"Group 7",e:"🐬",w:["must","new","no","now","on","our","out","please","pretty","ran"]},
+ {n:"Group 8",e:"🦄",w:["ride","saw","say","she","so","soon","that","there","they","this"]},
+ {n:"Group 9",e:"🚀",w:["too","under","want","was","well","went","what","white","who","will","with","yes"]},
+];
+const COLORS=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
+const praise=["Super star!","Amazing!","Well done!","Brilliant!","You got it!","High five! ✋","So clever!","Fantastic!"];
+let done={},gi=0;try{done=JSON.parse(localStorage.getItem("sightDone")||"{}");gi=+localStorage.getItem("sightGroup")||0}catch(e){}
+const save=()=>{try{localStorage.setItem("sightDone",JSON.stringify(done));localStorage.setItem("sightGroup",gi)}catch(e){}};
+
+const bb=document.getElementById("bubbles");
+for(let i=0;i<14;i++){const s=document.createElement("span"),z=20+Math.random()*70;
+  s.style.cssText=`left:${Math.random()*100}%;width:${z}px;height:${z}px;animation-duration:${10+Math.random()*14}s;animation-delay:${-Math.random()*20}s`;bb.appendChild(s)}
+
+/* voice: parent's recording if present, else iPad English voice */
+const AUD=window.AUDIO_S||{};let voice=null,curAudio=null;
+function pickVoice(){const v=speechSynthesis.getVoices();
+  voice=v.find(x=>/en[-_]GB/i.test(x.lang)&&/Daniel|Kate|Serena|Martha|Arthur/i.test(x.name))||v.find(x=>/en[-_]GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}
+if("speechSynthesis" in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+function sayWord(w,rate=.75){
+  if(AUD[w.toLowerCase()]){try{if(curAudio)curAudio.pause();curAudio=new Audio(AUD[w.toLowerCase()]);curAudio.play()}catch(e){}return}
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(w==="a"?"a.":w);u.lang=voice?voice.lang:"en-GB";if(voice)u.voice=voice;u.rate=rate;speechSynthesis.speak(u)}catch(e){}}
+
+/* sfx + confetti */
+let ac;
+function tone(f,d,type="sine",w=0,vol=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(vol,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);
+  o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
+const popSnd=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)};
+const fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",i*.12));
+const buzz=()=>tone(160,.25,"sawtooth",0,.08);
+const cv=document.getElementById("fx"),cx=cv.getContext("2d");let parts=[],running=false;
+function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}
+size();addEventListener("resize",size);
+function burst(x,y,n=36){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,v=3+Math.random()*7;
+  parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:4+Math.random()*6,c:COLORS[i%6],rot:Math.random()*6,vr:(Math.random()-.5)*.4,life:90+Math.random()*40})}
+  if(!running){running=true;requestAnimationFrame(loop)}}
+function rain(){for(let i=0;i<120;i++)setTimeout(()=>burst(Math.random()*innerWidth,-10,1),i*12)}
+function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.life-->0&&p.y<innerHeight+40);
+  for(const p of parts){p.vy+=.25;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);cx.fillStyle=p.c;cx.globalAlpha=Math.min(1,p.life/30);cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);cx.restore()}
+  if(parts.length)requestAnimationFrame(loop);else{running=false;cx.clearRect(0,0,innerWidth,innerHeight)}}
+const burstAt=el=>{const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2)};
+
+/* mascot */
+const pip=document.getElementById("pip"),say=document.getElementById("say");let sayT;
+function talk(t){say.textContent=t;say.classList.remove("pop");void say.offsetWidth;say.classList.add("pop");
+  pip.classList.remove("jump");void pip.offsetWidth;pip.classList.add("jump");clearTimeout(sayT);sayT=setTimeout(()=>say.textContent="Tap a word and read it with me!",6000)}
+pip.onclick=()=>{popSnd();talk(praise[Math.floor(Math.random()*praise.length)]);burstAt(pip)};
+
+/* groups */
+const gbox=document.getElementById("groups");
+function groupDone(i){return GROUPS[i].w.filter(w=>done[w]).length}
+function drawGroups(){gbox.innerHTML="";GROUPS.forEach((g,i)=>{const b=document.createElement("button");b.className="g"+(i===gi?" on":"");
+  b.style.background=COLORS[i%6];const n=groupDone(i);
+  b.innerHTML=`<span>${n===g.w.length?"🏆":g.e}</span>${g.n}<small>${n}/${g.w.length}</small>`;
+  b.onclick=()=>{gi=i;save();popSnd();drawGroups();drawWords();talk(`${g.n}! Let's read!`)};gbox.appendChild(b)});
+  gbox.children[gi].scrollIntoView({inline:"center",block:"nearest"})}
+const grid=document.getElementById("grid");
+function drawWords(){const g=GROUPS[gi];document.getElementById("gTitle").textContent=`${g.e} ${g.n}`;
+  document.getElementById("gCount").textContent=`⭐ ${groupDone(gi)} of ${g.w.length}`;grid.innerHTML="";
+  g.w.forEach((w,i)=>{const b=document.createElement("button");b.className="tile"+(done[w]?" done":"")+(kid[w]?" rec":"");b.dataset.w=w;
+    b.style.background=COLORS[(i+gi)%6];b.style.animationDelay=(i*.04)+"s";b.textContent=w;b.onclick=()=>openWord(i,b);grid.appendChild(b)})}
+
+function mark(w){const first=!done[w];done[w]=1;save();drawGroups();
+  const t=grid.querySelector(`.tile[data-w="${w}"]`);if(t)t.classList.add("done");
+  document.getElementById("gCount").textContent=`⭐ ${groupDone(gi)} of ${GROUPS[gi].w.length}`;
+  if(first&&groupDone(gi)===GROUPS[gi].w.length)setTimeout(()=>{fanfare();rain();talk(`${GROUPS[gi].n} complete! 🏆`)},400)}
+
+/* word card */
+const wm=document.getElementById("wordModal");let cur=0;
+function openWord(i,el){cur=i;const w=GROUPS[gi].w[i],c=COLORS[(i+gi)%6];popSnd();if(el)burstAt(el);
+  const big=document.getElementById("wBig");big.textContent=w;big.style.background=c;big.onclick=()=>sayWord(w);
+  document.getElementById("wSay").onclick=()=>sayWord(w);
+  const sp=document.getElementById("spell");sp.innerHTML="";
+  [...w].forEach(ch=>{const b=document.createElement("button");b.textContent=ch;b.onclick=()=>{b.classList.add("lit");popSnd();
+    if([...sp.children].every(x=>x.classList.contains("lit"))){setTimeout(()=>{sayWord(w);fanfare();burstAt(sp);talk("You spelled it! ✨")},250)}};sp.appendChild(b)});
+  document.getElementById("wPrev").style.visibility=i>0?"visible":"hidden";
+  document.getElementById("wNext").style.visibility=i<GROUPS[gi].w.length-1?"visible":"hidden";
+  practiceUI(w);wm.classList.add("show");setTimeout(()=>sayWord(w),250);mark(w);
+  talk(`"${w}"! ${praise[Math.floor(Math.random()*praise.length)]}`)}
+document.getElementById("wPrev").onclick=()=>openWord(cur-1);
+document.getElementById("wNext").onclick=()=>openWord(cur+1);
+
+/* kids practice recording, saved on this device */
+const kid={};let kdb=null,pRec=null,pTimer=null;
+try{const r=indexedDB.open("kidSight",1);r.onupgradeneeded=()=>r.result.createObjectStore("v");
+  r.onsuccess=()=>{kdb=r.result;kdb.transaction("v").objectStore("v").openCursor().onsuccess=e=>{const c=e.target.result;
+    if(c){kid[c.key]=URL.createObjectURL(c.value);const t=grid.querySelector(`.tile[data-w="${c.key}"]`);if(t)t.classList.add("rec");c.continue()}}}}catch(e){}
+function playKid(k){if(kid[k]){try{if(curAudio)curAudio.pause();curAudio=new Audio(kid[k]);curAudio.play()}catch(e){}}}
+function practiceUI(k){const box=document.getElementById("practice");
+  box.innerHTML=`<div class="lbl">🎤 Your turn! Say it</div><div class="prow"><button class="pbtn mic">${kid[k]?"🎤 Again":"🎤 Record"}</button><button class="pbtn me"${kid[k]?"":" disabled"}>▶️ My voice</button></div>`;
+  const mic=box.querySelector(".mic"),me=box.querySelector(".me");
+  mic.onclick=async()=>{if(pRec){pRec.stop();return}
+    try{const st=await navigator.mediaDevices.getUserMedia({audio:true}),ch=[];pRec=new MediaRecorder(st);mic.classList.add("on");mic.textContent="⏹️ Stop";
+      pRec.ondataavailable=e=>ch.push(e.data);
+      pRec.onstop=()=>{clearTimeout(pTimer);st.getTracks().forEach(t=>t.stop());const blob=new Blob(ch,{type:pRec.mimeType||"audio/mp4"});
+        if(kid[k])URL.revokeObjectURL(kid[k]);kid[k]=URL.createObjectURL(blob);try{kdb.transaction("v","readwrite").objectStore("v").put(blob,k)}catch(e){}
+        const t=grid.querySelector(`.tile[data-w="${k}"]`);if(t)t.classList.add("rec");
+        pRec=null;mic.classList.remove("on");mic.textContent="🎤 Again";me.disabled=false;playKid(k);talk(praise[Math.floor(Math.random()*praise.length)]);fanfare();burstAt(mic)};
+      pRec.start();pTimer=setTimeout(()=>{if(pRec&&pRec.state==="recording")pRec.stop()},4000)}
+    catch(e){mic.textContent="⚠️ Allow microphone";pRec=null}};
+  me.onclick=()=>playKid(k)}
+
+/* listen & find */
+const gm=document.getElementById("gameModal");let ans,right=0,lock=false;
+function round(){lock=false;const ws=[...GROUPS[gi].w].sort(()=>Math.random()-.5).slice(0,4);ans=ws[0];
+  const box=document.getElementById("gOpts");box.innerHTML="";
+  ws.sort(()=>Math.random()-.5).forEach((w,n)=>{const b=document.createElement("button");b.textContent=w;b.style.background=COLORS[n+1];
+    b.onclick=()=>{if(lock)return;if(w===ans){lock=true;right++;b.classList.add("right");popSnd();fanfare();burstAt(b);talk(praise[Math.floor(Math.random()*praise.length)]);mark(w);
+        document.getElementById("gScore").textContent=`⭐ ${right} correct`;setTimeout(round,1400)}
+      else{b.classList.add("wrong");buzz();talk("Try again! 💪")}};box.appendChild(b)});
+  setTimeout(()=>sayWord(ans),300)}
+document.getElementById("game").onclick=()=>{right=0;document.getElementById("gScore").textContent="Listen, then tap the word";gm.classList.add("show");round()};
+document.getElementById("gAgain").onclick=()=>sayWord(ans);
+
+/* flash cards */
+const fm=document.getElementById("flashModal");let fl=[],fi=0;
+function showFlash(){const w=fl[fi];const el=document.getElementById("fWord");el.textContent=w;el.style.color=COLORS[fi%6];
+  el.classList.remove("pop");void el.offsetWidth;el.classList.add("pop");
+  document.getElementById("fScore").textContent=`${fi+1} of ${fl.length}`}
+document.getElementById("flash").onclick=()=>{fl=[...GROUPS[gi].w].sort(()=>Math.random()-.5);fi=0;showFlash();fm.classList.add("show")};
+document.getElementById("fCheck").onclick=()=>{sayWord(fl[fi]);mark(fl[fi])};
+document.getElementById("fNext").onclick=()=>{popSnd();fi++;if(fi>=fl.length){fanfare();rain();talk("All cards done! 🏆");fm.classList.remove("show");return}showFlash()};
+
+document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m||e.target.hasAttribute("data-close")){m.classList.remove("show");try{speechSynthesis.cancel()}catch(e){}}}));
+document.getElementById("reset").onclick=()=>{done={};save();drawGroups();drawWords();talk("Fresh start! 🚀")};
+drawGroups();drawWords();
+</script>
+</body>
+</html>
