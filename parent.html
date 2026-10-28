@@ -201,6 +201,13 @@ $("sDel").onclick=()=>{if(!confirmDel(es.title))return;secs=secs.filter(s=>s.id!
 /* cloud: save to config.json in GitHub so every iPad updates by itself */
 const TK="najma:ghToken";let sha=null,pushT=null;
 const b64=s=>btoa(unescape(encodeURIComponent(s)));
+function why(e){const m=String(e&&e.message||e);
+  if(m==="401")return "المفتاح غير صحيح أو انتهت صلاحيته. أنشئ مفتاحًا جديدًا وانسخه كاملًا (يبدأ بـ github_pat_).";
+  if(m==="403")return "المفتاح لا يملك صلاحية الكتابة. في إعدادات المفتاح: Repository permissions ← Contents ← Read and write.";
+  if(m==="404")return "المفتاح لا يملك الوصول إلى مستودع Sounds. في إعدادات المفتاح: Repository access ← Only select repositories ← Sounds.";
+  if(/operation|decrypt/i.test(m)||e&&e.name==="OperationError")return "رمز العائلة على هذا الجهاز غير صحيح. أعد فتح رابط الإعداد أو أدخل الرمز مرة ثانية.";
+  if(/fetch|network|load/i.test(m))return "لا يوجد اتصال بالإنترنت أو تم حظر الاتصال.";
+  return "خطأ "+m}
 function status(t,ok){const s=$("cStatus");s.innerHTML=t;s.style.background=ok?"#e3f8e7":"#fff8dc"}
 async function ghGet(){const tk=R.get(TK);const r=await fetch(`https://api.github.com/repos/${NAJMA.REPO}/contents/config.json?ref=main&t=${Date.now()}`,
   {headers:Object.assign({Accept:"application/vnd.github+json"},tk?{Authorization:"Bearer "+tk}:{}),cache:"no-store"});
@@ -212,7 +219,7 @@ async function ghPut(){const tk=R.get(TK);if(!NAJMA.hasKey())return status("🔑
     if(r.status===409||r.status===422){await ghGet();body.sha=sha;r=await fetch(`https://api.github.com/repos/${NAJMA.REPO}/contents/config.json`,{method:"PUT",headers:{Accept:"application/vnd.github+json",Authorization:"Bearer "+tk},body:JSON.stringify(body)})}
     if(!r.ok)throw new Error(r.status);sha=(await r.json()).content.sha;
     status("✅ تم الحفظ. ستظهر التغييرات على أجهزة الأطفال عند فتح الشاشة الرئيسية.",true)}
-  catch(e){status("❌ لم يتم الحفظ ("+e.message+"). تأكد من المفتاح والإنترنت ثم جرّب مرة ثانية.")}}
+  catch(e){status("❌ لم يتم الحفظ: "+why(e))}}
 const push=()=>{clearTimeout(pushT);pushT=setTimeout(ghPut,400)};
 const _saveP=saveP,_saveS=saveS;saveP=()=>{_saveP();push()};saveS=()=>{_saveS();push()};
 async function connect(){$("fam").value=NAJMA.hasKey()?"✓ محفوظ":"";if(!NAJMA.hasKey()){status("🔑 أدخل رمز العائلة أدناه.");return}const tk=R.get(TK);$("tok").value=tk?"••••••••"+tk.slice(-4):"";
@@ -221,8 +228,8 @@ async function connect(){$("fam").value=NAJMA.hasKey()?"✓ محفوظ":"";if(!N
   try{const cfg=await ghGet();
     if(cfg.updated){profs=cfg.profiles||[];secs=cfg.sections||[];_saveP();_saveS();drawKids();drawSecs();status("✅ متصل. أي تعديل هنا يصل إلى أجهزة الأطفال تلقائيًا.",true)}
     else{await ghPut()}}
-  catch(e){status("❌ تعذّر الاتصال ("+e.message+"). تأكد من المفتاح.")}}
-$("tokSave").onclick=()=>{const v=$("tok").value.trim();if(v&&!v.startsWith("••")){R.set(TK,v);connect()}};
+  catch(e){status("❌ تعذّر الاتصال: "+why(e))}}
+$("tokSave").onclick=()=>{const v=$("tok").value.replace(/\s+/g,"");if(v&&!v.startsWith("••")){R.set(TK,v);connect()}};
 $("famSave").onclick=async()=>{const v=$("fam").value.trim().toUpperCase();if(!v||v.startsWith("✓"))return;status("⏳ جارٍ التحقق…");
   if(await NAJMA.checkCode(v)){location.reload()}else status("❌ الرمز غير صحيح.")};
 $("tokDel").onclick=()=>{R.remove(TK);$("tok").value="";connect()};
