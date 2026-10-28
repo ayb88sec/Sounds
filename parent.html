@@ -58,6 +58,24 @@ textarea{min-height:160px;line-height:1.5}
 #qr img,#qr canvas{border:10px solid #fff;border-radius:12px;max-width:100%}
 .link{direction:ltr;font-size:12px;word-break:break-all;background:#f3f0fa;border-radius:12px;padding:8px;max-height:80px;overflow:auto}
 .ok{color:#2a9442;font-weight:800}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.stats3 div{background:#f8f6fd;border-radius:18px;padding:10px;text-align:center}
+.stats3 b{display:block;font-size:28px;color:#6a5cff}.stats3 span{font-size:14px;color:#7a7090}
+.qa{display:flex;gap:8px;margin-bottom:14px}.qa .b{flex:1;padding:12px}
+.dk{border-radius:22px;background:#f8f6fd;padding:14px;margin-bottom:12px}
+.dk .top{display:flex;align-items:center;gap:12px}
+.dk .av{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;flex:none}
+.dk .nm{flex:1;min-width:0}.dk .nm b{font-size:22px;display:block}.dk .nm small{color:#7a7090}
+.dk .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.dk .acts .b{font-size:15px;padding:7px 12px}
+.prow2{display:grid;grid-template-columns:1fr;gap:6px;margin-top:10px}
+.pr{display:grid;grid-template-columns:120px 1fr 64px;align-items:center;gap:8px;font-size:15px}
+.pr .bar{height:12px;background:#e6e0f5;border-radius:999px;overflow:hidden}
+.pr .bar i{display:block;height:100%;background:linear-gradient(90deg,#ffb020,#ff5d73);border-radius:999px}
+.pr .lv{grid-column:1/-1;font-size:13px;color:#7a7090;margin:-4px 0 2px}
+.pr.off{opacity:.45}
+.dh{margin:18px 4px 8px;font-size:20px}
+.devnote{font-size:13px;color:#7a7090;margin-top:8px}
 </style>
 </head>
 <body>
@@ -69,9 +87,15 @@ textarea{min-height:160px;line-height:1.5}
 </div></div>
 
 <header><img src="icon.png" alt=""><h1>بوابة الوالدين</h1><a href="home.html">🏠 التطبيق</a></header>
-<nav><button data-t="kids" class="on">👧 الأطفال</button><button data-t="secs">📚 الأقسام</button><button data-t="cloud">☁️ الاتصال</button></nav>
+<nav><button data-t="dash" class="on">📊 اللوحة</button><button data-t="kids">👧 الأطفال</button><button data-t="secs">📚 الأقسام</button><button data-t="cloud">☁️ الاتصال</button></nav>
 <main>
-  <div class="panel on" id="kids"><div id="kidList"></div><button class="b add" id="addKid">➕ إضافة طفل</button></div>
+  <div class="panel on" id="dash">
+    <div class="stats3" id="dStats"></div>
+    <div class="qa"><button class="b go" id="qKid">➕ طفل</button><button class="b go" id="qSec">➕ قسم</button></div>
+    <div id="dKids"></div>
+    <h3 class="dh">📚 الأقسام</h3><div id="dSecs"></div>
+  </div>
+  <div class="panel" id="kids"><div id="kidList"></div><button class="b add" id="addKid">➕ إضافة طفل</button></div>
   <div class="panel" id="secs">
     <div class="note">أضف قوائم كلمات خاصة بك: إملاء، كلمات المدرسة، أو أي قسم جديد. كل قسم يظهر كتطبيق على الشاشة الرئيسية، مع تهجئة وكتابة وتسجيل.</div>
     <div id="secList"></div><button class="b add" id="addSec">➕ إضافة قسم</button></div>
@@ -244,6 +268,39 @@ $("famSave").onclick=async()=>{const v=$("fam").value.trim().toUpperCase();if(!v
 $("tokDel").onclick=()=>{R.remove(TK);$("tok").value="";connect()};
 function drawDev(){const cur=R.get("najma:lock");chips("devLock",["👨‍👩‍👧 كل الأطفال (جهاز الوالدين)",...profs.map(p=>p.avatar+" "+p.name)],(x,k)=>k?profs[k-1].id===cur:!cur,
   (x,k)=>{if(k){R.set("najma:lock",profs[k-1].id);R.set("najma:cur",profs[k-1].id)}else R.remove("najma:lock")})}
+/* dashboard */
+const APPS_D=[["arabic","حروفي","arDone","arabic",[7,7,7,7,10]],["numAr","الأرقام","numDoneAr",null,null],["islam","أركان الإسلام","islamDone",null,null],["iman","أركان الإيمان","imanDone",null,null],
+  ["sounds","Sounds","soundsDone","sounds",[25,7]],["cvc","Word Time","cvcDone","wt",[7,20,17,18,16,18,15]],["sent","Sentences","sentDone","sent",[4,4,4,4]],
+  ["writeEn","Handwriting","writeEn","writeEn",[26,26,10]],["numEn","Numbers","numDoneEn",null,null],["shapes","2D Shapes","shapesDone","shapes",[4,4,2]]];
+function lvOf(p,app){const L=p.levels&&p.levels[app];return Array.isArray(L)&&L.length?L:NAJMA.LEVELS[app].map((_,i)=>i)}
+function lvText(p,app){const all=NAJMA.LEVELS[app],on=lvOf(p,app);if(on.length===all.length)return "";return on.map(i=>all[i].split(" · ")[0]).join("، ")}
+function drawDash(){
+  const lock=R.get("najma:lock"),here=lock||R.get("najma:cur");
+  $("dStats").innerHTML=`<div><b>${profs.length}</b><span>أطفال</span></div><div><b>${secs.length}</b><span>أقسام</span></div><div><b>${R.get(TK)?"☁️":"⚠️"}</b><span>${R.get(TK)?"متصل":"غير متصل"}</span></div>`;
+  const D=$("dKids");D.innerHTML=profs.length?"":'<div class="note">لا يوجد أطفال بعد. اضغط ➕ طفل.</div>';
+  profs.forEach(p=>{const apps=p.apps||{},max=p.numMax||20;
+    const rows=APPS_D.map(([id,name,key,lvk,sizes])=>{const on=apps[id]!==false;let total=id==="numAr"||id==="numEn"?max:id==="islam"?5:id==="iman"?6:lvOf(p,lvk).reduce((s,i)=>s+sizes[i],0);
+      const n=Math.min(count(p.id,key),total),pct=total?Math.round(n/total*100):0;
+      const lt=lvk?lvText(p,lvk):"";const lv=lt?`<div class="lv">🎚️ ${lt}</div>`:(id.startsWith("num")&&max<20?`<div class="lv">🎚️ حتى ${max}</div>`:"");
+      return `<div class="pr${on?"":" off"}"><span dir="auto">${name}${on?"":" (مخفي)"}</span><span class="bar"><i style="width:${pct}%"></i></span><span>${n}/${total}</span>${lv}</div>`}).join("")+
+      secs.filter(s=>apps["s:"+s.id]!==false).map(s=>{const n=Math.min(count(p.id,"sec_"+s.id),s.words.length),pct=s.words.length?Math.round(n/s.words.length*100):0;
+        return `<div class="pr"><span dir="auto">${s.icon} ${s.title}</span><span class="bar"><i style="width:${pct}%"></i></span><span>${n}/${s.words.length}</span></div>`}).join("");
+    const d=document.createElement("div");d.className="dk";
+    d.innerHTML=`<div class="top"><div class="av" style="background:${p.color}">${p.avatar}</div><div class="nm"><b dir="auto">${p.name}</b><small dir="auto">${[p.nameAr,p.nameEn].filter(Boolean).join(" · ")}</small></div></div>
+      <div class="prow2">${rows}</div>
+      <div class="devnote">${p.id===here?"📱 التقدّم من هذا الجهاز.":"📱 التقدّم المعروض هو المسجّل على هذا الجهاز فقط؛ نجوم الطفل محفوظة على آيباده."}</div>
+      <div class="acts"><button class="b">✏️ تعديل</button><button class="b">📲 رابط الآيباد</button></div>`;
+    const [eb,lb]=d.querySelectorAll(".acts .b");eb.onclick=()=>editKid(p);
+    lb.onclick=async()=>{if(!NAJMA.hasKey()){lb.textContent="🔑 أدخل رمز العائلة أولًا";return}
+      const u=location.href.replace(/parent\.html.*$/,"home.html")+"#key="+encodeURIComponent(R.get("najma:key"))+"&kid="+p.id;
+      try{await navigator.clipboard.writeText(u);lb.textContent="✅ تم نسخ الرابط"}catch(e){lb.textContent="⚠️ افتح ✏️ تعديل لنسخه"}setTimeout(()=>lb.textContent="📲 رابط الآيباد",2500)};
+    D.appendChild(d)});
+  const S=$("dSecs");S.innerHTML=secs.length?"":'<div class="note">لا توجد أقسام.</div>';
+  secs.forEach(s=>{const d=document.createElement("div");d.className="row";
+    d.innerHTML=`<div class="av" style="background:#fff3c4">${s.icon}</div><div class="info"><b dir="auto">${s.title}</b><small>${s.lang==="ar"?"عربي":"English"} · ${s.words.length} كلمات · ${profs.filter(p=>!p.apps||p.apps["s:"+s.id]!==false).map(p=>p.avatar).join(" ")}</small></div><button class="b">✏️</button>`;
+    d.querySelector("button").onclick=()=>editSec(s);S.appendChild(d)})}
+$("qKid").onclick=()=>editKid(null);$("qSec").onclick=()=>editSec(null);
+const _dk=drawKids,_ds=drawSecs;drawKids=function(){_dk();drawDash()};drawSecs=function(){_ds();drawDash()};
 drawKids();drawSecs();connect();drawDev();
 </script>
 </body>
