@@ -300,7 +300,7 @@ function lvOf(p,app){const L=p.levels&&p.levels[app];return Array.isArray(L)&&L.
 function lvText(p,app){const all=NAJMA.LEVELS[app],on=lvOf(p,app);if(on.length===all.length)return "";return on.map(i=>all[i].split(" · ")[0]).join("، ")}
 function drawDash(){
   const lock=R.get("najma:lock"),here=lock||R.get("najma:cur");
-  $("dStats").innerHTML=`<div><b>${profs.length}</b><span>أطفال</span></div><div><b>${secs.length}</b><span>أقسام</span></div><div><b>${R.get(TK)?"☁️":"⚠️"}</b><span>${R.get(TK)?"متصل":"غير متصل"}</span></div>`;
+  $("dStats").innerHTML=`<div><b>${profs.length}</b><span>أطفال</span></div><div><b>${secs.length}</b><span>أقسام</span></div><div><b>${(DB?FID:R.get(TK))?"☁️":"⚠️"}</b><span>${(DB?FID:R.get(TK))?"متصل":"غير متصل"}</span></div>`;
   const D=$("dKids");D.innerHTML=profs.length?"":'<div class="note">لا يوجد أطفال بعد. اضغط ➕ طفل.</div>';
   profs.forEach(p=>{const apps=p.apps||{},max=p.numMax||20;
     const rows=APPS_D.map(([id,name,key,lvk,sizes])=>{const on=apps[id]!==false;let total=id==="numAr"||id==="numEn"?max:id==="islam"?5:id==="iman"?6:lvOf(p,lvk).reduce((s,i)=>s+sizes[i],0);
@@ -312,7 +312,7 @@ function drawDash(){
     const d=document.createElement("div");d.className="dk";
     d.innerHTML=`<div class="top"><div class="av" style="background:${p.color}">${p.avatar}</div><div class="nm"><b dir="auto">${p.name}</b><small dir="auto">${[p.nameAr,p.nameEn].filter(Boolean).join(" · ")}</small></div></div>
       <div class="prow2">${rows}</div>
-      <div class="devnote">${p.id===here?"📱 التقدّم من هذا الجهاز.":"📱 التقدّم المعروض هو المسجّل على هذا الجهاز فقط؛ نجوم الطفل محفوظة على آيباده."}</div>
+      <div class="devnote">${DB?(devSeen[p.id]?"☁️ التقدّم من آيباد الطفل · آخر مزامنة: "+devSeen[p.id]:"📲 لم يُربط آيباد بعد. اضغط «رابط الآيباد» لربطه."):(p.id===here?"📱 التقدّم من هذا الجهاز.":"📱 التقدّم المعروض هو المسجّل على هذا الجهاز فقط؛ نجوم الطفل محفوظة على آيباده.")}</div>
       <div class="acts"><button class="b">✏️ تعديل</button><button class="b">📲 رابط الآيباد</button></div>`;
     const [eb,lb]=d.querySelectorAll(".acts .b");eb.onclick=()=>editKid(p);
     lb.onclick=()=>{if(!NAJMA.hasKey()){lb.textContent="🔑 أدخل رمز العائلة أولًا";return}editKid(p);setTimeout(()=>$("kLinkBox").scrollIntoView({behavior:"smooth"}),200)};
@@ -324,7 +324,7 @@ function drawDash(){
 $("qKid").onclick=()=>editKid(null);$("qSec").onclick=()=>editSec(null);
 const _dk=drawKids,_ds=drawSecs;drawKids=function(){_dk();drawDash()};drawSecs=function(){_ds();drawDash()};
 /* ---------- database mode ---------- */
-let sb=null,FID=null,ME=null,PRG={},loadedK=new Set(),loadedS=new Set();
+let devSeen={};let sb=null,FID=null,ME=null,PRG={},loadedK=new Set(),loadedS=new Set();
 function msg(t){$("aMsg").textContent=t||""}
 async function dbStart(){
   $("gate").remove();sb=supabase.createClient(SUPA.url,SUPA.key);$("navParents").style.display="";
@@ -347,6 +347,7 @@ async function loadAll(){
   profs=(k.data||[]).map(r=>Object.assign({},r.data,{id:r.id}));secs=(s.data||[]).map(r=>Object.assign({},r.data,{id:r.id}));
   if(!secs.length&&!profs.length){/* first time: bring over what this phone already has */const lp=NAJMA.profiles,ls=NAJMA.sections;profs=lp.slice();secs=ls.slice();if(profs.length||secs.length){await dbSaveP();await dbSaveS()}}
   loadedK=new Set(profs.map(p=>p.id));loadedS=new Set(secs.map(x=>x.id));
+  try{const dv=await sb.from("devices").select("child_id,last_seen,created_at");devSeen={};(dv.data||[]).forEach(d=>{const t=d.last_seen||d.created_at;if(!devSeen[d.child_id]||t>devSeen[d.child_id+"_t"]){devSeen[d.child_id+"_t"]=t;devSeen[d.child_id]=d.last_seen?new Date(d.last_seen).toLocaleString("ar",{dateStyle:"short",timeStyle:"short"}):"لم يُفتح بعد"}})}catch(e){}
   PRG={};(pr.data||[]).forEach(r=>{(PRG[r.child_id]=PRG[r.child_id]||{})[r.app_key]=r.data});
   _saveP();_saveS();
   $("pFam").innerHTML=`👨‍👩‍👧 <b>${(fam.data&&fam.data.name)||""}</b> · ${ME.email}`;
