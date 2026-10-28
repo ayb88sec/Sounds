@@ -10,7 +10,7 @@
   S.setItem=function(k,v){return SET.call(this,key(k),v)};
   S.removeItem=function(k){return RM.call(this,key(k))};
   if(window.indexedDB&&me){const open=indexedDB.open.bind(indexedDB);indexedDB.open=(n,v)=>open(`${n}__${me.id}`,v)}
-  const DEF={apps:{arabic:true,numAr:true,islam:true,iman:true,sounds:true,sight:true,numEn:true},numMax:20,sightGroups:[0,1,2,3,4,5,6,7,8]};
+  const DEF={apps:{arabic:true,numAr:true,islam:true,iman:true,sounds:true,cvc:true,sent:true,writeEn:true,numEn:true,shapes:true,name:true},numMax:20,sightGroups:[0,1,2,3,4,5,6,7,8]};
   const DEFSEC=[{id:"spell1",title:"Spelling",icon:"🐝",lang:"en",words:["antiseptic","antibiotic","baby","bad","bear"]}];
   let sections;try{sections=JSON.parse(G.call(localStorage,"najma:sections")||"null")}catch(e){}
   if(!Array.isArray(sections))sections=DEFSEC;

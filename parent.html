@@ -101,7 +101,6 @@ textarea{min-height:160px;line-height:1.5}
   <label>اللون</label><div class="chips" id="kCol"></div>
   <label>التطبيقات الظاهرة</label><div class="chips" id="kApps"></div>
   <label>الأرقام حتى</label><div class="chips" id="kNum"></div>
-  <label>مجموعات Sight Words</label><div class="chips" id="kSight" dir="ltr"></div>
   <div class="actions"><button class="b del" id="kDel">🗑️ حذف</button><span><button class="b" data-close>إلغاء</button> <button class="b go" id="kSave">حفظ</button></span></div>
 </div></div>
 
@@ -120,8 +119,8 @@ let profs=NAJMA.profiles.slice(),secs=JSON.parse(JSON.stringify(NAJMA.sections))
 const AV=["🦁","🐼","🦊","🐰","🐯","🦄","🐬","🐻","🐸","🐨","🦋","🚀","⚽","🌸","👑","🦖"];
 const PC=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a","#ff7eb6","#2b2340"];
 const ICONS=["🐝","📝","📚","✏️","🍎","🌟","🧠","🏫","🔤","🌍","🧪","🎵"];
-const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["sight","Sight Words"],["numEn","Numbers"]];
-const PROG=[["arDone","حروفي",38],["numDoneAr","الأرقام",20],["islamDone","الإسلام",5],["imanDone","الإيمان",6],["soundsDone","Sounds",32],["sightDone","Sight",92],["numDoneEn","Numbers",20]];
+const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["cvc","CVC Words"],["sent","Sentences"],["writeEn","Handwriting"],["numEn","Numbers"],["shapes","2D Shapes"]];
+const PROG=[["arDone","حروفي",38],["numDoneAr","الأرقام",20],["islamDone","الإسلام",5],["imanDone","الإيمان",6],["soundsDone","Sounds",32],["cvcDone","CVC",52],["sentDone","Sentences",16],["writeEn","Writing",62],["numDoneEn","Numbers",20],["shapesDone","Shapes",10]];
 let saveP=()=>R.set("najma:profiles",JSON.stringify(profs));
 let saveS=()=>R.set("najma:sections",JSON.stringify(secs));
 const $=id=>document.getElementById(id);
@@ -144,7 +143,7 @@ function chips(id,list,isOn,onTap,cls){const box=$(id);box.innerHTML="";box.clas
 function drawKids(){const L=$("kidList");L.innerHTML="";
   if(!profs.length)L.innerHTML='<div class="note">لا يوجد أطفال بعد. اضغط ➕ لإضافة أول طفل.</div>';
   profs.forEach(p=>{const d=document.createElement("div");d.className="row";
-    const prog=PROG.filter(([k])=>p.apps?p.apps[{arDone:"arabic",numDoneAr:"numAr",islamDone:"islam",imanDone:"iman",soundsDone:"sounds",sightDone:"sight",numDoneEn:"numEn"}[k]]!==false:true)
+    const prog=PROG.filter(([k])=>p.apps?p.apps[{arDone:"arabic",numDoneAr:"numAr",islamDone:"islam",imanDone:"iman",soundsDone:"sounds",cvcDone:"cvc",sentDone:"sent",writeEn:"writeEn",numDoneEn:"numEn",shapesDone:"shapes"}[k]]!==false:true)
       .map(([k,n,t])=>`<span>${n} ${Math.min(count(p.id,k),t)}/${t}</span>`).join("")+
       secs.filter(s=>!p.apps||p.apps["s:"+s.id]!==false).map(s=>`<span>${s.icon} ${s.title} ${count(p.id,"sec_"+s.id)}/${s.words.length}</span>`).join("");
     d.innerHTML=`<div class="av" style="background:${p.color}">${p.avatar}</div><div class="info"><b dir="auto">${p.name}</b>
@@ -161,7 +160,7 @@ function editKid(p){
   const apps=[...BUILT,...secs.map(s=>["s:"+s.id,`${s.icon} ${s.title}`])];
   chips("kApps",apps.map(a=>a[1]),(x,k)=>ed.apps[apps[k][0]]!==false,(x,k)=>{const id=apps[k][0];ed.apps[id]=ed.apps[id]===false});
   chips("kNum",["١٠ / 10","٢٠ / 20"],(x,k)=>ed.numMax===(k?20:10),(x,k)=>ed.numMax=k?20:10);
-  chips("kSight",["1","2","3","4","5","6","7","8","9"],(x,k)=>ed.sightGroups.includes(k),(x,k)=>{ed.sightGroups=ed.sightGroups.includes(k)?ed.sightGroups.filter(v=>v!==k):[...ed.sightGroups,k].sort((a,b)=>a-b)});
+  if(0)chips("kSight",["1","2","3","4","5","6","7","8","9"],(x,k)=>ed.sightGroups.includes(k),(x,k)=>{ed.sightGroups=ed.sightGroups.includes(k)?ed.sightGroups.filter(v=>v!==k):[...ed.sightGroups,k].sort((a,b)=>a-b)});
   $("kidSheet").classList.add("show")}
 $("addKid").onclick=()=>editKid(null);
 $("kSave").onclick=()=>{ed.nameAr=$("kAr").value.trim();ed.nameEn=$("kEn").value.trim();ed.name=$("kName").value.trim()||ed.nameAr||ed.nameEn||"بطل";

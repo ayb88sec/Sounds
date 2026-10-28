@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="profile.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon.png"><link rel="icon" href="icon.png">
+<title>2D Shapes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&family=Baloo+Bhaijaan+2:wght@700&display=swap">
+<link rel="stylesheet" href="kit.css">
+<style>
+body{background:linear-gradient(160deg,#3fc35a,#22c7b8 50%,#4f8bff)}
+.tile svg{width:76px;height:76px}
+.tile small{font-family:"Baloo Bhaijaan 2";font-size:15px;opacity:.95}
+.shape svg{width:200px;height:200px;filter:drop-shadow(0 6px 0 rgba(0,0,0,.12))}
+.shape svg .edge{transition:stroke .2s}
+.facts{display:flex;gap:10px;justify-content:center;margin:6px 0}
+.facts div{background:#f3f0fa;border-radius:18px;padding:8px 14px;font-family:"Baloo 2";font-weight:800;font-size:18px;cursor:pointer}
+.facts b{display:block;font-size:34px;color:#4f8bff}
+.ex{font-size:46px;letter-spacing:6px;margin:8px 0}
+.nm{font-family:"Andika";font-size:42px;font-weight:700;margin:0}
+.ar{font-family:"Baloo Bhaijaan 2";font-size:24px;color:#7a7090}
+.opts button svg{width:70px;height:70px}
+</style>
+</head>
+<body>
+<main>
+  <h1>2D Shapes</h1>
+  <section><div class="grid" id="grid"></div><div class="bar"><button class="btn pink" id="game">🔍 Find the shape</button><button class="btn teal" id="count">🔢 Count the sides</button></div></section>
+</main>
+<div class="modal" id="sm"><div class="card">
+  <button class="x" data-close>✕</button>
+  <div class="shape" id="sSvg"></div>
+  <p class="nm" id="sName"></p><div class="ar" id="sAr"></div>
+  <div class="facts"><div id="sSides"></div><div id="sCorners"></div></div>
+  <div class="ex" id="sEx"></div>
+  <div class="bar"><button class="btn" id="sHear">🔊 Hear it</button></div>
+</div></div>
+<div class="modal" id="gm"><div class="card">
+  <button class="x" data-close>✕</button>
+  <div class="q" id="gQ"></div>
+  <div class="shape" id="gSvg"></div>
+  <div class="opts" id="gOpts"></div><div class="score" id="gScore"></div>
+</div></div>
+<script src="kit.js"></script>
+<script>
+const {COLORS,rnd,shuffle,pop,fanfare,buzz,burstAt,say,talk,PRAISE}=KIT;
+KIT.mascot("Tap a shape to learn about it!");
+function poly(n,r=40,rot=-90){return Array.from({length:n},(_,i)=>{const a=(rot+i*360/n)*Math.PI/180;return `${(50+r*Math.cos(a)).toFixed(1)},${(52+r*Math.sin(a)).toFixed(1)}`}).join(" ")}
+function star(){return Array.from({length:10},(_,i)=>{const r=i%2?18:42,a=(-90+i*36)*Math.PI/180;return `${(50+r*Math.cos(a)).toFixed(1)},${(53+r*Math.sin(a)).toFixed(1)}`}).join(" ")}
+const SH=[
+ {n:"circle",ar:"دائرة",s:0,c:0,ex:"⚽🍪🕐🍩",svg:'<circle class="edge" cx="50" cy="50" r="40"/>'},
+ {n:"square",ar:"مربع",s:4,c:4,ex:"🧇🎲🖼️",svg:'<rect class="edge" x="14" y="14" width="72" height="72" rx="2"/>'},
+ {n:"triangle",ar:"مثلث",s:3,c:3,ex:"🍕⛺🔺",svg:`<polygon class="edge" points="${poly(3,44,-90)}"/>`},
+ {n:"rectangle",ar:"مستطيل",s:4,c:4,ex:"🚪📱📕",svg:'<rect class="edge" x="8" y="26" width="84" height="50" rx="2"/>'},
+ {n:"oval",ar:"شكل بيضاوي",s:0,c:0,ex:"🥚🏉🪞",svg:'<ellipse class="edge" cx="50" cy="50" rx="42" ry="28"/>'},
+ {n:"star",ar:"نجمة",s:10,c:10,ex:"⭐🌟✨",svg:`<polygon class="edge" points="${star()}"/>`},
+ {n:"heart",ar:"قلب",s:0,c:1,ex:"❤️💌🫶",svg:'<path class="edge" d="M50 84 C20 62 8 46 8 32 C8 18 20 10 31 10 C40 10 46 16 50 22 C54 16 60 10 69 10 C80 10 92 18 92 32 C92 46 80 62 50 84Z"/>'},
+ {n:"diamond",ar:"معيّن",s:4,c:4,ex:"🪁♦️💎",svg:`<polygon class="edge" points="50,8 84,50 50,92 16,50"/>`},
+ {n:"pentagon",ar:"خماسي",s:5,c:5,ex:"🏠⚽",svg:`<polygon class="edge" points="${poly(5,42)}"/>`},
+ {n:"hexagon",ar:"سداسي",s:6,c:6,ex:"🐝🍯🔩",svg:`<polygon class="edge" points="${poly(6,42,0)}"/>`}];
+const svg=(s,col)=>`<svg viewBox="0 0 100 100"><g fill="${col}" stroke="#fff" stroke-width="4" stroke-linejoin="round">${s.svg}</g></svg>`;
+const prog=KIT.store("shapesDone");
+const grid=document.getElementById("grid");
+function draw(){grid.innerHTML="";SH.forEach((s,i)=>{const b=document.createElement("button");b.className="tile"+(prog.d[s.n]?" done":"");b.style.background=COLORS[i%6];b.style.animationDelay=(i*.04)+"s";
+  b.innerHTML=`${svg(s,"rgba(255,255,255,.95)")}<span>${s.n}</span><small>${s.ar}</small>`;b.querySelector("g").setAttribute("stroke",COLORS[i%6]);b.onclick=()=>open(i,b);grid.appendChild(b)})}
+draw();
+function open(i,el){const s=SH[i];pop();if(el)burstAt(el);document.getElementById("sSvg").innerHTML=svg(s,COLORS[i%6]);
+  document.getElementById("sName").textContent=s.n;document.getElementById("sAr").textContent=s.ar;
+  const sd=document.getElementById("sSides"),cn=document.getElementById("sCorners");
+  sd.innerHTML=`<b>${s.s}</b>${s.s===1?"side":"sides"}`;cn.innerHTML=`<b>${s.c}</b>${s.c===1?"corner":"corners"}`;
+  sd.onclick=()=>say(`${s.s} sides`);cn.onclick=()=>say(`${s.c} corners`);
+  document.getElementById("sEx").textContent=s.ex;
+  const line=`This is a ${s.n}. It has ${s.s===0?"no straight sides":s.s+" sides"} and ${s.c===0?"no corners":s.c+(s.c===1?" corner":" corners")}.`;
+  document.getElementById("sHear").onclick=()=>say(line,.8);
+  document.getElementById("sm").classList.add("show");setTimeout(()=>say(line,.8),300);prog.d[s.n]=1;prog.save();
+  const t=grid.children[i];if(t)t.classList.add("done");talk(`${s.n}! ${rnd(PRAISE)}`)}
+/* games */
+let ans,right=0,lock=false,mode="find";
+function round(){lock=false;const box=document.getElementById("gOpts");box.innerHTML="";
+  if(mode==="find"){const pick=shuffle(SH).slice(0,4);ans=pick[0];document.getElementById("gQ").textContent=`Find the ${ans.n}!`;document.getElementById("gSvg").innerHTML="";say(`Find the ${ans.n}`);
+    shuffle(pick).forEach((s,k)=>{const b=document.createElement("button");b.innerHTML=svg(s,"#fff");b.style.background=COLORS[k+1];b.querySelector("g").setAttribute("stroke",COLORS[k+1]);
+      b.onclick=()=>check(b,s===ans,ans.n);box.appendChild(b)})}
+  else{const pool=SH.filter(s=>[3,4,5,6].includes(s.s));ans=rnd(pool);document.getElementById("gQ").textContent="How many sides?";
+    document.getElementById("gSvg").innerHTML=svg(ans,COLORS[Math.floor(Math.random()*6)]);say("How many sides?");
+    [3,4,5,6].forEach((n,k)=>{const b=document.createElement("button");b.textContent=n;b.style.background=COLORS[k+1];b.onclick=()=>check(b,n===ans.s,`${n} sides`);box.appendChild(b)})}}
+function check(b,ok,word){if(lock)return;if(ok){lock=true;right++;b.classList.add("right");fanfare();burstAt(b);say(word);talk(rnd(PRAISE));
+    document.getElementById("gScore").textContent=`⭐ ${right}`;setTimeout(round,1500)}else{b.classList.add("wrong");buzz();talk("Try again 💪")}}
+document.getElementById("game").onclick=()=>{mode="find";right=0;document.getElementById("gScore").textContent="";document.getElementById("gm").classList.add("show");round()};
+document.getElementById("count").onclick=()=>{mode="count";right=0;document.getElementById("gScore").textContent="";document.getElementById("gm").classList.add("show");round()};
+</script>
+</body>
+</html>

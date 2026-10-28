@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="profile.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon.png"><link rel="icon" href="icon.png">
+<title>Sentences</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap">
+<link rel="stylesheet" href="kit.css">
+<style>
+body{background:linear-gradient(160deg,#ff7eb6,#ff9a3c 50%,#ffcf3c)}
+.list{display:grid;gap:12px}
+.srow{display:flex;align-items:center;gap:12px;border:0;border-radius:22px;padding:10px 14px;color:#fff;font-family:"Andika";font-size:24px;font-weight:700;cursor:pointer;text-align:left;
+  box-shadow:0 6px 0 rgba(0,0,0,.18);animation:enter .4s backwards;text-shadow:0 2px 0 rgba(0,0,0,.15)}
+.srow .e{font-size:40px;text-shadow:none}
+.srow.done::after{content:"⭐";margin-left:auto}
+.sent{font-family:"Andika";font-size:clamp(26px,7vw,40px);font-weight:700;min-height:1.6em;margin:8px 0;line-height:1.5}
+.sent span{cursor:pointer;border-radius:8px;padding:0 3px}
+.sent span.lit{background:#ffe066}
+.slots{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:62px;background:#f3f0fa;border-radius:18px;padding:8px;margin:10px 0}
+.slots b{font-family:"Andika";font-size:26px;background:#fff;border-radius:12px;padding:6px 12px;box-shadow:0 3px 0 #ddd3ee;animation:pop .3s}
+.pool{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.pool button{font-family:"Andika";font-size:26px;font-weight:700;border:0;border-radius:14px;padding:10px 16px;color:#fff;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.18)}
+.pool button.used{visibility:hidden}
+.pool button.wrong{animation:shake .4s}
+.tipx{font-family:"Baloo 2";font-size:16px;color:#7a7090;margin:6px 0}
+</style>
+</head>
+<body>
+<main>
+  <h1>Sentences</h1>
+  <section><div class="list" id="list"></div></section>
+</main>
+<div class="modal" id="sm"><div class="card">
+  <button class="x" data-close>✕</button>
+  <div class="pic" id="sPic"></div>
+  <div class="sent" id="sRead"></div>
+  <div class="bar" style="margin:4px 0"><button class="btn" id="sHear">🔊 Read it</button></div>
+  <div class="q" id="sQ" style="margin-top:14px">Build the sentence!</div>
+  <div class="slots" id="sSlots"></div>
+  <div class="pool" id="sPool"></div>
+  <div class="tipx">Remember: a capital letter at the start and a full stop at the end.</div>
+  <div class="bar"><button class="btn teal" id="sWrite">✏️ Write it</button><button class="btn ghost" id="sNext">Next ➡️</button></div>
+</div></div>
+<script src="writepad.js"></script>
+<script src="kit.js"></script>
+<script>
+const {COLORS,rnd,shuffle,pop,fanfare,buzz,burstAt,rain,say,talk,PRAISE}=KIT;
+KIT.mascot("Read a sentence, then build it and write it!");
+const S=[["The cat is on the mat.","🐱"],["I can see a dog.","🐶"],["The pig is big.","🐷"],["A bug is on the rug.","🐛"],["I see the sun.","☀️"],
+ ["The hen is red.","🐔"],["We can hop.","🐸"],["The fox is in the box.","🦊"],["My cup is hot.","☕"],["The bus can go.","🚌"],
+ ["Look at the jet.","✈️"],["I like my hat.","🎩"],["The bed is red.","🛏️"],["Can you see the pen?","🖊️"],["He has a bat.","🦇"],["She can run.","🏃‍♀️"]];
+const prog=KIT.store("sentDone");
+const list=document.getElementById("list");
+function draw(){list.innerHTML="";S.forEach(([s,e],i)=>{const b=document.createElement("button");b.className="srow"+(prog.d[i]?" done":"");b.style.background=COLORS[i%6];
+  b.style.animationDelay=(i*.03)+"s";b.innerHTML=`<span class="e">${e}</span>${s}`;b.onclick=()=>open(i,b);list.appendChild(b)})}
+draw();
+let cur,step,words;
+function readOut(s){const spans=[...document.querySelectorAll("#sRead span")];say(s,.7);
+  spans.forEach((sp,k)=>setTimeout(()=>{spans.forEach(x=>x.classList.remove("lit"));sp.classList.add("lit")},k*520));setTimeout(()=>spans.forEach(x=>x.classList.remove("lit")),spans.length*520+300)}
+function open(i,el){cur=i;step=0;const [s,e]=S[i];pop();if(el)burstAt(el);
+  document.getElementById("sPic").textContent=e;
+  words=s.split(" ");
+  const rd=document.getElementById("sRead");rd.innerHTML="";words.forEach(w=>{const sp=document.createElement("span");sp.textContent=w;sp.onclick=()=>say(w.replace(/[.?!]/,""));rd.appendChild(sp);rd.append(" ")});
+  document.getElementById("sHear").onclick=()=>readOut(s);
+  document.getElementById("sSlots").innerHTML="";document.getElementById("sQ").textContent="Build the sentence!";
+  const pool=document.getElementById("sPool");pool.innerHTML="";
+  shuffle(words.map((w,k)=>[w,k])).forEach(([w,k],n)=>{const b=document.createElement("button");b.textContent=w;b.style.background=COLORS[n%6];
+    b.onclick=()=>{if(w===words[step]){b.classList.add("used");pop();say(w.replace(/[.?!]/,""));const t=document.createElement("b");t.textContent=w;document.getElementById("sSlots").appendChild(t);step++;
+        if(step===words.length){prog.d[i]=1;prog.save();draw();fanfare();burstAt(document.getElementById("sSlots"));document.getElementById("sQ").textContent="🎉 "+rnd(PRAISE);setTimeout(()=>readOut(s),500)}}
+      else{b.classList.remove("wrong");void b.offsetWidth;b.classList.add("wrong");buzz();talk("Which word comes next? 🤔")}};pool.appendChild(b)});
+  document.getElementById("sWrite").onclick=()=>WritePad.open({items:S.map(x=>x[0]),index:i,lang:"en",font:'"Andika"',aspect:3,yShift:.45,onSay:t=>say(t,.7),
+    onStar:(t,st,res)=>{if(st>=2){fanfare();burstAt(res)}else buzz()}});
+  document.getElementById("sNext").onclick=()=>open((i+1)%S.length);
+  document.getElementById("sm").classList.add("show");setTimeout(()=>readOut(s),350)}
+</script>
+</body>
+</html>

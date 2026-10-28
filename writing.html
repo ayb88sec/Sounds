@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="profile.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon.png"><link rel="icon" href="icon.png">
+<title>Handwriting</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap">
+<link rel="stylesheet" href="kit.css">
+<style>
+body{background:linear-gradient(160deg,#a66bff,#ff7eb6 55%,#ffb020)}
+.grid{grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:10px}
+.tile{font-size:42px;aspect-ratio:1;justify-content:center}
+.tile .st{position:absolute;bottom:2px;font-size:11px;letter-spacing:-1px;text-shadow:none}
+.tile.done::after{content:none}
+</style>
+</head>
+<body>
+<main>
+  <h1>Handwriting</h1>
+  <div class="tabs" id="tabs"><button data-m="lower" class="on">abc</button><button data-m="upper">ABC</button><button data-m="nums">123</button></div>
+  <section><div class="grid" id="grid"></div><div class="bar"><button class="btn pink" id="all">✏️ Practise all in order</button></div></section>
+</main>
+<script src="writepad.js"></script>
+<script src="kit.js"></script>
+<script>
+const {COLORS,rnd,pop,fanfare,buzz,burstAt,say,sound,talk,PRAISE}=KIT;
+KIT.mascot("Trace the letter, then try with the guide off!");
+const SETS={lower:"abcdefghijklmnopqrstuvwxyz",upper:"ABCDEFGHIJKLMNOPQRSTUVWXYZ",nums:"0123456789"};
+const prog=KIT.store("writeEn");let mode="lower";
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{mode=b.dataset.m;pop();document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));draw()});
+function draw(){const g=document.getElementById("grid");g.innerHTML="";[...SETS[mode]].forEach((c,i)=>{const b=document.createElement("button");b.className="tile";b.style.background=COLORS[i%6];
+  b.style.animationDelay=(i*.02)+"s";const st=prog.d[c]||0;b.innerHTML=`${c}${st?`<span class="st">${"⭐".repeat(st)}</span>`:""}`;b.onclick=()=>write(i);g.appendChild(b)})}
+function write(i){const items=[...SETS[mode]];WritePad.open({items,index:i,lang:"en",font:'"Andika"',yShift:mode==="lower"?.42:.5,
+  onSay:c=>/[0-9]/.test(c)?say(c):sound(c),
+  onStar:(c,s,res)=>{if(s>=2){fanfare();burstAt(res);talk(rnd(PRAISE))}else buzz();if(s>(prog.d[c]||0)){prog.d[c]=s;prog.save();draw()}}})}
+document.getElementById("all").onclick=()=>write(0);
+draw();
+</script>
+</body>
+</html>
