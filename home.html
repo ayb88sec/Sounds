@@ -76,13 +76,14 @@ h2{color:#fff;font-size:22px;margin:22px 4px 10px;opacity:.95}
 const ROWS=[
  {t:"🔤 العربية",apps:[
   {href:"arabic.html",glyph:"أ ب",name:"حروفي",sub:"الحروف العربية",bg:"linear-gradient(150deg,#22c7b8,#2f8cff)",key:"arDone",total:38},
-  {href:"numbers.html",glyph:"١٢٣",name:"الأرقام",sub:"Numbers 1-20",bg:"linear-gradient(150deg,#ffb020,#ff5d9e)",key:"numDone",total:20}]},
+  {href:"numbers-ar.html",glyph:"١٢٣",name:"الأرقام",sub:"من ١ إلى ٢٠",bg:"linear-gradient(150deg,#ffb020,#ff5d9e)",key:"numDoneAr",total:20}]},
  {t:"🕌 ديني",apps:[
   {href:"islam.html",glyph:"🕌",name:"أركان الإسلام",sub:"خمسة أركان",bg:"linear-gradient(150deg,#1fb59a,#0f9b8e)",key:"islamDone",total:5},
   {href:"iman.html",glyph:"✨",name:"أركان الإيمان",sub:"ستة أركان",bg:"linear-gradient(150deg,#8a5cff,#ff7eb6)",key:"imanDone",total:6}]},
  {t:"🇬🇧 English",apps:[
   {href:"index.html",glyph:"Aa",name:"Sounds",sub:"Phonics",bg:"linear-gradient(150deg,#ff7eb6,#a66bff)",key:"soundsDone",total:32},
-  {href:"sight.html",glyph:"the",name:"Sight Words",sub:"9 groups",bg:"linear-gradient(150deg,#ff9a3c,#ff6f91)",key:"sightDone",total:92}]},
+  {href:"sight.html",glyph:"the",name:"Sight Words",sub:"9 groups",bg:"linear-gradient(150deg,#ff9a3c,#ff6f91)",key:"sightDone",total:92},
+  {href:"numbers-en.html",glyph:"123",name:"Numbers",sub:"1 to 20",bg:"linear-gradient(150deg,#4f8bff,#3fc35a)",key:"numDoneEn",total:20}]},
 ];
 const bb=document.getElementById("bubbles");
 for(let i=0;i<14;i++){const s=document.createElement("span"),z=20+Math.random()*70;

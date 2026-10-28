@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="icon" href="icon.png">
-<title>الأرقام · Numbers</title>
+<title>الأرقام</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&family=Andika:wght@700&display=swap">
 <style>
 :root{--ink:#2b2340}
@@ -90,7 +90,7 @@ footer button{color:#fff;background:none;border:0;font:inherit;text-decoration:u
     </svg>
     <div class="bubble" id="say"></div>
   </div>
-  <div class="toggle"><div><button id="tAr">العربية ١٢٣</button><button id="tEn">English 123</button></div></div>
+  <div class="toggle" style="display:none"><div><button id="tAr"></button><button id="tEn"></button></div></div>
   <section>
     <div class="grid" id="grid"></div>
     <div class="bar">
@@ -104,7 +104,7 @@ footer button{color:#fff;background:none;border:0;font:inherit;text-decoration:u
 <div class="modal" id="numModal"><div class="card">
   <button class="x" data-close>✕</button>
   <div class="big" id="nBig"></div>
-  <div class="words"><span id="nAr"></span><span class="en" id="nEn"></span></div>
+  <div class="words"><span id="nAr"></span><span class="en" id="nEn" style="display:none"></span></div>
   <div class="objs" id="objs"></div>
   <div class="cnt" id="cnt"></div>
   <div class="bar"><button class="btn" id="nSay">🔊</button><button class="btn teal" id="nWrite"></button></div>
@@ -130,8 +130,8 @@ const OBJ=["🍎","🎈","⭐","🐟","🌸","🚗","🧁","🦆","🍓","🐝",
 const COLORS=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
 const T={ar:{title:"الأرقام",hi:"اضغط على رقم وعُدّ معي! ⭐",game:"🎈 عُدّ واختر",write:"✏️ اكتب الأرقام",reset:"ابدأ من جديد",q:"كم عددها؟",prev:"➡️ السابق",next:"التالي ⬅️",w:"✏️ اكتبه",praise:["أحسنت!","رائع!","ممتاز!","شاطر!","برافو!"],again:"حاول مرة ثانية 💪",tap:"اضغط على الأشياء وعُدّها"},
          en:{title:"Numbers",hi:"Tap a number and count with me! ⭐",game:"🎈 Count & pick",write:"✏️ Write numbers",reset:"Start again",q:"How many?",prev:"Back",next:"Next",w:"✏️ Write it",praise:["Amazing!","Well done!","Super star!","Brilliant!","You got it!"],again:"Try again 💪",tap:"Tap and count them"}};
-let lang="ar",done={},wrote={};try{lang=localStorage.getItem("numLang")||"ar";done=JSON.parse(localStorage.getItem("numDone")||"{}");wrote=JSON.parse(localStorage.getItem("numWrite")||"{}")}catch(e){}
-const save=()=>{try{localStorage.setItem("numDone",JSON.stringify(done));localStorage.setItem("numWrite",JSON.stringify(wrote));localStorage.setItem("numLang",lang)}catch(e){}};
+let lang="ar",done={},wrote={};try{done=JSON.parse(localStorage.getItem("numDoneAr")||"{}");wrote=JSON.parse(localStorage.getItem("numWriteAr")||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem("numDoneAr",JSON.stringify(done));localStorage.setItem("numWriteAr",JSON.stringify(wrote))}catch(e){}};
 const disp=n=>lang==="ar"?toAr(n):String(n);
 const rnd=a=>a[Math.floor(Math.random()*a.length)];
 
