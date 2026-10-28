@@ -4,9 +4,9 @@
   const P=window.NAJMA_PROGRESS;if(!P)return;
   const ar=document.documentElement.dir==="rtl",main=document.querySelector("main");if(!main)return;
   const css=document.createElement("style");css.textContent=`
-  .nx-prog{background:rgba(255,255,255,.25);border-radius:999px;height:30px;position:relative;margin:14px 34px 4px 8px;box-shadow:inset 0 3px 0 rgba(0,0,0,.1)}
+  .nx-prog{background:rgba(255,255,255,.25);border-radius:999px;height:30px;position:relative;margin:${ar?"14px 8px 4px 34px":"14px 34px 4px 8px"};box-shadow:inset 0 3px 0 rgba(0,0,0,.1)}
   .nx-fill{position:absolute;top:0;${ar?"right":"left"}:0;height:100%;border-radius:999px;background:linear-gradient(${ar?270:90}deg,#ffe066,#ffb020,#ff5d73);width:0;transition:width .8s cubic-bezier(.3,1.6,.5,1)}
-  .nx-rocket{position:absolute;top:50%;font-size:30px;transition:${ar?"right":"left"} .8s cubic-bezier(.3,1.6,.5,1);${ar?"right":"left"}:0;transform:translate(${ar?"50%":"-50%"},-55%) rotate(${ar?"-135deg":"45deg"})${ar?" scaleY(-1)":""}}
+  .nx-rocket{position:absolute;top:50%;font-size:30px;transition:${ar?"right":"left"} .8s cubic-bezier(.3,1.6,.5,1);${ar?"right":"left"}:0;transform:translate(${ar?"50%":"-50%"},-55%) ${ar?"scaleX(-1) ":""}rotate(45deg)}
   .nx-moon{position:absolute;${ar?"left":"right"}:-30px;top:50%;transform:translateY(-55%);font-size:26px}
   .nx-count{color:#fff;text-align:center;font:700 18px "Baloo 2","Baloo Bhaijaan 2",system-ui;margin-top:4px;text-shadow:0 2px 0 rgba(0,0,0,.12)}
   .nx-reset{display:block;margin:26px auto 0;border:0;background:rgba(255,255,255,.25);color:#fff;border-radius:999px;padding:8px 16px;font:700 15px "Baloo 2","Baloo Bhaijaan 2",system-ui;cursor:pointer}
