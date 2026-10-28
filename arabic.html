@@ -211,7 +211,7 @@ let voice=null;
 function pickVoice(){const v=speechSynthesis.getVoices();
   voice=v.find(x=>/^ar[-_]AE/i.test(x.lang))||v.find(x=>/^ar[-_]SA/i.test(x.lang))||v.find(x=>/^ar/i.test(x.lang))||null;
   const n=document.getElementById("note");
-  if(v.length&&!voice){n.style.display="block";n.textContent="لا يوجد صوت عربي على هذا الجهاز. On iPad: Settings › Accessibility › Spoken Content › Voices › Arabic.";}
+  if(false){n.style.display="block";n.textContent="لا يوجد صوت عربي على هذا الجهاز. On iPad: Settings › Accessibility › Spoken Content › Voices › Arabic.";}
   else n.style.display="none";}
 const hasTTS="speechSynthesis" in window;
 if(hasTTS){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
@@ -269,7 +269,7 @@ const pip=document.getElementById("pip"),say=document.getElementById("say");let 
 function talk(t){say.textContent=t;say.classList.remove("pop");void say.offsetWidth;say.classList.add("pop");
   pip.classList.remove("jump");void pip.offsetWidth;pip.classList.add("jump");
   clearTimeout(sayT);sayT=setTimeout(()=>say.textContent="اضغط على حرف وقُله معي ⭐",6000)}
-pip.addEventListener("click",()=>{popSnd();const t=["هههه، دغدغتني!","أحب الحروف!","يلا نلعب!","اختر حرفاً لي!"][Math.floor(Math.random()*4)];talk(t);speak(t,.9);burstAt(pip)});
+pip.addEventListener("click",()=>{popSnd();const t=["هههه، دغدغتني!","أحب الحروف!","يلا نلعب!","اختر حرفاً لي!"][Math.floor(Math.random()*4)];talk(t);burstAt(pip)});
 
 /* grid */
 const grid=document.getElementById("grid");
@@ -350,8 +350,8 @@ function newRound(){
   opts.forEach((k,n)=>{const it=items[k],b=document.createElement("button");b.textContent=it.t;if(isW)b.classList.add("wd");b.style.background=COLORS[n+1];
     b.onclick=()=>{if(gLock)return;
       if(it===gAns){gLock=true;gRight++;gTotal++;b.classList.add("right");popSnd();fanfare();burstAt(b);
-        const p=praise[Math.floor(Math.random()*praise.length)];speak(p,.9);talk(p);markDone(it.d);score();setTimeout(newRound,1500)}
-      else{b.classList.add("wrong");buzz();gTotal++;score();speak("حاول مرة ثانية",.9)}};
+        const p=praise[Math.floor(Math.random()*praise.length)];talk(p);markDone(it.d);score();setTimeout(newRound,1500)}
+      else{b.classList.add("wrong");buzz();gTotal++;score();talk("حاول مرة ثانية 💪")}};
     box.appendChild(b)});
   setTimeout(()=>play(gAns.key,gAns.say),300)}
 function score(){document.getElementById("gScore").textContent=gTotal?`⭐ ${gRight} صحيحة`:"اسمع الحرف واضغط عليه"}
