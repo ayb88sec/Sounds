@@ -112,7 +112,9 @@ textarea{min-height:160px;line-height:1.5}
     <div id="secList"></div><button class="b add" id="addSec">➕ إضافة قسم</button></div>
   <div class="panel" id="parents">
     <div class="note" id="pFam"></div><div id="pList"></div>
-    <button class="b add" id="pInvite">✉️ دعوة والد/والدة</button>
+    <button class="b add" id="pInvite">✉️ دعوة شخص جديد</button>
+    <div class="note" style="margin-top:10px">كل رمز لشخص واحد. لدعوة أكثر من شخص، اضغط الزر مرة لكل شخص.</div>
+    <div id="pCodes"></div>
     <div class="note" id="pCodeBox" style="display:none;margin-top:12px"></div>
     <div style="margin-top:16px;text-align:center"><button class="b del" id="pOut">تسجيل الخروج</button></div>
   </div>
@@ -349,7 +351,7 @@ async function loadAll(){
   _saveP();_saveS();
   $("pFam").innerHTML=`👨‍👩‍👧 <b>${(fam.data&&fam.data.name)||""}</b> · ${ME.email}`;
   $("pList").innerHTML=(mem.data||[]).map(m=>`<div class="row"><div class="av" style="background:#ece8ff">${m.role==="owner"?"👑":"🧑"}</div><div class="info"><b dir="ltr" style="text-align:right">${m.email||""}</b><small>${m.role==="owner"?"المالك":"والد/والدة"}${m.user_id===ME.id?" · أنت":""}</small></div></div>`).join("");
-  drawKids();drawSecs();drawDev();status("✅ متصل بقاعدة البيانات. التعديلات تصل للأجهزة، والتقدّم الحقيقي يظهر في اللوحة.",true)}
+  drawKids();drawSecs();drawDev();drawCodes();status("✅ متصل بقاعدة البيانات. التعديلات تصل للأجهزة، والتقدّم الحقيقي يظهر في اللوحة.",true)}
 const strip=o=>{const c=Object.assign({},o);delete c.id;return c};
 async function dbSaveP(){const rows=profs.map(p=>({id:p.id,family_id:FID,data:strip(p),updated_at:new Date().toISOString()}));
   if(rows.length){const {error}=await sb.from("children").upsert(rows);if(error)return status("❌ "+error.message)}
@@ -357,8 +359,11 @@ async function dbSaveP(){const rows=profs.map(p=>({id:p.id,family_id:FID,data:st
 async function dbSaveS(){const rows=secs.map(x=>({id:x.id,family_id:FID,data:strip(x),updated_at:new Date().toISOString()}));
   if(rows.length){const {error}=await sb.from("sections").upsert(rows);if(error)return status("❌ "+error.message)}
   const gone=[...loadedS].filter(id=>!secs.some(x=>x.id===id));if(gone.length)await sb.from("sections").delete().in("id",gone);loadedS=new Set(secs.map(x=>x.id));status("✅ تم الحفظ",true)}
+async function drawCodes(){const {data}=await sb.from("invites").select("code,expires_at,used_by").eq("family_id",FID).is("used_by",null).gt("expires_at",new Date().toISOString()).order("expires_at",{ascending:false});
+  $("pCodes").innerHTML=(data||[]).length?`<label>رموز لم تُستخدم بعد</label>`+(data||[]).map(r=>`<div class="row"><div class="av" style="background:#e3f8e7">✉️</div><div class="info"><b dir="ltr" style="letter-spacing:3px;text-align:right">${r.code}</b><small>صالح حتى ${new Date(r.expires_at).toLocaleDateString("ar")}</small></div><button class="b" data-c="${r.code}">📋</button></div>`).join(""):"";
+  $("pCodes").querySelectorAll("[data-c]").forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.c);b.textContent="✅"}catch(e){b.textContent="⚠️"}setTimeout(()=>b.textContent="📋",2000)})}
 $("pInvite").onclick=async()=>{const {data,error}=await sb.rpc("create_invite",{fid:FID});const b=$("pCodeBox");b.style.display="";
-  b.innerHTML=error?"❌ "+error.message:`رمز الدعوة: <b style="font-size:26px;letter-spacing:3px" dir="ltr">${data}</b><br>صالح لمدة ٧ أيام ولشخص واحد. يفتح الوالد الآخر صفحة الوالدين، ينشئ حسابًا، ثم يختار «انضمام» ويكتب الرمز.`};
+  b.innerHTML=error?"❌ "+error.message:`رمز جديد: <b style="font-size:26px;letter-spacing:3px" dir="ltr">${data}</b><br>أرسله لشخص واحد. يفتح صفحة الوالدين، ينشئ حسابًا، ثم «🔗 انضمام» ويكتب الرمز.`;drawCodes()};
 $("pOut").onclick=async()=>{await sb.auth.signOut();location.reload()};
 if(DB){
   saveP=()=>{_saveP();dbSaveP()};saveS=()=>{_saveS();dbSaveS()};
