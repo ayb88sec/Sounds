@@ -31,7 +31,7 @@ function play(src){try{speechSynthesis.cancel();if(curAudio)curAudio.pause();cur
 function say(t,rate=.8){const k=String(t).trim().toLowerCase();if(WORDA[k])return play(WORDA[k]);try{if(curAudio)curAudio.pause();speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-GB";if(voice)u.voice=voice;u.rate=rate;speechSynthesis.speak(u)}catch(e){}}
 /* pure letter sounds: parent's recordings (audio/phonics.enc, keys a..z) when available, otherwise a close approximation */
 window.PHON={};window.WORDA={};
-/* teacher-style recordings: pure sounds (/k/ not "kuh") and whole words, Kokoro "Zephyr" voice from github.com/OscarIvanEstrada/phonics-teacher (MIT) */
+/* British phonics sound recordings from github.com/hellodeborahuk/buzzphonics (MIT); whole words use the iPad British voice */
 fetch("audio/phonics.json").then(r=>r.json()).then(j=>{Object.assign(PHON,j.sounds);Object.assign(WORDA,j.words)}).catch(()=>{});
 const APPROX={a:"a",b:"buh",c:"kuh",d:"duh",e:"eh",f:"fff",g:"guh",h:"huh",i:"ih",j:"juh",k:"kuh",l:"lll",m:"mmm",n:"nnn",o:"o",p:"puh",q:"kwuh",r:"rrr",s:"sss",t:"tuh",u:"uh",v:"vvv",w:"wuh",x:"ks",y:"yuh",z:"zzz"};
 function sound(ch){ch=ch.toLowerCase();if(PHON[ch])play(PHON[ch]);else say(APPROX[ch]||ch,.7)}

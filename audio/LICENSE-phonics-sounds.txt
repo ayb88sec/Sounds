@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 Oscar Estrada
+Copyright (c) 2022 Debbie Dann
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,5 +20,5 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Letter sound and word recordings in audio/phonics.json come from
-https://github.com/OscarIvanEstrada/phonics-teacher (Kokoro "Zephyr" voice), used under the MIT License above.
+The letter sound recordings in audio/phonics.json come from
+https://github.com/hellodeborahuk/buzzphonics (British English, Phase 2/3 phonics), used under the MIT License above.
