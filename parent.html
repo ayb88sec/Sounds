@@ -2,7 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<script src="supa.js"></script>
 <script src="profile.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="icon.png">
@@ -86,8 +88,17 @@ textarea{min-height:160px;line-height:1.5}
   <div style="display:flex;gap:8px;margin-top:12px"><a class="b" href="home.html" style="text-decoration:none;flex:1">رجوع</a><button class="b go" id="gok" style="flex:1">دخول</button></div>
 </div></div>
 
+<div class="gate" id="auth" style="display:none"><div class="box" style="width:330px">
+  <div style="font-size:44px">👨‍👩‍👧</div><h2 style="margin:0 0 6px">بوابة الوالدين</h2>
+  <div id="aForm"><input class="in" id="aEmail" type="email" dir="ltr" placeholder="email@example.com" autocomplete="username" style="margin-bottom:8px">
+  <input class="in" id="aPass" type="password" dir="ltr" placeholder="كلمة المرور (8 أحرف على الأقل)" autocomplete="current-password">
+  <div style="display:flex;gap:8px;margin-top:12px"><button class="b go" id="aIn" style="flex:1">دخول</button><button class="b" id="aUp" style="flex:1">حساب جديد</button></div></div>
+  <div id="aFam" style="display:none"><p style="margin:6px 0">مرحبًا! أنشئ عائلتك، أو انضم لعائلة برمز دعوة.</p>
+  <input class="in" id="fName" placeholder="اسم العائلة" style="margin-bottom:8px"><button class="b go" id="fNew" style="width:100%">➕ إنشاء عائلة</button>
+  <div style="margin:12px 0 6px;color:#7a7090">أو</div><input class="in" id="fCode" dir="ltr" placeholder="رمز الدعوة" style="text-transform:uppercase;margin-bottom:8px"><button class="b" id="fJoin" style="width:100%">🔗 انضمام</button></div>
+  <div id="aMsg" style="margin-top:10px;color:#c93a50;font-weight:700;min-height:1em"></div></div></div>
 <header><img src="icon.png" alt=""><h1>بوابة الوالدين</h1><a href="home.html">🏠 التطبيق</a></header>
-<nav><button data-t="dash" class="on">📊 اللوحة</button><button data-t="kids">👧 الأطفال</button><button data-t="secs">📚 الأقسام</button><button data-t="cloud">☁️ الاتصال</button></nav>
+<nav><button data-t="dash" class="on">📊 اللوحة</button><button data-t="kids">👧 الأطفال</button><button data-t="secs">📚 الأقسام</button><button data-t="parents" id="navParents" style="display:none">👨‍👩‍👧 الوالدين</button><button data-t="cloud">☁️ الاتصال</button></nav>
 <main>
   <div class="panel on" id="dash">
     <div class="stats3" id="dStats"></div>
@@ -99,6 +110,12 @@ textarea{min-height:160px;line-height:1.5}
   <div class="panel" id="secs">
     <div class="note">أضف قوائم كلمات خاصة بك: إملاء، كلمات المدرسة، أو أي قسم جديد. كل قسم يظهر كتطبيق على الشاشة الرئيسية، مع تهجئة وكتابة وتسجيل.</div>
     <div id="secList"></div><button class="b add" id="addSec">➕ إضافة قسم</button></div>
+  <div class="panel" id="parents">
+    <div class="note" id="pFam"></div><div id="pList"></div>
+    <button class="b add" id="pInvite">✉️ دعوة والد/والدة</button>
+    <div class="note" id="pCodeBox" style="display:none;margin-top:12px"></div>
+    <div style="margin-top:16px;text-align:center"><button class="b del" id="pOut">تسجيل الخروج</button></div>
+  </div>
   <div class="panel" id="cloud">
     <div class="note" id="cStatus"></div>
     <label>📱 هذا الجهاز</label><div class="chips" id="devLock"></div>
@@ -143,7 +160,10 @@ textarea{min-height:160px;line-height:1.5}
 </div></div>
 
 <script>
-const R=NAJMA.raw;
+const R=NAJMA.raw;const DB=NAJMA.db;
+const baseLink=p=>location.href.replace(/parent\.html.*$/,"home.html")+"#key="+encodeURIComponent(R.get("najma:key")||"")+"&kid="+p.id;
+async function ipadLink(p){if(!DB)return baseLink(p);const {data,error}=await sb.rpc("create_device",{cid:p.id,dlabel:p.name});if(error)throw new Error(error.message);
+  return location.href.replace(/parent\.html.*$/,"home.html")+"#dev="+data+"&key="+encodeURIComponent(R.get("najma:key")||"")+"&kid="+p.id}
 let profs=NAJMA.profiles.slice(),secs=JSON.parse(JSON.stringify(NAJMA.sections));
 const AV=["🦁","🐼","🦊","🐰","🐯","🦄","🐬","🐻","🐸","🐨","🦋","🚀","⚽","🌸","👑","🦖"];
 const PC=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a","#ff7eb6","#2b2340"];
@@ -186,8 +206,10 @@ function editKid(p){
   $("kT").textContent=p?"تعديل "+p.name:"طفل جديد";$("kName").value=ed.name;$("kAr").value=ed.nameAr||"";$("kEn").value=ed.nameEn||"";
   $("kDel").style.visibility=p?"visible":"hidden";
   $("kLinkBox").style.display=p&&NAJMA.hasKey()?"":"none";
-  if(p&&NAJMA.hasKey()){const u=location.href.replace(/parent\.html.*$/,"home.html")+"#key="+encodeURIComponent(R.get("najma:key"))+"&kid="+p.id;$("kLink").textContent=u;
-    $("kCopy").onclick=async()=>{try{await navigator.clipboard.writeText(u);$("kCopy").textContent="✅ تم النسخ"}catch(e){$("kCopy").textContent="⚠️ انسخ يدويًا"}setTimeout(()=>$("kCopy").textContent="📋 نسخ الرابط",2500)}}
+  if(p&&NAJMA.hasKey()){let u=null;$("kLink").textContent=DB?"اضغط «إنشاء رابط» لإنشاء رابط آمن لهذا الآيباد.":"";$("kCopy").textContent=DB?"🔗 إنشاء رابط":"📋 نسخ الرابط";
+    if(!DB){u=baseLink(p);$("kLink").textContent=u}
+    $("kCopy").onclick=async()=>{if(!u){try{$("kCopy").textContent="⏳";u=await ipadLink(p);$("kLink").textContent=u;$("kCopy").textContent="📋 نسخ الرابط"}catch(e){$("kCopy").textContent="❌ "+e.message}return}
+      try{await navigator.clipboard.writeText(u);$("kCopy").textContent="✅ تم النسخ"}catch(e){$("kCopy").textContent="⚠️ انسخ يدويًا"}setTimeout(()=>$("kCopy").textContent="📋 نسخ الرابط",2500)}}
   chips("kAv",AV,a=>a===ed.avatar,a=>ed.avatar=a,"av");
   chips("kCol",PC,c=>c===ed.color,c=>ed.color=c);
   const apps=[...BUILT,...secs.map(s=>["s:"+s.id,`${s.icon} ${s.title}`])];
@@ -291,9 +313,7 @@ function drawDash(){
       <div class="devnote">${p.id===here?"📱 التقدّم من هذا الجهاز.":"📱 التقدّم المعروض هو المسجّل على هذا الجهاز فقط؛ نجوم الطفل محفوظة على آيباده."}</div>
       <div class="acts"><button class="b">✏️ تعديل</button><button class="b">📲 رابط الآيباد</button></div>`;
     const [eb,lb]=d.querySelectorAll(".acts .b");eb.onclick=()=>editKid(p);
-    lb.onclick=async()=>{if(!NAJMA.hasKey()){lb.textContent="🔑 أدخل رمز العائلة أولًا";return}
-      const u=location.href.replace(/parent\.html.*$/,"home.html")+"#key="+encodeURIComponent(R.get("najma:key"))+"&kid="+p.id;
-      try{await navigator.clipboard.writeText(u);lb.textContent="✅ تم نسخ الرابط"}catch(e){lb.textContent="⚠️ افتح ✏️ تعديل لنسخه"}setTimeout(()=>lb.textContent="📲 رابط الآيباد",2500)};
+    lb.onclick=()=>{if(!NAJMA.hasKey()){lb.textContent="🔑 أدخل رمز العائلة أولًا";return}editKid(p);setTimeout(()=>$("kLinkBox").scrollIntoView({behavior:"smooth"}),200)};
     D.appendChild(d)});
   const S=$("dSecs");S.innerHTML=secs.length?"":'<div class="note">لا توجد أقسام.</div>';
   secs.forEach(s=>{const d=document.createElement("div");d.className="row";
@@ -301,7 +321,50 @@ function drawDash(){
     d.querySelector("button").onclick=()=>editSec(s);S.appendChild(d)})}
 $("qKid").onclick=()=>editKid(null);$("qSec").onclick=()=>editSec(null);
 const _dk=drawKids,_ds=drawSecs;drawKids=function(){_dk();drawDash()};drawSecs=function(){_ds();drawDash()};
-drawKids();drawSecs();connect();drawDev();
+/* ---------- database mode ---------- */
+let sb=null,FID=null,ME=null,PRG={},loadedK=new Set(),loadedS=new Set();
+function msg(t){$("aMsg").textContent=t||""}
+async function dbStart(){
+  $("gate").remove();sb=supabase.createClient(SUPA.url,SUPA.key);$("navParents").style.display="";
+  document.querySelectorAll("#cloud > label,#cloud > .note,#tok,#tokSave,#tokDel").forEach(e=>{if(e.closest("#cloud")&&e.id!=="cStatus"&&!/fam|devLock/.test(e.id)&&!e.querySelector("#fam"))e.style.display="none"});
+  ["fam","famSave","devLock"].forEach(id=>{const e=$(id);if(e){e.style.display="";let pr=e.previousElementSibling;if(pr&&pr.tagName==="LABEL")pr.style.display=""}});
+  $("famSave").parentElement.style.display="";
+  const {data:{session}}=await sb.auth.getSession();if(session){ME=session.user;await afterLogin()}else $("auth").style.display="flex"}
+$("aIn").onclick=async()=>{msg("");const {data,error}=await sb.auth.signInWithPassword({email:$("aEmail").value.trim(),password:$("aPass").value});
+  if(error)return msg(error.message==="Invalid login credentials"?"البريد أو كلمة المرور غير صحيحة":error.message);ME=data.user;afterLogin()};
+$("aUp").onclick=async()=>{msg("");const {data,error}=await sb.auth.signUp({email:$("aEmail").value.trim(),password:$("aPass").value});
+  if(error)return msg(error.message);if(!data.session)return msg("📧 أرسلنا رسالة تأكيد إلى بريدك. افتحها ثم عد واضغط دخول.");ME=data.user;afterLogin()};
+async function afterLogin(){const {data:mem}=await sb.from("family_members").select("family_id,role");
+  if(!mem||!mem.length){$("auth").style.display="flex";$("aForm").style.display="none";$("aFam").style.display="";return}
+  FID=mem[0].family_id;$("auth").style.display="none";await loadAll()}
+$("fNew").onclick=async()=>{const {error}=await sb.rpc("create_family",{fname:$("fName").value.trim()});if(error)return msg(error.message);afterLogin()};
+$("fJoin").onclick=async()=>{const {error}=await sb.rpc("join_family",{icode:$("fCode").value.trim()});if(error)return msg("الرمز غير صحيح أو منتهي");afterLogin()};
+async function loadAll(){
+  const [k,s,pr,fam,mem]=await Promise.all([sb.from("children").select("id,data"),sb.from("sections").select("id,data").order("updated_at"),sb.from("progress").select("child_id,app_key,data"),
+    sb.from("families").select("name").eq("id",FID).single(),sb.from("family_members").select("email,role,user_id").eq("family_id",FID)]);
+  profs=(k.data||[]).map(r=>Object.assign({},r.data,{id:r.id}));secs=(s.data||[]).map(r=>Object.assign({},r.data,{id:r.id}));
+  if(!secs.length&&!profs.length){/* first time: bring over what this phone already has */const lp=NAJMA.profiles,ls=NAJMA.sections;profs=lp.slice();secs=ls.slice();if(profs.length||secs.length){await dbSaveP();await dbSaveS()}}
+  loadedK=new Set(profs.map(p=>p.id));loadedS=new Set(secs.map(x=>x.id));
+  PRG={};(pr.data||[]).forEach(r=>{(PRG[r.child_id]=PRG[r.child_id]||{})[r.app_key]=r.data});
+  _saveP();_saveS();
+  $("pFam").innerHTML=`👨‍👩‍👧 <b>${(fam.data&&fam.data.name)||""}</b> · ${ME.email}`;
+  $("pList").innerHTML=(mem.data||[]).map(m=>`<div class="row"><div class="av" style="background:#ece8ff">${m.role==="owner"?"👑":"🧑"}</div><div class="info"><b dir="ltr" style="text-align:right">${m.email||""}</b><small>${m.role==="owner"?"المالك":"والد/والدة"}${m.user_id===ME.id?" · أنت":""}</small></div></div>`).join("");
+  drawKids();drawSecs();drawDev();status("✅ متصل بقاعدة البيانات. التعديلات تصل للأجهزة، والتقدّم الحقيقي يظهر في اللوحة.",true)}
+const strip=o=>{const c=Object.assign({},o);delete c.id;return c};
+async function dbSaveP(){const rows=profs.map(p=>({id:p.id,family_id:FID,data:strip(p),updated_at:new Date().toISOString()}));
+  if(rows.length){const {error}=await sb.from("children").upsert(rows);if(error)return status("❌ "+error.message)}
+  const gone=[...loadedK].filter(id=>!profs.some(p=>p.id===id));if(gone.length)await sb.from("children").delete().in("id",gone);loadedK=new Set(profs.map(p=>p.id));status("✅ تم الحفظ",true)}
+async function dbSaveS(){const rows=secs.map(x=>({id:x.id,family_id:FID,data:strip(x),updated_at:new Date().toISOString()}));
+  if(rows.length){const {error}=await sb.from("sections").upsert(rows);if(error)return status("❌ "+error.message)}
+  const gone=[...loadedS].filter(id=>!secs.some(x=>x.id===id));if(gone.length)await sb.from("sections").delete().in("id",gone);loadedS=new Set(secs.map(x=>x.id));status("✅ تم الحفظ",true)}
+$("pInvite").onclick=async()=>{const {data,error}=await sb.rpc("create_invite",{fid:FID});const b=$("pCodeBox");b.style.display="";
+  b.innerHTML=error?"❌ "+error.message:`رمز الدعوة: <b style="font-size:26px;letter-spacing:3px" dir="ltr">${data}</b><br>صالح لمدة ٧ أيام ولشخص واحد. يفتح الوالد الآخر صفحة الوالدين، ينشئ حسابًا، ثم يختار «انضمام» ويكتب الرمز.`};
+$("pOut").onclick=async()=>{await sb.auth.signOut();location.reload()};
+if(DB){
+  saveP=()=>{_saveP();dbSaveP()};saveS=()=>{_saveS();dbSaveS()};
+  const _count=count;count=(id,key)=>{const d=PRG[id]&&PRG[id][key];return d?Object.keys(d).length:0};
+  dbStart();
+}else{drawKids();drawSecs();connect();drawDev();}
 </script>
 </body>
 </html>

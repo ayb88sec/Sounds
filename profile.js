@@ -2,16 +2,17 @@
    Must load before any page script. */
 (function(){
   const S=Storage.prototype,G=S.getItem,SET=S.setItem,RM=S.removeItem;
-  if(location.hash.startsWith("#key=")){const hp=new URLSearchParams(location.hash.slice(1));
+  if(location.hash.startsWith("#key=")||location.hash.startsWith("#dev=")){const hp=new URLSearchParams(location.hash.slice(1));
     SET.call(localStorage,"najma:key",(hp.get("key")||"").trim().toUpperCase());
     if(hp.get("kid")){SET.call(localStorage,"najma:lock",hp.get("kid"));SET.call(localStorage,"najma:cur",hp.get("kid"))}
+    if(hp.get("dev")){SET.call(localStorage,"najma:dev",hp.get("dev"));if(hp.get("kid"))SET.call(localStorage,"najma:lock",hp.get("kid"))}
     history.replaceState(null,"",location.pathname+location.search)}
   /* a child's iPad is locked to that child: no switching, no seeing siblings */
   const LOCK=G.call(localStorage,"najma:lock");if(LOCK)SET.call(localStorage,"najma:cur",LOCK);
   let profiles=[];try{profiles=JSON.parse(G.call(localStorage,"najma:profiles")||"[]")}catch(e){}
   let cur=LOCK||G.call(localStorage,"najma:cur");
   let me=profiles.find(p=>p.id===cur)||null;
-  const key=k=>(typeof k==="string"&&!k.startsWith("najma:")&&me)?`najma:${me.id}:${k}`:k;
+  const key=k=>(typeof k==="string"&&!k.startsWith("najma:")&&!k.startsWith("sb-")&&me)?`najma:${me.id}:${k}`:k;
   S.getItem=function(k){return G.call(this,key(k))};
   S.setItem=function(k,v){return SET.call(this,key(k),v)};
   S.removeItem=function(k){return RM.call(this,key(k))};
@@ -45,6 +46,7 @@
   async function checkCode(code){const old=G.call(localStorage,"najma:key");SET.call(localStorage,"najma:key",code);ckey=null;
     try{const r=await fetch("audio/numbers.enc");await decrypt(await r.json());return true}catch(e){if(old)SET.call(localStorage,"najma:key",old);else RM.call(localStorage,"najma:key");ckey=null;return false}}
   Object.assign(window.NAJMA,{lock:G.call(localStorage,"najma:lock"),decrypt,encrypt,loadAudio,checkCode,hasKey:()=>!!G.call(localStorage,"najma:key")});
+  const SBX=window.SUPA&&SUPA.url;
   /* cloud settings: children and sections live in config.json on GitHub; every device follows it */
   const REPO="ayb88sec/Sounds";
   async function fetchConfig(){
@@ -59,9 +61,34 @@
     const c=G.call(localStorage,"najma:cur");if(!G.call(localStorage,"najma:lock")&&(cfg.profiles||[]).length&&!(cfg.profiles||[]).some(p=>p.id===c))SET.call(localStorage,"najma:cur",cfg.profiles[0].id);
     return changed}
   window.NAJMA.REPO=REPO;window.NAJMA.fetchConfig=fetchConfig;
-  if(!/parent\.html$/.test(location.pathname)&&navigator.onLine!==false){
+  if(!SBX&&!/parent\.html$/.test(location.pathname)&&navigator.onLine!==false){
     const last=+G.call(localStorage,"najma:pulledAt")||0,home=/home\.html$/.test(location.pathname);
     if(home||Date.now()-last>120000)pull().then(ch=>{if(!ch){sessionStorage.removeItem("najma:reloaded");return}if(home&&!sessionStorage.getItem("najma:reloaded")){sessionStorage.setItem("najma:reloaded","1");location.reload()}})}
+  /* database mode (supa.js filled in): a child's iPad syncs its own settings and stars */
+  const SB=window.SUPA&&SUPA.url?SUPA:null,DEV=G.call(localStorage,"najma:dev");window.NAJMA.db=!!SB;
+  async function rpc(fn,args){const r=await fetch(`${SB.url}/rest/v1/rpc/${fn}`,{method:"POST",headers:{apikey:SB.key,Authorization:"Bearer "+SB.key,"Content-Type":"application/json"},body:JSON.stringify(args)});
+    if(!r.ok)throw new Error(r.status);const t=await r.text();return t?JSON.parse(t):null}
+  window.NAJMA.rpc=SB?rpc:null;
+  if(SB&&DEV){const isProg=k=>typeof k==="string"&&!k.startsWith("najma:");
+    const queue={};let qt=null;
+    const flush=()=>{qt=null;const ks=Object.keys(queue);ks.forEach(k=>{const v=queue[k];delete queue[k];
+      let d={};try{d=v==null?{}:JSON.parse(v)}catch(e){return}if(typeof d!=="object"||Array.isArray(d))return;rpc("kid_save",{tok:DEV,akey:k,adata:d}).catch(()=>{queue[k]=v})})};
+    const push=(k,v)=>{queue[k]=v;clearTimeout(qt);qt=setTimeout(flush,1500)};
+    const oSet=S.setItem,oRm=S.removeItem;
+    S.setItem=function(k,v){const r=oSet.call(this,k,v);if(this===localStorage&&isProg(k))push(k,v);return r};
+    S.removeItem=function(k){const r=oRm.call(this,k);if(this===localStorage&&isProg(k))push(k,null);return r};
+    addEventListener("online",flush);
+    if(navigator.onLine!==false)rpc("kid_sync",{tok:DEV}).then(js=>{if(!js||!js.child)return;let changed=false;
+      const kid=js.child,P=JSON.stringify([kid]),Sx=JSON.stringify(js.sections||[]);
+      if(P!==G.call(localStorage,"najma:profiles")||Sx!==G.call(localStorage,"najma:sections"))changed=true;
+      SET.call(localStorage,"najma:profiles",P);SET.call(localStorage,"najma:sections",Sx);SET.call(localStorage,"najma:lock",kid.id);SET.call(localStorage,"najma:cur",kid.id);
+      /* stars: keep the best of the iPad and the database, then send back anything the database is missing */
+      const ns=k=>`najma:${kid.id}:${k}`;if(!me)changed=true;
+      Object.entries(js.progress||{}).forEach(([k,srv])=>{let loc={};try{loc=JSON.parse(G.call(localStorage,ns(k))||"{}")}catch(e){}
+        const m=Object.assign({},srv);Object.entries(loc).forEach(([x,v])=>{m[x]=typeof v==="number"&&typeof srv[x]==="number"?Math.max(v,srv[x]):v});
+        const ms=JSON.stringify(m);if(ms!==G.call(localStorage,ns(k))){SET.call(localStorage,ns(k),ms);changed=true}if(ms!==JSON.stringify(srv))push(k,ms)});
+      for(let i=0;i<localStorage.length;i++){const full=localStorage.key(i);if(full&&full.startsWith(`najma:${kid.id}:`)){const k=full.slice(kid.id.length+8);if(!(k in (js.progress||{})))push(k,G.call(localStorage,full))}}
+      if(changed&&/home\.html$/.test(location.pathname)&&!sessionStorage.getItem("najma:reloaded")){sessionStorage.setItem("najma:reloaded","1");location.reload()}else if(!changed)sessionStorage.removeItem("najma:reloaded")}).catch(()=>{})}
   /* offline: cache everything once it has been opened online */
   if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}
 })();
