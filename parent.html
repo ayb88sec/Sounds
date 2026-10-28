@@ -77,6 +77,7 @@ textarea{min-height:160px;line-height:1.5}
     <div id="secList"></div><button class="b add" id="addSec">➕ إضافة قسم</button></div>
   <div class="panel" id="cloud">
     <div class="note" id="cStatus"></div>
+    <label>📱 هذا الجهاز</label><div class="chips" id="devLock"></div>
     <label>🔑 رمز العائلة</label>
     <input class="in" id="fam" dir="ltr" placeholder="XXXX-XXXX-XXXX" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px">
     <div style="display:flex;gap:8px;margin-top:10px"><button class="b go" id="famSave">حفظ الرمز</button></div>
@@ -101,6 +102,9 @@ textarea{min-height:160px;line-height:1.5}
   <label>اللون</label><div class="chips" id="kCol"></div>
   <label>التطبيقات الظاهرة</label><div class="chips" id="kApps"></div>
   <label>الأرقام حتى</label><div class="chips" id="kNum"></div>
+  <div id="kLinkBox" style="margin-top:14px"><label>📲 رابط آيباد هذا الطفل</label>
+    <div class="note" style="margin:0 0 8px">افتح هذا الرابط على آيباد الطفل مرة واحدة. سيُقفل الآيباد على هذا الطفل فقط، فلا يرى إخوته ولا نجومهم.</div>
+    <div class="link" id="kLink"></div><div style="display:flex;gap:8px;margin-top:8px"><button class="b go" id="kCopy">📋 نسخ الرابط</button></div></div>
   <div class="actions"><button class="b del" id="kDel">🗑️ حذف</button><span><button class="b" data-close>إلغاء</button> <button class="b go" id="kSave">حفظ</button></span></div>
 </div></div>
 
@@ -155,6 +159,9 @@ function editKid(p){
   ed.apps=ed.apps||{};if(!ed.sightGroups)ed.sightGroups=[0,1,2,3,4,5,6,7,8];if(!ed.numMax)ed.numMax=20;
   $("kT").textContent=p?"تعديل "+p.name:"طفل جديد";$("kName").value=ed.name;$("kAr").value=ed.nameAr||"";$("kEn").value=ed.nameEn||"";
   $("kDel").style.visibility=p?"visible":"hidden";
+  $("kLinkBox").style.display=p&&NAJMA.hasKey()?"":"none";
+  if(p&&NAJMA.hasKey()){const u=location.href.replace(/parent\.html.*$/,"home.html")+"#key="+encodeURIComponent(R.get("najma:key"))+"&kid="+p.id;$("kLink").textContent=u;
+    $("kCopy").onclick=async()=>{try{await navigator.clipboard.writeText(u);$("kCopy").textContent="✅ تم النسخ"}catch(e){$("kCopy").textContent="⚠️ انسخ يدويًا"}setTimeout(()=>$("kCopy").textContent="📋 نسخ الرابط",2500)}}
   chips("kAv",AV,a=>a===ed.avatar,a=>ed.avatar=a,"av");
   chips("kCol",PC,c=>c===ed.color,c=>ed.color=c);
   const apps=[...BUILT,...secs.map(s=>["s:"+s.id,`${s.icon} ${s.title}`])];
@@ -219,7 +226,9 @@ $("tokSave").onclick=()=>{const v=$("tok").value.trim();if(v&&!v.startsWith("•
 $("famSave").onclick=async()=>{const v=$("fam").value.trim().toUpperCase();if(!v||v.startsWith("✓"))return;status("⏳ جارٍ التحقق…");
   if(await NAJMA.checkCode(v)){location.reload()}else status("❌ الرمز غير صحيح.")};
 $("tokDel").onclick=()=>{R.remove(TK);$("tok").value="";connect()};
-drawKids();drawSecs();connect();
+function drawDev(){const cur=R.get("najma:lock");chips("devLock",["👨‍👩‍👧 كل الأطفال (جهاز الوالدين)",...profs.map(p=>p.avatar+" "+p.name)],(x,k)=>k?profs[k-1].id===cur:!cur,
+  (x,k)=>{if(k){R.set("najma:lock",profs[k-1].id);R.set("najma:cur",profs[k-1].id)}else R.remove("najma:lock")})}
+drawKids();drawSecs();connect();drawDev();
 </script>
 </body>
 </html>

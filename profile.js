@@ -2,8 +2,14 @@
    Must load before any page script. */
 (function(){
   const S=Storage.prototype,G=S.getItem,SET=S.setItem,RM=S.removeItem;
+  if(location.hash.startsWith("#key=")){const hp=new URLSearchParams(location.hash.slice(1));
+    SET.call(localStorage,"najma:key",(hp.get("key")||"").trim().toUpperCase());
+    if(hp.get("kid")){SET.call(localStorage,"najma:lock",hp.get("kid"));SET.call(localStorage,"najma:cur",hp.get("kid"))}
+    history.replaceState(null,"",location.pathname+location.search)}
+  /* a child's iPad is locked to that child: no switching, no seeing siblings */
+  const LOCK=G.call(localStorage,"najma:lock");if(LOCK)SET.call(localStorage,"najma:cur",LOCK);
   let profiles=[];try{profiles=JSON.parse(G.call(localStorage,"najma:profiles")||"[]")}catch(e){}
-  let cur=G.call(localStorage,"najma:cur");
+  let cur=LOCK||G.call(localStorage,"najma:cur");
   let me=profiles.find(p=>p.id===cur)||null;
   const key=k=>(typeof k==="string"&&!k.startsWith("najma:")&&me)?`najma:${me.id}:${k}`:k;
   S.getItem=function(k){return G.call(this,key(k))};
@@ -23,8 +29,6 @@
       display:flex;align-items:center;gap:6px;padding:0 14px 0 8px;font:800 20px "Baloo Bhaijaan 2","Baloo 2",system-ui,sans-serif;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18);text-shadow:0 2px 0 rgba(0,0,0,.15)`;
     c.innerHTML=`<span style="font-size:30px">${me.avatar||"⭐"}</span><span dir="auto">${me.name}</span>`;document.body.appendChild(c);const st=document.createElement("style");st.textContent="main{padding-top:74px !important}";document.head.appendChild(st)})}
   /* family code: private data (names, settings, recordings) is encrypted; each device stores the code once */
-  if(location.hash.startsWith("#key=")){SET.call(localStorage,"najma:key",decodeURIComponent(location.hash.slice(5)).trim().toUpperCase());
-    history.replaceState(null,"",location.pathname+location.search)}
   let ckey=null;
   const ub=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)),bu=a=>{let s="";a.forEach(x=>s+=String.fromCharCode(x));return btoa(s)};
   async function cryptoKey(){if(ckey)return ckey;const code=G.call(localStorage,"najma:key");if(!code||!crypto.subtle)throw new Error("nokey");
@@ -36,7 +40,7 @@
   async function loadAudio(name,v){window[v]=window[v]||{};try{const r=await fetch(`audio/${name}.enc`);const d=await decrypt(await r.json());Object.assign(window[v],d)}catch(e){}return window[v]}
   async function checkCode(code){const old=G.call(localStorage,"najma:key");SET.call(localStorage,"najma:key",code);ckey=null;
     try{const r=await fetch("audio/numbers.enc");await decrypt(await r.json());return true}catch(e){if(old)SET.call(localStorage,"najma:key",old);else RM.call(localStorage,"najma:key");ckey=null;return false}}
-  Object.assign(window.NAJMA,{decrypt,encrypt,loadAudio,checkCode,hasKey:()=>!!G.call(localStorage,"najma:key")});
+  Object.assign(window.NAJMA,{lock:G.call(localStorage,"najma:lock"),decrypt,encrypt,loadAudio,checkCode,hasKey:()=>!!G.call(localStorage,"najma:key")});
   /* cloud settings: children and sections live in config.json on GitHub; every device follows it */
   const REPO="ayb88sec/Sounds";
   async function fetchConfig(){
@@ -48,7 +52,7 @@
     const P=JSON.stringify(cfg.profiles||[]),Sx=JSON.stringify(cfg.sections||[]);
     const changed=P!==G.call(localStorage,"najma:profiles")||Sx!==G.call(localStorage,"najma:sections");
     SET.call(localStorage,"najma:profiles",P);SET.call(localStorage,"najma:sections",Sx);SET.call(localStorage,"najma:pulledAt",String(Date.now()));
-    const c=G.call(localStorage,"najma:cur");if((cfg.profiles||[]).length&&!(cfg.profiles||[]).some(p=>p.id===c))SET.call(localStorage,"najma:cur",cfg.profiles[0].id);
+    const c=G.call(localStorage,"najma:cur");if(!G.call(localStorage,"najma:lock")&&(cfg.profiles||[]).length&&!(cfg.profiles||[]).some(p=>p.id===c))SET.call(localStorage,"najma:cur",cfg.profiles[0].id);
     return changed}
   window.NAJMA.REPO=REPO;window.NAJMA.fetchConfig=fetchConfig;
   if(!/parent\.html$/.test(location.pathname)&&navigator.onLine!==false){
