@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script src="profile.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="icon.png">
@@ -140,7 +141,7 @@ footer button{color:#fff;background:none;border:0;font:inherit;text-decoration:u
 <script>window.AUDIO_S={};</script>
 <script src="audio/sight.js"></script>
 <script>
-const GROUPS=[
+const ALLG=[
  {n:"Group 1",e:"🐣",w:["a","and","away","big","blue","can","come","down","find","for"]},
  {n:"Group 2",e:"🐥",w:["funny","go","help","here","I","in","is","it","jump","little"]},
  {n:"Group 3",e:"🐰",w:["look","make","me","my","not","one","play","red","run","said"]},
@@ -151,9 +152,12 @@ const GROUPS=[
  {n:"Group 8",e:"🦄",w:["ride","saw","say","she","so","soon","that","there","they","this"]},
  {n:"Group 9",e:"🚀",w:["too","under","want","was","well","went","what","white","who","will","with","yes"]},
 ];
+const SEL=(window.NAJMA&&NAJMA.settings.sightGroups)||[0,1,2,3,4,5,6,7,8];
+const GROUPS=ALLG.filter((g,i)=>SEL.includes(i));if(!GROUPS.length)GROUPS.push(ALLG[0]);
 const COLORS=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
 const praise=["Super star!","Amazing!","Well done!","Brilliant!","You got it!","High five! ✋","So clever!","Fantastic!"];
 let done={},gi=0;try{done=JSON.parse(localStorage.getItem("sightDone")||"{}");gi=+localStorage.getItem("sightGroup")||0}catch(e){}
+if(!(gi>=0&&gi<GROUPS.length))gi=0;
 const save=()=>{try{localStorage.setItem("sightDone",JSON.stringify(done));localStorage.setItem("sightGroup",gi)}catch(e){}};
 
 const bb=document.getElementById("bubbles");

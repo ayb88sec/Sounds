@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
+<script src="profile.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="icon.png">
@@ -123,6 +124,7 @@ footer button{color:#fff;background:none;border:0;font:inherit;text-decoration:u
 <script src="audio/numbers.js"></script>
 <script src="writepad.js"></script>
 <script>
+const MAXN=(window.NAJMA&&NAJMA.settings.numMax)||20;
 const AR_D="٠١٢٣٤٥٦٧٨٩";const toAr=n=>String(n).replace(/\d/g,d=>AR_D[d]);
 const AR_W=["وَاحِد","اِثْنَان","ثَلَاثَة","أَرْبَعَة","خَمْسَة","سِتَّة","سَبْعَة","ثَمَانِيَة","تِسْعَة","عَشَرَة","أَحَدَ عَشَرَ","اِثْنَا عَشَرَ","ثَلَاثَةَ عَشَرَ","أَرْبَعَةَ عَشَرَ","خَمْسَةَ عَشَرَ","سِتَّةَ عَشَرَ","سَبْعَةَ عَشَرَ","ثَمَانِيَةَ عَشَرَ","تِسْعَةَ عَشَرَ","عِشْرُون"];
 const EN_W=["one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen","twenty"];
@@ -180,7 +182,7 @@ function draw(){const t=T[lang];document.documentElement.lang=lang;
   document.getElementById("reset").textContent=t.reset;
   document.getElementById("tAr").classList.toggle("on",lang==="ar");document.getElementById("tEn").classList.toggle("on",lang==="en");
   grid.innerHTML="";grid.dir=lang==="ar"?"rtl":"ltr";
-  for(let n=1;n<=20;n++){const b=document.createElement("button");b.className="tile"+(lang==="ar"?" ar":"")+(done[n]?" done":"")+(wrote[lang+n]?" wrote":"");
+  for(let n=1;n<=MAXN;n++){const b=document.createElement("button");b.className="tile"+(lang==="ar"?" ar":"")+(done[n]?" done":"")+(wrote[lang+n]?" wrote":"");
     b.style.background=COLORS[(n-1)%6];b.style.animationDelay=(n*.025)+"s";b.textContent=disp(n);b.onclick=()=>openN(n,b);grid.appendChild(b)}}
 document.getElementById("tAr").onclick=()=>{lang="ar";save();popSnd();draw()};
 document.getElementById("tEn").onclick=()=>{lang="en";save();popSnd();draw()};
@@ -201,13 +203,13 @@ function openN(n,el){cur=n;const t=T[lang];popSnd();if(el)burstAt(el);
   const wb=document.getElementById("nWrite");wb.textContent=t.w;wb.onclick=()=>openWrite(n);
   const a=document.getElementById("nA"),b=document.getElementById("nB");
   a.textContent=lang==="ar"?t.prev:"⬅️ "+t.prev;b.textContent=lang==="ar"?t.next:t.next+" ➡️";
-  a.style.visibility=n>1?"visible":"hidden";b.style.visibility=n<20?"visible":"hidden";
+  a.style.visibility=n>1?"visible":"hidden";b.style.visibility=n<MAXN?"visible":"hidden";
   a.onclick=()=>openN(n-1);b.onclick=()=>openN(n+1);
   nm.dir=lang==="ar"?"rtl":"ltr";nm.classList.add("show");setTimeout(()=>sayN(n),250);
   done[n]=1;save();const tl=grid.children[n-1];if(tl)tl.classList.add("done")}
 
 /* writing */
-function openWrite(n){const items=[];for(let i=1;i<=20;i++)items.push(disp(i));
+function openWrite(n){const items=[];for(let i=1;i<=MAXN;i++)items.push(disp(i));
   WritePad.open({items,index:n-1,lang,rtl:lang==="ar",font:lang==="ar"?'"Baloo Bhaijaan 2"':'"Andika"',
     onSay:it=>{const i=items.indexOf(it)+1;sayN(i)},
     onStar:(it,s,res)=>{const i=items.indexOf(it)+1;if(s>=2){wrote[lang+i]=1;save();const tl=grid.children[i-1];if(tl)tl.classList.add("wrote");fanfare();burstAt(res)}else buzz()}})}
@@ -215,10 +217,10 @@ document.getElementById("write").onclick=()=>openWrite(1);
 
 /* count & pick game */
 const gm=document.getElementById("gameModal");let ans,right=0,lock=false;
-function round(){lock=false;const t=T[lang];ans=1+Math.floor(Math.random()*(right<5?10:20));
+function round(){lock=false;const t=T[lang];ans=1+Math.floor(Math.random()*Math.min(right<5?10:20,MAXN));
   document.getElementById("gQ").textContent=t.q;const ob=document.getElementById("gObjs");ob.innerHTML="";const emo=rnd(OBJ);
   for(let i=0;i<ans;i++){const s=document.createElement("span");s.textContent=emo;s.onclick=()=>s.classList.toggle("c");ob.appendChild(s)}
-  const set=new Set([ans]);while(set.size<4){const d=ans+Math.floor(Math.random()*7)-3;if(d>=1&&d<=20)set.add(d)}
+  const set=new Set([ans]);while(set.size<4){const d=ans+Math.floor(Math.random()*7)-3;if(d>=1&&d<=MAXN)set.add(d)}
   const box=document.getElementById("gOpts");box.innerHTML="";box.dir=lang==="ar"?"rtl":"ltr";
   [...set].sort(()=>Math.random()-.5).forEach((v,k)=>{const b=document.createElement("button");b.className=lang==="ar"?"ar":"";b.textContent=disp(v);b.style.background=COLORS[k+1];
     b.onclick=()=>{if(lock)return;if(v===ans){lock=true;right++;b.classList.add("right");popSnd();fanfare();burstAt(b);sayN(v);talk(rnd(t.praise));
