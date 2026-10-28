@@ -1,0 +1,19 @@
+{
+ "updated": 0,
+ "profiles": [],
+ "sections": [
+  {
+   "id": "spell1",
+   "title": "Spelling",
+   "icon": "🐝",
+   "lang": "en",
+   "words": [
+    "antiseptic",
+    "antibiotic",
+    "baby",
+    "bad",
+    "bear"
+   ]
+  }
+ ]
+}
