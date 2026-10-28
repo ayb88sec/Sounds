@@ -175,7 +175,7 @@ footer a,#reset{color:#fff;background:none;border:0;font:inherit;text-decoration
   </div>
 </div>
 
-<script src="audio/manifest.js"></script>
+<script src="audio/clips.js"></script>
 <script>
 const L=[
  ["ا","ألف","أرنب","🐰","أ","أَلِف","أَرْنَب"],["ب","باء","بطة","🦆","","بَاء","بَطَّة"],["ت","تاء","تفاحة","🍎","","تَاء","تُفَّاحَة"],["ث","ثاء","ثعلب","🦊","","ثَاء","ثَعْلَب"],
@@ -230,8 +230,8 @@ function putClip(k,blob){if(clips[k])URL.revokeObjectURL(clips[k]);clips[k]=URL.
 let curAudio=null;
 const HAVE=new Set(window.AUDIO_FILES||[]);const pad=n=>String(n).padStart(2,"0");
 function fileFor(key){
-  if(key.startsWith("w:")){const i=W.findIndex(x=>"w:"+x[0]===key);return i>=0&&HAVE.has("w"+pad(i))?"audio/w"+pad(i)+".m4a":null}
-  const [ch,s]=key.split("|"),i=L.findIndex(x=>x[0]===ch),f="l"+pad(i)+"-"+s;return HAVE.has(f)?"audio/"+f+".m4a":null}
+  if(key.startsWith("w:")){const i=W.findIndex(x=>"w:"+x[0]===key);return i>=0&&HAVE.has("w"+pad(i))?window.AUDIO["w"+pad(i)]:null}
+  const [ch,s]=key.split("|"),i=L.findIndex(x=>x[0]===ch),f="l"+pad(i)+"-"+s;return HAVE.has(f)?window.AUDIO[f]:null}
 function play(key,text,rate){
   if(muted)return;
   const src=clips[key]||fileFor(key);
