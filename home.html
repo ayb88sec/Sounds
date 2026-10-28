@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="نجمة">
+<meta name="theme-color" content="#6a5cff">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<title>نجمة ⭐ Najma</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&display=swap">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif;color:#2b2340;min-height:100vh;overflow-x:hidden;
+  background:linear-gradient(165deg,#6a5cff 0%,#8f6bff 40%,#ff7eb6 100%);background-attachment:fixed;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.bubbles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bubbles span{position:absolute;bottom:-80px;border-radius:50%;background:rgba(255,255,255,.16);animation:rise linear infinite}
+@keyframes rise{to{transform:translateY(-120vh) translateX(-30px)}}
+main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:22px 18px 40px}
+.top{display:flex;align-items:center;gap:14px;color:#fff}
+.top img{width:74px;height:74px;border-radius:22px;box-shadow:0 6px 0 rgba(0,0,0,.15);animation:bob 2.2s ease-in-out infinite;cursor:pointer}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
+.top h1{margin:0;font-size:38px;line-height:1.1;text-shadow:0 3px 0 rgba(0,0,0,.15)}
+.top p{margin:2px 0 0;font-size:19px;opacity:.95}
+.stats{display:flex;gap:10px;margin:18px 0 6px}
+.stat{flex:1;background:rgba(255,255,255,.22);border-radius:20px;padding:10px 12px;color:#fff;text-align:center;backdrop-filter:blur(6px)}
+.stat b{display:block;font-size:30px;line-height:1.1}
+.stat span{font-size:15px;opacity:.95}
+h2{color:#fff;font-size:22px;margin:22px 4px 10px;opacity:.95}
+.apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.app{position:relative;display:flex;flex-direction:column;align-items:center;text-decoration:none;color:#fff;animation:enter .5s backwards}
+@keyframes enter{from{transform:scale(.4) translateY(30px);opacity:0}}
+.icon{position:relative;width:100%;aspect-ratio:1;border-radius:32%;display:flex;align-items:center;justify-content:center;font-size:64px;
+  box-shadow:0 8px 0 rgba(0,0,0,.18),inset 0 -8px 0 rgba(0,0,0,.08);transition:transform .12s}
+.icon::before{content:"";position:absolute;inset:6% 8% auto 8%;height:38%;border-radius:40% 40% 50% 50%;background:linear-gradient(rgba(255,255,255,.35),rgba(255,255,255,0))}
+.app:active .icon{transform:scale(.92) translateY(4px);box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.app:hover .icon{transform:rotate(-3deg) scale(1.04)}
+.icon .glyph{position:relative;font-weight:800;text-shadow:0 4px 0 rgba(0,0,0,.15)}
+.name{margin-top:8px;font-size:20px;font-weight:800;text-shadow:0 2px 0 rgba(0,0,0,.18);text-align:center;line-height:1.2}
+.sub{font-size:14px;opacity:.9}
+.ring{position:absolute;top:-8px;left:-8px;width:52px;height:52px}
+.ringwrap circle{fill:none;stroke-width:6}
+.ringwrap .bg{stroke:#eee8fb}
+.ringwrap .fg{stroke:#ffe066;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset 1s}
+.ringwrap text{font-family:inherit;font-size:15px;font-weight:800;fill:#2b2340;text-anchor:middle;dominant-baseline:central}
+.ringwrap{position:absolute;top:-6px;left:-6px;width:56px;height:56px;border-radius:50%;background:#fff;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.ringwrap svg{width:100%;height:100%}
+.tip{margin-top:26px;background:rgba(255,255,255,.92);border-radius:24px;padding:14px 16px;font-size:17px;line-height:1.6}
+.tip b{color:#6a5cff}
+</style>
+</head>
+<body>
+<div class="bubbles" id="bubbles"></div>
+<main>
+  <div class="top">
+    <img src="icon.png" alt="" id="star">
+    <div><h1 id="hello">أهلاً يا أبطال!</h1><p>ماذا نتعلم اليوم؟ · <bdi dir="ltr">Hello heroes!</bdi></p></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="sTotal">0</b><span>⭐ نجوم</span></div>
+    <div class="stat"><b id="sDone">0</b><span>🏆 أكملت</span></div>
+  </div>
+
+  <h2>🎒 ألعابي</h2>
+  <div class="apps" id="apps"></div>
+
+  <div class="tip" id="tip"><b>💡 للوالدين:</b> افتح هذه الصفحة في Safari، ثم اضغط مشاركة ← إضافة إلى الشاشة الرئيسية، لتظهر كتطبيق على الآيباد.</div>
+</main>
+<script>
+const APPS=[
+ {href:"arabic.html",glyph:"أ ب",name:"حروفي",sub:"الحروف العربية",bg:"linear-gradient(150deg,#22c7b8,#2f8cff)",key:"arDone",total:38},
+ {href:"index.html",glyph:"Aa",name:"Sounds",sub:"English phonics",bg:"linear-gradient(150deg,#ff7eb6,#a66bff)",key:"soundsDone",total:32},
+ {href:"islam.html",glyph:"🕌",name:"أركان الإسلام",sub:"خمسة أركان",bg:"linear-gradient(150deg,#1fb59a,#0f9b8e)",key:"islamDone",total:5},
+ {href:"iman.html",glyph:"✨",name:"أركان الإيمان",sub:"ستة أركان",bg:"linear-gradient(150deg,#8a5cff,#ff7eb6)",key:"imanDone",total:6},
+ {href:"arabic2.html",glyph:"أ ب",name:"حروفي ٢",sub:"بصوت آخر",bg:"linear-gradient(150deg,#ffb020,#ff5d73)",key:"arDone",total:38},
+];
+const bb=document.getElementById("bubbles");
+for(let i=0;i<14;i++){const s=document.createElement("span"),z=20+Math.random()*70;
+  s.style.cssText=`left:${Math.random()*100}%;width:${z}px;height:${z}px;animation-duration:${10+Math.random()*14}s;animation-delay:${-Math.random()*20}s`;bb.appendChild(s)}
+function count(k){try{return Object.keys(JSON.parse(localStorage.getItem(k)||"{}")).length}catch(e){return 0}}
+const box=document.getElementById("apps");let stars=0,full=0;const seen=new Set();
+APPS.forEach((a,i)=>{
+  const n=Math.min(count(a.key),a.total),pct=n/a.total,C=2*Math.PI*21;
+  if(!seen.has(a.key)){seen.add(a.key);stars+=n;if(n>=a.total)full++}
+  const el=document.createElement("a");el.className="app";el.href=a.href;el.style.animationDelay=(i*.08)+"s";
+  el.innerHTML=`<div class="icon" style="background:${a.bg}"><span class="glyph">${a.glyph}</span>
+     <div class="ringwrap"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="21"/><circle class="fg" cx="28" cy="28" r="21"
+       stroke-dasharray="${C}" stroke-dashoffset="${C}" data-off="${C*(1-pct)}"/><text x="28" y="29">${pct>=1?"🏆":n}</text></svg></div></div>
+     <div class="name">${a.name}</div><div class="sub">${a.sub}</div>`;
+  box.appendChild(el)});
+setTimeout(()=>document.querySelectorAll(".fg").forEach(c=>c.style.strokeDashoffset=c.dataset.off),300);
+document.getElementById("sTotal").textContent=stars;document.getElementById("sDone").textContent=full;
+const h=new Date().getHours();document.getElementById("hello").textContent=h<12?"صباح الخير يا أبطال!":"مساء الخير يا أبطال!";
+if(window.navigator.standalone||matchMedia("(display-mode: standalone)").matches)document.getElementById("tip").style.display="none";
+document.getElementById("star").onclick=e=>{e.target.style.animation="none";void e.target.offsetWidth;e.target.style.animation=""};
+</script>
+</body>
+</html>
