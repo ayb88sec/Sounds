@@ -103,6 +103,7 @@ h2 small{font-size:16px;font-weight:500;color:#7a7090}
 .pbtn.me{background:#22c7b8;box-shadow:0 5px 0 #149488}
 .pbtn:disabled{opacity:.4}
 .pbtn.on{animation:pop 1s infinite;background:#a66bff;box-shadow:0 5px 0 #7a46d0}
+.tile.rec::before{content:"🎤";position:absolute;top:4px;right:6px;font-size:18px}
 canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:30}
 footer{text-align:center;color:#fff;opacity:.95;font-size:15px;margin-top:26px}
 footer a,#reset{color:#fff;background:none;border:0;font:inherit;text-decoration:underline;cursor:pointer}
@@ -310,7 +311,7 @@ function openLetter(i,el){
     .map(([t,f])=>`<div><b>${f}</b><span>${t}</span></div>`).join("");
   const w=document.getElementById("lWord");
   w.innerHTML=`<span class="emo">${emo}</span><span class="w">${vWord}</span><span class="say" style="display:flex;align-items:center;justify-content:center">🔊</span>`;
-  w.onclick=()=>play(ch+"|w",vWord);if(pUrl){URL.revokeObjectURL(pUrl);pUrl=null}practiceUI();
+  w.onclick=()=>play(ch+"|w",vWord);practiceUI(ch);
   lm.classList.add("show");
   setTimeout(()=>play(ch+"|n",vName),250);
   markDone(ch);talk(`${name}! ${praise[Math.floor(Math.random()*praise.length)]}`);
@@ -323,7 +324,7 @@ function openWord(i,el){const [w,v,emo]=W[i];popSnd();if(el)burstAt(el);
   big.onclick=()=>{play("w:"+w,v);big.classList.remove("pop");void big.offsetWidth;big.classList.add("pop")};
   document.getElementById("wEmo").textContent=emo;
   document.getElementById("wSay").onclick=()=>play("w:"+w,v);
-  if(pUrl){URL.revokeObjectURL(pUrl);pUrl=null}practiceUI();
+  practiceUI("w:"+w);
   wm.classList.add("show");setTimeout(()=>play("w:"+w,v),250);
   markDone("w:"+w);talk(`${w}! ${praise[Math.floor(Math.random()*praise.length)]}`)}
 
@@ -358,27 +359,32 @@ function score(){document.getElementById("gScore").textContent=gTotal?`⭐ ${gRi
 document.getElementById("game").addEventListener("click",()=>{gRight=0;gTotal=0;score();gm.classList.add("show");newRound()});
 document.getElementById("gAgain").addEventListener("click",()=>play(gAns.key,gAns.say));
 
-/* kids practice: record & compare, kept in memory only */
-let pRec=null,pUrl=null,pTimer=null;
-function practiceUI(){document.querySelectorAll("[data-p]").forEach(box=>{
+/* kids practice: record & compare. Saved on this device (separate from the built-in voice) */
+const kid={};let kdb=null,pRec=null,pTimer=null;
+try{const r=indexedDB.open("kidVoices",1);r.onupgradeneeded=()=>r.result.createObjectStore("v");
+  r.onsuccess=()=>{kdb=r.result;kdb.transaction("v").objectStore("v").openCursor().onsuccess=e=>{const c=e.target.result;
+    if(c){kid[c.key]=URL.createObjectURL(c.value);markRec(c.key);c.continue()}}}}catch(e){}
+function markRec(k){const t=document.querySelector(`.tile[data-k="${k}"]`);if(t)t.classList.add("rec")}
+function saveKid(k,blob){if(kid[k])URL.revokeObjectURL(kid[k]);kid[k]=URL.createObjectURL(blob);markRec(k);
+  try{kdb.transaction("v","readwrite").objectStore("v").put(blob,k)}catch(e){}}
+function playKid(k){if(kid[k]){try{if(curAudio)curAudio.pause();curAudio=new Audio(kid[k]);curAudio.play()}catch(e){}}}
+function practiceUI(k){document.querySelectorAll("[data-p]").forEach(box=>{
   box.innerHTML=`<div class="lbl">🎤 دورك! قُلها أنت</div>
-   <div class="prow"><button class="pbtn mic">🎤 سجّل</button><button class="pbtn me" disabled>▶️ صوتي</button></div>`;
+   <div class="prow"><button class="pbtn mic">${kid[k]?"🎤 مرة ثانية":"🎤 سجّل"}</button><button class="pbtn me"${kid[k]?"":" disabled"}>▶️ صوتي</button></div>`;
   const mic=box.querySelector(".mic"),me=box.querySelector(".me");
-  if(pUrl&&box.closest(".modal.show")){}
   mic.onclick=async()=>{
     if(pRec){pRec.stop();return}
     try{const st=await navigator.mediaDevices.getUserMedia({audio:true}),ch=[];
       pRec=new MediaRecorder(st);mic.classList.add("on");mic.textContent="⏹️ توقف";
       pRec.ondataavailable=e=>ch.push(e.data);
       pRec.onstop=()=>{clearTimeout(pTimer);st.getTracks().forEach(t=>t.stop());
-        if(pUrl)URL.revokeObjectURL(pUrl);pUrl=URL.createObjectURL(new Blob(ch,{type:pRec.mimeType||"audio/mp4"}));pRec=null;
-        mic.classList.remove("on");mic.textContent="🎤 مرة ثانية";me.disabled=false;
-        try{if(curAudio)curAudio.pause();curAudio=new Audio(pUrl);curAudio.play()}catch(e){}
+        saveKid(k,new Blob(ch,{type:pRec.mimeType||"audio/mp4"}));pRec=null;
+        mic.classList.remove("on");mic.textContent="🎤 مرة ثانية";me.disabled=false;playKid(k);
         const p=praise[Math.floor(Math.random()*praise.length)];talk(p);fanfare();burstAt(mic)};
       pRec.start();pTimer=setTimeout(()=>{if(pRec&&pRec.state==="recording")pRec.stop()},4000);
     }catch(e){mic.textContent="⚠️ اسمح بالمايكروفون";pRec=null}
   };
-  me.onclick=()=>{if(pUrl){try{if(curAudio)curAudio.pause();curAudio=new Audio(pUrl);curAudio.play()}catch(e){}}};
+  me.onclick=()=>playKid(k);
 })}
 
 /* close modals */
