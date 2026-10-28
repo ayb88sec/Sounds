@@ -124,8 +124,8 @@ let profs=NAJMA.profiles.slice(),secs=JSON.parse(JSON.stringify(NAJMA.sections))
 const AV=["🦁","🐼","🦊","🐰","🐯","🦄","🐬","🐻","🐸","🐨","🦋","🚀","⚽","🌸","👑","🦖"];
 const PC=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a","#ff7eb6","#2b2340"];
 const ICONS=["🐝","📝","📚","✏️","🍎","🌟","🧠","🏫","🔤","🌍","🧪","🎵"];
-const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["cvc","CVC Words"],["sent","Sentences"],["writeEn","Handwriting"],["numEn","Numbers"],["shapes","2D Shapes"]];
-const PROG=[["arDone","حروفي",38],["numDoneAr","الأرقام",20],["islamDone","الإسلام",5],["imanDone","الإيمان",6],["soundsDone","Sounds",32],["cvcDone","CVC",52],["sentDone","Sentences",16],["writeEn","Writing",62],["numDoneEn","Numbers",20],["shapesDone","Shapes",10]];
+const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["cvc","Word Time"],["sent","Sentences"],["writeEn","Handwriting"],["numEn","Numbers"],["shapes","2D Shapes"]];
+const PROG=[["arDone","حروفي",38],["numDoneAr","الأرقام",20],["islamDone","الإسلام",5],["imanDone","الإيمان",6],["soundsDone","Sounds",32],["cvcDone","Word Time",111],["sentDone","Sentences",16],["writeEn","Writing",62],["numDoneEn","Numbers",20],["shapesDone","Shapes",10]];
 let saveP=()=>R.set("najma:profiles",JSON.stringify(profs));
 let saveS=()=>R.set("najma:sections",JSON.stringify(secs));
 const $=id=>document.getElementById(id);
@@ -168,12 +168,12 @@ function editKid(p){
   chips("kCol",PC,c=>c===ed.color,c=>ed.color=c);
   const apps=[...BUILT,...secs.map(s=>["s:"+s.id,`${s.icon} ${s.title}`])];
   chips("kApps",apps.map(a=>a[1]),(x,k)=>ed.apps[apps[k][0]]!==false,(x,k)=>{const id=apps[k][0];ed.apps[id]=ed.apps[id]===false});
-  ed.levels=ed.levels||{};const LV=NAJMA.LEVELS,LN={arabic:"حروفي",sounds:"Sounds",cvc:"CVC Words",sent:"Sentences",shapes:"2D Shapes",writeEn:"Handwriting"};
+  ed.levels=ed.levels||{};const LV=NAJMA.LEVELS,LN={arabic:"حروفي",sounds:"Sounds",wt:"Word Time (RWI)",sent:"Sentences",shapes:"2D Shapes",writeEn:"Handwriting"};
   const lb=$("kLevels");lb.innerHTML="";
   Object.keys(LV).forEach(app=>{if(!Array.isArray(ed.levels[app])||!ed.levels[app].length)ed.levels[app]=LV[app].map((_,i)=>i);
     const row=document.createElement("div");row.style.cssText="background:#f8f6fd;border-radius:14px;padding:8px 10px;margin-bottom:8px";
     row.innerHTML=`<div style="font-weight:800;margin-bottom:6px" dir="auto">${LN[app]}</div><div class="chips" id="lv_${app}" dir="${app==="arabic"?"rtl":"ltr"}"></div>`;lb.appendChild(row);
-    chips("lv_"+app,LV[app].map((n,i)=>(app==="arabic"||app==="writeEn"||app==="sounds"?"":"L"+(i+1)+" ")+n),(x,k)=>ed.levels[app].includes(k),
+    chips("lv_"+app,LV[app].map((n,i)=>(app==="arabic"||app==="writeEn"||app==="sounds"||app==="wt"?"":"L"+(i+1)+" ")+n),(x,k)=>ed.levels[app].includes(k),
       (x,k)=>{const a=ed.levels[app];ed.levels[app]=a.includes(k)?(a.length>1?a.filter(v=>v!==k):a):[...a,k].sort((p,q)=>p-q)})});
   chips("kNum",["١٠ / 10","٢٠ / 20"],(x,k)=>ed.numMax===(k?20:10),(x,k)=>ed.numMax=k?20:10);
   if(0)chips("kSight",["1","2","3","4","5","6","7","8","9"],(x,k)=>ed.sightGroups.includes(k),(x,k)=>{ed.sightGroups=ed.sightGroups.includes(k)?ed.sightGroups.filter(v=>v!==k):[...ed.sightGroups,k].sort((a,b)=>a-b)});

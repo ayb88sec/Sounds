@@ -8,12 +8,15 @@
 <link rel="apple-touch-icon" href="icon.png"><link rel="icon" href="icon.png">
 <title>CVC Words</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap">
-<link rel="stylesheet" href="kit.css?v=7">
+<link rel="stylesheet" href="kit.css?v=9">
 <style>
 body{background:linear-gradient(160deg,#22c7b8,#4f8bff 50%,#a66bff)}
 .vowels{display:flex;gap:8px;justify-content:center;margin-bottom:12px}
 .vowels button{font-family:"Andika";font-size:26px;font-weight:700;border:0;border-radius:16px;width:56px;height:56px;cursor:pointer;background:#f3f0fa;color:var(--ink)}
 .vowels button.on{background:#ffe066;box-shadow:0 4px 0 #d9a400}
+.vowels{overflow-x:auto;justify-content:flex-start;padding:2px 2px 6px;scrollbar-width:none}
+.vowels .lvb{width:auto;height:auto;min-width:84px;padding:6px 10px;display:flex;flex-direction:column;align-items:center;flex:none}
+.vowels .lvb b{font-size:22px}.vowels .lvb small{font-size:12px;font-weight:700;color:#7a7090;white-space:nowrap}
 .bme{display:flex;gap:10px;justify-content:center;margin:10px 0}
 .bme div{width:84px;border-radius:18px;background:#f3f0fa;padding:6px 0}
 .bme b{display:block;font-family:"Andika";font-size:46px;min-height:62px;line-height:62px}
@@ -26,7 +29,7 @@ body{background:linear-gradient(160deg,#22c7b8,#4f8bff 50%,#a66bff)}
 </head>
 <body>
 <main>
-  <h1>CVC Words</h1>
+  <h1>Word Time</h1>
   <div class="tabs" id="tabs"><button data-p="learn" class="on">📖 Words</button><button data-p="blend">🔊 Blend</button><button data-p="bme">🏷️ B · M · E</button><button data-p="write">✏️ Write</button></div>
   <section>
     <div class="pane on" id="learn"><div class="vowels" id="vw"></div><div class="grid" id="grid"></div></div>
@@ -61,64 +64,64 @@ body{background:linear-gradient(160deg,#22c7b8,#4f8bff 50%,#a66bff)}
 </div></div>
 
 <script src="writepad.js"></script>
-<script src="kit.js?v=7"></script>
+<script src="kit.js?v=9"></script>
 <script>
 const {COLORS,rnd,shuffle,pop,fanfare,buzz,burstAt,rain,say,sound,blend,talk,PRAISE}=KIT;
 KIT.mascot("Tap a word and sound it out with me!");
-const W={a:[["cat","🐱"],["bat","🦇"],["hat","🎩"],["map","🗺️"],["van","🚐"],["fan","🪭"],["can","🥫"],["rat","🐀"],["bag","👜"],["cap","🧢"],["pan","🍳"],["man","👨"]],
- e:[["bed","🛏️"],["hen","🐔"],["net","🥅"],["pen","🖊️"],["web","🕸️"],["jet","✈️"],["leg","🦵"],["ten","🔟"],["red","🔴"],["wet","💦"]],
- i:[["pig","🐷"],["pin","📌"],["bin","🗑️"],["lip","👄"],["zip","🤐"],["six","6️⃣"],["kid","🧒"],["fin","🦈"],["dig","⛏️"],["wig","💇"]],
- o:[["dog","🐶"],["log","🪵"],["box","📦"],["fox","🦊"],["pot","🍲"],["mop","🧹"],["hot","🔥"],["top","🔝"],["cot","🛌"],["hop","🐸"]],
- u:[["sun","☀️"],["bus","🚌"],["cup","☕"],["bug","🐛"],["nut","🥜"],["hut","🛖"],["mud","🟫"],["rug","🧶"],["gum","🍬"],["pup","🐶"]]};
-const AV=NAJMA.lv("cvc").map(i=>"aeiou"[i]);
-const ALL=AV.flatMap(v=>W[v]).filter(([w])=>!["cot","mud","rug","gum","top","wig","wet","kid","dig","hop","man","fin"].includes(w));
+/* Read Write Inc. Word Time order: each level adds new sounds; words use only sounds taught so far. [word, sounds, picture] */
+const WT=[["m a s d t", [["at", ["a", "t"], ""], ["am", ["a", "m"], ""], ["mat", ["m", "a", "t"], ""], ["sat", ["s", "a", "t"], ""], ["sad", ["s", "a", "d"], "😢"], ["mad", ["m", "a", "d"], "😠"], ["dad", ["d", "a", "d"], "👨"]]], ["i n p g o", [["pin", ["p", "i", "n"], "📌"], ["pig", ["p", "i", "g"], "🐷"], ["tin", ["t", "i", "n"], "🥫"], ["dog", ["d", "o", "g"], "🐶"], ["pot", ["p", "o", "t"], "🍲"], ["map", ["m", "a", "p"], "🗺️"], ["pan", ["p", "a", "n"], "🍳"], ["tap", ["t", "a", "p"], "🚰"], ["dig", ["d", "i", "g"], "⛏️"], ["mop", ["m", "o", "p"], "🧹"], ["ant", ["a", "n", "t"], "🐜"], ["dot", ["d", "o", "t"], "⚫"], ["nap", ["n", "a", "p"], "😴"], ["sit", ["s", "i", "t"], ""], ["top", ["t", "o", "p"], ""], ["got", ["g", "o", "t"], ""], ["not", ["n", "o", "t"], ""], ["in", ["i", "n"], ""], ["on", ["o", "n"], ""], ["it", ["i", "t"], ""]]], ["c k u b", [["cat", ["c", "a", "t"], "🐱"], ["cup", ["c", "u", "p"], "☕"], ["bug", ["b", "u", "g"], "🐛"], ["bus", ["b", "u", "s"], "🚌"], ["cap", ["c", "a", "p"], "🧢"], ["bat", ["b", "a", "t"], "🦇"], ["bag", ["b", "a", "g"], "👜"], ["sun", ["s", "u", "n"], "☀️"], ["nut", ["n", "u", "t"], "🥜"], ["tub", ["t", "u", "b"], "🛁"], ["kid", ["k", "i", "d"], "🧒"], ["cub", ["c", "u", "b"], "🐻"], ["bun", ["b", "u", "n"], "🍞"], ["cut", ["c", "u", "t"], "✂️"], ["mug", ["m", "u", "g"], ""], ["cot", ["c", "o", "t"], ""], ["up", ["u", "p"], ""]]], ["f e l h sh", [["fan", ["f", "a", "n"], "🪭"], ["fish", ["f", "i", "sh"], "🐟"], ["hen", ["h", "e", "n"], "🐔"], ["leg", ["l", "e", "g"], "🦵"], ["bed", ["b", "e", "d"], "🛏️"], ["net", ["n", "e", "t"], "🥅"], ["ship", ["sh", "i", "p"], "🚢"], ["shop", ["sh", "o", "p"], "🏪"], ["hat", ["h", "a", "t"], "🎩"], ["hot", ["h", "o", "t"], "🔥"], ["log", ["l", "o", "g"], "🪵"], ["lip", ["l", "i", "p"], "👄"], ["fin", ["f", "i", "n"], "🦈"], ["ten", ["t", "e", "n"], "🔟"], ["pen", ["p", "e", "n"], "🖊️"], ["dish", ["d", "i", "sh"], "🍽️"], ["hug", ["h", "u", "g"], "🤗"], ["fog", ["f", "o", "g"], "🌫️"]]], ["r j v y w", [["rat", ["r", "a", "t"], "🐀"], ["red", ["r", "e", "d"], "🔴"], ["jet", ["j", "e", "t"], "✈️"], ["van", ["v", "a", "n"], "🚐"], ["yak", ["y", "a", "k"], "🐃"], ["yes", ["y", "e", "s"], "✅"], ["web", ["w", "e", "b"], "🕸️"], ["run", ["r", "u", "n"], "🏃"], ["wet", ["w", "e", "t"], "💦"], ["win", ["w", "i", "n"], "🏆"], ["jam", ["j", "a", "m"], ""], ["vet", ["v", "e", "t"], ""], ["wig", ["w", "i", "g"], ""], ["rug", ["r", "u", "g"], ""], ["jug", ["j", "u", "g"], ""], ["rob", ["r", "o", "b"], ""]]], ["th z ch qu x ng nk", [["fox", ["f", "o", "x"], "🦊"], ["box", ["b", "o", "x"], "📦"], ["six", ["s", "i", "x"], "6️⃣"], ["zip", ["z", "i", "p"], "🤐"], ["chip", ["ch", "i", "p"], "🍟"], ["chick", ["ch", "i", "ck"], "🐥"], ["quiz", ["qu", "i", "z"], "❓"], ["ring", ["r", "i", "ng"], "💍"], ["king", ["k", "i", "ng"], "👑"], ["bath", ["b", "a", "th"], "🛁"], ["sing", ["s", "i", "ng"], "🎤"], ["pink", ["p", "i", "nk"], "🩷"], ["wink", ["w", "i", "nk"], "😉"], ["duck", ["d", "u", "ck"], "🦆"], ["sock", ["s", "o", "ck"], "🧦"], ["zap", ["z", "a", "p"], "⚡"], ["chin", ["ch", "i", "n"], ""], ["thin", ["th", "i", "n"], ""]]], ["4–5 sounds", [["frog", ["f", "r", "o", "g"], "🐸"], ["flag", ["f", "l", "a", "g"], "🚩"], ["drum", ["d", "r", "u", "m"], "🥁"], ["crab", ["c", "r", "a", "b"], "🦀"], ["stop", ["s", "t", "o", "p"], "🛑"], ["swim", ["s", "w", "i", "m"], "🏊"], ["tent", ["t", "e", "n", "t"], "⛺"], ["hand", ["h", "a", "n", "d"], "✋"], ["nest", ["n", "e", "s", "t"], "🪺"], ["milk", ["m", "i", "l", "k"], "🥛"], ["lamp", ["l", "a", "m", "p"], "💡"], ["plant", ["p", "l", "a", "n", "t"], "🪴"], ["desk", ["d", "e", "s", "k"], ""], ["belt", ["b", "e", "l", "t"], ""], ["stamp", ["s", "t", "a", "m", "p"], ""]]]];
+const LVS=NAJMA.lv("wt");
+const LEV=LVS.map(i=>({i,name:"1."+(i+1),sounds:WT[i][0],words:WT[i][1]}));
+const ALLW=LEV.flatMap(l=>l.words);
+const ALL=ALLW.filter(w=>w[2]&&w[1].length===3);
+const KNOWN=[...new Set(ALLW.flatMap(w=>w[1]))];
 const prog=KIT.store("cvcDone");const mark=w=>{prog.d[w]=1;prog.save();document.querySelectorAll(`.tile[data-w="${w}"]`).forEach(t=>t.classList.add("done"))};
-let vw=AV[0]||"a";
+let vw=0;
 /* tabs */
 document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{pop();document.querySelectorAll("#tabs button,.pane").forEach(x=>x.classList.remove("on"));b.classList.add("on");document.getElementById(b.dataset.p).classList.add("on")});
-function vowels(id,draw){const box=document.getElementById(id);box.innerHTML="";AV.forEach(v=>{const b=document.createElement("button");b.textContent=v;if(v===vw)b.className="on";
-  b.onclick=()=>{vw=v;pop();sound(v);vowels("vw",drawLearn);vowels("vw2",drawWrite);drawLearn();drawWrite()};box.appendChild(b)})}
-function tile(w,e,i,on){const b=document.createElement("button");b.className="tile"+(prog.d[w]?" done":"");b.dataset.w=w;b.style.background=COLORS[i%6];b.style.animationDelay=(i*.03)+"s";
+function vowels(id,draw){const box=document.getElementById(id);box.innerHTML="";LEV.forEach((l,k)=>{const b=document.createElement("button");b.className="lvb"+(k===vw?" on":"");
+  b.innerHTML=`<b>${l.name}</b><small>${l.sounds}</small>`;b.onclick=()=>{vw=k;pop();vowels("vw",drawLearn);vowels("vw2",drawWrite);drawLearn();drawWrite()};box.appendChild(b)})}
+function tile(w,e,i,on){e=e||"🔤";const b=document.createElement("button");b.className="tile"+(prog.d[w]?" done":"");b.dataset.w=w;b.style.background=COLORS[i%6];b.style.animationDelay=(i*.03)+"s";
   b.innerHTML=`<span class="e">${e}</span>${w}`;b.onclick=()=>on(b);return b}
-function drawLearn(){const g=document.getElementById("grid");g.innerHTML="";W[vw].forEach(([w,e],i)=>g.appendChild(tile(w,e,i,b=>openWord(w,e,b))))}
-function drawWrite(){const g=document.getElementById("wgrid");g.innerHTML="";W[vw].forEach(([w,e],i)=>g.appendChild(tile(w,e,i,()=>writeW(W[vw].map(x=>x[0]),i))))}
+function drawLearn(){const g=document.getElementById("grid");g.innerHTML="";(LEV[vw]||{words:[]}).words.forEach(([w,s,e],i)=>g.appendChild(tile(w,e,i,b=>openWord(w,s,e,b))))}
+function drawWrite(){const g=document.getElementById("wgrid");g.innerHTML="";const L=(LEV[vw]||{words:[]}).words;L.forEach(([w,s,e],i)=>g.appendChild(tile(w,e,i,()=>writeW(L.map(x=>x[0]),i))))}
 vowels("vw",drawLearn);vowels("vw2",drawWrite);drawLearn();drawWrite();
 
 /* word card: tap each sound, then blend */
-function sndRow(id,word,hidden){const box=document.getElementById(id);box.innerHTML="";
-  [...word].forEach((c,i)=>{const b=document.createElement("button");b.textContent=hidden?"?":c;b.style.background=COLORS[(i*2+1)%6];b.onclick=()=>{sound(c);lit(id,i)};box.appendChild(b)})}
+function sndRow(id,snds,hidden){const box=document.getElementById(id);box.innerHTML="";
+  snds.forEach((c,i)=>{const b=document.createElement("button");b.textContent=hidden?"?":c;b.style.background=COLORS[(i*2+1)%6];b.onclick=()=>{sound(c);lit(id,i)};box.appendChild(b)})}
 function lit(id,i){const bs=[...document.getElementById(id).children];bs.forEach((b,k)=>b.classList.toggle("lit",k===i||i===-1));if(i===-1)setTimeout(()=>bs.forEach(b=>b.classList.remove("lit")),800)}
-function openWord(w,e,el){pop();if(el)burstAt(el);document.getElementById("wPic").textContent=e;document.getElementById("wPic").onclick=()=>say(w);
-  sndRow("wSnd",w);document.getElementById("wBlend").onclick=()=>blend(w,i=>lit("wSnd",i));
+function openWord(w,snds,e,el){pop();if(el)burstAt(el);document.getElementById("wPic").textContent=e||"🔤";document.getElementById("wPic").onclick=()=>say(w);
+  sndRow("wSnd",snds);document.getElementById("wBlend").onclick=()=>blend(w,i=>lit("wSnd",i),snds);
   document.getElementById("wWrite").onclick=()=>writeW([w],0);
-  document.getElementById("wordM").classList.add("show");setTimeout(()=>blend(w,i=>lit("wSnd",i)),300);mark(w);talk(`${w}! ${rnd(PRAISE)}`)}
-function writeW(items,i){WritePad.open({items,index:i,lang:"en",font:'"Andika"',aspect:2,yShift:.45,onSay:w=>blend(w),onStar:(w,s,res)=>{if(s>=2){fanfare();burstAt(res);mark(w)}else buzz()}})}
+  document.getElementById("wordM").classList.add("show");setTimeout(()=>blend(w,i=>lit("wSnd",i),snds),300);mark(w);talk(`${w}! ${rnd(PRAISE)}`)}
+function writeW(items,i){WritePad.open({items,index:i,lang:"en",font:'"Andika"',aspect:2,yShift:.45,onSay:w=>{const x=ALLW.find(y=>y[0]===w);blend(w,null,x?x[1]:null)},onStar:(w,s,res)=>{if(s>=2){fanfare();burstAt(res);mark(w)}else buzz()}})}
 
 /* oral blending: hear sounds only, pick the picture */
 let bAns,bRight=0,bLock=false;
-function bRound(){bLock=false;const pick=shuffle(ALL).slice(0,3);bAns=pick[0];sndRow("bSnd",bAns[0],true);
+function bRound(){bLock=false;if(ALL.length<3){document.getElementById("bOpts").innerHTML="";return}const pick=shuffle(ALL).slice(0,3);bAns=pick[0];sndRow("bSnd",bAns[1],true);
   const box=document.getElementById("bOpts");box.innerHTML="";box.style.gridTemplateColumns="1fr 1fr 1fr";
-  shuffle(pick).forEach(([w,e],k)=>{const b=document.createElement("button");b.className="big";b.textContent=e;b.style.background=COLORS[k+1];
-    b.onclick=()=>{if(bLock)return;if(w===bAns[0]){bLock=true;bRight++;b.classList.add("right");sndRow("bSnd",w);say(w);fanfare();burstAt(b);talk(`${w}! ${rnd(PRAISE)}`);mark(w);
+  shuffle(pick).forEach(([w,s,e],k)=>{const b=document.createElement("button");b.className="big";b.textContent=e;b.style.background=COLORS[k+1];
+    b.onclick=()=>{if(bLock)return;if(w===bAns[0]){bLock=true;bRight++;b.classList.add("right");sndRow("bSnd",bAns[1]);say(w);fanfare();burstAt(b);talk(`${w}! ${rnd(PRAISE)}`);mark(w);
         document.getElementById("bScore").textContent=`⭐ ${bRight}`;setTimeout(bRound,1900)}
       else{b.classList.add("wrong");buzz();talk("Listen again 👂");setTimeout(playB,400)}};box.appendChild(b)});
   setTimeout(playB,400)}
-function playB(){[...bAns[0]].forEach((c,i)=>setTimeout(()=>{sound(c);lit("bSnd",i)},i*900))}
+function playB(){bAns[1].forEach((c,i)=>setTimeout(()=>{sound(c);lit("bSnd",i)},i*900))}
 document.getElementById("startBlend").onclick=()=>{bRight=0;document.getElementById("bScore").textContent="";document.getElementById("blendM").classList.add("show");bRound()};
 document.getElementById("bAgain").onclick=playB;
 
 /* BME: label beginning, middle, end sounds */
 let mW,mStep,mMiss,mRight=0;const NAMES=["beginning","middle","end"];
-function mRound(){[mW]=[rnd(ALL)];mStep=0;mMiss=0;const pic=document.getElementById("mPic");pic.textContent=mW[1];pic.onclick=()=>say(mW[0]);
+function mRound(){if(!ALL.length)return;[mW]=[rnd(ALL)];mStep=0;mMiss=0;const pic=document.getElementById("mPic");pic.textContent=mW[2];pic.onclick=()=>say(mW[0]);
   document.querySelectorAll("#mSlots div").forEach(d=>{d.classList.remove("ok","cur");d.querySelector("b").textContent=""});setTimeout(()=>say(mW[0]),300);ask()}
 function ask(){const slots=document.querySelectorAll("#mSlots div");slots.forEach((d,k)=>d.classList.toggle("cur",k===mStep));
   document.getElementById("mQ").textContent=`What is the ${NAMES[mStep]} sound?`;
-  const right=mW[0][mStep],pool=mStep===1?"aeiou":"bcdfghjklmnprstvwxz";
-  const opts=shuffle([right,...shuffle([...pool].filter(c=>c!==right)).slice(0,3)]);
-  const box=document.getElementById("mOpts");box.innerHTML="";box.style.gridTemplateColumns="1fr 1fr 1fr 1fr";
+  const right=mW[1][mStep],V=["a","e","i","o","u"],pool=mStep===1?KNOWN.filter(c=>V.includes(c)):KNOWN.filter(c=>!V.includes(c));
+  const opts=shuffle([right,...shuffle(pool.filter(c=>c!==right)).slice(0,3)]);
+  const box=document.getElementById("mOpts");box.innerHTML="";box.style.gridTemplateColumns=`repeat(${opts.length},1fr)`;
   opts.forEach((c,k)=>{const b=document.createElement("button");b.textContent=c;b.style.background=COLORS[k+1];
     b.onclick=()=>{sound(c);if(c===right){pop();slots[mStep].querySelector("b").textContent=c;slots[mStep].classList.add("ok");burstAt(slots[mStep]);mStep++;
-        if(mStep===3){slots.forEach(d=>d.classList.remove("cur"));mRight++;fanfare();setTimeout(()=>blend(mW[0]),300);mark(mW[0]);talk(`${mW[0]}! ${rnd(PRAISE)}`);
+        if(mStep===3){slots.forEach(d=>d.classList.remove("cur"));mRight++;fanfare();setTimeout(()=>blend(mW[0],null,mW[1]),300);mark(mW[0]);talk(`${mW[0]}! ${rnd(PRAISE)}`);
           document.getElementById("mScore").textContent=`⭐ ${mRight}`;document.getElementById("mQ").textContent="🎉 "+mW[0];box.innerHTML="";setTimeout(mRound,3600)}
         else setTimeout(ask,350)}
       else{b.classList.add("wrong");buzz();mMiss++;talk("Try again 💪")}};box.appendChild(b)})}
@@ -126,7 +129,7 @@ document.getElementById("startBme").onclick=()=>{mRight=0;document.getElementByI
 document.getElementById("mHear").onclick=()=>say(mW[0]);
 </script>
 <script>
-window.NAJMA_PROGRESS=()=>{const ws=AV.flatMap(v=>W[v]).map(x=>x[0]);return{done:ws.filter(w=>prog.d[w]).length,total:ws.length}};
+window.NAJMA_PROGRESS=()=>({done:ALLW.filter(w=>prog.d[w[0]]).length,total:ALLW.length});
 window.NAJMA_RESET=()=>localStorage.removeItem("cvcDone");
 </script>
 <script src="extras.js?v=8"></script>

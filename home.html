@@ -119,7 +119,7 @@ const ROWS=[
   {id:"iman",href:"iman.html",glyph:"✨",name:"أركان الإيمان",sub:"ستة أركان",bg:"linear-gradient(150deg,#8a5cff,#ff7eb6)",key:"imanDone",total:6}]},
  {t:"🇬🇧 English",apps:[
   {id:"sounds",href:"index.html",glyph:"🔤",name:"Sounds",sub:"Phonics",bg:"linear-gradient(150deg,#ff7eb6,#a66bff)",key:"soundsDone",total:32},
-  {id:"cvc",href:"cvc.html",glyph:"cat",name:"CVC Words",sub:"Blend · B M E",bg:"linear-gradient(150deg,#22c7b8,#4f8bff)",key:"cvcDone",total:52},
+  {id:"cvc",href:"cvc.html",glyph:"cat",name:"Word Time",sub:"RWI 1.1 – 1.7",bg:"linear-gradient(150deg,#22c7b8,#4f8bff)",key:"cvcDone",total:52},
   {id:"sent",href:"sentences.html",glyph:"✍🏽",name:"Sentences",sub:"Build & write",bg:"linear-gradient(150deg,#ff7eb6,#ffb020)",key:"sentDone",total:16},
   {id:"writeEn",href:"writing.html",glyph:"Aa",name:"Handwriting",sub:"abc · ABC · 123",bg:"linear-gradient(150deg,#a66bff,#ff7eb6)",key:"writeEn",total:62}]},
  {t:"🔷 Maths",apps:[
@@ -136,7 +136,7 @@ NAJMA.sections.forEach((s,k)=>{const row=ROWS[s.lang==="ar"?0:2];row.apps.push({
 const box=document.getElementById("apps");
 /* rings follow the levels switched on for this child */
 const sumLv=(app,sizes)=>NAJMA.lv(app).reduce((s,i)=>s+(sizes[i]||0),0);
-const LT={arabic:sumLv("arabic",[7,7,7,7,10]),sounds:sumLv("sounds",[25,7]),cvc:sumLv("cvc",[12,10,10,10,10]),sent:sumLv("sent",[4,4,4,4]),shapes:sumLv("shapes",[4,4,2]),writeEn:sumLv("writeEn",[26,26,10])};
+const LT={arabic:sumLv("arabic",[7,7,7,7,10]),sounds:sumLv("sounds",[25,7]),cvc:sumLv("wt",[7,20,17,18,16,18,15]),sent:sumLv("sent",[4,4,4,4]),shapes:sumLv("shapes",[4,4,2]),writeEn:sumLv("writeEn",[26,26,10])};
 ROWS.forEach(r=>r.apps.forEach(a=>{if(LT[a.id]!=null)a.total=LT[a.id];if(a.id==="numAr"||a.id==="numEn")a.total=NAJMA.settings.numMax||20}));
 const ROWS2=ROWS;let stars=0,full=0;const seen=new Set();let i=0;
 ROWS.forEach(row=>{if(!row.apps.some(a=>NAJMA.settings.apps[a.id]!==false))return;const hd=document.createElement("div");hd.className="rowt";hd.textContent=row.t;box.appendChild(hd);

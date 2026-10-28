@@ -34,9 +34,9 @@ window.PHON={};window.WORDA={};
 /* British phonics sound recordings from github.com/hellodeborahuk/buzzphonics (MIT); whole words use the iPad British voice */
 fetch("audio/phonics-uk.json").then(r=>r.json()).then(j=>{Object.assign(PHON,j.sounds);Object.assign(WORDA,j.words)}).catch(()=>{});
 const APPROX={a:"a",b:"buh",c:"kuh",d:"duh",e:"eh",f:"fff",g:"guh",h:"huh",i:"ih",j:"juh",k:"kuh",l:"lll",m:"mmm",n:"nnn",o:"o",p:"puh",q:"kwuh",r:"rrr",s:"sss",t:"tuh",u:"uh",v:"vvv",w:"wuh",x:"ks",y:"yuh",z:"zzz"};
-function sound(ch){ch=ch.toLowerCase();if(PHON[ch])play(PHON[ch]);else say(APPROX[ch]||ch,.7)}
+function sound(ch){ch=ch.toLowerCase();if(ch==="ck")ch="k";if(ch==="nk"){sound("ng");setTimeout(()=>sound("k"),260);return}if(PHON[ch])play(PHON[ch]);else say(APPROX[ch]||ch,.7)}
 /* sound out a word: c... a... t... cat */
-function blend(word,onStep){const L=[...word];L.forEach((c,i)=>setTimeout(()=>{sound(c);onStep&&onStep(i)},i*800));setTimeout(()=>{say(word,.75);onStep&&onStep(-1)},L.length*800+350)}
+function blend(word,onStep,snds){const L=snds||[...word];L.forEach((c,i)=>setTimeout(()=>{sound(c);onStep&&onStep(i)},i*800));setTimeout(()=>{say(word,.75);onStep&&onStep(-1)},L.length*800+350)}
 /* mascot */
 let sayT,hi="";
 function talk(t){const s=document.getElementById("say"),p=document.getElementById("pip");if(!s)return;s.textContent=t;s.classList.remove("pop");void s.offsetWidth;s.classList.add("pop");
