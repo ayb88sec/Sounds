@@ -29,7 +29,9 @@ body{background:linear-gradient(160deg,#a66bff,#ff7eb6 55%,#ffb020)}
 const {COLORS,rnd,pop,fanfare,buzz,burstAt,say,sound,talk,PRAISE}=KIT;
 KIT.mascot("Trace the letter, then try with the guide off!");
 const SETS={lower:"abcdefghijklmnopqrstuvwxyz",upper:"ABCDEFGHIJKLMNOPQRSTUVWXYZ",nums:"0123456789"};
-const prog=KIT.store("writeEn");let mode="lower";
+const WL=NAJMA.lv("writeEn"),MODES=["lower","upper","nums"].filter((m,i)=>WL.includes(i));
+const prog=KIT.store("writeEn");let mode=MODES[0]||"lower";
+document.querySelectorAll("#tabs button").forEach(b=>{if(!MODES.includes(b.dataset.m))b.style.display="none";b.classList.toggle("on",b.dataset.m===mode)});
 document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{mode=b.dataset.m;pop();document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));draw()});
 function draw(){const g=document.getElementById("grid");g.innerHTML="";[...SETS[mode]].forEach((c,i)=>{const b=document.createElement("button");b.className="tile";b.style.background=COLORS[i%6];
   b.style.animationDelay=(i*.02)+"s";const st=prog.d[c]||0;b.innerHTML=`${c}${st?`<span class="st">${"⭐".repeat(st)}</span>`:""}`;b.onclick=()=>write(i);g.appendChild(b)})}
@@ -39,5 +41,10 @@ function write(i){const items=[...SETS[mode]];WritePad.open({items,index:i,lang:
 document.getElementById("all").onclick=()=>write(0);
 draw();
 </script>
+<script>
+window.NAJMA_PROGRESS=()=>{const all=MODES.map(m=>SETS[m]).join("");return{done:[...all].filter(c=>prog.d[c]).length,total:all.length}};
+window.NAJMA_RESET=()=>localStorage.removeItem("writeEn");
+</script>
+<script src="extras.js?v=8"></script>
 </body>
 </html>

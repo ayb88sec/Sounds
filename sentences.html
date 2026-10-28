@@ -52,9 +52,10 @@ KIT.mascot("Read a sentence, then build it and write it!");
 const S=[["The cat is on the mat.","🐱"],["I can see a dog.","🐶"],["The pig is big.","🐷"],["A bug is on the rug.","🐛"],["I see the sun.","☀️"],
  ["The hen is red.","🐔"],["We can hop.","🐸"],["The fox is in the box.","🦊"],["My cup is hot.","☕"],["The bus can go.","🚌"],
  ["Look at the jet.","✈️"],["I like my hat.","🎩"],["The bed is red.","🛏️"],["Can you see the pen?","🖊️"],["He has a bat.","🦇"],["She can run.","🏃‍♀️"]];
+const SL=NAJMA.lv("sent");const SI=S.map((_,i)=>i).filter(i=>SL.includes(Math.floor(i/4)));
 const prog=KIT.store("sentDone");
 const list=document.getElementById("list");
-function draw(){list.innerHTML="";S.forEach(([s,e],i)=>{const b=document.createElement("button");b.className="srow"+(prog.d[i]?" done":"");b.style.background=COLORS[i%6];
+function draw(){list.innerHTML="";S.forEach(([s,e],i)=>{if(!SI.includes(i))return;const b=document.createElement("button");b.className="srow"+(prog.d[i]?" done":"");b.style.background=COLORS[i%6];
   b.style.animationDelay=(i*.03)+"s";b.innerHTML=`<span class="e">${e}</span>${s}`;b.onclick=()=>open(i,b);list.appendChild(b)})}
 draw();
 let cur,step,words;
@@ -73,8 +74,13 @@ function open(i,el){cur=i;step=0;const [s,e]=S[i];pop();if(el)burstAt(el);
       else{b.classList.remove("wrong");void b.offsetWidth;b.classList.add("wrong");buzz();talk("Which word comes next? 🤔")}};pool.appendChild(b)});
   document.getElementById("sWrite").onclick=()=>WritePad.open({items:S.map(x=>x[0]),index:i,lang:"en",font:'"Andika"',aspect:3,yShift:.45,onSay:t=>say(t,.7),
     onStar:(t,st,res)=>{if(st>=2){fanfare();burstAt(res)}else buzz()}});
-  document.getElementById("sNext").onclick=()=>open((i+1)%S.length);
+  document.getElementById("sNext").onclick=()=>open(SI[(SI.indexOf(i)+1)%SI.length]);
   document.getElementById("sm").classList.add("show");setTimeout(()=>readOut(s),350)}
 </script>
+<script>
+window.NAJMA_PROGRESS=()=>({done:SI.filter(i=>prog.d[i]).length,total:SI.length});
+window.NAJMA_RESET=()=>localStorage.removeItem("sentDone");
+</script>
+<script src="extras.js?v=8"></script>
 </body>
 </html>

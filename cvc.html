@@ -70,12 +70,13 @@ const W={a:[["cat","🐱"],["bat","🦇"],["hat","🎩"],["map","🗺️"],["van
  i:[["pig","🐷"],["pin","📌"],["bin","🗑️"],["lip","👄"],["zip","🤐"],["six","6️⃣"],["kid","🧒"],["fin","🦈"],["dig","⛏️"],["wig","💇"]],
  o:[["dog","🐶"],["log","🪵"],["box","📦"],["fox","🦊"],["pot","🍲"],["mop","🧹"],["hot","🔥"],["top","🔝"],["cot","🛌"],["hop","🐸"]],
  u:[["sun","☀️"],["bus","🚌"],["cup","☕"],["bug","🐛"],["nut","🥜"],["hut","🛖"],["mud","🟫"],["rug","🧶"],["gum","🍬"],["pup","🐶"]]};
-const ALL=Object.values(W).flat().filter(([w])=>!["cot","mud","rug","gum","top","wig","wet","kid","dig","hop","man","fin"].includes(w));
+const AV=NAJMA.lv("cvc").map(i=>"aeiou"[i]);
+const ALL=AV.flatMap(v=>W[v]).filter(([w])=>!["cot","mud","rug","gum","top","wig","wet","kid","dig","hop","man","fin"].includes(w));
 const prog=KIT.store("cvcDone");const mark=w=>{prog.d[w]=1;prog.save();document.querySelectorAll(`.tile[data-w="${w}"]`).forEach(t=>t.classList.add("done"))};
-let vw="a";
+let vw=AV[0]||"a";
 /* tabs */
 document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{pop();document.querySelectorAll("#tabs button,.pane").forEach(x=>x.classList.remove("on"));b.classList.add("on");document.getElementById(b.dataset.p).classList.add("on")});
-function vowels(id,draw){const box=document.getElementById(id);box.innerHTML="";Object.keys(W).forEach(v=>{const b=document.createElement("button");b.textContent=v;if(v===vw)b.className="on";
+function vowels(id,draw){const box=document.getElementById(id);box.innerHTML="";AV.forEach(v=>{const b=document.createElement("button");b.textContent=v;if(v===vw)b.className="on";
   b.onclick=()=>{vw=v;pop();sound(v);vowels("vw",drawLearn);vowels("vw2",drawWrite);drawLearn();drawWrite()};box.appendChild(b)})}
 function tile(w,e,i,on){const b=document.createElement("button");b.className="tile"+(prog.d[w]?" done":"");b.dataset.w=w;b.style.background=COLORS[i%6];b.style.animationDelay=(i*.03)+"s";
   b.innerHTML=`<span class="e">${e}</span>${w}`;b.onclick=()=>on(b);return b}
@@ -124,5 +125,10 @@ function ask(){const slots=document.querySelectorAll("#mSlots div");slots.forEac
 document.getElementById("startBme").onclick=()=>{mRight=0;document.getElementById("mScore").textContent="";document.getElementById("bmeM").classList.add("show");mRound()};
 document.getElementById("mHear").onclick=()=>say(mW[0]);
 </script>
+<script>
+window.NAJMA_PROGRESS=()=>{const ws=AV.flatMap(v=>W[v]).map(x=>x[0]);return{done:ws.filter(w=>prog.d[w]).length,total:ws.length}};
+window.NAJMA_RESET=()=>localStorage.removeItem("cvcDone");
+</script>
+<script src="extras.js?v=8"></script>
 </body>
 </html>

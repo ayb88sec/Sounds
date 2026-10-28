@@ -20,7 +20,11 @@
   const DEFSEC=[{id:"spell1",title:"Spelling",icon:"🐝",lang:"en",words:["antiseptic","antibiotic","baby","bad","bear"]}];
   let sections;try{sections=JSON.parse(G.call(localStorage,"najma:sections")||"null")}catch(e){}
   if(!Array.isArray(sections))sections=DEFSEC;
-  window.NAJMA={me,profiles,sections,DEFSEC,settings:Object.assign({},DEF,me||{},{apps:Object.assign({},DEF.apps,(me&&me.apps)||{})}),DEF,
+  /* levels the parent can switch on per child; default: all on */
+  const LEVELS={arabic:["ا – خ","د – ص","ض – ق","ك – ي","الكلمات البصرية"],sounds:["Set 1","Special friends"],cvc:["a","e","i","o","u"],
+    sent:["Level 1","Level 2","Level 3","Level 4"],shapes:["Level 1","Level 2","Level 3"],writeEn:["abc","ABC","123"]};
+  const lv=app=>{const L=me&&me.levels&&me.levels[app];return Array.isArray(L)&&L.length?L:LEVELS[app].map((_,i)=>i)};
+  window.NAJMA={LEVELS,lv,me,profiles,sections,DEFSEC,settings:Object.assign({},DEF,me||{},{apps:Object.assign({},DEF.apps,(me&&me.apps)||{})}),DEF,
     raw:{get:k=>G.call(localStorage,k),set:(k,v)=>SET.call(localStorage,k,v),remove:k=>RM.call(localStorage,k)}};
   /* name chip next to the home button on every page */
   if(me&&!/home\.html$/.test(location.pathname)){document.addEventListener("DOMContentLoaded",()=>{

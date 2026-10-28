@@ -55,7 +55,7 @@ h1{font-weight:800;font-size:clamp(40px,10vw,64px);margin:0;line-height:1.15;col
 @keyframes glow{0%,100%{filter:none}50%{filter:brightness(1.25);transform:translateY(-6px)}}
 .base{background:#fff;height:26px;border-radius:6px;margin:0 -10px}
 .base2{background:rgba(255,255,255,.7);height:16px;border-radius:6px;margin:4px -20px 0}
-.count{color:#fff;text-align:center;font-weight:700;font-size:20px;margin-top:14px}
+.count{display:none}
 
 /* modal */
 .modal{position:fixed;inset:0;background:rgba(15,25,70,.55);display:none;align-items:center;justify-content:center;z-index:20;padding:14px}
@@ -258,5 +258,10 @@ document.getElementById("game").onclick=()=>{startGame();gm.classList.add("show"
 document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m||e.target.hasAttribute("data-close")){m.classList.remove("show");if(curAudio)curAudio.pause()}}));
 document.getElementById("reset").onclick=()=>{done={};save();document.querySelectorAll(".col.done").forEach(c=>c.classList.remove("done"));update();talk("بداية جديدة! 🚀")};
 </script>
+<script>
+window.NAJMA_PROGRESS=()=>({done:Object.keys(done).length,total:N});
+window.NAJMA_RESET=()=>localStorage.removeItem("islamDone");
+</script>
+<script src="extras.js?v=8"></script>
 </body>
 </html>

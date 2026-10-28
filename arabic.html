@@ -198,7 +198,8 @@ const W=[
  ["اللّٰه","اللَّه",""],["أَنا","أَنَا","🙋"],["أُمّي","أُمِّي","👩"],["أَبي","أَبِي","👨"],["أَخي","أَخِي","👦"],
  ["أُخْتي","أُخْتِي","👧"],["نَعَم","نَعَم","👍"],["لا","لَا","✋"],["نَحْنُ","نَحْنُ","👨‍👩‍👧‍👦"],["أُحِبُّ","أُحِبُّ","❤️"]
 ];
-const TOTAL=28+10;
+const AL=NAJMA.lv("arabic"),LI=L.map((_,i)=>i).filter(i=>AL.includes(Math.floor(i/7))),WON=AL.includes(4);
+const TOTAL=LI.length+(WON?W.length:0);
 const NOJOIN="ادذرزو";
 const COLORS=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
 const praise=["أحسنت!","رائع!","ممتاز!","شاطر!","برافو!","يا سلام!","نجم!","عمل جميل!"];
@@ -281,16 +282,18 @@ pip.addEventListener("click",()=>{popSnd();const t=["هههه، دغدغتني!"
 
 /* grid */
 const grid=document.getElementById("grid");
-L.forEach(([ch,name],i)=>{const b=document.createElement("button");b.className="tile";b.dataset.i=i;b.dataset.k=ch;
+L.forEach(([ch,name],i)=>{if(!LI.includes(i))return;const b=document.createElement("button");b.className="tile";b.dataset.i=i;b.dataset.k=ch;
   b.style.background=col(i);b.style.animationDelay=(i*.03)+"s";b.innerHTML=`<b>${ch}</b><small>${name}</small>`;
   if(done[ch])b.classList.add("done");b.addEventListener("click",()=>openLetter(i,b));grid.appendChild(b)});
 
 const wgrid=document.getElementById("wgrid");
-W.forEach(([w,,emo],i)=>{const b=document.createElement("button");b.className="tile";b.dataset.w=i;b.dataset.k="w:"+w;
+if(!WON)wgrid.closest("section").style.display="none";
+if(!LI.length)grid.closest("section").style.display="none";
+W.forEach(([w,,emo],i)=>{if(!WON)return;const b=document.createElement("button");b.className="tile";b.dataset.w=i;b.dataset.k="w:"+w;
   b.style.background=col(i+2);b.style.animationDelay=(i*.04)+"s";b.innerHTML=`<b>${w}</b>${emo?`<small>${emo}</small>`:""}`;
   if(done["w:"+w])b.classList.add("done");b.addEventListener("click",()=>openWord(i,b));wgrid.appendChild(b)});
 
-function update(){const n=L.filter(([c])=>done[c]).length+W.filter(([w])=>done["w:"+w]).length,pct=n/TOTAL*100;
+function update(){const n=LI.filter(i=>done[L[i][0]]).length+(WON?W.filter(([w])=>done["w:"+w]).length:0),pct=n/TOTAL*100;
   document.getElementById("fill").style.width=pct+"%";
   document.getElementById("rocket").style.right=Math.max(4,Math.min(pct,94))+"%";
   document.getElementById("count").textContent=n===TOTAL?`🏆 أنهيت كل الحروف والكلمات! وصلت إلى القمر!`:`⭐ ${n} من ${TOTAL}، طِر بالصاروخ إلى القمر!`;
@@ -350,8 +353,8 @@ document.getElementById("surprise").addEventListener("click",()=>{
 /* game */
 const gm=document.getElementById("gameModal");let curLetter=0,gAns,gRight=0,gTotal=0,gLock=false;
 function newRound(){
-  gLock=false;const isW=Math.random()<.35;
-  const items=isW?W.map(([w,v])=>({t:w,key:"w:"+w,say:v,d:"w:"+w})):L.map(x=>({t:x[0],key:x[0]+"|n",say:x[5],d:x[0],nm:x[5]}));
+  gLock=false;const isW=WON&&(!LI.length||Math.random()<.35);
+  const items=isW?W.map(([w,v])=>({t:w,key:"w:"+w,say:v,d:"w:"+w})):LI.map(i=>L[i]).map(x=>({t:x[0],key:x[0]+"|n",say:x[5],d:x[0],nm:x[5]}));
   const idx=[...Array(items.length).keys()].sort(()=>Math.random()-.5).slice(0,4);gAns=items[idx[0]];
   const opts=idx.sort(()=>Math.random()-.5),box=document.getElementById("gOpts");box.innerHTML="";
   document.getElementById("gQ").textContent=isW?"أين هذه الكلمة؟":`أين حرف ${gAns.nm}؟`;
@@ -403,5 +406,11 @@ const muteBtn=document.getElementById("mute");const setMute=()=>muteBtn.textCont
 muteBtn.addEventListener("click",()=>{muted=!muted;try{localStorage.setItem("arMuted",muted?"1":"0")}catch(e){}setMute();if(muted&&hasTTS)speechSynthesis.cancel();popSnd()});
 document.getElementById("reset").addEventListener("click",()=>{done={};save();document.querySelectorAll(".tile.done").forEach(t=>t.classList.remove("done"));update();talk("بداية جديدة! يلا! 🚀")});
 </script>
+<script>
+window.NAJMA_HAS_ROCKET=true;
+window.NAJMA_PROGRESS=()=>({done:0,total:TOTAL});
+window.NAJMA_RESET=()=>localStorage.removeItem("arDone");
+</script>
+<script src="extras.js?v=8"></script>
 </body>
 </html>

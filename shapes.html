@@ -61,9 +61,10 @@ const SH=[
  {n:"pentagon",ar:"خماسي",s:5,c:5,ex:"🏠⚽",svg:`<polygon class="edge" points="${poly(5,42)}"/>`},
  {n:"hexagon",ar:"سداسي",s:6,c:6,ex:"🐝🍯🔩",svg:`<polygon class="edge" points="${poly(6,42,0)}"/>`}];
 const svg=(s,col)=>`<svg viewBox="0 0 100 100"><g fill="${col}" stroke="#fff" stroke-width="4" stroke-linejoin="round">${s.svg}</g></svg>`;
+const HL=NAJMA.lv("shapes");const lvOf=i=>i<4?0:i<8?1:2;const SHI=SH.map((_,i)=>i).filter(i=>HL.includes(lvOf(i)));
 const prog=KIT.store("shapesDone");
 const grid=document.getElementById("grid");
-function draw(){grid.innerHTML="";SH.forEach((s,i)=>{const b=document.createElement("button");b.className="tile"+(prog.d[s.n]?" done":"");b.style.background=COLORS[i%6];b.style.animationDelay=(i*.04)+"s";
+function draw(){grid.innerHTML="";SH.forEach((s,i)=>{if(!SHI.includes(i))return;const b=document.createElement("button");b.className="tile"+(prog.d[s.n]?" done":"");b.style.background=COLORS[i%6];b.style.animationDelay=(i*.04)+"s";
   b.innerHTML=`${svg(s,"rgba(255,255,255,.95)")}<span>${s.n}</span><small>${s.ar}</small>`;b.querySelector("g").setAttribute("stroke",COLORS[i%6]);b.onclick=()=>open(i,b);grid.appendChild(b)})}
 draw();
 function open(i,el){const s=SH[i];pop();if(el)burstAt(el);document.getElementById("sSvg").innerHTML=svg(s,COLORS[i%6]);
@@ -75,14 +76,14 @@ function open(i,el){const s=SH[i];pop();if(el)burstAt(el);document.getElementByI
   const line=`This is a ${s.n}. It has ${s.s===0?"no straight sides":s.s+" sides"} and ${s.c===0?"no corners":s.c+(s.c===1?" corner":" corners")}.`;
   document.getElementById("sHear").onclick=()=>say(line,.8);
   document.getElementById("sm").classList.add("show");setTimeout(()=>say(line,.8),300);prog.d[s.n]=1;prog.save();
-  const t=grid.children[i];if(t)t.classList.add("done");talk(`${s.n}! ${rnd(PRAISE)}`)}
+  draw();talk(`${s.n}! ${rnd(PRAISE)}`)}
 /* games */
 let ans,right=0,lock=false,mode="find";
 function round(){lock=false;const box=document.getElementById("gOpts");box.innerHTML="";
-  if(mode==="find"){const pick=shuffle(SH).slice(0,4);ans=pick[0];document.getElementById("gQ").textContent=`Find the ${ans.n}!`;document.getElementById("gSvg").innerHTML="";say(`Find the ${ans.n}`);
+  if(mode==="find"){const pick=shuffle(SHI.map(i=>SH[i])).slice(0,Math.min(4,SHI.length));ans=pick[0];document.getElementById("gQ").textContent=`Find the ${ans.n}!`;document.getElementById("gSvg").innerHTML="";say(`Find the ${ans.n}`);
     shuffle(pick).forEach((s,k)=>{const b=document.createElement("button");b.innerHTML=svg(s,"#fff");b.style.background=COLORS[k+1];b.querySelector("g").setAttribute("stroke",COLORS[k+1]);
       b.onclick=()=>check(b,s===ans,ans.n);box.appendChild(b)})}
-  else{const pool=SH.filter(s=>[3,4,5,6].includes(s.s));ans=rnd(pool);document.getElementById("gQ").textContent="How many sides?";
+  else{let pool=SHI.map(i=>SH[i]).filter(s=>[3,4,5,6].includes(s.s));if(!pool.length)pool=SH.filter(s=>[3,4].includes(s.s));ans=rnd(pool);document.getElementById("gQ").textContent="How many sides?";
     document.getElementById("gSvg").innerHTML=svg(ans,COLORS[Math.floor(Math.random()*6)]);say("How many sides?");
     [3,4,5,6].forEach((n,k)=>{const b=document.createElement("button");b.textContent=n;b.style.background=COLORS[k+1];b.onclick=()=>check(b,n===ans.s,`${n} sides`);box.appendChild(b)})}}
 function check(b,ok,word){if(lock)return;if(ok){lock=true;right++;b.classList.add("right");fanfare();burstAt(b);say(word);talk(rnd(PRAISE));
@@ -90,5 +91,10 @@ function check(b,ok,word){if(lock)return;if(ok){lock=true;right++;b.classList.ad
 document.getElementById("game").onclick=()=>{mode="find";right=0;document.getElementById("gScore").textContent="";document.getElementById("gm").classList.add("show");round()};
 document.getElementById("count").onclick=()=>{mode="count";right=0;document.getElementById("gScore").textContent="";document.getElementById("gm").classList.add("show");round()};
 </script>
+<script>
+window.NAJMA_PROGRESS=()=>({done:SHI.filter(i=>prog.d[SH[i].n]).length,total:SHI.length});
+window.NAJMA_RESET=()=>localStorage.removeItem("shapesDone");
+</script>
+<script src="extras.js?v=8"></script>
 </body>
 </html>

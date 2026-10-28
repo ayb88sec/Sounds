@@ -134,6 +134,10 @@ ROWS.push({t:"✏️ اسمي · My name",apps:[{id:"name",href:"name.html",glyp
 NAJMA.sections.forEach((s,k)=>{const row=ROWS[s.lang==="ar"?0:2];row.apps.push({id:"s:"+s.id,href:"words.html?s="+encodeURIComponent(s.id),glyph:s.icon||"📝",name:s.title,
   sub:s.words.length+(s.lang==="ar"?" كلمات":" words"),bg:["linear-gradient(150deg,#ffcf3c,#ff6f91)","linear-gradient(150deg,#4f8bff,#a66bff)","linear-gradient(150deg,#22c7b8,#3fc35a)"][k%3],key:"sec_"+s.id,total:s.words.length})});
 const box=document.getElementById("apps");
+/* rings follow the levels switched on for this child */
+const sumLv=(app,sizes)=>NAJMA.lv(app).reduce((s,i)=>s+(sizes[i]||0),0);
+const LT={arabic:sumLv("arabic",[7,7,7,7,10]),sounds:sumLv("sounds",[25,7]),cvc:sumLv("cvc",[12,10,10,10,10]),sent:sumLv("sent",[4,4,4,4]),shapes:sumLv("shapes",[4,4,2]),writeEn:sumLv("writeEn",[26,26,10])};
+ROWS.forEach(r=>r.apps.forEach(a=>{if(LT[a.id]!=null)a.total=LT[a.id];if(a.id==="numAr"||a.id==="numEn")a.total=NAJMA.settings.numMax||20}));
 const ROWS2=ROWS;let stars=0,full=0;const seen=new Set();let i=0;
 ROWS.forEach(row=>{if(!row.apps.some(a=>NAJMA.settings.apps[a.id]!==false))return;const hd=document.createElement("div");hd.className="rowt";hd.textContent=row.t;box.appendChild(hd);
 row.apps.filter(a=>NAJMA.settings.apps[a.id]!==false).forEach(a=>{i++;

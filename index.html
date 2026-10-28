@@ -186,7 +186,9 @@ const set2=[
  ["sh","uidyEWDa/wLaECRmM"],["th","VpHeEpQB/rEgK8gnQ"],["ch","01g8r0t5/yEzrqC5u"],["qu","EXGnlqb3/rt4Pfn9G"],
  ["ng","G48aum0u/iWkXwYEb"],["nk","SX5kHdX5/X71urvdO"],["ck","QHSEcTAM/bbKIYLoa"]
 ];
-const ALL=[...set1,...set2];
+const EL=NAJMA.lv("sounds");const ALL=[...(EL.includes(0)?set1:[]),...(EL.includes(1)?set2:[])];
+if(!EL.includes(0))document.getElementById("set1").closest("section").style.display="none";
+if(!EL.includes(1))document.getElementById("set2").closest("section").style.display="none";
 const COLORS=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
 const cheers=["Super star!","Amazing!","You did it!","Wow, great listening!","Brilliant!","High five! ✋","So clever!","Keep going!","Yay!","Fantastic!"];
 const tapLines=["Say it 3 times: loud, quiet, silly!","Can you think of a word with that sound?","Watch my mouth… now yours!","Sound it out!"];
@@ -274,7 +276,7 @@ setInterval(()=>{const t=document.querySelectorAll(".tile");const x=t[Math.floor
 const modal=document.getElementById("modal");let spinning=false;
 document.getElementById("surprise").addEventListener("click",()=>{
   if(spinning)return;spinning=true;
-  const tiles=[...document.querySelectorAll(".tile")];
+  const tiles=[...document.querySelectorAll(".tile")].filter(x=>x.offsetParent);
   const pending=tiles.filter(t=>!done[t.dataset.s]);
   const pool=pending.length?pending:tiles;
   const target=pool[Math.floor(Math.random()*pool.length)];
@@ -316,5 +318,11 @@ document.getElementById("writeBtn").addEventListener("click",()=>{popSnd();const
   WritePad.open({items,index:0,lang:"en",rtl:false,font:'"Andika"',yShift:.44,
     onStar:(it,s,res)=>{if(s>=2){fanfare();burst(innerWidth/2,innerHeight/2,50);try{const w=JSON.parse(localStorage.getItem("enWrite")||"{}");w[it]=1;localStorage.setItem("enWrite",JSON.stringify(w))}catch(e){}}}})});
 </script>
+<script>
+window.NAJMA_HAS_ROCKET=true;
+window.NAJMA_PROGRESS=()=>({done:0,total:ALL.length});
+window.NAJMA_RESET=()=>{localStorage.removeItem("soundsDone");localStorage.removeItem("enWrite")};
+</script>
+<script src="extras.js?v=8"></script>
 </body>
 </html>

@@ -239,5 +239,10 @@ document.getElementById("sHear").onclick=()=>sayW(word);
 document.getElementById("sPeek").onclick=()=>{peeks++;const sh=document.getElementById("sShow");sh.style.opacity=1;setTimeout(()=>sh.style.opacity=0,1200)};
 document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m||e.target.hasAttribute("data-close")){m.classList.remove("show");try{speechSynthesis.cancel()}catch(e){}}}));
 </script>
+<script>
+window.NAJMA_PROGRESS=()=>({done:WORDS.filter(w=>done[w]).length,total:WORDS.length});
+window.NAJMA_RESET=()=>localStorage.removeItem(KEY);
+</script>
+<script src="extras.js?v=8"></script>
 </body>
 </html>
