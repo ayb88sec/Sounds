@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<script src="profile.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<title>اسمي · My name</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@700&family=Baloo+Bhaijaan+2:wght@600;800&display=swap">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif;color:#2b2340;min-height:100vh;
+  background:linear-gradient(160deg,#3fc35a,#22c7b8 45%,#4f8bff);background-attachment:fixed}
+main{max-width:760px;margin:0 auto;padding:16px 14px 40px;text-align:center}
+h1{font-weight:800;font-size:clamp(40px,10vw,60px);margin:0;color:#fff;text-shadow:0 4px 0 rgba(0,0,0,.18)}
+.av{font-size:90px;line-height:1.1;animation:bob 2.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-8px) rotate(4deg)}}
+.card{background:#fff;border-radius:30px;padding:16px;margin-top:18px;box-shadow:0 10px 0 rgba(0,0,0,.1)}
+.card h2{margin:0;font-size:22px;color:#7a7090}
+.nm{font-size:clamp(48px,14vw,90px);font-weight:800;line-height:1.3;margin:4px 0}
+.nm.en{font-family:"Andika";direction:ltr}
+.letters{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+.letters button{font-family:inherit;font-size:30px;font-weight:700;border:0;border-radius:14px;min-width:50px;height:58px;color:#fff;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.en .letters button,.letters.en button{font-family:"Andika"}
+.btn{font-family:inherit;font-size:21px;font-weight:800;border:0;border-radius:999px;padding:12px 22px;cursor:pointer;color:#fff;background:#ff5d73;box-shadow:0 6px 0 #c93a50;margin:4px}
+.btn.b{background:#4f8bff;box-shadow:0 6px 0 #2f63c9}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 rgba(0,0,0,.2)}
+.empty{background:#fff;border-radius:24px;padding:20px;margin-top:20px;font-size:20px}
+</style>
+</head>
+<body>
+<a href="home.html" id="homeBtn" aria-label="Home" style="position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;z-index:15;width:52px;height:52px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18)">🏠</a>
+<main id="main">
+  <h1>اسمي · <bdi dir="ltr">My name</bdi></h1>
+  <div class="av" id="av">⭐</div>
+</main>
+<script src="writepad.js"></script>
+<script>
+const me=NAJMA.me,COLORS=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
+let ac;function tone(f,d,w=0){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type="triangle";
+  o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(.15,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
+const fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12));
+let voice=null;function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}
+if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
+function sayEn(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.75;speechSynthesis.speak(u)}catch(e){}}
+const main=document.getElementById("main");
+if(me)document.getElementById("av").textContent=me.avatar||"⭐";
+const ar=me&&(me.nameAr||(/[؀-ۿ]/.test(me.name)?me.name:"")),en=me&&(me.nameEn||(/[A-Za-z]/.test(me.name)?me.name:""));
+function block(name,isAr){const c=document.createElement("div");c.className="card";
+  const letters=[...name].filter(ch=>ch!==" ");
+  c.innerHTML=`<h2>${isAr?"اسمي بالعربي":"My name in English"}</h2><div class="nm ${isAr?"":"en"}">${name}</div>
+    <div class="letters ${isAr?"":"en"}" dir="${isAr?"rtl":"ltr"}"></div>
+    <button class="btn">${isAr?"✏️ اكتب اسمي":"✏️ Write my name"}</button><button class="btn b">${isAr?"✏️ حرفًا حرفًا":"✏️ Letter by letter"}</button>`;
+  const L=c.querySelector(".letters");letters.forEach((ch,i)=>{const b=document.createElement("button");b.textContent=ch;b.style.background=COLORS[i%6];
+    b.onclick=()=>{tone(500+i*60,.15);if(!isAr)sayEn(ch)};L.appendChild(b)});
+  if(!isAr)c.querySelector(".nm").onclick=()=>sayEn(name);
+  const font=isAr?'"Baloo Bhaijaan 2"':'"Andika"';
+  const done=(it,s,res)=>{if(s>=2)fanfare()};
+  c.querySelectorAll(".btn")[0].onclick=()=>WritePad.open({items:[name],lang:isAr?"ar":"en",rtl:isAr,font,aspect:2.4,yShift:isAr?.48:.45,onSay:isAr?null:sayEn,onStar:done});
+  c.querySelectorAll(".btn")[1].onclick=()=>WritePad.open({items:letters,lang:isAr?"ar":"en",rtl:isAr,font,yShift:isAr?.46:.44,onSay:isAr?null:sayEn,onStar:done});
+  main.appendChild(c)}
+if(ar)block(ar,true);
+if(en)block(en,false);
+if(!ar&&!en){const d=document.createElement("div");d.className="empty";d.textContent="اطلب من ماما أو بابا إضافة اسمك من صفحة الوالدين ⚙️";main.appendChild(d)}
+</script>
+</body>
+</html>

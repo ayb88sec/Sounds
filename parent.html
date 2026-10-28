@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<script src="profile.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<title>بوابة الوالدين · نجمة</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif;color:#2b2340;background:#f4f1fb;min-height:100vh}
+header{background:linear-gradient(135deg,#6a5cff,#8f6bff 60%,#ff7eb6);color:#fff;padding:calc(16px + env(safe-area-inset-top)) 18px 16px;display:flex;align-items:center;gap:12px}
+header img{width:48px;height:48px;border-radius:14px}
+header h1{margin:0;font-size:26px;flex:1}
+header a{color:#fff;text-decoration:none;background:rgba(255,255,255,.22);border-radius:14px;padding:8px 14px;font-weight:800}
+nav{display:flex;gap:6px;padding:12px 14px 0;max-width:860px;margin:0 auto}
+nav button{flex:1;font-family:inherit;font-size:18px;font-weight:800;border:0;border-radius:16px 16px 0 0;padding:12px 6px;background:#e6e0f5;color:#6a5cff;cursor:pointer}
+nav button.on{background:#fff;color:#2b2340}
+main{max-width:860px;margin:0 auto;padding:0 14px 60px}
+.panel{background:#fff;border-radius:0 0 22px 22px;padding:16px;display:none}
+.panel.on{display:block}
+.row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:18px;background:#f8f6fd;margin-bottom:10px}
+.row .av{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;flex:none}
+.row .info{flex:1;min-width:0}
+.row .info b{font-size:21px;display:block}
+.row .info small{color:#7a7090;font-size:15px}
+.bars{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.bars span{font-size:13px;background:#ece8ff;border-radius:999px;padding:1px 8px}
+.b{font-family:inherit;font-size:17px;font-weight:800;border:0;border-radius:999px;padding:9px 16px;cursor:pointer;background:#ece8ff;color:#2b2340}
+.b.go{background:#3fc35a;color:#fff}
+.b.add{background:#6a5cff;color:#fff;width:100%;padding:14px;font-size:20px;border-radius:18px}
+.b.del{background:#ffe1e6;color:#c93a50}
+label{display:block;font-weight:800;color:#7a7090;margin:14px 2px 6px}
+.in,textarea,select{width:100%;font-family:inherit;font-size:20px;border:3px solid #e6def8;border-radius:14px;padding:8px 12px;outline:none;background:#fff}
+textarea{min-height:160px;line-height:1.5}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{font-family:inherit;border:3px solid transparent;border-radius:14px;padding:6px 12px;font-size:16px;font-weight:700;background:#f3f0fa;cursor:pointer;color:#2b2340}
+.chips button.on{border-color:#6a5cff;background:#ece8ff}
+.chips.av button{font-size:28px;padding:2px 8px}
+.chips .sw{width:38px;height:38px;border-radius:50%;padding:0}
+.chips .sw.on{border-color:#2b2340}
+.sheet{position:fixed;inset:0;background:rgba(30,15,70,.55);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.sheet.show{display:flex}
+.sheet .in-s{background:#fff;border-radius:26px 26px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));width:100%;max-width:640px;max-height:92vh;overflow:auto;animation:up .3s}
+@keyframes up{from{transform:translateY(60px);opacity:0}}
+.sheet h3{margin:0 0 4px;font-size:24px}
+.actions{display:flex;gap:8px;justify-content:space-between;margin-top:18px}
+.gate{position:fixed;inset:0;background:linear-gradient(135deg,#6a5cff,#ff7eb6);display:flex;align-items:center;justify-content:center;z-index:40}
+.gate .box{background:#fff;border-radius:26px;padding:22px;text-align:center;width:300px}
+.gate .q{font-size:34px;font-weight:800;margin:6px 0}
+.note{background:#fff8dc;border-radius:16px;padding:12px 14px;font-size:16px;line-height:1.6;margin:10px 0}
+#qr{display:flex;justify-content:center;margin:14px 0}
+#qr img,#qr canvas{border:10px solid #fff;border-radius:12px;max-width:100%}
+.link{direction:ltr;font-size:12px;word-break:break-all;background:#f3f0fa;border-radius:12px;padding:8px;max-height:80px;overflow:auto}
+.ok{color:#2a9442;font-weight:800}
+</style>
+</head>
+<body>
+<div class="gate" id="gate"><div class="box">
+  <div style="font-size:44px">👨‍👩‍👧</div><h2 style="margin:0">للوالدين فقط</h2>
+  <div class="q" id="gq" dir="ltr"></div>
+  <input class="in" id="ga" inputmode="numeric" style="text-align:center;font-size:28px">
+  <div style="display:flex;gap:8px;margin-top:12px"><a class="b" href="home.html" style="text-decoration:none;flex:1">رجوع</a><button class="b go" id="gok" style="flex:1">دخول</button></div>
+</div></div>
+
+<header><img src="icon.png" alt=""><h1>بوابة الوالدين</h1><a href="home.html">🏠 التطبيق</a></header>
+<nav><button data-t="kids" class="on">👧 الأطفال</button><button data-t="secs">📚 الأقسام</button><button data-t="sync">📲 المزامنة</button></nav>
+<main>
+  <div class="panel on" id="kids"><div id="kidList"></div><button class="b add" id="addKid">➕ إضافة طفل</button></div>
+  <div class="panel" id="secs">
+    <div class="note">أضف قوائم كلمات خاصة بك: إملاء، كلمات المدرسة، أو أي قسم جديد. كل قسم يظهر كتطبيق على الشاشة الرئيسية، مع تهجئة وكتابة وتسجيل.</div>
+    <div id="secList"></div><button class="b add" id="addSec">➕ إضافة قسم</button></div>
+  <div class="panel" id="sync">
+    <div class="note"><b>لماذا؟</b> كل جهاز يحفظ الإعدادات لديه. بعد أي تعديل هنا، افتح الرابط التالي على آيباد كل طفل (أو امسح الرمز بكاميرا الآيباد) لنقل الأطفال والأقسام إليه. التقدّم والنجوم على كل جهاز تبقى كما هي.</div>
+    <div id="qr"></div>
+    <div class="link" id="link"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <button class="b go" id="copy">📋 نسخ الرابط</button>
+      <a class="b" id="open" style="text-decoration:none">↗️ فتح الرابط</a>
+    </div>
+    <div id="syncInfo" style="margin-top:12px;color:#7a7090"></div>
+  </div>
+</main>
+
+<div class="sheet" id="kidSheet"><div class="in-s">
+  <h3 id="kT"></h3>
+  <label>الاسم الظاهر</label><input class="in" id="kName" maxlength="16" dir="auto">
+  <div class="two"><div><label>الاسم بالعربي</label><input class="in" id="kAr" maxlength="20" dir="rtl"></div>
+    <div><label>Name in English</label><input class="in" id="kEn" maxlength="20" dir="ltr"></div></div>
+  <label>الصورة</label><div class="chips av" id="kAv"></div>
+  <label>اللون</label><div class="chips" id="kCol"></div>
+  <label>التطبيقات الظاهرة</label><div class="chips" id="kApps"></div>
+  <label>الأرقام حتى</label><div class="chips" id="kNum"></div>
+  <label>مجموعات Sight Words</label><div class="chips" id="kSight" dir="ltr"></div>
+  <div class="actions"><button class="b del" id="kDel">🗑️ حذف</button><span><button class="b" data-close>إلغاء</button> <button class="b go" id="kSave">حفظ</button></span></div>
+</div></div>
+
+<div class="sheet" id="secSheet"><div class="in-s">
+  <h3 id="sT"></h3>
+  <label>اسم القسم</label><input class="in" id="sTitle" maxlength="24" dir="auto">
+  <label>الأيقونة</label><div class="chips av" id="sIcon"></div>
+  <label>اللغة</label><div class="chips" id="sLang"></div>
+  <label>الكلمات (كلمة في كل سطر)</label><textarea id="sWords" dir="auto"></textarea>
+  <div class="actions"><button class="b del" id="sDel">🗑️ حذف</button><span><button class="b" data-close>إلغاء</button> <button class="b go" id="sSave">حفظ</button></span></div>
+</div></div>
+
+<script>
+const R=NAJMA.raw;
+let profs=NAJMA.profiles.slice(),secs=JSON.parse(JSON.stringify(NAJMA.sections));
+const AV=["🦁","🐼","🦊","🐰","🐯","🦄","🐬","🐻","🐸","🐨","🦋","🚀","⚽","🌸","👑","🦖"];
+const PC=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a","#ff7eb6","#2b2340"];
+const ICONS=["🐝","📝","📚","✏️","🍎","🌟","🧠","🏫","🔤","🌍","🧪","🎵"];
+const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["sight","Sight Words"],["numEn","Numbers"]];
+const PROG=[["arDone","حروفي",38],["numDoneAr","الأرقام",20],["islamDone","الإسلام",5],["imanDone","الإيمان",6],["soundsDone","Sounds",32],["sightDone","Sight",92],["numDoneEn","Numbers",20]];
+const saveP=()=>R.set("najma:profiles",JSON.stringify(profs));
+const saveS=()=>R.set("najma:sections",JSON.stringify(secs));
+const $=id=>document.getElementById(id);
+
+/* gate */
+const ga=3+Math.floor(Math.random()*7),gb=4+Math.floor(Math.random()*6);$("gq").textContent=`${ga} + ${gb} = ?`;
+$("gok").onclick=()=>{const v=$("ga").value.replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d));if(+v===ga+gb)$("gate").remove();else{$("ga").value="";$("ga").placeholder="❌"}};
+$("ga").addEventListener("keydown",e=>{if(e.key==="Enter")$("gok").click()});
+
+/* tabs */
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button,.panel").forEach(x=>x.classList.remove("on"));b.classList.add("on");$(b.dataset.t).classList.add("on");if(b.dataset.t==="sync")drawSync()});
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>document.querySelectorAll(".sheet").forEach(s=>s.classList.remove("show")));
+
+function count(id,key){try{const v=JSON.parse(R.get(`najma:${id}:${key}`)||"{}");return Object.keys(v).length}catch(e){return 0}}
+function chips(id,list,isOn,onTap,cls){const box=$(id);box.innerHTML="";box.className="chips"+(cls?" "+cls:"");
+  list.forEach((it,k)=>{const b=document.createElement("button");if(typeof it==="string"&&it.startsWith("#")){b.className="sw";b.style.background=it}else b.textContent=it;
+    if(isOn(it,k))b.classList.add("on");b.onclick=()=>{onTap(it,k);chips(id,list,isOn,onTap,cls)};box.appendChild(b)})}
+
+/* children */
+function drawKids(){const L=$("kidList");L.innerHTML="";
+  if(!profs.length)L.innerHTML='<div class="note">لا يوجد أطفال بعد. اضغط ➕ لإضافة أول طفل.</div>';
+  profs.forEach(p=>{const d=document.createElement("div");d.className="row";
+    const prog=PROG.filter(([k])=>p.apps?p.apps[{arDone:"arabic",numDoneAr:"numAr",islamDone:"islam",imanDone:"iman",soundsDone:"sounds",sightDone:"sight",numDoneEn:"numEn"}[k]]!==false:true)
+      .map(([k,n,t])=>`<span>${n} ${Math.min(count(p.id,k),t)}/${t}</span>`).join("")+
+      secs.filter(s=>!p.apps||p.apps["s:"+s.id]!==false).map(s=>`<span>${s.icon} ${s.title} ${count(p.id,"sec_"+s.id)}/${s.words.length}</span>`).join("");
+    d.innerHTML=`<div class="av" style="background:${p.color}">${p.avatar}</div><div class="info"><b dir="auto">${p.name}</b>
+      <small dir="auto">${[p.nameAr,p.nameEn].filter(Boolean).join(" · ")}</small><div class="bars">${prog}</div></div><button class="b">✏️ تعديل</button>`;
+    d.querySelector("button").onclick=()=>editKid(p);L.appendChild(d)})}
+let ed;
+function editKid(p){
+  ed=p?JSON.parse(JSON.stringify(p)):{id:"k"+Date.now().toString(36),name:"",nameAr:"",nameEn:"",avatar:AV[profs.length%AV.length],color:PC[profs.length%PC.length],apps:{},numMax:20,sightGroups:[0,1,2,3,4,5,6,7,8]};
+  ed.apps=ed.apps||{};if(!ed.sightGroups)ed.sightGroups=[0,1,2,3,4,5,6,7,8];if(!ed.numMax)ed.numMax=20;
+  $("kT").textContent=p?"تعديل "+p.name:"طفل جديد";$("kName").value=ed.name;$("kAr").value=ed.nameAr||"";$("kEn").value=ed.nameEn||"";
+  $("kDel").style.visibility=p?"visible":"hidden";
+  chips("kAv",AV,a=>a===ed.avatar,a=>ed.avatar=a,"av");
+  chips("kCol",PC,c=>c===ed.color,c=>ed.color=c);
+  const apps=[...BUILT,...secs.map(s=>["s:"+s.id,`${s.icon} ${s.title}`])];
+  chips("kApps",apps.map(a=>a[1]),(x,k)=>ed.apps[apps[k][0]]!==false,(x,k)=>{const id=apps[k][0];ed.apps[id]=ed.apps[id]===false});
+  chips("kNum",["١٠ / 10","٢٠ / 20"],(x,k)=>ed.numMax===(k?20:10),(x,k)=>ed.numMax=k?20:10);
+  chips("kSight",["1","2","3","4","5","6","7","8","9"],(x,k)=>ed.sightGroups.includes(k),(x,k)=>{ed.sightGroups=ed.sightGroups.includes(k)?ed.sightGroups.filter(v=>v!==k):[...ed.sightGroups,k].sort((a,b)=>a-b)});
+  $("kidSheet").classList.add("show")}
+$("addKid").onclick=()=>editKid(null);
+$("kSave").onclick=()=>{ed.nameAr=$("kAr").value.trim();ed.nameEn=$("kEn").value.trim();ed.name=$("kName").value.trim()||ed.nameAr||ed.nameEn||"بطل";
+  const first=!profs.length,i=profs.findIndex(p=>p.id===ed.id);if(i>=0)profs[i]=ed;else profs.push(ed);saveP();
+  if(first){for(let k=0;k<localStorage.length;k++){const key=localStorage.key(k);if(key&&!key.startsWith("najma:"))R.set(`najma:${ed.id}:${key}`,R.get(key))}}
+  if(!R.get("najma:cur")||first)R.set("najma:cur",ed.id);
+  $("kidSheet").classList.remove("show");drawKids()};
+$("kDel").onclick=()=>{if(!confirmDel(ed.name))return;profs=profs.filter(p=>p.id!==ed.id);saveP();
+  for(let k=localStorage.length-1;k>=0;k--){const key=localStorage.key(k);if(key&&key.startsWith(`najma:${ed.id}:`))R.remove(key)}
+  if(R.get("najma:cur")===ed.id){if(profs.length)R.set("najma:cur",profs[0].id);else R.remove("najma:cur")}
+  $("kidSheet").classList.remove("show");drawKids()};
+let delArm=0;function confirmDel(n){if(Date.now()-delArm<4000)return true;delArm=Date.now();$("kDel").textContent="⚠️ اضغط مرة ثانية للحذف";$("sDel").textContent="⚠️ اضغط مرة ثانية للحذف";
+  setTimeout(()=>{$("kDel").textContent="🗑️ حذف";$("sDel").textContent="🗑️ حذف"},4000);return false}
+
+/* sections */
+function drawSecs(){const L=$("secList");L.innerHTML="";
+  secs.forEach(s=>{const d=document.createElement("div");d.className="row";
+    d.innerHTML=`<div class="av" style="background:#fff3c4">${s.icon}</div><div class="info"><b dir="auto">${s.title}</b><small dir="auto">${s.lang==="ar"?"عربي":"English"} · ${s.words.length} كلمات: ${s.words.slice(0,6).join("، ")}${s.words.length>6?"…":""}</small></div><button class="b">✏️ تعديل</button>`;
+    d.querySelector("button").onclick=()=>editSec(s);L.appendChild(d)})}
+let es;
+function editSec(s){es=s?JSON.parse(JSON.stringify(s)):{id:"s"+Date.now().toString(36),title:"",icon:"📝",lang:"en",words:[]};
+  $("sT").textContent=s?"تعديل "+s.title:"قسم جديد";$("sTitle").value=es.title;$("sWords").value=es.words.join("\n");$("sDel").style.visibility=s?"visible":"hidden";
+  chips("sIcon",ICONS,i=>i===es.icon,i=>es.icon=i,"av");
+  chips("sLang",["English","عربي"],(x,k)=>es.lang===(k?"ar":"en"),(x,k)=>{es.lang=k?"ar":"en";$("sWords").dir=k?"rtl":"ltr"});
+  $("sWords").dir=es.lang==="ar"?"rtl":"ltr";$("secSheet").classList.add("show")}
+$("addSec").onclick=()=>editSec(null);
+$("sSave").onclick=()=>{es.title=$("sTitle").value.trim()||"قسم";es.words=$("sWords").value.split(/[\n,،]+/).map(w=>w.trim()).filter(Boolean);
+  const i=secs.findIndex(s=>s.id===es.id);if(i>=0)secs[i]=es;else secs.push(es);saveS();$("secSheet").classList.remove("show");drawSecs();drawKids()};
+$("sDel").onclick=()=>{if(!confirmDel(es.title))return;secs=secs.filter(s=>s.id!==es.id);saveS();$("secSheet").classList.remove("show");drawSecs();drawKids()};
+
+/* sync */
+function syncURL(){const js=JSON.stringify({profiles:profs,sections:secs});
+  const b=btoa(unescape(encodeURIComponent(js))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  return location.href.replace(/parent\.html.*$/,"home.html")+"#sync="+b}
+function drawSync(){const u=syncURL();$("link").textContent=u;$("open").href=u;$("qr").innerHTML="";
+  try{new QRCode($("qr"),{text:u,width:260,height:260,correctLevel:QRCode.CorrectLevel.L})}catch(e){$("qr").innerHTML='<div class="note">الرمز غير متاح الآن، استخدم زر النسخ.</div>'}
+  const t=R.get("najma:synced");$("syncInfo").textContent=t?"آخر مزامنة على هذا الجهاز: "+new Date(t).toLocaleString("ar"):""}
+$("copy").onclick=async()=>{try{await navigator.clipboard.writeText(syncURL());$("copy").textContent="✅ تم النسخ"}catch(e){$("copy").textContent="⚠️ انسخ الرابط يدويًا"}setTimeout(()=>$("copy").textContent="📋 نسخ الرابط",2500)};
+drawKids();drawSecs();
+</script>
+</body>
+</html>

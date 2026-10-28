@@ -4,12 +4,12 @@
 const css=`
 .wp-modal{position:fixed;inset:0;background:rgba(20,15,60,.6);display:none;align-items:center;justify-content:center;z-index:50;padding:10px}
 .wp-modal.show{display:flex}
-.wp-card{background:#fff;border-radius:30px;padding:14px 14px 16px;width:100%;max-width:560px;text-align:center;position:relative;animation:wpzoom .4s cubic-bezier(.3,1.6,.5,1)}
+.wp-card{background:#fff;border-radius:30px;padding:14px 14px 16px;width:100%;max-width:var(--wpw,560px);text-align:center;position:relative;animation:wpzoom .4s cubic-bezier(.3,1.6,.5,1)}
 @keyframes wpzoom{from{transform:scale(.4);opacity:0}}
 .wp-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
 .wp-title{font-size:24px;font-weight:800;font-family:inherit}
 .wp-x{border:0;background:#f0edf7;border-radius:50%;width:42px;height:42px;font-size:20px;cursor:pointer}
-.wp-stage{position:relative;width:100%;aspect-ratio:1;max-height:62vh;margin:0 auto;border-radius:24px;overflow:hidden;
+.wp-stage{position:relative;width:100%;aspect-ratio:var(--wpa,1);max-height:62vh;margin:0 auto;border-radius:24px;overflow:hidden;
   background:#fffdf5;box-shadow:inset 0 0 0 4px #ffe9a8;touch-action:none}
 .wp-stage canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
 .wp-lines{position:absolute;inset:0;background:repeating-linear-gradient(transparent 0 calc(25% - 2px),#ffe1e1 calc(25% - 2px) 25%)}
@@ -58,14 +58,15 @@ function build(){
   addEventListener("resize",()=>{if(m.classList.contains("show"))setup()});
 }
 function W(){return cv.width}
-function lw(){return W()*0.065}
+function H(){return cv.height}
+function lw(){return Math.min(W(),H())*0.065}
 function setup(){const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);
   cv.width=gcv.width=Math.round(r.width*d);cv.height=gcv.height=Math.round(r.height*d);drawGuide();redraw()}
-function fontFor(t,c,w){const len=[...t].length;let s=w*(len>2?0.5:len>1?0.62:0.78);c.font=`700 ${s}px ${o.font}`;
-  const mw=c.measureText(t).width;if(mw>w*0.86){s*=w*0.86/mw;c.font=`700 ${s}px ${o.font}`}return s}
-function glyph(c,t,mode){const w=c.canvas.width;c.save();c.textAlign="center";c.textBaseline="middle";c.direction=o.rtl?"rtl":"ltr";
-  fontFor(t,c,w);const y=w*(o.yShift||0.5);
-  if(mode==="guide"){c.fillStyle="rgba(150,140,180,.22)";c.fillText(t,w/2,y);c.setLineDash([w*.02,w*.018]);c.lineWidth=w*.006;c.strokeStyle="rgba(120,110,160,.55)";c.strokeText(t,w/2,y)}
+function fontFor(t,c,w,h){const len=[...t].length;let s=Math.min(h*(len>2?0.62:0.78),w*(len>2?0.5:len>1?0.62:0.78));if(o.aspect>1)s=h*0.7;c.font=`700 ${s}px ${o.font}`;
+  const mw=c.measureText(t).width;if(mw>w*0.88){s*=w*0.88/mw;c.font=`700 ${s}px ${o.font}`}return s}
+function glyph(c,t,mode){const w=c.canvas.width,hh=c.canvas.height;c.save();c.textAlign="center";c.textBaseline="middle";c.direction=o.rtl?"rtl":"ltr";
+  fontFor(t,c,w,hh);const y=hh*(o.yShift||0.5);
+  if(mode==="guide"){c.fillStyle="rgba(150,140,180,.22)";c.fillText(t,w/2,y);const mn=Math.min(w,hh);c.setLineDash([mn*.02,mn*.018]);c.lineWidth=mn*.006;c.strokeStyle="rgba(120,110,160,.55)";c.strokeText(t,w/2,y)}
   else if(mode==="fill"){c.fillStyle="#000";c.fillText(t,w/2,y)}
   else if(mode==="wide"){c.fillStyle="#000";c.strokeStyle="#000";c.lineJoin="round";c.lineWidth=lw()*1.6;c.strokeText(t,w/2,y);c.fillText(t,w/2,y)}
   c.restore()}
@@ -74,14 +75,15 @@ function redraw(c=ctx,width=lw()){c.clearRect(0,0,c.canvas.width,c.canvas.height
   for(const s of strokes){c.strokeStyle=c===ctx?s.c:"#000";c.lineWidth=width;c.beginPath();
     s.p.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));if(s.p.length===1){c.lineTo(s.p[0][0]+.1,s.p[0][1])}c.stroke()}}
 function clear(){strokes=[];redraw();m.querySelector(".wp-res").classList.remove("show")}
-function mask(fn){const c=document.createElement("canvas");c.width=c.height=W();const x=c.getContext("2d");fn(x);
-  const s=document.createElement("canvas");s.width=s.height=120;const y=s.getContext("2d");y.drawImage(c,0,0,120,120);
-  const d=y.getImageData(0,0,120,120).data,a=new Uint8Array(14400);for(let i=0;i<14400;i++)a[i]=d[i*4+3]>60?1:0;return a}
+let MW=120,MH=120;
+function mask(fn){const c=document.createElement("canvas");c.width=W();c.height=H();const x=c.getContext("2d");fn(x);
+  MW=120;MH=Math.max(30,Math.round(120*H()/W()));const s=document.createElement("canvas");s.width=MW;s.height=MH;const y=s.getContext("2d");y.drawImage(c,0,0,MW,MH);
+  const N=MW*MH,d=y.getImageData(0,0,MW,MH).data,a=new Uint8Array(N);for(let i=0;i<N;i++)a[i]=d[i*4+3]>60?1:0;return a}
 function check(){const lab=L[o.lang];const res=m.querySelector(".wp-res");
   if(!strokes.length){res.innerHTML=`<div>${lab.try}</div>`;res.classList.add("show");return}
   const target=mask(c=>glyph(c,items[idx],"fill")),allowed=mask(c=>glyph(c,items[idx],"wide")),
         inkThin=mask(c=>redraw(c,lw())),inkWide=mask(c=>redraw(c,lw()*2.2));
-  let t=0,cov=0,n=0,inside=0;for(let i=0;i<14400;i++){if(target[i]){t++;if(inkWide[i])cov++}if(inkThin[i]){n++;if(allowed[i])inside++}}
+  let t=0,cov=0,n=0,inside=0;for(let i=0;i<MW*MH;i++){if(target[i]){t++;if(inkWide[i])cov++}if(inkThin[i]){n++;if(allowed[i])inside++}}
   const coverage=t?cov/t:0,precision=n?inside/n:0;
   const stars=coverage>.72&&precision>.8?3:coverage>.5&&precision>.65?2:coverage>.3&&precision>.5?1:0;
   res.innerHTML=stars?`<b>${"⭐".repeat(stars)}</b><div>${stars>=3?lab.great:stars==2?lab.good:lab.try}</div>`:`<div style="font-size:60px">🤔</div><div>${lab.try}</div>`;
@@ -90,7 +92,8 @@ function go(i){if(i<0||i>=items.length)return;idx=i;strokes=[];showGuide=true;
   m.querySelector(".wp-title").textContent=`${L[o.lang].title}: ${items[idx]}`;
   m.querySelector(".wp-prev").style.visibility=i>0?"visible":"hidden";m.querySelector(".wp-next").style.visibility=i<items.length-1?"visible":"hidden";
   m.querySelector(".wp-res").classList.remove("show");drawGuide();redraw()}
-window.WritePad={open(opts){o=Object.assign({lang:"en",rtl:false,font:"sans-serif"},opts);items=o.items;idx=o.index||0;if(!m)build();
+window.WritePad={open(opts){o=Object.assign({lang:"en",rtl:false,font:"sans-serif",aspect:1},opts);items=o.items;idx=o.index||0;if(!m)build();
+  m.style.setProperty("--wpa",o.aspect);m.style.setProperty("--wpw",o.aspect>1?"900px":"560px");
   const lab=L[o.lang];m.dir=o.rtl?"rtl":"ltr";
   m.querySelector(".wp-clear").textContent=lab.clear;m.querySelector(".wp-guide").textContent=lab.guide;m.querySelector(".wp-check").textContent=lab.check;
   m.querySelector(".wp-prev").textContent=(o.rtl?"➡️ ":"⬅️ ")+lab.prev;m.querySelector(".wp-next").textContent=lab.next+(o.rtl?" ⬅️":" ➡️");
