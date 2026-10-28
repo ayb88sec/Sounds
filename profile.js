@@ -66,7 +66,7 @@
     if(home||Date.now()-last>120000)pull().then(ch=>{if(!ch){sessionStorage.removeItem("najma:reloaded");return}if(home&&!sessionStorage.getItem("najma:reloaded")){sessionStorage.setItem("najma:reloaded","1");location.reload()}})}
   /* database mode (supa.js filled in): a child's iPad syncs its own settings and stars */
   const SB=window.SUPA&&SUPA.url?SUPA:null,DEV=G.call(localStorage,"najma:dev");window.NAJMA.db=!!SB;
-  async function rpc(fn,args){const r=await fetch(`${SB.url}/rest/v1/rpc/${fn}`,{method:"POST",headers:{apikey:SB.key,Authorization:"Bearer "+SB.key,"Content-Type":"application/json"},body:JSON.stringify(args)});
+  async function rpc(fn,args){const r=await fetch(`${SB.url}/rest/v1/rpc/${fn}`,{method:"POST",headers:Object.assign({apikey:SB.key,"Content-Type":"application/json"},/^eyJ/.test(SB.key)?{Authorization:"Bearer "+SB.key}:{}),body:JSON.stringify(args)});
     if(!r.ok)throw new Error(r.status);const t=await r.text();return t?JSON.parse(t):null}
   window.NAJMA.rpc=SB?rpc:null;
   if(SB&&DEV){const isProg=k=>typeof k==="string"&&!k.startsWith("najma:");
