@@ -27,13 +27,16 @@ const rain=()=>{for(let i=0;i<120;i++)setTimeout(()=>burst(Math.random()*innerWi
 let voice=null;function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}
 if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
 let curAudio=null;
-function say(t,rate=.8){try{if(curAudio)curAudio.pause();speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-GB";if(voice)u.voice=voice;u.rate=rate;speechSynthesis.speak(u)}catch(e){}}
+function play(src){try{speechSynthesis.cancel();if(curAudio)curAudio.pause();curAudio=new Audio(src);curAudio.play()}catch(e){}}
+function say(t,rate=.8){const k=String(t).trim().toLowerCase();if(WORDA[k])return play(WORDA[k]);try{if(curAudio)curAudio.pause();speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-GB";if(voice)u.voice=voice;u.rate=rate;speechSynthesis.speak(u)}catch(e){}}
 /* pure letter sounds: parent's recordings (audio/phonics.enc, keys a..z) when available, otherwise a close approximation */
-window.PHON={};if(window.NAJMA)NAJMA.loadAudio("phonics","PHON");
+window.PHON={};window.WORDA={};
+/* teacher-style recordings: pure sounds (/k/ not "kuh") and whole words, Kokoro "Zephyr" voice from github.com/OscarIvanEstrada/phonics-teacher (MIT) */
+fetch("audio/phonics.json").then(r=>r.json()).then(j=>{Object.assign(PHON,j.sounds);Object.assign(WORDA,j.words)}).catch(()=>{});
 const APPROX={a:"a",b:"buh",c:"kuh",d:"duh",e:"eh",f:"fff",g:"guh",h:"huh",i:"ih",j:"juh",k:"kuh",l:"lll",m:"mmm",n:"nnn",o:"o",p:"puh",q:"kwuh",r:"rrr",s:"sss",t:"tuh",u:"uh",v:"vvv",w:"wuh",x:"ks",y:"yuh",z:"zzz"};
-function sound(ch){ch=ch.toLowerCase();if(PHON[ch]){try{speechSynthesis.cancel();if(curAudio)curAudio.pause();curAudio=new Audio(PHON[ch]);curAudio.play()}catch(e){}}else say(APPROX[ch]||ch,.7)}
+function sound(ch){ch=ch.toLowerCase();if(PHON[ch])play(PHON[ch]);else say(APPROX[ch]||ch,.7)}
 /* sound out a word: c... a... t... cat */
-function blend(word,onStep){const L=[...word];L.forEach((c,i)=>setTimeout(()=>{sound(c);onStep&&onStep(i)},i*900));setTimeout(()=>{say(word,.75);onStep&&onStep(-1)},L.length*900+300)}
+function blend(word,onStep){const L=[...word];L.forEach((c,i)=>setTimeout(()=>{sound(c);onStep&&onStep(i)},i*800));setTimeout(()=>{say(word,.75);onStep&&onStep(-1)},L.length*800+350)}
 /* mascot */
 let sayT,hi="";
 function talk(t){const s=document.getElementById("say"),p=document.getElementById("pip");if(!s)return;s.textContent=t;s.classList.remove("pop");void s.offsetWidth;s.classList.add("pop");
