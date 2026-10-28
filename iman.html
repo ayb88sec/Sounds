@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>أركان الإيمان</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&family=Amiri:wght@700&display=swap">
+<style>
+:root{--ink:#2b2340}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;background:linear-gradient(160deg,#6a4cff,#8a5cff 40%,#ff7eb6);background-attachment:fixed}
+.bubbles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bubbles span{position:absolute;bottom:-80px;border-radius:50%;background:rgba(255,255,255,.18);animation:rise linear infinite}
+@keyframes rise{to{transform:translateY(-120vh) translateX(-30px)}}
+main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:16px 12px 50px}
+h1{font-weight:800;font-size:clamp(40px,10vw,64px);margin:0;line-height:1.15;color:#fff;text-align:center;text-shadow:0 4px 0 rgba(0,0,0,.18)}
+.mascotWrap{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:6px 0 0}
+#pip{width:84px;height:84px;cursor:pointer;animation:bob 2s ease-in-out infinite;filter:drop-shadow(0 6px 0 rgba(0,0,0,.15));flex:none}
+#pip.jump{animation:jump .7s ease}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
+@keyframes jump{0%{transform:none}30%{transform:translateY(-30px) scale(1.1) rotate(12deg)}60%{transform:translateY(0) scale(.95,1.05)}100%{transform:none}}
+.bubble{position:relative;background:#fff;border-radius:22px;padding:10px 16px;font-weight:700;font-size:20px;max-width:260px;box-shadow:0 5px 0 rgba(0,0,0,.12);margin-bottom:30px}
+.bubble::after{content:"";position:absolute;right:-12px;bottom:16px;border:10px solid transparent;border-left:14px solid #fff;border-right:0}
+.pop{animation:pop .4s}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.15)}100%{transform:scale(1)}}
+.intro{display:flex;justify-content:center;margin:10px 0 0}
+.btn{font-family:inherit;font-size:21px;font-weight:800;border:0;border-radius:999px;padding:10px 22px;cursor:pointer;color:var(--ink);background:#ffe066;box-shadow:0 6px 0 #d9a400;transition:transform .08s}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 #d9a400}
+.btn.pink{background:#ff8fb8;box-shadow:0 6px 0 #d45b88;color:#fff}
+.btn.ghost{background:#fff;box-shadow:0 6px 0 #c8d6ff;font-size:18px}
+.bar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0 4px}
+
+/* building */
+.building{margin:18px auto 0;max-width:640px;filter:drop-shadow(0 10px 0 rgba(0,0,0,.12))}
+.roof{position:relative;height:110px;display:flex;align-items:flex-end;justify-content:center}
+.roof::before{content:"";position:absolute;inset:auto 0 0 0;height:90px;background:#fff;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.roof b{position:relative;font-size:46px;margin-bottom:8px;animation:bob 2.4s ease-in-out infinite}
+.beam{background:#fff;height:22px;border-radius:6px;margin:0 -6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#7a7090}
+.cols{display:flex;gap:5px;padding:10px 4px 0;background:rgba(255,255,255,.25)}
+.col{flex:1;min-width:0;height:250px;border:0;border-radius:14px 14px 4px 4px;cursor:pointer;font-family:inherit;color:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;padding:10px 2px;
+  box-shadow:inset -6px 0 0 rgba(0,0,0,.12),0 6px 0 rgba(0,0,0,.18);transition:transform .12s;animation:grow .6s backwards;transform-origin:bottom}
+.col:active{transform:scale(.96)}
+.col .n{font-size:30px;font-weight:800;background:rgba(255,255,255,.3);border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.col .e{font-size:34px;margin-top:6px}
+.col .t{font-size:clamp(11px,3.3vw,18px);font-weight:800;line-height:1.2;text-align:center;margin-top:auto;padding-bottom:6px;white-space:nowrap}
+.col.done::after{content:"⭐";font-size:20px}
+.col.glow{animation:glow 1.2s ease}
+@keyframes grow{from{transform:scaleY(0)}}
+@keyframes glow{0%,100%{filter:none}50%{filter:brightness(1.25);transform:translateY(-6px)}}
+.base{background:#fff;height:26px;border-radius:6px;margin:0 -10px}
+.base2{background:rgba(255,255,255,.7);height:16px;border-radius:6px;margin:4px -20px 0}
+.count{color:#fff;text-align:center;font-weight:700;font-size:20px;margin-top:14px}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(15,25,70,.55);display:none;align-items:center;justify-content:center;z-index:20;padding:14px}
+.modal.show{display:flex}
+.card{background:#fff;border-radius:34px;padding:20px 18px;text-align:center;max-width:420px;width:100%;max-height:96vh;overflow:auto;animation:zoom .45s cubic-bezier(.3,1.6,.5,1);position:relative}
+@keyframes zoom{from{transform:scale(.3) rotate(10deg);opacity:0}}
+.x{position:absolute;top:10px;left:12px;border:0;background:#f0edf7;border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer}
+.badge{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;color:#fff;font-size:36px;font-weight:800;margin-top:10px}
+.cemo{font-size:120px;line-height:1.15;animation:bob 2.4s ease-in-out infinite}
+.cname{font-size:40px;font-weight:800;margin:0}
+.phrase{font-family:"Amiri",serif;font-size:30px;line-height:1.9;background:#fff6d6;border-radius:22px;padding:10px 14px;margin:10px 0;cursor:pointer}
+.lbl{font-size:16px;color:#7a7090;margin:12px 0 6px}
+.prow{display:flex;gap:10px;justify-content:center}
+.pbtn{font-family:inherit;font-size:22px;font-weight:800;border:0;border-radius:999px;padding:12px 20px;cursor:pointer;color:#fff;background:#ff5d73;box-shadow:0 5px 0 #c93a50}
+.pbtn.me{background:#22c7b8;box-shadow:0 5px 0 #149488}
+.pbtn:disabled{opacity:.4}
+.pbtn.on{animation:pop 1s infinite;background:#a66bff;box-shadow:0 5px 0 #7a46d0}
+.navrow{display:flex;justify-content:space-between;margin-top:16px}
+
+/* order game */
+.q{font-size:26px;font-weight:800;margin:26px 0 4px}
+.built{display:flex;gap:6px;justify-content:center;min-height:86px;background:#f3f0fa;border-radius:20px;padding:8px;margin:8px 0}
+.built div{flex:1;max-width:70px;border-radius:12px;color:#fff;font-weight:800;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:grow .4s;line-height:1.2;padding:4px 2px}
+.built div span{font-size:26px}
+.pool{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+.pool button{font-family:inherit;border:0;border-radius:20px;padding:12px 6px;color:#fff;font-size:22px;font-weight:800;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.pool button span{display:block;font-size:40px}
+.pool button.used{visibility:hidden}
+.pool button.wrong{animation:shake .4s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:30}
+footer{text-align:center;color:#fff;font-size:16px;margin-top:26px}
+footer a,#reset{color:#fff;background:none;border:0;font:inherit;text-decoration:underline;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="bubbles" id="bubbles"></div>
+<canvas id="fx"></canvas>
+<main>
+  <h1>أركان الإيمان</h1>
+  <div class="mascotWrap">
+    <svg id="pip" viewBox="0 0 100 100">
+      <path d="M50 6 L62 36 L94 38 L69 58 L77 90 L50 72 L23 90 L31 58 L6 38 L38 36 Z" fill="#ffe066" stroke="#e0a800" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="41" cy="48" r="5" fill="#2b2340"/><circle cx="59" cy="48" r="5" fill="#2b2340"/>
+      <circle cx="43" cy="46" r="1.8" fill="#fff"/><circle cx="61" cy="46" r="1.8" fill="#fff"/>
+      <circle cx="34" cy="58" r="4" fill="#ff8fab" opacity=".7"/><circle cx="66" cy="58" r="4" fill="#ff8fab" opacity=".7"/>
+      <path d="M42 59 Q50 67 58 59" fill="none" stroke="#2b2340" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+    <div class="bubble" id="say">أركان الإيمان ستة! اضغط على كل ركن ⭐</div>
+  </div>
+  <div class="intro"><button class="btn ghost" id="introBtn">🔊 أَرْكانُ الإيمانِ سِتَّة</button></div>
+
+  <div class="building">
+    <div class="roof"><b>✨</b></div>
+    <div class="beam">أركان الإيمان</div>
+    <div class="cols" id="cols"></div>
+    <div class="base"></div><div class="base2"></div>
+  </div>
+  <div class="count" id="count"></div>
+
+  <div class="bar">
+    <button class="btn pink" id="game">🧩 رتّب الأركان</button>
+  </div>
+  <footer><a href="islam.html">أركان الإسلام 🕌</a> · <a href="arabic.html">حروفي 🔤</a> · <button id="reset">ابدأ من جديد</button></footer>
+</main>
+
+<div class="modal" id="cardModal">
+  <div class="card">
+    <button class="x" data-close>✕</button>
+    <div class="badge" id="cNum"></div>
+    <div class="cemo" id="cEmo"></div>
+    <div class="cname" id="cName"></div>
+    <div class="phrase" id="cPhrase"></div>
+    <div class="bar" id="cPlayBar"><button class="btn" id="cPlay">🔊 اسمع</button></div>
+    <div id="practice"></div>
+    <div class="navrow"><button class="btn ghost" id="cNext">التالي ⬅️</button><button class="btn ghost" id="cPrev">➡️ السابق</button></div>
+  </div>
+</div>
+
+<div class="modal" id="gameModal">
+  <div class="card">
+    <button class="x" data-close>✕</button>
+    <div class="q" id="gQ">ابنِ أركان الإيمان بالترتيب!</div>
+    <div class="built" id="built"></div>
+    <div class="pool" id="pool"></div>
+  </div>
+</div>
+
+<script>window.AUDIO_P={};</script>
+<script src="audio/iman.js" onerror=""></script>
+<script>
+const ITEMS=[["اللّٰه", "☝️", "أَنْ تُؤْمِنَ بِاللّٰهِ"], ["المَلائِكَة", "☁️", "وَمَلائِكَتِهِ"], ["الكُتُب", "📖", "وَكُتُبِهِ"], ["الرُّسُل", "📜", "وَرُسُلِهِ"], ["اليَوْمِ الآخِر", "🌅", "وَاليَوْمِ الآخِرِ"], ["القَدَر", "⚖️", "وَتُؤْمِنَ بِالقَدَرِ خَيْرِهِ وَشَرِّهِ"]];const PFX="m";const N=ITEMS.length;
+const NUMS=["١","٢","٣","٤","٥","٦"];
+const COLORS=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
+const praise=["أحسنت!","رائع!","ممتاز!","شاطر!","برافو!","ما شاء الله!","بارك الله فيك!"];
+const AUD=window.AUDIO_P||{};
+let done={};try{done=JSON.parse(localStorage.getItem("imanDone")||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem("imanDone",JSON.stringify(done))}catch(e){}};
+
+const bb=document.getElementById("bubbles");
+for(let i=0;i<14;i++){const s=document.createElement("span"),z=20+Math.random()*70;
+  s.style.cssText=`left:${Math.random()*100}%;width:${z}px;height:${z}px;animation-duration:${10+Math.random()*14}s;animation-delay:${-Math.random()*20}s`;bb.appendChild(s)}
+
+/* audio */
+let curAudio=null,ac;
+function play(k){const s=AUD[k];if(!s)return false;try{if(curAudio)curAudio.pause();curAudio=new Audio(s);curAudio.play()}catch(e){}return true}
+function tone(f,d,type="sine",w=0,vol=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(vol,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);
+  o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
+const popSnd=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)};
+const fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",i*.12));
+const buzz=()=>tone(160,.25,"sawtooth",0,.08);
+if(!AUD[PFX+"0"])document.getElementById("introBtn").textContent="أَرْكانُ الإيمانِ سِتَّة";
+
+/* confetti */
+const cv=document.getElementById("fx"),cx=cv.getContext("2d");let parts=[],running=false;
+function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}
+size();addEventListener("resize",size);
+function burst(x,y,n=40){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,v=3+Math.random()*7;
+  parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:4+Math.random()*6,c:COLORS[i%6],rot:Math.random()*6,vr:(Math.random()-.5)*.4,life:90+Math.random()*40})}
+  if(!running){running=true;requestAnimationFrame(loop)}}
+function rain(){for(let i=0;i<120;i++)setTimeout(()=>burst(Math.random()*innerWidth,-10,1),i*12)}
+function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.life-->0&&p.y<innerHeight+40);
+  for(const p of parts){p.vy+=.25;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);cx.fillStyle=p.c;cx.globalAlpha=Math.min(1,p.life/30);cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);cx.restore()}
+  if(parts.length)requestAnimationFrame(loop);else{running=false;cx.clearRect(0,0,innerWidth,innerHeight)}}
+const burstAt=el=>{const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,36)};
+
+/* mascot */
+const pip=document.getElementById("pip"),say=document.getElementById("say");let sayT;
+function talk(t){say.textContent=t;say.classList.remove("pop");void say.offsetWidth;say.classList.add("pop");
+  pip.classList.remove("jump");void pip.offsetWidth;pip.classList.add("jump");clearTimeout(sayT);sayT=setTimeout(()=>say.textContent="اضغط على كل ركن ⭐",6000)}
+pip.onclick=()=>{popSnd();talk(praise[Math.floor(Math.random()*praise.length)]);burstAt(pip)};
+document.getElementById("introBtn").onclick=e=>{play(PFX+"0");popSnd();burstAt(e.currentTarget)};
+
+/* columns */
+const cols=document.getElementById("cols");
+ITEMS.forEach(([name,emo],i)=>{const b=document.createElement("button");b.className="col"+(done[i]?" done":"");b.dataset.i=i;
+  b.style.background=COLORS[i%6];b.style.animationDelay=(i*.12)+"s";
+  b.innerHTML=`<span class="n">${NUMS[i]}</span><span class="e">${emo}</span><span class="t">${name}</span>`;
+  b.onclick=()=>openCard(i,b);cols.appendChild(b)});
+function update(){const n=Object.keys(done).length;
+  document.getElementById("count").textContent=n>=N?"🏆 تعلمت كل الأركان! ما شاء الله!":`⭐ ${n} من ${N}`;return n}
+update();
+setInterval(()=>{const c=document.querySelectorAll(".col"),x=c[Math.floor(Math.random()*c.length)];x.classList.remove("glow");void x.offsetWidth;x.classList.add("glow")},2400);
+
+/* card */
+const cm=document.getElementById("cardModal");let cur=0;
+function openCard(i,el){cur=i;const [name,emo,phrase]=ITEMS[i];popSnd();if(el)burstAt(el);
+  const nb=document.getElementById("cNum");nb.textContent=NUMS[i];nb.style.background=COLORS[i%6];
+  document.getElementById("cEmo").textContent=emo;document.getElementById("cName").textContent=name;
+  const ph=document.getElementById("cPhrase");ph.textContent=phrase;ph.onclick=()=>play(PFX+(i+1));
+  document.getElementById("cPlayBar").style.display=AUD[PFX+(i+1)]?"flex":"none";
+  document.getElementById("cPlay").onclick=()=>play(PFX+(i+1));
+  document.getElementById("cPrev").style.visibility=i>0?"visible":"hidden";
+  document.getElementById("cNext").style.visibility=i<N-1?"visible":"hidden";
+  practiceUI(PFX+(i+1));cm.classList.add("show");setTimeout(()=>play(PFX+(i+1)),300);
+  const first=!done[i];done[i]=1;save();document.querySelector(`.col[data-i="${i}"]`).classList.add("done");
+  const n=update();talk(`${NUMS[i]}. ${name}! ${praise[Math.floor(Math.random()*praise.length)]}`);
+  if(first&&n===N)setTimeout(()=>{fanfare();rain()},400)}
+document.getElementById("cPrev").onclick=()=>openCard(cur-1);
+document.getElementById("cNext").onclick=()=>openCard(cur+1);
+
+/* kids practice (saved on this device) */
+const kid={};let kdb=null,pRec=null,pTimer=null;
+try{const r=indexedDB.open("kidIman",1);r.onupgradeneeded=()=>r.result.createObjectStore("v");
+  r.onsuccess=()=>{kdb=r.result;kdb.transaction("v").objectStore("v").openCursor().onsuccess=e=>{const c=e.target.result;if(c){kid[c.key]=URL.createObjectURL(c.value);c.continue()}}}}catch(e){}
+function playKid(k){if(kid[k]){try{if(curAudio)curAudio.pause();curAudio=new Audio(kid[k]);curAudio.play()}catch(e){}}}
+function practiceUI(k){const box=document.getElementById("practice");
+  box.innerHTML=`<div class="lbl">🎤 دورك! قُلها أنت</div><div class="prow"><button class="pbtn mic">${kid[k]?"🎤 مرة ثانية":"🎤 سجّل"}</button><button class="pbtn me"${kid[k]?"":" disabled"}>▶️ صوتي</button></div>`;
+  const mic=box.querySelector(".mic"),me=box.querySelector(".me");
+  mic.onclick=async()=>{if(pRec){pRec.stop();return}
+    try{const st=await navigator.mediaDevices.getUserMedia({audio:true}),ch=[];pRec=new MediaRecorder(st);mic.classList.add("on");mic.textContent="⏹️ توقف";
+      pRec.ondataavailable=e=>ch.push(e.data);
+      pRec.onstop=()=>{clearTimeout(pTimer);st.getTracks().forEach(t=>t.stop());const blob=new Blob(ch,{type:pRec.mimeType||"audio/mp4"});
+        if(kid[k])URL.revokeObjectURL(kid[k]);kid[k]=URL.createObjectURL(blob);try{kdb.transaction("v","readwrite").objectStore("v").put(blob,k)}catch(e){}
+        pRec=null;mic.classList.remove("on");mic.textContent="🎤 مرة ثانية";me.disabled=false;playKid(k);talk(praise[Math.floor(Math.random()*praise.length)]);fanfare();burstAt(mic)};
+      pRec.start();pTimer=setTimeout(()=>{if(pRec&&pRec.state==="recording")pRec.stop()},9000)}
+    catch(e){mic.textContent="⚠️ اسمح بالمايكروفون";pRec=null}};
+  me.onclick=()=>playKid(k)}
+
+/* order game */
+const gm=document.getElementById("gameModal");let step=0;
+function startGame(){step=0;const built=document.getElementById("built"),pool=document.getElementById("pool");built.innerHTML="";pool.innerHTML="";
+  [...Array(N).keys()].sort(()=>Math.random()-.5).forEach((i,k)=>{const b=document.createElement("button");b.style.background=COLORS[i%6];
+    b.innerHTML=`<span>${ITEMS[i][1]}</span>${ITEMS[i][0]}`;
+    b.onclick=()=>{if(i===step){b.classList.add("used");popSnd();burstAt(b);play(PFX+(i+1));
+        const d=document.createElement("div");d.style.background=COLORS[i%6];d.innerHTML=`<span>${NUMS[i]}</span>${ITEMS[i][0]}`;built.appendChild(d);step++;
+        if(step===N){setTimeout(()=>{fanfare();rain();document.getElementById("gQ").textContent="🏆 أحسنت! بنيتها كاملة!";talk("ما شاء الله! 🏆")},300)}}
+      else{b.classList.remove("wrong");void b.offsetWidth;b.classList.add("wrong");buzz();talk("حاول مرة ثانية 💪")}};
+    pool.appendChild(b)});
+  document.getElementById("gQ").textContent="ابنِ أركان الإيمان بالترتيب!"}
+document.getElementById("game").onclick=()=>{startGame();gm.classList.add("show")};
+
+document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m||e.target.hasAttribute("data-close")){m.classList.remove("show");if(curAudio)curAudio.pause()}}));
+document.getElementById("reset").onclick=()=>{done={};save();document.querySelectorAll(".col.done").forEach(c=>c.classList.remove("done"));update();talk("بداية جديدة! 🚀")};
+</script>
+</body>
+</html>
