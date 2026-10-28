@@ -106,6 +106,7 @@ footer{text-align:center;color:#fff;opacity:.9;font-size:14px;margin-top:26px}
 
   <div class="bar jsonly">
     <button class="btn" id="surprise">🎲 Surprise me!</button>
+    <button class="btn ghost" id="writeBtn">✏️ Write letters</button>
     <button class="btn ghost" id="mute">🔊 Sound on</button>
   </div>
 
@@ -307,6 +308,12 @@ muteBtn.addEventListener("click",()=>{muted=!muted;try{localStorage.setItem("sou
 document.getElementById("reset").addEventListener("click",()=>{
   done={};save();document.querySelectorAll(".tile.done").forEach(t=>t.classList.remove("done"));update();talk("Fresh start! Let's go! 🚀");
 });
+</script>
+<script src="writepad.js"></script>
+<script>
+document.getElementById("writeBtn").addEventListener("click",()=>{popSnd();const items=ALL.map(x=>x[0]);
+  WritePad.open({items,index:0,lang:"en",rtl:false,font:'"Andika"',yShift:.44,
+    onStar:(it,s,res)=>{if(s>=2){fanfare();burst(innerWidth/2,innerHeight/2,50);try{const w=JSON.parse(localStorage.getItem("enWrite")||"{}");w[it]=1;localStorage.setItem("enWrite",JSON.stringify(w))}catch(e){}}}})});
 </script>
 </body>
 </html>

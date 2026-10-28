@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<title>الأرقام · Numbers</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&family=Andika:wght@700&display=swap">
+<style>
+:root{--ink:#2b2340}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
+  background:linear-gradient(160deg,#ffb020,#ff7a45 45%,#ff5d9e);background-attachment:fixed}
+.bubbles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bubbles span{position:absolute;bottom:-80px;border-radius:50%;background:rgba(255,255,255,.18);animation:rise linear infinite}
+@keyframes rise{to{transform:translateY(-120vh) translateX(-30px)}}
+main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:16px 12px 50px}
+h1{font-weight:800;font-size:clamp(40px,10vw,62px);margin:0;line-height:1.15;color:#fff;text-align:center;text-shadow:0 4px 0 rgba(0,0,0,.18)}
+.mascotWrap{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:6px 0 0}
+#pip{width:84px;height:84px;cursor:pointer;animation:bob 2s ease-in-out infinite;filter:drop-shadow(0 6px 0 rgba(0,0,0,.15));flex:none}
+#pip.jump{animation:jump .7s ease}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
+@keyframes jump{0%{transform:none}30%{transform:translateY(-30px) scale(1.1) rotate(12deg)}60%{transform:translateY(0)}100%{transform:none}}
+.bubble{position:relative;background:#fff;border-radius:22px;padding:10px 16px;font-weight:700;font-size:20px;max-width:260px;box-shadow:0 5px 0 rgba(0,0,0,.12);margin-bottom:30px}
+.bubble::after{content:"";position:absolute;right:-12px;bottom:16px;border:10px solid transparent;border-left:14px solid #fff;border-right:0}
+.pop{animation:pop .4s}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.15)}100%{transform:scale(1)}}
+.toggle{display:flex;justify-content:center;margin:14px 0 4px}
+.toggle div{display:flex;background:rgba(255,255,255,.3);border-radius:999px;padding:5px}
+.toggle button{font-family:inherit;font-size:20px;font-weight:800;border:0;border-radius:999px;padding:8px 22px;cursor:pointer;background:none;color:#fff}
+.toggle button.on{background:#fff;color:var(--ink);box-shadow:0 4px 0 rgba(0,0,0,.12)}
+section{background:rgba(255,255,255,.93);border-radius:30px;padding:16px 14px 20px;margin-top:14px;box-shadow:0 10px 0 rgba(0,0,0,.08)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:12px}
+.tile{position:relative;border:0;border-radius:24px;aspect-ratio:1;color:#fff;font-family:"Andika",sans-serif;font-weight:700;font-size:46px;cursor:pointer;
+  box-shadow:0 7px 0 rgba(0,0,0,.2);transition:transform .12s;animation:enter .45s backwards;text-shadow:0 3px 0 rgba(0,0,0,.15)}
+.tile.ar{font-family:"Baloo Bhaijaan 2"}
+.tile:active{transform:translateY(5px) scale(.96)}
+.tile.done::after{content:"⭐";position:absolute;top:2px;left:4px;font-size:18px}
+.tile.wrote::before{content:"✏️";position:absolute;top:2px;right:4px;font-size:16px}
+@keyframes enter{from{transform:scale(0) rotate(12deg);opacity:0}}
+.bar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0 4px}
+.btn{font-family:inherit;font-size:20px;font-weight:800;border:0;border-radius:999px;padding:10px 20px;cursor:pointer;color:var(--ink);background:#ffe066;box-shadow:0 6px 0 #d9a400}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 #d9a400}
+.btn.pink{background:#a66bff;box-shadow:0 6px 0 #7a46d0;color:#fff}
+.btn.teal{background:#22c7b8;box-shadow:0 6px 0 #149488;color:#fff}
+.btn.ghost{background:#fff;box-shadow:0 6px 0 #f0d6c6;font-size:17px}
+.modal{position:fixed;inset:0;background:rgba(70,25,20,.5);display:none;align-items:center;justify-content:center;z-index:20;padding:14px}
+.modal.show{display:flex}
+.card{background:#fff;border-radius:34px;padding:18px 16px;text-align:center;max-width:430px;width:100%;max-height:96vh;overflow:auto;animation:zoom .45s cubic-bezier(.3,1.6,.5,1);position:relative}
+@keyframes zoom{from{transform:scale(.3) rotate(10deg);opacity:0}}
+.x{position:absolute;top:10px;left:12px;border:0;background:#f0edf7;border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer}
+.big{font-family:"Andika";font-size:110px;font-weight:700;line-height:1.2;border-radius:28px;color:#fff;margin:24px 0 4px;cursor:pointer;text-shadow:0 4px 0 rgba(0,0,0,.15)}
+.big.ar{font-family:"Baloo Bhaijaan 2"}
+.words{display:flex;justify-content:center;gap:16px;font-size:28px;font-weight:800;margin:4px 0}
+.words .en{font-family:"Andika";direction:ltr}
+.objs{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;font-size:34px;margin:8px 0;direction:ltr}
+.objs span{cursor:pointer;transition:transform .15s;filter:grayscale(.2)}
+.objs span.c{transform:scale(1.25);filter:none}
+.cnt{font-size:20px;color:#7a7090;min-height:30px}
+.navrow{display:flex;justify-content:space-between;margin-top:14px}
+.q{font-size:26px;font-weight:800;margin:26px 0 4px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.opts button{font-family:"Andika";font-size:52px;font-weight:700;border:0;border-radius:24px;aspect-ratio:1.4;cursor:pointer;color:#fff;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.opts button.ar{font-family:"Baloo Bhaijaan 2"}
+.opts button.wrong{animation:shake .4s;opacity:.35}
+.opts button.right{box-shadow:0 0 0 6px #ffe066,0 6px 0 rgba(0,0,0,.18);transform:scale(1.06)}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+.score{font-size:20px;font-weight:700;color:#7a7090}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+footer{text-align:center;color:#fff;font-size:15px;margin-top:24px}
+footer button{color:#fff;background:none;border:0;font:inherit;text-decoration:underline;cursor:pointer}
+</style>
+</head>
+<body>
+<a href="home.html" id="homeBtn" aria-label="Home" style="position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;z-index:15;width:52px;height:52px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18)">🏠</a>
+<div class="bubbles" id="bubbles"></div>
+<canvas id="fx"></canvas>
+<main>
+  <h1 id="title">الأرقام</h1>
+  <div class="mascotWrap">
+    <svg id="pip" viewBox="0 0 100 100">
+      <path d="M50 6 L62 36 L94 38 L69 58 L77 90 L50 72 L23 90 L31 58 L6 38 L38 36 Z" fill="#ffe066" stroke="#e0a800" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="41" cy="48" r="5" fill="#2b2340"/><circle cx="59" cy="48" r="5" fill="#2b2340"/>
+      <circle cx="43" cy="46" r="1.8" fill="#fff"/><circle cx="61" cy="46" r="1.8" fill="#fff"/>
+      <circle cx="34" cy="58" r="4" fill="#ff8fab" opacity=".7"/><circle cx="66" cy="58" r="4" fill="#ff8fab" opacity=".7"/>
+      <path d="M42 59 Q50 67 58 59" fill="none" stroke="#2b2340" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+    <div class="bubble" id="say"></div>
+  </div>
+  <div class="toggle"><div><button id="tAr">العربية ١٢٣</button><button id="tEn">English 123</button></div></div>
+  <section>
+    <div class="grid" id="grid"></div>
+    <div class="bar">
+      <button class="btn pink" id="game"></button>
+      <button class="btn teal" id="write"></button>
+    </div>
+  </section>
+  <footer><button id="reset"></button></footer>
+</main>
+
+<div class="modal" id="numModal"><div class="card">
+  <button class="x" data-close>✕</button>
+  <div class="big" id="nBig"></div>
+  <div class="words"><span id="nAr"></span><span class="en" id="nEn"></span></div>
+  <div class="objs" id="objs"></div>
+  <div class="cnt" id="cnt"></div>
+  <div class="bar"><button class="btn" id="nSay">🔊</button><button class="btn teal" id="nWrite"></button></div>
+  <div class="navrow"><button class="btn ghost" id="nA"></button><button class="btn ghost" id="nB"></button></div>
+</div></div>
+
+<div class="modal" id="gameModal"><div class="card">
+  <button class="x" data-close>✕</button>
+  <div class="q" id="gQ"></div>
+  <div class="objs" id="gObjs"></div>
+  <div class="opts" id="gOpts"></div>
+  <div class="score" id="gScore"></div>
+</div></div>
+
+<script>window.AUDIO_N={};</script>
+<script src="audio/numbers.js"></script>
+<script src="writepad.js"></script>
+<script>
+const AR_D="٠١٢٣٤٥٦٧٨٩";const toAr=n=>String(n).replace(/\d/g,d=>AR_D[d]);
+const AR_W=["وَاحِد","اِثْنَان","ثَلَاثَة","أَرْبَعَة","خَمْسَة","سِتَّة","سَبْعَة","ثَمَانِيَة","تِسْعَة","عَشَرَة","أَحَدَ عَشَرَ","اِثْنَا عَشَرَ","ثَلَاثَةَ عَشَرَ","أَرْبَعَةَ عَشَرَ","خَمْسَةَ عَشَرَ","سِتَّةَ عَشَرَ","سَبْعَةَ عَشَرَ","ثَمَانِيَةَ عَشَرَ","تِسْعَةَ عَشَرَ","عِشْرُون"];
+const EN_W=["one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen","twenty"];
+const OBJ=["🍎","🎈","⭐","🐟","🌸","🚗","🧁","🦆","🍓","🐝","🍊","🦋","🍪","🐞","🌙","🐠","🍇","🐣","🍋","🎁"];
+const COLORS=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
+const T={ar:{title:"الأرقام",hi:"اضغط على رقم وعُدّ معي! ⭐",game:"🎈 عُدّ واختر",write:"✏️ اكتب الأرقام",reset:"ابدأ من جديد",q:"كم عددها؟",prev:"➡️ السابق",next:"التالي ⬅️",w:"✏️ اكتبه",praise:["أحسنت!","رائع!","ممتاز!","شاطر!","برافو!"],again:"حاول مرة ثانية 💪",tap:"اضغط على الأشياء وعُدّها"},
+         en:{title:"Numbers",hi:"Tap a number and count with me! ⭐",game:"🎈 Count & pick",write:"✏️ Write numbers",reset:"Start again",q:"How many?",prev:"Back",next:"Next",w:"✏️ Write it",praise:["Amazing!","Well done!","Super star!","Brilliant!","You got it!"],again:"Try again 💪",tap:"Tap and count them"}};
+let lang="ar",done={},wrote={};try{lang=localStorage.getItem("numLang")||"ar";done=JSON.parse(localStorage.getItem("numDone")||"{}");wrote=JSON.parse(localStorage.getItem("numWrite")||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem("numDone",JSON.stringify(done));localStorage.setItem("numWrite",JSON.stringify(wrote));localStorage.setItem("numLang",lang)}catch(e){}};
+const disp=n=>lang==="ar"?toAr(n):String(n);
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+
+const bb=document.getElementById("bubbles");
+for(let i=0;i<14;i++){const s=document.createElement("span"),z=20+Math.random()*70;
+  s.style.cssText=`left:${Math.random()*100}%;width:${z}px;height:${z}px;animation-duration:${10+Math.random()*14}s;animation-delay:${-Math.random()*20}s`;bb.appendChild(s)}
+
+/* voice: Arabic uses parent's recordings when present; English uses the iPad voice */
+const AUD=window.AUDIO_N||{};let enVoice=null,curAudio=null;
+function pv(){const v=speechSynthesis.getVoices();enVoice=v.find(x=>/en[-_]GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}
+if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
+function sayN(n,l=lang){
+  if(l==="ar"){const k="n"+n;if(AUD[k]){try{if(curAudio)curAudio.pause();curAudio=new Audio(AUD[k]);curAudio.play()}catch(e){}}return}
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(EN_W[n-1]);u.lang="en-GB";if(enVoice)u.voice=enVoice;u.rate=.8;speechSynthesis.speak(u)}catch(e){}}
+
+/* sfx + confetti */
+let ac;
+function tone(f,d,type="sine",w=0,vol=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(vol,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);
+  o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
+const popSnd=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)};
+const fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",i*.12));
+const buzz=()=>tone(160,.25,"sawtooth",0,.08);
+const cv=document.getElementById("fx"),cx=cv.getContext("2d");let parts=[],running=false;
+function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}
+size();addEventListener("resize",size);
+function burst(x,y,n=36){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,v=3+Math.random()*7;
+  parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:4+Math.random()*6,c:COLORS[i%6],rot:Math.random()*6,vr:(Math.random()-.5)*.4,life:90+Math.random()*40})}
+  if(!running){running=true;requestAnimationFrame(loop)}}
+function rain(){for(let i=0;i<120;i++)setTimeout(()=>burst(Math.random()*innerWidth,-10,1),i*12)}
+function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.life-->0&&p.y<innerHeight+40);
+  for(const p of parts){p.vy+=.25;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);cx.fillStyle=p.c;cx.globalAlpha=Math.min(1,p.life/30);cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);cx.restore()}
+  if(parts.length)requestAnimationFrame(loop);else{running=false;cx.clearRect(0,0,innerWidth,innerHeight)}}
+const burstAt=el=>{const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2)};
+
+const pip=document.getElementById("pip"),say=document.getElementById("say");let sayT;
+function talk(t){say.textContent=t;say.classList.remove("pop");void say.offsetWidth;say.classList.add("pop");
+  pip.classList.remove("jump");void pip.offsetWidth;pip.classList.add("jump");clearTimeout(sayT);sayT=setTimeout(()=>say.textContent=T[lang].hi,6000)}
+pip.onclick=()=>{popSnd();talk(rnd(T[lang].praise));burstAt(pip)};
+
+/* grid */
+const grid=document.getElementById("grid");
+function draw(){const t=T[lang];document.documentElement.lang=lang;
+  document.getElementById("title").textContent=t.title;say.textContent=t.hi;
+  document.getElementById("game").textContent=t.game;document.getElementById("write").textContent=t.write;
+  document.getElementById("reset").textContent=t.reset;
+  document.getElementById("tAr").classList.toggle("on",lang==="ar");document.getElementById("tEn").classList.toggle("on",lang==="en");
+  grid.innerHTML="";grid.dir=lang==="ar"?"rtl":"ltr";
+  for(let n=1;n<=20;n++){const b=document.createElement("button");b.className="tile"+(lang==="ar"?" ar":"")+(done[n]?" done":"")+(wrote[lang+n]?" wrote":"");
+    b.style.background=COLORS[(n-1)%6];b.style.animationDelay=(n*.025)+"s";b.textContent=disp(n);b.onclick=()=>openN(n,b);grid.appendChild(b)}}
+document.getElementById("tAr").onclick=()=>{lang="ar";save();popSnd();draw()};
+document.getElementById("tEn").onclick=()=>{lang="en";save();popSnd();draw()};
+
+/* number card */
+const nm=document.getElementById("numModal");let cur=1;
+function openN(n,el){cur=n;const t=T[lang];popSnd();if(el)burstAt(el);
+  const big=document.getElementById("nBig");big.textContent=disp(n);big.className="big"+(lang==="ar"?" ar":"");big.style.background=COLORS[(n-1)%6];big.onclick=()=>sayN(n);
+  document.getElementById("nAr").textContent=AR_W[n-1];document.getElementById("nEn").textContent=EN_W[n-1];
+  document.getElementById("nAr").onclick=()=>sayN(n,"ar");document.getElementById("nEn").onclick=()=>sayN(n,"en");
+  const ob=document.getElementById("objs"),emo=OBJ[(n-1)%OBJ.length];ob.innerHTML="";let c=0;
+  const cnt=document.getElementById("cnt");cnt.textContent=t.tap;
+  for(let i=0;i<n;i++){const s=document.createElement("span");s.textContent=emo;
+    s.onclick=()=>{if(s.classList.contains("c"))return;s.classList.add("c");c++;cnt.textContent=disp(c);tone(400+c*40,.12,"triangle");
+      if(c===n){setTimeout(()=>{fanfare();burstAt(ob);talk(rnd(t.praise));sayN(n)},200)}};ob.appendChild(s)}
+  document.getElementById("nSay").onclick=()=>sayN(n);
+  document.getElementById("nSay").style.display=(lang==="ar"&&!AUD["n"+n])?"none":"";
+  const wb=document.getElementById("nWrite");wb.textContent=t.w;wb.onclick=()=>openWrite(n);
+  const a=document.getElementById("nA"),b=document.getElementById("nB");
+  a.textContent=lang==="ar"?t.prev:"⬅️ "+t.prev;b.textContent=lang==="ar"?t.next:t.next+" ➡️";
+  a.style.visibility=n>1?"visible":"hidden";b.style.visibility=n<20?"visible":"hidden";
+  a.onclick=()=>openN(n-1);b.onclick=()=>openN(n+1);
+  nm.dir=lang==="ar"?"rtl":"ltr";nm.classList.add("show");setTimeout(()=>sayN(n),250);
+  done[n]=1;save();const tl=grid.children[n-1];if(tl)tl.classList.add("done")}
+
+/* writing */
+function openWrite(n){const items=[];for(let i=1;i<=20;i++)items.push(disp(i));
+  WritePad.open({items,index:n-1,lang,rtl:lang==="ar",font:lang==="ar"?'"Baloo Bhaijaan 2"':'"Andika"',
+    onSay:it=>{const i=items.indexOf(it)+1;sayN(i)},
+    onStar:(it,s,res)=>{const i=items.indexOf(it)+1;if(s>=2){wrote[lang+i]=1;save();const tl=grid.children[i-1];if(tl)tl.classList.add("wrote");fanfare();burstAt(res)}else buzz()}})}
+document.getElementById("write").onclick=()=>openWrite(1);
+
+/* count & pick game */
+const gm=document.getElementById("gameModal");let ans,right=0,lock=false;
+function round(){lock=false;const t=T[lang];ans=1+Math.floor(Math.random()*(right<5?10:20));
+  document.getElementById("gQ").textContent=t.q;const ob=document.getElementById("gObjs");ob.innerHTML="";const emo=rnd(OBJ);
+  for(let i=0;i<ans;i++){const s=document.createElement("span");s.textContent=emo;s.onclick=()=>s.classList.toggle("c");ob.appendChild(s)}
+  const set=new Set([ans]);while(set.size<4){const d=ans+Math.floor(Math.random()*7)-3;if(d>=1&&d<=20)set.add(d)}
+  const box=document.getElementById("gOpts");box.innerHTML="";box.dir=lang==="ar"?"rtl":"ltr";
+  [...set].sort(()=>Math.random()-.5).forEach((v,k)=>{const b=document.createElement("button");b.className=lang==="ar"?"ar":"";b.textContent=disp(v);b.style.background=COLORS[k+1];
+    b.onclick=()=>{if(lock)return;if(v===ans){lock=true;right++;b.classList.add("right");popSnd();fanfare();burstAt(b);sayN(v);talk(rnd(t.praise));
+        document.getElementById("gScore").textContent=`⭐ ${disp(right)}`;setTimeout(round,1500)}
+      else{b.classList.add("wrong");buzz();talk(t.again)}};box.appendChild(b)})}
+document.getElementById("game").onclick=()=>{right=0;document.getElementById("gScore").textContent="";gm.dir=lang==="ar"?"rtl":"ltr";gm.classList.add("show");round()};
+
+document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m||e.target.hasAttribute("data-close")){m.classList.remove("show");try{speechSynthesis.cancel()}catch(e){}}}));
+document.getElementById("reset").onclick=()=>{done={};wrote={};save();draw();talk("🚀")};
+draw();
+</script>
+</body>
+</html>

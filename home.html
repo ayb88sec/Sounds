@@ -32,7 +32,8 @@ main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:22px 18px
 .stat b{display:block;font-size:30px;line-height:1.1}
 .stat span{font-size:15px;opacity:.95}
 h2{color:#fff;font-size:22px;margin:22px 4px 10px;opacity:.95}
-.apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.apps{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px;max-width:520px;margin:0 auto}
+.rowt{grid-column:1/-1;color:#fff;font-size:22px;font-weight:800;margin:14px 4px -4px;text-shadow:0 2px 0 rgba(0,0,0,.15)}
 .app{position:relative;display:flex;flex-direction:column;align-items:center;text-decoration:none;color:#fff;animation:enter .5s backwards}
 @keyframes enter{from{transform:scale(.4) translateY(30px);opacity:0}}
 .icon{position:relative;width:100%;aspect-ratio:1;border-radius:32%;display:flex;align-items:center;justify-content:center;font-size:64px;
@@ -67,25 +68,29 @@ h2{color:#fff;font-size:22px;margin:22px 4px 10px;opacity:.95}
     <div class="stat"><b id="sDone">0</b><span>🏆 أكملت</span></div>
   </div>
 
-  <h2>🎒 ألعابي</h2>
-  <div class="apps" id="apps"></div>
+    <div class="apps" id="apps"></div>
 
   <div class="tip" id="tip"><b>💡 للوالدين:</b> افتح هذه الصفحة في Safari، ثم اضغط مشاركة ← إضافة إلى الشاشة الرئيسية، لتظهر كتطبيق على الآيباد.</div>
 </main>
 <script>
-const APPS=[
- {href:"arabic.html",glyph:"أ ب",name:"حروفي",sub:"الحروف العربية",bg:"linear-gradient(150deg,#22c7b8,#2f8cff)",key:"arDone",total:38},
- {href:"index.html",glyph:"Aa",name:"Sounds",sub:"English phonics",bg:"linear-gradient(150deg,#ff7eb6,#a66bff)",key:"soundsDone",total:32},
- {href:"sight.html",glyph:"the",name:"Sight Words",sub:"9 groups",bg:"linear-gradient(150deg,#ff9a3c,#ff6f91)",key:"sightDone",total:92},
- {href:"islam.html",glyph:"🕌",name:"أركان الإسلام",sub:"خمسة أركان",bg:"linear-gradient(150deg,#1fb59a,#0f9b8e)",key:"islamDone",total:5},
- {href:"iman.html",glyph:"✨",name:"أركان الإيمان",sub:"ستة أركان",bg:"linear-gradient(150deg,#8a5cff,#ff7eb6)",key:"imanDone",total:6},
+const ROWS=[
+ {t:"🔤 العربية",apps:[
+  {href:"arabic.html",glyph:"أ ب",name:"حروفي",sub:"الحروف العربية",bg:"linear-gradient(150deg,#22c7b8,#2f8cff)",key:"arDone",total:38},
+  {href:"numbers.html",glyph:"١٢٣",name:"الأرقام",sub:"Numbers 1-20",bg:"linear-gradient(150deg,#ffb020,#ff5d9e)",key:"numDone",total:20}]},
+ {t:"🕌 ديني",apps:[
+  {href:"islam.html",glyph:"🕌",name:"أركان الإسلام",sub:"خمسة أركان",bg:"linear-gradient(150deg,#1fb59a,#0f9b8e)",key:"islamDone",total:5},
+  {href:"iman.html",glyph:"✨",name:"أركان الإيمان",sub:"ستة أركان",bg:"linear-gradient(150deg,#8a5cff,#ff7eb6)",key:"imanDone",total:6}]},
+ {t:"🇬🇧 English",apps:[
+  {href:"index.html",glyph:"Aa",name:"Sounds",sub:"Phonics",bg:"linear-gradient(150deg,#ff7eb6,#a66bff)",key:"soundsDone",total:32},
+  {href:"sight.html",glyph:"the",name:"Sight Words",sub:"9 groups",bg:"linear-gradient(150deg,#ff9a3c,#ff6f91)",key:"sightDone",total:92}]},
 ];
 const bb=document.getElementById("bubbles");
 for(let i=0;i<14;i++){const s=document.createElement("span"),z=20+Math.random()*70;
   s.style.cssText=`left:${Math.random()*100}%;width:${z}px;height:${z}px;animation-duration:${10+Math.random()*14}s;animation-delay:${-Math.random()*20}s`;bb.appendChild(s)}
 function count(k){try{return Object.keys(JSON.parse(localStorage.getItem(k)||"{}")).length}catch(e){return 0}}
-const box=document.getElementById("apps");let stars=0,full=0;const seen=new Set();
-APPS.forEach((a,i)=>{
+const box=document.getElementById("apps");let stars=0,full=0;const seen=new Set();let i=0;
+ROWS.forEach(row=>{const hd=document.createElement("div");hd.className="rowt";hd.textContent=row.t;box.appendChild(hd);
+row.apps.forEach(a=>{i++;
   const n=Math.min(count(a.key),a.total),pct=n/a.total,C=2*Math.PI*21;
   if(!seen.has(a.key)){seen.add(a.key);stars+=n;if(n>=a.total)full++}
   const el=document.createElement("a");el.className="app";el.href=a.href;el.style.animationDelay=(i*.08)+"s";
@@ -93,7 +98,7 @@ APPS.forEach((a,i)=>{
      <div class="ringwrap"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="21"/><circle class="fg" cx="28" cy="28" r="21"
        stroke-dasharray="${C}" stroke-dashoffset="${C}" data-off="${C*(1-pct)}"/><text x="28" y="29">${pct>=1?"🏆":n}</text></svg></div></div>
      <div class="name" dir="auto">${a.name}</div><div class="sub" dir="auto">${a.sub}</div>`;
-  box.appendChild(el)});
+  box.appendChild(el)})});
 setTimeout(()=>document.querySelectorAll(".fg").forEach(c=>c.style.strokeDashoffset=c.dataset.off),300);
 document.getElementById("sTotal").textContent=stars;document.getElementById("sDone").textContent=full;
 const h=new Date().getHours();document.getElementById("hello").textContent=h<12?"صباح الخير يا أبطال!":"مساء الخير يا أبطال!";

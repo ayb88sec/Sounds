@@ -149,6 +149,7 @@ footer a,#reset{color:#fff;background:none;border:0;font:inherit;text-decoration
     <button class="x" data-close>✕</button>
     <div class="big" id="lBig"></div>
     <div class="name"><span id="lName"></span><button class="say" id="lSay">🔊</button></div>
+    <div class="bar" style="margin:4px 0"><button class="btn" id="lWrite" style="background:#22c7b8;box-shadow:0 6px 0 #149488;color:#fff">✏️ اكتب الحرف</button></div>
     <div class="lbl">اضغط واسمع الحركات</div>
     <div class="harakat" id="lHar"></div>
     <div class="lbl">أشكال الحرف</div>
@@ -181,6 +182,7 @@ footer a,#reset{color:#fff;background:none;border:0;font:inherit;text-decoration
 </div>
 
 <script src="audio/clips.js"></script>
+<script src="writepad.js"></script>
 <script>
 const L=[
  ["ا","ألف","أرنب","🐰","أ","أَلِف","أَرْنَب"],["ب","باء","بطة","🦆","","بَاء","بَطَّة"],["ت","تاء","تفاحة","🍎","","تَاء","تُفَّاحَة"],["ث","ثاء","ثعلب","🦊","","ثَاء","ثَعْلَب"],
@@ -302,7 +304,8 @@ function markDone(ch){const first=!done[ch];done[ch]=1;save();
 /* letter card */
 const lm=document.getElementById("letterModal");
 function openLetter(i,el){
-  const [ch,name,word,emo,base,vName,vWord]=L[i],c=col(i),h=base||ch;curLetter=i;popSnd();if(el)burstAt(el);
+  const [ch,name,word,emo,base,vName,vWord]=L[i],c=col(i),h=base||ch;curLetter=i;
+  document.getElementById("lWrite").onclick=()=>WritePad.open({items:L.map(x=>x[0]),index:i,lang:"ar",rtl:true,font:'"Baloo Bhaijaan 2"',yShift:.46,onSay:it=>{const k=L.findIndex(x=>x[0]===it);play(it+"|n",L[k][5])},onStar:(it,s,res)=>{if(s>=2){fanfare();burstAt(res);try{const w=JSON.parse(localStorage.getItem("arWrite")||"{}");w[it]=1;localStorage.setItem("arWrite",JSON.stringify(w))}catch(e){}}else buzz()}});popSnd();if(el)burstAt(el);
   const big=document.getElementById("lBig");big.textContent=ch;big.style.background=c;big.onclick=()=>{play(ch+"|n",vName);big.classList.remove("pop");void big.offsetWidth;big.classList.add("pop")};
   document.getElementById("lName").textContent=name;
   document.getElementById("lSay").onclick=()=>play(ch+"|n",vName);
