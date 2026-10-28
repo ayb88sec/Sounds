@@ -131,7 +131,8 @@ const $=id=>document.getElementById(id);
 
 /* gate */
 const ga=3+Math.floor(Math.random()*7),gb=4+Math.floor(Math.random()*6);$("gq").textContent=`${ga} + ${gb} = ?`;
-$("gok").onclick=()=>{const v=$("ga").value.replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d));if(+v===ga+gb)$("gate").remove();else{$("ga").value="";$("ga").placeholder="❌"}};
+const KIDDEV=!!R.get("najma:lock");if(KIDDEV){$("gq").textContent="🔑 رمز العائلة";$("ga").setAttribute("inputmode","text");$("ga").setAttribute("dir","ltr");$("ga").style.fontSize="22px";$("ga").placeholder="XXXX-XXXX-XXXX"}
+$("gok").onclick=()=>{const v=$("ga").value.replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d));if(KIDDEV?v.trim().toUpperCase()===R.get("najma:key"):+v===ga+gb)$("gate").remove();else{$("ga").value="";$("ga").placeholder="❌"}};
 $("ga").addEventListener("keydown",e=>{if(e.key==="Enter")$("gok").click()});
 
 /* tabs */
