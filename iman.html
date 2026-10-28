@@ -149,8 +149,7 @@ footer a,#reset{color:#fff;background:none;border:0;font:inherit;text-decoration
   </div>
 </div>
 
-<script>window.AUDIO_P={};</script>
-<script src="audio/iman.js" onerror=""></script>
+<script>window.AUDIO_P={};NAJMA.loadAudio("iman","AUDIO_P")</script>
 <script>
 const ITEMS=[["اللّٰه", "☝️", "أَنْ تُؤْمِنَ بِاللّٰهِ", "اللهُ واحدٌ لا شريكَ له، خلقَنا وخلقَ كلَّ شيء، ويرانا ويسمعُنا دائمًا."], ["المَلائِكَة", "☁️", "وَمَلائِكَتِهِ", "الملائكةُ خلقَهم اللهُ من نور، لا نراهم، ويطيعون اللهَ دائمًا، ومنهم جبريلُ عليه السلام."], ["الكُتُب", "📖", "وَكُتُبِهِ", "أنزلَ اللهُ كتبًا على رسلِه، وأعظمُها القرآنُ الكريم الذي نقرؤه."], ["الرُّسُل", "📜", "وَرُسُلِهِ", "أرسلَ اللهُ رسلًا يعلّمون الناسَ الخير، وآخرُهم نبيُّنا محمدٌ ﷺ."], ["اليَوْمِ الآخِر", "🌅", "وَاليَوْمِ الآخِرِ", "يومٌ يجمعُ اللهُ فيه الناس، ومن عملَ خيرًا فرحَ ودخلَ الجنّة."], ["القَدَر", "⚖️", "الإِيمانُ بِالقَدَرِ خَيْرِهِ وَشَرِّهِ", "كلُّ شيءٍ يحدثُ، الجميلُ والصعب، يعلمُه اللهُ ويقدّرُه، فنصبرُ ونقول: الحمدُ لله."]];const PFX="m";const N=ITEMS.length;
 const NUMS=["١","٢","٣","٤","٥","٦"];
@@ -173,7 +172,7 @@ function tone(f,d,type="sine",w=0,vol=.15){try{ac=ac||new (window.AudioContext||
 const popSnd=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)};
 const fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",i*.12));
 const buzz=()=>tone(160,.25,"sawtooth",0,.08);
-if(!AUD[PFX+"0"])document.getElementById("introBtn").textContent="أَرْكانُ الإيمانِ سِتَّة";
+
 
 /* confetti */
 const cv=document.getElementById("fx"),cx=cv.getContext("2d");let parts=[],running=false;

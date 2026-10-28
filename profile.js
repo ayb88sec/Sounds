@@ -22,6 +22,21 @@
     c.style.cssText=`position:fixed;top:calc(10px + env(safe-area-inset-top));left:70px;z-index:15;height:52px;border-radius:18px;background:${me.color||"#fff"};color:#fff;
       display:flex;align-items:center;gap:6px;padding:0 14px 0 8px;font:800 20px "Baloo Bhaijaan 2","Baloo 2",system-ui,sans-serif;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18);text-shadow:0 2px 0 rgba(0,0,0,.15)`;
     c.innerHTML=`<span style="font-size:30px">${me.avatar||"⭐"}</span><span dir="auto">${me.name}</span>`;document.body.appendChild(c);const st=document.createElement("style");st.textContent="main{padding-top:74px !important}";document.head.appendChild(st)})}
+  /* family code: private data (names, settings, recordings) is encrypted; each device stores the code once */
+  if(location.hash.startsWith("#key=")){SET.call(localStorage,"najma:key",decodeURIComponent(location.hash.slice(5)).trim().toUpperCase());
+    history.replaceState(null,"",location.pathname+location.search)}
+  let ckey=null;
+  const ub=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)),bu=a=>{let s="";a.forEach(x=>s+=String.fromCharCode(x));return btoa(s)};
+  async function cryptoKey(){if(ckey)return ckey;const code=G.call(localStorage,"najma:key");if(!code||!crypto.subtle)throw new Error("nokey");
+    const base=await crypto.subtle.importKey("raw",new TextEncoder().encode(code),"PBKDF2",false,["deriveKey"]);
+    ckey=await crypto.subtle.deriveKey({name:"PBKDF2",salt:new TextEncoder().encode("najma-family-v1"),iterations:150000,hash:"SHA-256"},base,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);return ckey}
+  async function decrypt(o){const k=await cryptoKey();const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:ub(o.iv)},k,ub(o.ct));return JSON.parse(new TextDecoder().decode(pt))}
+  async function encrypt(obj){const k=await cryptoKey();const iv=crypto.getRandomValues(new Uint8Array(12));
+    const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv},k,new TextEncoder().encode(JSON.stringify(obj)));return {v:1,iv:bu(iv),ct:bu(new Uint8Array(ct))}}
+  async function loadAudio(name,v){window[v]=window[v]||{};try{const r=await fetch(`audio/${name}.enc`);const d=await decrypt(await r.json());Object.assign(window[v],d)}catch(e){}return window[v]}
+  async function checkCode(code){const old=G.call(localStorage,"najma:key");SET.call(localStorage,"najma:key",code);ckey=null;
+    try{const r=await fetch("audio/numbers.enc");await decrypt(await r.json());return true}catch(e){if(old)SET.call(localStorage,"najma:key",old);else RM.call(localStorage,"najma:key");ckey=null;return false}}
+  Object.assign(window.NAJMA,{decrypt,encrypt,loadAudio,checkCode,hasKey:()=>!!G.call(localStorage,"najma:key")});
   /* cloud settings: children and sections live in config.json on GitHub; every device follows it */
   const REPO="ayb88sec/Sounds";
   async function fetchConfig(){
@@ -29,7 +44,7 @@
       if(r.ok)return await r.json()}catch(e){}
     try{const r=await fetch(`https://raw.githubusercontent.com/${REPO}/main/config.json?t=${Date.now()}`,{cache:"no-store"});if(r.ok)return await r.json()}catch(e){}
     return null}
-  async function pull(){const cfg=await fetchConfig();if(!cfg||!cfg.updated)return false;
+  async function pull(){let cfg=await fetchConfig();if(cfg&&cfg.ct){try{cfg=await decrypt(cfg)}catch(e){return false}}if(!cfg||!cfg.updated)return false;
     const P=JSON.stringify(cfg.profiles||[]),Sx=JSON.stringify(cfg.sections||[]);
     const changed=P!==G.call(localStorage,"najma:profiles")||Sx!==G.call(localStorage,"najma:sections");
     SET.call(localStorage,"najma:profiles",P);SET.call(localStorage,"najma:sections",Sx);SET.call(localStorage,"najma:pulledAt",String(Date.now()));

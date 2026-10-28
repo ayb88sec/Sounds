@@ -182,7 +182,7 @@ footer a,#reset{color:#fff;background:none;border:0;font:inherit;text-decoration
   </div>
 </div>
 
-<script src="audio/clips.js"></script>
+<script>window.AUDIO={};NAJMA.loadAudio("clips","AUDIO")</script>
 <script src="writepad.js"></script>
 <script>
 const L=[
@@ -236,7 +236,7 @@ try{const r=indexedDB.open("arVoices",1);r.onupgradeneeded=()=>r.result.createOb
 function putClip(k,blob){if(clips[k])URL.revokeObjectURL(clips[k]);clips[k]=URL.createObjectURL(blob);
   try{db.transaction("clips","readwrite").objectStore("clips").put(blob,k)}catch(e){}}
 let curAudio=null;
-const HAVE=new Set(window.AUDIO_FILES||[]);const pad=n=>String(n).padStart(2,"0");
+const HAVE={has:k=>!!(window.AUDIO&&window.AUDIO[k])};const pad=n=>String(n).padStart(2,"0");
 function fileFor(key){
   if(key.startsWith("w:")){const i=W.findIndex(x=>"w:"+x[0]===key);return i>=0&&HAVE.has("w"+pad(i))?window.AUDIO["w"+pad(i)]:null}
   const [ch,s]=key.split("|"),i=L.findIndex(x=>x[0]===ch),f="l"+pad(i)+"-"+s;return HAVE.has(f)?window.AUDIO[f]:null}

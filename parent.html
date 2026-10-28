@@ -77,6 +77,9 @@ textarea{min-height:160px;line-height:1.5}
     <div id="secList"></div><button class="b add" id="addSec">➕ إضافة قسم</button></div>
   <div class="panel" id="cloud">
     <div class="note" id="cStatus"></div>
+    <label>🔑 رمز العائلة</label>
+    <input class="in" id="fam" dir="ltr" placeholder="XXXX-XXXX-XXXX" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px">
+    <div style="display:flex;gap:8px;margin-top:10px"><button class="b go" id="famSave">حفظ الرمز</button></div>
     <label>مفتاح GitHub (يُحفظ على هذا الجهاز فقط)</label>
     <input class="in" id="tok" dir="ltr" placeholder="github_pat_..." autocomplete="off">
     <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="b go" id="tokSave">🔗 اتصال</button><button class="b del" id="tokDel">إزالة المفتاح</button></div>
@@ -195,10 +198,10 @@ const b64=s=>btoa(unescape(encodeURIComponent(s)));
 function status(t,ok){const s=$("cStatus");s.innerHTML=t;s.style.background=ok?"#e3f8e7":"#fff8dc"}
 async function ghGet(){const tk=R.get(TK);const r=await fetch(`https://api.github.com/repos/${NAJMA.REPO}/contents/config.json?ref=main&t=${Date.now()}`,
   {headers:Object.assign({Accept:"application/vnd.github+json"},tk?{Authorization:"Bearer "+tk}:{}),cache:"no-store"});
-  if(!r.ok)throw new Error(r.status);const j=await r.json();sha=j.sha;return JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,"")))))}
-async function ghPut(){const tk=R.get(TK);if(!tk)return status("⚠️ غير متصل. التغييرات محفوظة على هذا الجهاز فقط. اتصل من تبويب ☁️ الاتصال لتصل إلى أجهزة الأطفال.");
+  if(!r.ok)throw new Error(r.status);const j=await r.json();sha=j.sha;let c=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,"")))));if(c.ct)c=await NAJMA.decrypt(c);return c}
+async function ghPut(){const tk=R.get(TK);if(!NAJMA.hasKey())return status("🔑 أدخل رمز العائلة أولًا في تبويب ☁️ الاتصال.");if(!tk)return status("⚠️ غير متصل. التغييرات محفوظة على هذا الجهاز فقط. اتصل من تبويب ☁️ الاتصال لتصل إلى أجهزة الأطفال.");
   status("⏳ جارٍ الحفظ…");
-  const body={message:"Update children and sections from parent portal",branch:"main",content:b64(JSON.stringify({updated:Date.now(),profiles:profs,sections:secs},null,1))};
+  const body={message:"Update children and sections from parent portal",branch:"main",content:b64(JSON.stringify(await NAJMA.encrypt({updated:Date.now(),profiles:profs,sections:secs})))};
   try{if(!sha)await ghGet();body.sha=sha;let r=await fetch(`https://api.github.com/repos/${NAJMA.REPO}/contents/config.json`,{method:"PUT",headers:{Accept:"application/vnd.github+json",Authorization:"Bearer "+tk},body:JSON.stringify(body)});
     if(r.status===409||r.status===422){await ghGet();body.sha=sha;r=await fetch(`https://api.github.com/repos/${NAJMA.REPO}/contents/config.json`,{method:"PUT",headers:{Accept:"application/vnd.github+json",Authorization:"Bearer "+tk},body:JSON.stringify(body)})}
     if(!r.ok)throw new Error(r.status);sha=(await r.json()).content.sha;
@@ -206,7 +209,7 @@ async function ghPut(){const tk=R.get(TK);if(!tk)return status("⚠️ غير م
   catch(e){status("❌ لم يتم الحفظ ("+e.message+"). تأكد من المفتاح والإنترنت ثم جرّب مرة ثانية.")}}
 const push=()=>{clearTimeout(pushT);pushT=setTimeout(ghPut,400)};
 const _saveP=saveP,_saveS=saveS;saveP=()=>{_saveP();push()};saveS=()=>{_saveS();push()};
-async function connect(){const tk=R.get(TK);$("tok").value=tk?"••••••••"+tk.slice(-4):"";
+async function connect(){$("fam").value=NAJMA.hasKey()?"✓ محفوظ":"";if(!NAJMA.hasKey()){status("🔑 أدخل رمز العائلة أدناه.");return}const tk=R.get(TK);$("tok").value=tk?"••••••••"+tk.slice(-4):"";
   if(!tk){status("⚠️ غير متصل. أضف مفتاح GitHub أدناه لتصل التعديلات إلى أجهزة الأطفال تلقائيًا.");return}
   status("⏳ جارٍ الاتصال…");
   try{const cfg=await ghGet();
@@ -214,6 +217,8 @@ async function connect(){const tk=R.get(TK);$("tok").value=tk?"•••••�
     else{await ghPut()}}
   catch(e){status("❌ تعذّر الاتصال ("+e.message+"). تأكد من المفتاح.")}}
 $("tokSave").onclick=()=>{const v=$("tok").value.trim();if(v&&!v.startsWith("••")){R.set(TK,v);connect()}};
+$("famSave").onclick=async()=>{const v=$("fam").value.trim().toUpperCase();if(!v||v.startsWith("✓"))return;status("⏳ جارٍ التحقق…");
+  if(await NAJMA.checkCode(v)){location.reload()}else status("❌ الرمز غير صحيح.")};
 $("tokDel").onclick=()=>{R.remove(TK);$("tok").value="";connect()};
 drawKids();drawSecs();connect();
 </script>

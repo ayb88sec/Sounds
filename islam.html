@@ -149,8 +149,7 @@ footer a,#reset{color:#fff;background:none;border:0;font:inherit;text-decoration
   </div>
 </div>
 
-<script>window.AUDIO_P={};</script>
-<script src="audio/islam.js" onerror=""></script>
+<script>window.AUDIO_P={};NAJMA.loadAudio("islam","AUDIO_P")</script>
 <script>
 const ITEMS=[["الشَّهادَتان", "☝️", "شَهادَةُ أَنْ لا إِلٰهَ إِلّا اللّٰهُ، وَأَنَّ مُحَمَّدًا رَسولُ اللّٰهِ", "نقولُ ونؤمنُ بقلوبِنا: لا نعبدُ إلّا اللهَ وحدَه، ومحمدٌ ﷺ هو رسولُ الله."], ["الصَّلاة", "🧎", "إِقامُ الصَّلاةِ", "نصلّي للهِ خمسَ صلواتٍ كلَّ يوم: الفجر، والظهر، والعصر، والمغرب، والعشاء."], ["الزَّكاة", "🤲", "إيتاءُ الزَّكاةِ", "نُعطي جزءًا صغيرًا من مالِنا للفقراءِ والمحتاجين، فيفرحون ويرضى اللهُ عنّا."], ["الصَّوْم", "🌙", "صَوْمُ رَمَضانَ", "في شهرِ رمضان لا نأكلُ ولا نشربُ من الفجرِ حتّى المغرب، طاعةً لله."], ["الحَجّ", "🕋", "حَجُّ البَيْتِ لِمَنِ اسْتَطاعَ إِلَيْهِ سَبيلًا", "نسافرُ إلى مكّةَ المكرّمة لنزورَ الكعبة، مرّةً في العمر لمن يستطيع."]];const PFX="i";const N=ITEMS.length;
 const NUMS=["١","٢","٣","٤","٥","٦"];
@@ -173,7 +172,7 @@ function tone(f,d,type="sine",w=0,vol=.15){try{ac=ac||new (window.AudioContext||
 const popSnd=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)};
 const fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",i*.12));
 const buzz=()=>tone(160,.25,"sawtooth",0,.08);
-if(!AUD[PFX+"0"])document.getElementById("introBtn").textContent="أَرْكانُ الإِسْلامِ خَمْسَة";
+
 
 /* confetti */
 const cv=document.getElementById("fx"),cx=cv.getContext("2d");let parts=[],running=false;

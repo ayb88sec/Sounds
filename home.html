@@ -193,6 +193,14 @@ document.getElementById("eDel").onclick=()=>{if(!NAJMA.me)return;const id=NAJMA.
   for(let k=localStorage.length-1;k>=0;k--){const key=localStorage.key(k);if(key&&key.startsWith(`najma:${id}:`))R.remove(key)}
   if(profs.length)use(profs[0].id);else{R.remove("najma:cur");location.reload()}};
 if(!profs.length)setTimeout(()=>{document.getElementById("hello").textContent="أهلاً! اضغط ➕ لإضافة طفل"},50);
+
+/* family code needed once per device */
+if(!NAJMA.hasKey()){const o=document.createElement("div");o.className="pm show";o.style.zIndex=50;
+  o.innerHTML=`<div class="pc"><div style="font-size:56px">🔑</div><h3>رمز العائلة</h3><p style="margin:4px 0 12px;color:#7a7090">اطلب الرمز من ماما أو بابا</p>
+   <input class="in" id="famIn" dir="ltr" placeholder="XXXX-XXXX-XXXX" autocomplete="off" style="text-align:center;text-transform:uppercase;letter-spacing:2px">
+   <div class="prow"><button class="pb go" id="famOk">فتح</button></div></div>`;document.body.appendChild(o);
+  document.getElementById("famOk").onclick=async()=>{const v=document.getElementById("famIn").value.trim().toUpperCase();
+    if(await NAJMA.checkCode(v)){sessionStorage.removeItem("najma:reloaded");location.reload()}else{document.getElementById("famIn").value="";document.getElementById("famIn").placeholder="❌"}}}
 </script>
 </body>
 </html>
