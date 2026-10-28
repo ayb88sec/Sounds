@@ -32,7 +32,7 @@ function say(t,rate=.8){const k=String(t).trim().toLowerCase();if(WORDA[k])retur
 /* pure letter sounds: parent's recordings (audio/phonics.enc, keys a..z) when available, otherwise a close approximation */
 window.PHON={};window.WORDA={};
 /* British phonics sound recordings from github.com/hellodeborahuk/buzzphonics (MIT); whole words use the iPad British voice */
-fetch("audio/phonics.json").then(r=>r.json()).then(j=>{Object.assign(PHON,j.sounds);Object.assign(WORDA,j.words)}).catch(()=>{});
+fetch("audio/phonics-uk.json").then(r=>r.json()).then(j=>{Object.assign(PHON,j.sounds);Object.assign(WORDA,j.words)}).catch(()=>{});
 const APPROX={a:"a",b:"buh",c:"kuh",d:"duh",e:"eh",f:"fff",g:"guh",h:"huh",i:"ih",j:"juh",k:"kuh",l:"lll",m:"mmm",n:"nnn",o:"o",p:"puh",q:"kwuh",r:"rrr",s:"sss",t:"tuh",u:"uh",v:"vvv",w:"wuh",x:"ks",y:"yuh",z:"zzz"};
 function sound(ch){ch=ch.toLowerCase();if(PHON[ch])play(PHON[ch]);else say(APPROX[ch]||ch,.7)}
 /* sound out a word: c... a... t... cat */
