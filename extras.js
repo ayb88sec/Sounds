@@ -24,10 +24,7 @@
     tick();setInterval(tick,800)}
   /* old reset buttons were open to the kids; replace them with a parent-only one */
   document.querySelectorAll("#reset").forEach(b=>b.style.display="none");
-  if(window.NAJMA_RESET){const r=document.createElement("button");r.className="nx-reset";r.textContent=ar?"🔄 تصفير النجوم (للوالدين)":"🔄 Reset stars (parents)";main.appendChild(r);
-    r.onclick=()=>{const g=document.createElement("div");g.className="nx-gate";
-      g.innerHTML=`<div><div style="font-size:40px">🔑</div><b>${ar?"رمز العائلة":"Family code"}</b><input dir="ltr" placeholder="XXXX-XXXX-XXXX"><div><button>${ar?"إلغاء":"Cancel"}</button><button class="go">${ar?"تصفير":"Reset"}</button></div></div>`;
-      document.body.appendChild(g);const inp=g.querySelector("input");setTimeout(()=>inp.focus(),50);
-      g.querySelector("button").onclick=()=>g.remove();
-      g.querySelector(".go").onclick=()=>{if(inp.value.trim().toUpperCase()===(window.NAJMA&&NAJMA.raw.get("najma:key"))){try{window.NAJMA_RESET()}catch(e){}location.reload()}else{inp.value="";inp.placeholder="❌"}}}}
+  if(window.NAJMA_RESET){const r=document.createElement("button");r.className="nx-reset";const lab=ar?"🔄 ابدأ من جديد":"🔄 Start again";r.textContent=lab;main.appendChild(r);let armed=0;
+    r.onclick=()=>{if(Date.now()-armed<4000){try{window.NAJMA_RESET()}catch(e){}location.reload();return}
+      armed=Date.now();r.textContent=ar?"⚠️ اضغط مرة ثانية لمسح النجوم":"⚠️ Tap again to clear your stars";setTimeout(()=>{r.textContent=lab},4000)}}
 })();
