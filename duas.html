@@ -35,6 +35,12 @@ main{max-width:720px;margin:0 auto;padding:16px 12px 60px}
 .b:disabled{opacity:.4}.b.on{animation:pulse 1s infinite}@keyframes pulse{50%{transform:scale(1.07)}}
 .nav{display:flex;justify-content:space-between;margin-top:14px}
 .nav button{font-family:inherit;font-size:18px;font-weight:800;border:0;border-radius:999px;padding:9px 18px;background:#fff;color:#6a5cff;box-shadow:0 4px 0 #ddd3ee;cursor:pointer}
+.all{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.tile{border:3px dashed var(--c);border-radius:24px;background:#fff;padding:0;overflow:hidden;cursor:pointer;font-family:inherit;color:#2b2340;box-shadow:0 6px 0 rgba(0,0,0,.08);text-align:center}
+.tile:active{transform:translateY(4px)}
+.tile .im{aspect-ratio:16/11;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#fff4d6,#ffe0ec);font-size:64px}.tile .im img{width:100%;height:100%;object-fit:cover}
+.tile .nm{display:inline-block;margin:-16px 0 8px;position:relative;background:var(--c);color:#fff;border-radius:999px;padding:2px 14px;font-size:17px;font-weight:800}
+.tile .ok{position:absolute}
 .score{text-align:center;color:#7a7090;font-weight:700;margin-top:8px}
 canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
 </style>
@@ -57,7 +63,7 @@ const LIST=(D.list||(window.KID_DUAS||[])).filter(d=>d&&d.t);
 const REC=D.rec||{},IMG=D.img||{},PACK={},PIC={};
 const KEY="sec_duas";let done={};try{done=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}};
-let cur=0;try{cur=Math.min(LIST.length-1,+(sessionStorage.getItem("duaTab")||0))}catch(e){}
+let cur=-1;
 /* sounds and confetti */
 let ac;function tone(f,d,w=0){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type="triangle";o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(.15,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
 const pop=()=>{tone(520,.12);tone(880,.14,.07)},fan=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12));
@@ -71,12 +77,18 @@ const kid={};let kdb=null;
 try{const r=indexedDB.open("kidDuas",1);r.onupgradeneeded=()=>r.result.createObjectStore("v");r.onsuccess=()=>{kdb=r.result;kdb.transaction("v").objectStore("v").openCursor().onsuccess=e=>{const c=e.target.result;if(c){kid[c.key]=URL.createObjectURL(c.value);c.continue()}else draw()}}}catch(e){}
 
 function tabs(){const T=$("tabs");T.innerHTML="";
+  const a=document.createElement("button");a.className=cur<0?"on":"";a.textContent="📿 كل الأدعية";a.onclick=()=>{pop();go(-1)};T.appendChild(a);
   LIST.forEach((d,i)=>{const b=document.createElement("button");b.className=i===cur?"on":"";b.innerHTML=`${esc(d.e||"🤲")} ${esc(d.w||"دعاء")} ${done[d.t]?'<span class="ok">✅</span>':""}`;
     b.onclick=()=>{pop();go(i)};T.appendChild(b)});
-  const on=T.children[cur];on&&on.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"})}
-function go(i){if(aud)aud.pause();cur=(i+LIST.length)%LIST.length;try{sessionStorage.setItem("duaTab",cur)}catch(e){}draw()}
+  const on=T.children[cur+1];on&&on.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"})}
+function go(i){if(aud)aud.pause();cur=i<0?-1:(i+LIST.length)%LIST.length;draw();scrollTo({top:0,behavior:"smooth"})}
 function draw(){if(!LIST.length){$("view").innerHTML='<div class="score">لا توجد أدعية بعد.</div>';return}
-  tabs();const d=LIST[cur],c=COL[cur%COL.length],pic=PIC[d.id]||PACK["duas:"+d.id],k="dua:"+d.id;
+  tabs();
+  if(cur<0){$("view").innerHTML='<div class="all" id="all"></div>';
+    LIST.forEach((d,i)=>{const c=COL[i%COL.length],pic=PIC[d.id]||PACK["duas:"+d.id],b=document.createElement("button");b.className="tile";b.style.setProperty("--c",c);
+      b.innerHTML=`<div class="im">${pic?`<img src="${pic}" alt="">`:esc(d.e||"🤲")}</div><span class="nm">${esc(d.w||"دعاء")} ${done[d.t]?"✅":""}</span>`;b.onclick=()=>{pop();go(i)};$("all").appendChild(b)});
+    const n=LIST.filter(x=>done[x.t]).length;$("score").textContent=`⭐ حفظت ${n} من ${LIST.length} · اختر دعاءً`;return}
+  const d=LIST[cur],c=COL[cur%COL.length],pic=PIC[d.id]||PACK["duas:"+d.id],k="dua:"+d.id;
   $("view").innerHTML=`<div class="card" style="--c:${c}"><div class="pic">${pic?`<img src="${pic}" alt="">`:`<span class="em">${esc(d.e||"🤲")}</span>`}</div>
     <span class="pill">دعاء ${esc(d.w||"")}</span><div class="txt" id="tx">${esc(d.t)}</div>
     <div class="btns">${REC[d.id]?'<button class="b" id="mum">🔊 اسمع ماما</button>':""}<button class="b r" id="mic">🎤 سجّل صوتي</button><button class="b t" id="me"${kid[k]?"":" disabled"}>▶️ صوتي</button><button class="b y" id="got">${done[d.t]?"⭐ حفظته":"✅ حفظته"}</button></div></div>
