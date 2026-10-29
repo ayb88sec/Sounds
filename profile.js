@@ -94,14 +94,19 @@
   try{const m=document.createElement("meta");m.name="referrer";m.content="no-referrer";document.head.appendChild(m)}catch(e){}
   /* stop at the end of each word (no added "u"/"un" ending): put a sukun on the last letter when it has no vowel mark */
   const pause=t=>String(t).trim().split(/\s+/).length>2?String(t):String(t).replace(/([\u0628-\u0647\u0629\u0646\u0648\u064A])(?=[\s،,.؛!؟?]|$)/g,"$1\u0652");
-  window.NAJMA.aiSay=function(text,lang){const id=++aiRun;if(aiA){aiA.onended=null;aiA.pause()}if(!lang||lang==="ar")text=pause(String(text||"").replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\uFE0F\u200D•]/gu," ").replace(/ﷺ/g,"صلى الله عليه وسلم"));
+  window.NAJMA.aiSay=function(text,lang){const id=++aiRun;if(aiA){aiA.onended=null;aiA.onerror=null;aiA.pause()}if(!lang||lang==="ar")text=pause(String(text||"").replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\uFE0F\u200D•]/gu," ").replace(/ﷺ/g,"صلى الله عليه وسلم"));
     const parts=[];let cur="";String(text).replace(/\s+/g," ").trim().split(/(?<=[،,.؛!؟?])\s*/).forEach(s=>{
       while(s.length>180){let i=s.lastIndexOf(" ",180);if(i<40)i=180;if(cur){parts.push(cur);cur=""}parts.push(s.slice(0,i));s=s.slice(i).trim()}
       if((cur+" "+s).trim().length>180){parts.push(cur);cur=s}else cur=(cur+" "+s).trim()});if(cur)parts.push(cur);
-    return new Promise(res=>{let k=0;const next=()=>{if(id!==aiRun||k>=parts.length)return res();
-      aiA=new Audio();aiA.setAttribute("referrerpolicy","no-referrer");aiA.src=("https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl="+(lang||"ar")+"&q="+encodeURIComponent(parts[k++])+"&total=1&idx=0&textlen="+parts[k-1].length);
-      aiA.onended=next;aiA.onerror=()=>res();aiA.play().catch(()=>res())};next()})};
-  window.NAJMA.aiStop=()=>{aiRun++;if(aiA){aiA.onended=null;aiA.pause()}};
+    /* one audio element, reused, so iPad keeps permission after the first tap; two Google voice addresses as fallback */
+    if(!aiA){aiA=new Audio();aiA.setAttribute("referrerpolicy","no-referrer");aiA.preload="auto"}
+    const url=(q,c)=>`https://translate.google.com/translate_tts?ie=UTF-8&client=${c}&tl=${lang||"ar"}&q=${encodeURIComponent(q)}&total=1&idx=0&textlen=${q.length}`;
+    return new Promise(res=>{let k=0;const next=(ci=0)=>{if(id!==aiRun||k>=parts.length)return res();const q=parts[k],c=["tw-ob","gtx"][ci];
+      aiA.onended=()=>{k++;next()};aiA.onerror=()=>{if(ci<1)next(ci+1);else{aiToast("⚠️ تعذّر تشغيل الصوت");res()}};
+      aiA.src=url(q,c);const p=aiA.play();if(p&&p.catch)p.catch(err=>{if(err&&err.name==="NotAllowedError"){aiToast("👆 اضغط 🔊 مرة ثانية");res()}})};next()})};
+  function aiToast(t){try{let d=document.getElementById("aiToast");if(!d){d=document.createElement("div");d.id="aiToast";d.style.cssText="position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#2b2340;color:#fff;padding:10px 18px;border-radius:999px;font:700 16px system-ui;z-index:99";document.body.appendChild(d)}
+    d.textContent=t;d.style.display="";clearTimeout(d._t);d._t=setTimeout(()=>d.style.display="none",3500)}catch(e){}}
+  window.NAJMA.aiStop=()=>{aiRun++;if(aiA){aiA.onended=null;aiA.onerror=null;aiA.pause()}};
   if(SB&&DEV){const isProg=k=>typeof k==="string"&&!k.startsWith("najma:");
     const queue={};let qt=null;
     const flush=()=>{qt=null;const ks=Object.keys(queue);ks.forEach(k=>{const v=queue[k];delete queue[k];
