@@ -17,13 +17,14 @@
   S.setItem=function(k,v){return SET.call(this,key(k),v)};
   S.removeItem=function(k){return RM.call(this,key(k))};
   if(window.indexedDB&&me){const open=indexedDB.open.bind(indexedDB);indexedDB.open=(n,v)=>open(`${n}__${me.id}`,v)}
-  const DEF={apps:{arabic:true,numAr:true,islam:true,iman:true,sounds:true,cvc:true,sent:true,writeEn:true,numEn:true,shapes:true,name:true},numMax:20,sightGroups:[0,1,2,3,4,5,6,7,8]};
+  const DEF={apps:{arabic:true,numAr:true,islam:true,iman:true,sounds:true,cvc:true,sent:true,writeEn:true,numEn:true,shapes:true,name:true,quran:true},numMax:20,sightGroups:[0,1,2,3,4,5,6,7,8]};
   const DEFSEC=[{id:"spell1",title:"Spelling",icon:"🐝",lang:"en",words:["antiseptic","antibiotic","baby","bad","bear"]}];
   let sections;try{sections=JSON.parse(G.call(localStorage,"najma:sections")||"null")}catch(e){}
   if(!Array.isArray(sections))sections=DEFSEC;
   /* levels the parent can switch on per child; default: all on */
   const LEVELS={arabic:["ا – خ","د – ص","ض – ق","ك – ي","الكلمات البصرية"],sounds:["Set 1","Special friends"],wt:["1.1 · m a s d t","1.2 · i n p g o","1.3 · c k u b","1.4 · f e l h sh","1.5 · r j v y w","1.6 · th z ch qu x ng nk","1.7 · 4–5 sounds"],
-    sent:["Level 1","Level 2","Level 3","Level 4"],shapes:["Level 1","Level 2","Level 3"],writeEn:["abc","ABC","123"]};
+    sent:["Level 1","Level 2","Level 3","Level 4"],shapes:["Level 1","Level 2","Level 3"],writeEn:["abc","ABC","123"],
+    quran:["الفاتحة","الناس – قريش","الفيل – القدر","العلق – الفجر","الغاشية – النبأ"]};
   const lv=app=>{const L=me&&me.levels&&me.levels[app];return Array.isArray(L)&&L.length?L:LEVELS[app].map((_,i)=>i)};
   window.NAJMA={LEVELS,lv,me,profiles,sections,DEFSEC,settings:Object.assign({},DEF,me||{},{apps:Object.assign({},DEF.apps,(me&&me.apps)||{})}),DEF,
     raw:{get:k=>G.call(localStorage,k),set:(k,v)=>SET.call(localStorage,k,v),remove:k=>RM.call(localStorage,k)}};
