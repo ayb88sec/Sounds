@@ -90,12 +90,14 @@
   window.NAJMA.rpc=SB?rpc:null;
   /* natural AI Arabic voice (Google) for anything the parent has not recorded yet; long text is read in parts */
   let aiA=null,aiRun=0;
+  /* Google refuses the voice when the request says which website asked for it */
+  try{const m=document.createElement("meta");m.name="referrer";m.content="no-referrer";document.head.appendChild(m)}catch(e){}
   window.NAJMA.aiSay=function(text,lang){const id=++aiRun;if(aiA){aiA.onended=null;aiA.pause()}
     const parts=[];let cur="";String(text).replace(/\s+/g," ").trim().split(/(?<=[،,.؛!؟?])\s*/).forEach(s=>{
       while(s.length>180){let i=s.lastIndexOf(" ",180);if(i<40)i=180;if(cur){parts.push(cur);cur=""}parts.push(s.slice(0,i));s=s.slice(i).trim()}
       if((cur+" "+s).trim().length>180){parts.push(cur);cur=s}else cur=(cur+" "+s).trim()});if(cur)parts.push(cur);
     return new Promise(res=>{let k=0;const next=()=>{if(id!==aiRun||k>=parts.length)return res();
-      aiA=new Audio("https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl="+(lang||"ar")+"&q="+encodeURIComponent(parts[k++]));
+      aiA=new Audio();aiA.setAttribute("referrerpolicy","no-referrer");aiA.src=("https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl="+(lang||"ar")+"&q="+encodeURIComponent(parts[k++])+"&total=1&idx=0&textlen="+parts[k-1].length);
       aiA.onended=next;aiA.onerror=()=>res();aiA.play().catch(()=>res())};next()})};
   window.NAJMA.aiStop=()=>{aiRun++;if(aiA){aiA.onended=null;aiA.pause()}};
   if(SB&&DEV){const isProg=k=>typeof k==="string"&&!k.startsWith("najma:");
