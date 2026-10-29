@@ -165,6 +165,13 @@ textarea{min-height:160px;line-height:1.5}
   <label>الأيقونة</label><div class="chips av" id="sIcon"></div>
   <label>اللغة</label><div class="chips" id="sLang"></div>
   <label>يظهر لـ</label><div class="chips" id="sKids"></div><div class="note" id="sKidsNote" style="margin:4px 0 0"></div>
+  <div id="sQBox" style="display:none;background:#eefbf1;border-radius:16px;padding:10px 12px;margin-top:10px">
+    <label style="margin-top:0">📖 سورة من القرآن الكريم</label>
+    <select class="in" id="qS" style="margin-bottom:6px"><option value="">⏳ ...</option></select>
+    <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px"><span>من آية</span><input class="in" id="qF" type="number" min="1" value="1" style="width:80px"><span>إلى</span><input class="in" id="qT" type="number" min="1" style="width:80px"></div>
+    <select class="in" id="qR" style="margin-bottom:6px"><option value="ar.husary">🎙️ محمود خليل الحصري (مناسب للأطفال)</option><option value="ar.alafasy">🎙️ مشاري العفاسي</option><option value="ar.minshawi">🎙️ محمد صديق المنشاوي</option><option value="ar.abdulbasitmurattal">🎙️ عبد الباسط عبد الصمد</option></select>
+    <button class="b go" id="qGo" style="width:100%">⬇️ جلب الآيات</button>
+    <div class="note" id="qMsg" style="margin:6px 0 0">النص من AlQuran.cloud (مصدره Tanzil.net) بالرسم العثماني، مع تلاوة كل آية.</div></div>
   <div id="sTxtBox"><label id="sTxtL">الكلمات (كلمة في كل سطر)</label><textarea id="sWords" dir="auto"></textarea></div>
   <div id="sPicBox" style="display:none"><label>🖼️ صورة لكل كلمة</label><div class="note" style="margin:0 0 6px">اكتب إيموجي (مثل 🍎) أو اضغط 📷 لصورة من الجوال.</div><div id="sPic"></div><input type="file" id="sFile" accept="image/*" style="display:none"></div>
   <div id="sQuizBox" style="display:none"><label>❓ الأسئلة</label><div class="note" style="margin:0 0 6px">اكتب السؤال والأجوبة، واضغط ✓ على الجواب الصحيح.</div><div id="sQuiz"></div><button class="b" id="sQAdd" style="width:100%">➕ سؤال</button></div>
@@ -259,7 +266,7 @@ let es;
 const STYPES=[["words","📝 كلمات"],["sent","💬 جمل"],["pic","🖼️ صورة وكلمة"],["quiz","❓ اختبار"],["listen","🎧 استماع وحفظ (قرآن، دعاء)"]];
 const TXTL={words:"الكلمات (كلمة في كل سطر)",sent:"الجمل (جملة في كل سطر)",pic:"الكلمات (كلمة في كل سطر)",listen:"الآيات أو الأسطر (سطر لكل آية)"};
 const TICON={words:"📝",sent:"💬",pic:"🖼️",quiz:"❓",listen:"🎧"};
-function setType(t){es.type=t;$("sTxtBox").style.display=t==="quiz"?"none":"";$("sTxtL").textContent=TXTL[t]||"";$("sPicBox").style.display=t==="pic"?"":"none";
+function setType(t){es.type=t;$("sQBox").style.display=t==="listen"?"":"none";if(t==="listen")loadSurahs();$("sTxtBox").style.display=t==="quiz"?"none":"";$("sTxtL").textContent=TXTL[t]||"";$("sPicBox").style.display=t==="pic"?"":"none";
   $("sQuizBox").style.display=t==="quiz"?"":"none";if(t==="quiz"){es.items=es.items||[];if(!es.items.length)es.items.push({q:"",a:["","","",""],c:0});drawQuiz()}drawRec();drawPic()}
 function editSec(s){es=s?JSON.parse(JSON.stringify(s)):{id:"s"+Date.now().toString(36),title:"",icon:"📝",lang:"en",words:[],type:"words"};es.type=es.type||"words";es.img=es.img||{};
   $("sT").textContent=s?"تعديل "+s.title:"قسم جديد";$("sTitle").value=es.title;$("sWords").value=es.words.join("\n");$("sDel").style.visibility=s?"visible":"hidden";
@@ -278,11 +285,30 @@ let rec=null,recW=null,recT=null,plain={},curA=null;
 const curWords=()=>es.type==="quiz"?(es.items||[]).map(q=>q.q.trim()).filter(Boolean):$("sWords").value.split(es.type==="words"||es.type==="pic"?/[\n,،]+/:/\n+/).map(w=>w.trim()).filter(Boolean);
 function drawRec(){const box=$("sRec");const on=es.lang==="ar"||es.type!=="words";$("sRecBox").style.display=on?"":"none";if(!on)return;box.innerHTML="";
   const ws=curWords();if(!ws.length){box.innerHTML='<div class="note">اكتب النص أولًا.</div>';return}
-  ws.forEach(w=>{const r=document.createElement("div");r.className="rrow";const has=!!es.audio[w];
-    r.innerHTML=`<b dir="auto" style="font-size:${w.length>14?16:22}px">${w}</b>${has?'<span class="ok">✅</span>':""}<button class="b mic${recW===w?" on":""}">${recW===w?"⏹️":"🎤"}</button><button class="b pl"${has?"":" disabled style='opacity:.35'"}>▶️</button><button class="b rm"${has?"":" style='display:none'"}>🗑️</button>`;
+  ws.forEach(w=>{const r=document.createElement("div");r.className="rrow";const has=!!es.audio[w],qr=es.qaudio&&es.qaudio[w];
+    r.innerHTML=`<b dir="auto" style="font-size:${w.length>14?16:22}px">${w}</b>${has?'<span class="ok">✅</span>':qr?'<span class="ok">📖</span>':""}<button class="b mic${recW===w?" on":""}">${recW===w?"⏹️":"🎤"}</button><button class="b pl"${has?"":" disabled style='opacity:.35'"}>▶️</button><button class="b rm"${has?"":" style='display:none'"}>🗑️</button>`;
     r.querySelector(".mic").onclick=()=>recWord(w);r.querySelector(".pl").onclick=()=>playWord(w);
     r.querySelector(".rm").onclick=()=>{delete es.audio[w];delete plain[w];drawRec()};box.appendChild(r)})}
 $("sWords").addEventListener("input",()=>{clearTimeout(window._rw);window._rw=setTimeout(()=>{drawRec();drawPic()},400)});
+/* Quran: exact text and per-ayah recitation from AlQuran.cloud (Tanzil text) */
+const QAPI="https://api.alquran.cloud/v1",AD=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);let SUR=null;
+async function loadSurahs(){if(SUR)return;try{const r=await fetch(QAPI+"/surah");const j=await r.json();SUR=j.data;
+  $("qS").innerHTML='<option value="">اختر السورة</option>'+SUR.map(s=>`<option value="${s.number}">${s.number}. ${s.name}</option>`).join("")}
+  catch(e){$("qS").innerHTML='<option value="">⚠️ تحتاج إنترنت</option>'}}
+$("qS").onchange=()=>{const s=SUR&&SUR.find(x=>x.number==$("qS").value);if(s){$("qF").value=1;$("qT").value=s.numberOfAyahs;$("qT").max=s.numberOfAyahs;$("qF").max=s.numberOfAyahs}};
+$("qGo").onclick=async()=>{const n=+$("qS").value;if(!n)return;const s=SUR.find(x=>x.number===n),f=Math.max(1,+$("qF").value||1),t=Math.min(s.numberOfAyahs,+$("qT").value||s.numberOfAyahs),rc=$("qR").value;
+  $("qMsg").textContent="⏳ جاري الجلب...";
+  try{const r=await fetch(`${QAPI}/surah/${n}/editions/quran-uthmani,${rc}`);const j=await r.json();if(j.code!==200)throw 0;
+    const [tx,au]=j.data,lines=[],qa={};
+    if(f===1&&n!==1&&n!==9){const r1=await fetch(`${QAPI}/ayah/1/editions/quran-uthmani,${rc}`).then(x=>x.json());const b=r1.data[0].text.trim();lines.push(b);qa[b]=r1.data[1].audio}
+    for(let i=f-1;i<t;i++){let a=tx.ayahs[i].text.trim();
+      if(i===0&&n!==1&&n!==9){const w=a.split(/\s+/);if(/^بِسْمِ/.test(w[0])&&w.length>4)a=w.slice(4).join(" ")}
+      const line=a+" ﴿"+AD(i+1)+"﴾";lines.push(line);qa[line]=au.ayahs[i].audio}
+    $("sWords").value=lines.join("\n");es.qaudio=qa;es.quran={s:n,f,t,r:rc};es.lang="ar";$("sWords").dir="rtl";
+    chips("sLang",["English","عربي"],(x,k)=>es.lang===(k?"ar":"en"),(x,k)=>{es.lang=k?"ar":"en";$("sWords").dir=k?"rtl":"ltr";drawRec()});
+    if(!$("sTitle").value.trim())$("sTitle").value="سورة "+s.name.replace(/^سُورَةُ\s*/,"").replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g,"").replace(/ٱ/g,"ا");if(es.icon==="🎧"||!es.icon){es.icon="📖";chips("sIcon",ICONS,i=>i===es.icon,i=>es.icon=i,"av")}
+    drawRec();$("qMsg").textContent=`✅ ${lines.length} سطر، مع التلاوة. يمكنك أيضًا تسجيل صوتك لأي آية.`}
+  catch(e){$("qMsg").textContent="⚠️ تعذّر الجلب. تأكد من الإنترنت وحاول مرة ثانية."}};
 /* pictures */
 let plainI={},picFor=null;
 const imgHTML=w=>{const v=es.img[w];if(!v)return"❔";if(v.e)return v.e;return plainI[w]?`<img src="${plainI[w]}">`:"🖼️"};
@@ -320,7 +346,8 @@ async function recWord(w){if(rec){const same=recW===w;rec.stop();if(same)return}
 $("addSec").onclick=()=>editSec(null);
 $("sSave").onclick=()=>{if(rec)rec.stop();es.title=$("sTitle").value.trim()||"قسم";if(es.type==="quiz"){es.items=es.items.map(q=>{const ct=(q.a[q.c]||"").trim(),a=q.a.map(x=>x.trim()).filter(Boolean);return {q:q.q.trim(),a,c:Math.max(0,a.indexOf(ct))}}).filter(q=>q.q&&q.a.length>=2)}else delete es.items;
   es.words=curWords();
-  Object.keys(es.audio||{}).forEach(w=>{if(!es.words.includes(w))delete es.audio[w]});if(!Object.keys(es.audio||{}).length)delete es.audio;
+  Object.keys(es.audio||{}).forEach(w=>{if(!es.words.includes(w))delete es.audio[w]});
+  if(es.type!=="listen")delete es.qaudio,delete es.quran;else if(es.qaudio){Object.keys(es.qaudio).forEach(w=>{if(!es.words.includes(w))delete es.qaudio[w]});if(!Object.keys(es.qaudio).length)delete es.qaudio,delete es.quran}if(!Object.keys(es.audio||{}).length)delete es.audio;
   if(es.type==="pic"){Object.keys(es.img).forEach(w=>{if(!es.words.includes(w))delete es.img[w]})}if(es.type!=="pic"||!Object.keys(es.img||{}).length)delete es.img;
   profs.forEach(p=>{p.apps=Object.assign({},p.apps||{});p.apps["s:"+es.id]=sKids.has(p.id)});saveP();
   const i=secs.findIndex(s=>s.id===es.id);if(i>=0)secs[i]=es;else secs.push(es);saveS();$("secSheet").classList.remove("show");drawSecs();drawKids()};

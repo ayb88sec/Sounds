@@ -129,8 +129,8 @@ const AR=SEC.lang==="ar";document.documentElement.lang=AR?"ar":"en";document.doc
 if(TYPE==="listen"&&AR)document.body.classList.add("quran");
 document.title=SEC.title;$("title").textContent=`${SEC.icon||""} ${SEC.title}`;
 const ITEMS=(SEC.words||[]).filter(Boolean),QZ=SEC.items||[];
-const T=AR?{hi:{sent:"اضغط على جملة واقرأها!",pic:"اضغط على صورة!",quiz:"جاهز للاختبار؟",listen:"استمع وردّد معي!"},build:"🧩 رتّب الجملة",buildAll:"🧩 رتّب الجمل",write:"✏️ اكتب",find:"🎯 أين الصورة؟",name:"🔤 ما اسمها؟",start:"▶️ ابدأ",all:"▶️ استمع للكل",rep:"🔁 ردّد معي",hide:"🙈 اختبر حفظك",show:"👀 أظهر النص",turn:"🎤 دورك!",got:"✅ حفظتها",rec:"🎤 سجّل",me:"▶️ صوتي",prev:"➡️ السابق",next:"التالي ⬅️",praise:["أحسنت!","رائع!","ممتاز!","شاطر!","ما شاء الله!"],again:"حاول مرة ثانية 💪",done:"أنهيت! 🏆",stop:"⏹️ إيقاف"}
-  :{hi:{sent:"Tap a sentence and read it!",pic:"Tap a picture!",quiz:"Ready for the quiz?",listen:"Listen and repeat!"},build:"🧩 Build it",buildAll:"🧩 Build sentences",write:"✏️ Write",find:"🎯 Find the picture",name:"🔤 What is it?",start:"▶️ Start",all:"▶️ Listen to all",rep:"🔁 Repeat after me",hide:"🙈 Test yourself",show:"👀 Show text",turn:"🎤 Your turn!",got:"✅ I know it",rec:"🎤 Record",me:"▶️ My voice",prev:"⬅️ Back",next:"Next ➡️",praise:["Amazing!","Well done!","Brilliant!","You got it!"],again:"Try again 💪",done:"All done! 🏆",stop:"⏹️ Stop"};
+const T=AR?{hi:{sent:"اضغط على جملة واقرأها!",pic:"اضغط على صورة!",quiz:"جاهز للاختبار؟",listen:"استمع وردّد معي!"},build:"🧩 رتّب الجملة",buildAll:"🧩 رتّب الجمل",write:"✏️ اكتب",find:"🎯 أين الصورة؟",name:"🔤 ما اسمها؟",start:"▶️ ابدأ",all:"▶️ استمع للكل",rep:"🔁 ردّد معي",hide:"🙈 اختبر حفظك",x:"🔂 كرّر",show:"👀 أظهر النص",turn:"🎤 دورك!",got:"✅ حفظتها",rec:"🎤 سجّل",me:"▶️ صوتي",prev:"➡️ السابق",next:"التالي ⬅️",praise:["أحسنت!","رائع!","ممتاز!","شاطر!","ما شاء الله!"],again:"حاول مرة ثانية 💪",done:"أنهيت! 🏆",stop:"⏹️ إيقاف"}
+  :{hi:{sent:"Tap a sentence and read it!",pic:"Tap a picture!",quiz:"Ready for the quiz?",listen:"Listen and repeat!"},build:"🧩 Build it",buildAll:"🧩 Build sentences",write:"✏️ Write",find:"🎯 Find the picture",name:"🔤 What is it?",start:"▶️ Start",all:"▶️ Listen to all",rep:"🔁 Repeat after me",hide:"🙈 Test yourself",x:"🔂 Repeat",show:"👀 Show text",turn:"🎤 Your turn!",got:"✅ I know it",rec:"🎤 Record",me:"▶️ My voice",prev:"⬅️ Back",next:"Next ➡️",praise:["Amazing!","Well done!","Brilliant!","You got it!"],again:"Try again 💪",done:"All done! 🏆",stop:"⏹️ Stop"};
 const COLORS=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
 const rnd=a=>a[Math.floor(Math.random()*a.length)],shuf=a=>[...a].sort(()=>Math.random()-.5),sleep=t=>new Promise(r=>setTimeout(r,t));
 const KEY="sec_"+SEC.id;let done={};try{done=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
@@ -149,9 +149,9 @@ const popSnd=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)},fanfare
 const MINE={},IMG={};let mA=null,voice=null;
 function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}
 if(!AR&&"speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
-const hasV=t=>!!MINE[t]||!AR;
+const QA=SEC.qaudio||{};const hasV=t=>!!MINE[t]||!!QA[t]||!AR;
 function play(t){return new Promise(res=>{try{speechSynthesis.cancel()}catch(e){}if(mA){mA.onended=null;mA.pause()}
-  if(MINE[t]){const t0=Date.now();mA=new Audio(MINE[t]);mA.onended=mA.onerror=()=>res((Date.now()-t0)/1000);mA.play().catch(()=>res(0));return}
+  const src=MINE[t]||QA[t];if(src){const t0=Date.now();mA=new Audio(src);mA.onended=mA.onerror=()=>res((Date.now()-t0)/1000);mA.play().catch(()=>res(0));return}
   if(!AR&&"speechSynthesis" in window){const t0=Date.now(),u=new SpeechSynthesisUtterance(t);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.8;u.onend=u.onerror=()=>res((Date.now()-t0)/1000);speechSynthesis.speak(u);return}
   res(0)})}
 const stopAll=()=>{try{speechSynthesis.cancel()}catch(e){}if(mA){mA.onended=null;mA.pause()}};
@@ -227,10 +227,11 @@ function runQuiz(only){const list=only!=null?[QZ[only]]:shuf(QZ);let k=0,score=0
         else{miss++;b.classList.add("wrong");buzz();talk(T.again)}};$("op").appendChild(b)})};step()}
 
 /* ---------- listen & memorise (Quran, dua, nasheed, story) ---------- */
-let hidden=false;
+let hidden=false,times=1;
 function listen(){const G=$("grid");G.className="grid wide";
   const bAll=btn(T.all,"pink",()=>seq(false)),bRep=btn(T.rep,"teal",()=>seq(true)),bHide=btn(T.hide,"",()=>{hidden=!hidden;$("sec").classList.toggle("hide",hidden);bHide.textContent=hidden?T.show:T.hide});
-  $("topbar").append(bAll,bRep,bHide);
+  const bX=btn(`${T.x} ×1`,"",()=>{times=times===1?3:times===3?5:1;bX.textContent=`${T.x} ×${times}`});
+  $("topbar").append(bAll,bRep,bX,bHide);
   const draw=()=>{G.innerHTML="";ITEMS.forEach((s,i)=>{const d=document.createElement("div");d.className="line";d.id="ln"+i;
     d.innerHTML=`<div class="t" dir="auto">${esc(s)}</div><span class="st">${stars(s)}</span>`;
     d.onclick=()=>{if(hidden&&!d.classList.contains("peek")){d.classList.add("peek");setTimeout(()=>d.classList.remove("peek"),2500);return}openL(i)};G.appendChild(d)})};
@@ -239,8 +240,8 @@ async function seq(rep){stopAll();const id=++runId;const bar=document.createElem
   const stop=btn(T.stop,"pink",()=>{runId++;stopAll()});bar.appendChild(stop);document.body.appendChild(bar);
   for(let i=0;i<ITEMS.length&&id===runId;i++){const el=$("ln"+i);document.querySelectorAll(".line.now").forEach(x=>x.classList.remove("now"));if(el){el.classList.add("now");el.scrollIntoView({behavior:"smooth",block:"center"})}
     if(!hasV(ITEMS[i])){await sleep(2500);continue}
-    const d=await play(ITEMS[i]);if(id!==runId)break;
-    if(rep){talk(T.turn);await sleep(Math.max(1800,d*1000+900))}else await sleep(400)}
+    for(let r=0;r<times&&id===runId;r++){const d=await play(ITEMS[i]);if(id!==runId)break;
+      if(rep){talk(T.turn);await sleep(Math.max(1800,d*1000+900))}else await sleep(400)}}
   document.querySelectorAll(".line.now").forEach(x=>x.classList.remove("now"));bar.remove();if(id===runId){fanfare();talk(T.done)}}
 /* the child's own recording per line, kept on this iPad */
 const kid={};let kdb=null,pRec=null,pTimer=null,kA=null;
