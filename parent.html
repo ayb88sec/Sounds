@@ -340,7 +340,7 @@ $("sDel").onclick=()=>{if(!confirmDel(es.title))return;secs=secs.filter(s=>s.id!
 
 /* Quran stories: everything the parent adds (story, explanation, pictures, simple meanings, extra surahs) lives in one hidden section, encrypted where private */
 function qSec(){let s=secs.find(x=>x.type==="qimg");if(!s){s={id:"qimg"+Date.now().toString(36),type:"qimg",title:"qimg",icon:"📖",lang:"ar",words:[]};secs.push(s)}
-  ["img","poster","story","expl","explA","simp","extra"].forEach(k=>s[k]=s[k]||{});return s}
+  ["img","poster","story","expl","explA","explV","simp","extra"].forEach(k=>s[k]=s[k]||{});return s}
 const QAPI="https://api.alquran.cloud/v1",AD=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
 const qSurah=n=>(qSec().extra[n])||QK[n];
 const qPlain={};const qDec=async(k,v)=>{if(!v)return null;if(qPlain[k])return qPlain[k];try{return qPlain[k]=await NAJMA.decrypt(v)}catch(e){return null}};
@@ -356,18 +356,21 @@ async function qEdit(){const n=+$("qpS").value,E=$("qpE");E.innerHTML="";if(!n)r
     <div class="rrow"><b>🎤 سجّل شرحك بصوتك</b><button class="b" id="qpR">${voice?"🔁 أعد التسجيل":"🎤 سجّل"}</button><button class="b" id="qpP"${voice?"":" disabled style='opacity:.35'"}>▶️</button>${voice?'<button class="b" id="qpRD">🗑️</button>':""}</div>
     <label>🖼️ صورة السورة (لوحة أو ملخّص مصوّر)</label>
     <div class="rrow"><div class="pimg" style="width:80px;height:80px">${poster?`<img src="${poster}">`:"🖼️"}</div><span style="flex:1"></span><button class="b" id="qpPo">📷 ${poster?"تغيير":"إضافة"}</button>${poster?'<button class="b" id="qpPoD">🗑️</button>':""}</div></div>
-    <div class="qbox"><label style="margin-top:0">📖 الآيات: الصورة والتبسيط</label><div class="note" style="margin:0 0 6px">«المعنى» يأتي تلقائيًا من التفسير الميسر. اكتب هنا «التبسيط» للأطفال، واضغط 📷 لتضع صورتك.</div><div id="qpA"></div></div>
+    <div class="qbox"><label style="margin-top:0">📖 الآيات: الصورة والتبسيط</label><div class="note" style="margin:0 0 6px">«المعنى» يأتي تلقائيًا. اكتب «التبسيط» للأطفال، واضغط 📷 لتضع صورتك، و🎤 لتسجّل شرحك لهذه الآية بصوتك.</div><div id="qpA"></div></div>
     <div class="actions">${isX?'<button class="b del" id="qpDel">🗑️ حذف السورة</button>':"<span></span>"}<button class="b go" id="qpSave">💾 حفظ</button></div>`;
   $("qpI").value=Q.story[n]!=null?Q.story[n]:(S.i||"");$("qpX").value=Q.expl[n]||"";
   const A=$("qpA");
   S.a.forEach((x,i)=>{if(x[3]===-1)return;const a=i+1,k=n+":"+a;let last=a;while(S.a[last]&&S.a[last][3]===-1)last++;
     const r=document.createElement("div");r.className="rrow";r.style.flexWrap="wrap";
     r.innerHTML=`<div class="pimg">${Q.img[k]?"⏳":Array.from(x[1])[0]}</div><b dir="rtl" style="font-size:15px;font-family:'Amiri Quran',serif">﴿${AD(a)}${last>a?"–"+AD(last):""}﴾ ${S.t[i].split(" ").slice(0,5).join(" ")}…</b><button class="b cam">📷</button>${Q.img[k]?'<button class="b rm">🗑️</button>':""}
+      <div style="flex-basis:100%;display:flex;gap:6px;align-items:center"><button class="b vr">${Q.explV[k]?"🔁 أعد تسجيل الشرح":"🎤 سجّل شرحك"}</button>${Q.explV[k]?'<button class="b vp">▶️</button><button class="b vd">🗑️</button>':""}</div>
       <textarea class="in simp" dir="rtl" placeholder="التبسيط للأطفال" style="flex-basis:100%;min-height:50px;font-size:16px;margin:0"></textarea>`;
     r.querySelector(".simp").value=Q.simp[k]!=null?Q.simp[k]:x[2];r.querySelector(".simp").dataset.k=k;r.querySelector(".simp").dataset.def=x[2];
     if(Q.img[k])qDec("i"+k,Q.img[k]).then(u=>{if(u)r.querySelector(".pimg").innerHTML=`<img src="${u}">`});
     r.querySelector(".cam").onclick=()=>{qPicFor=k;$("qpF").value="";$("qpF").click()};
-    if(Q.img[k])r.querySelector(".rm").onclick=()=>{delete Q.img[k];delete qPlain["i"+k];qSave(false)};A.appendChild(r)});
+    if(Q.img[k])r.querySelector(".rm").onclick=()=>{delete Q.img[k];delete qPlain["i"+k];qSave(false)};
+    if(Q.explV[k]){r.querySelector(".vp").onclick=async()=>{const u=await qDec("v"+k,Q.explV[k]);if(u)new Audio(u).play()};r.querySelector(".vd").onclick=()=>{delete Q.explV[k];delete qPlain["v"+k];qSave(false)}}
+    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{Q.explV[k]=u.enc;qPlain["v"+k]=u.url});A.appendChild(r)});
   $("qpPo").onclick=()=>{qPicFor="poster";$("qpF").value="";$("qpF").click()};
   if(poster)$("qpPoD").onclick=()=>{delete Q.poster[n];delete qPlain["p"+n];qSave(false)};
   if(voice){$("qpP").onclick=async()=>{const u=await qDec("a"+n,Q.explA[n]);if(u)new Audio(u).play()};$("qpRD").onclick=()=>{delete Q.explA[n];delete qPlain["a"+n];qSave(false)}}
@@ -379,6 +382,14 @@ async function qEdit(){const n=+$("qpS").value,E=$("qpE");E.innerHTML="";if(!n)r
   $("qpSave").onclick=()=>qSave(true);
   if(isX)$("qpDel").onclick=()=>{if(!confirm("حذف سورة "+S.name+"؟"))return;delete Q.extra[n];["story","expl","explA","poster"].forEach(f=>delete Q[f][n]);
     Object.keys(Q.img).concat(Object.keys(Q.simp)).forEach(k=>{if(k.startsWith(n+":")){delete Q.img[k];delete Q.simp[k]}});$("qpS").value="";saveS();qList();qEdit()}}
+/* record the parent's voice, encrypt it, then save */
+let qRec=null,qTm=null;
+async function qRecord(btn,put){if(qRec){qRec.stop();return}
+  try{const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}}),ch=[];qRec=new MediaRecorder(st,{audioBitsPerSecond:32000});btn.textContent="⏹️ إيقاف";btn.style.background="#ff5d73";btn.style.color="#fff";
+    qRec.ondataavailable=e=>ch.push(e.data);qRec.onstop=async()=>{clearTimeout(qTm);st.getTracks().forEach(t=>t.stop());const bl=new Blob(ch,{type:qRec.mimeType||"audio/mp4"});qRec=null;
+      const url=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(bl)});
+      try{qCollect();put({enc:await NAJMA.encrypt(url),url});new Audio(url).play();qSave(false)}catch(e){alert("أدخل كود العائلة في التطبيق أولًا")}};
+    qRec.start();qTm=setTimeout(()=>{if(qRec&&qRec.state==="recording")qRec.stop()},120000)}catch(e){alert("اسمح للمايكروفون: Settings ← Safari ← Microphone")}}
 function qCollect(){const n=+$("qpS").value;if(!n||!$("qpI"))return;const Q=qSec(),S=qSurah(n);
   const st=$("qpI").value.trim(),def=(QK[n]||{}).i||"";if(st===def)delete Q.story[n];else Q.story[n]=st;
   const x=$("qpX").value.trim();if(x)Q.expl[n]=x;else delete Q.expl[n];

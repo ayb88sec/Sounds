@@ -115,7 +115,7 @@ const PRAISE=["أحسنت!","رائع!","ممتاز!","ما شاء الله!","�
 /* which surahs this child can see (parent sets levels) */
 const GROUPS=[[1],[114,113,112,111,110,109,108,107,106],[105,104,103,102,101,100,99,98,97],[96,95,94,93,92,91,90,89],[88,87,86,85,84,83,82,81,80,79,78]];
 /* everything the parent added in the portal: story, explanation, pictures, simple meanings, extra surahs */
-const QC=NAJMA.sections.find(s=>s.type==="qimg")||{};["img","poster","story","expl","explA","simp","extra"].forEach(k=>QC[k]=QC[k]||{});
+const QC=NAJMA.sections.find(s=>s.type==="qimg")||{};["img","poster","story","expl","explA","explV","simp","extra"].forEach(k=>QC[k]=QC[k]||{});
 const QIMG=QC.img,PH={},PACK={};
 Object.keys(QC.extra).forEach(n=>{QK[n]=QC.extra[n]});
 const XN=Object.keys(QC.extra).map(Number).sort((a,b)=>b-a);
@@ -204,7 +204,7 @@ function reward(){const nm=NAJMA.me?NAJMA.me.name:"";fan();rain();setTimeout(rai
     <div style="font-size:40px;margin-top:8px">🥇🎉📖</div><div style="margin-top:6px;font-size:17px">بارك الله فيك، واصل رحلتك مع القرآن!</div></div>`)}
 
 /* ---------- surah ---------- */
-let S,GR,tab="story";
+let S,GR,tab="learn";
 function groups(){const g=[];S.a.forEach((x,i)=>{if(x[3]===-1)g[g.length-1].ay.push(i+1);else g.push({bg:x[0],em:x[1],tx:x[2],ay:[i+1]})});return g}
 function ayahHTML(a,extra){return `<div class="ayah q ${extra||""}" data-a="${a}">${esc(S.t[a-1])} <span class="no">﴿${AD(a)}﴾</span></div>`}
 function surah(){S=QK[N];if(!S||!ALLOWED.has(N)){location.replace("quran.html");return}
@@ -213,7 +213,7 @@ function surah(){S=QK[N];if(!S||!ALLOWED.has(N)){location.replace("quran.html");
   document.title=S.name;
   M.innerHTML=`<h1 class="q" style="font-family:'Amiri Quran',serif">سورة ${S.name}</h1><p class="sub">${AD(S.t.length)} آيات · ${S.type==="meccan"?"مكية":"مدنية"}</p>
     <div class="tabs" id="tabs"></div><div id="body"></div>`;
-  const T=[["story","📖 الآيات"],["intro","📜 القصة"],["play","🎮 الأنشطة"],["learn","🎧 احفظ"]];
+  const T=[["learn","🎧 احفظ"],["story","📖 معنى الآيات"],["intro","📜 القصة"],["play","🎮 الأنشطة"]];
   T.forEach(([k,t])=>{const b=document.createElement("button");b.textContent=t;b.dataset.k=k;b.onclick=()=>{stop();tab=k;draw()};$("tabs").appendChild(b)});
   draw();
   window.NAJMA_PROGRESS=()=>({done:Object.keys(prog(N)).length,total:S.t.length});
@@ -237,15 +237,15 @@ function intro(B){const hasP=!!QC.poster[N],head=PACK[N+":head"],ex=QC.expl[N],h
   if(hasV)$("ev").onclick=async()=>{stop();try{const u=await NAJMA.decrypt(QC.explA[N]);aud=new Audio(u);aud.play()}catch(e){}};
   $("go").onclick=()=>{tab="play";draw()}}
 function story(B){const X=S.x||{};
-  B.innerHTML=`<div class="row" style="margin:0 0 10px"><button class="btn p" id="wgo">🎬 شاهد السورة كقصة</button></div>`;$("wgo").onclick=()=>{stop();watch(B)};
   GR.forEach((g,gi)=>{const c=document.createElement("div");c.className="card";c.style.borderTop=`8px solid ${COL[gi%6]}`;const key=N+":"+g.ay[0],x=X[g.ay[0]]||{};
     const my=x.mn||(MY?g.ay.map(a=>MY[a-1]).filter(Boolean).join(" "):""),tb=x.tb||g.tx;
     c.innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="background:${COL[gi%6]};color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px">${AD(g.ay[0])}</span></div>`+
       scene(g.bg,g.em,key)+g.ay.map(a=>ayahHTML(a)).join("")+
       (my?`<div class="mean" style="background:#eef6ff"><b style="color:#2f6fd6">📘 المعنى:</b> ${esc(my)}</div>`:"")+
-      (tb?`<div class="mean"><b>💡 تبسيط:</b> ${esc(tb)}</div>`:"")+
-      (x.id?`<div class="mean" style="background:#f1fbe9"><b style="color:#3a9a3f">🖼️ فكرة الصورة:</b> ${esc(x.id)}</div>`:"");
+      (tb||x.id?`<div class="mean"><b>💡 تبسيط:</b> ${esc(tb||"")}${x.id?`<div style="margin-top:4px">🖼️ ${esc(x.id)}</div>`:""}</div>`:"")+
+      (QC.explV&&QC.explV[key]?`<div class="row" style="margin:8px 0 2px"><button class="btn p sm ev" data-k="${key}">🔊 شرح ماما</button></div>`:"");
     B.appendChild(c)});
+  B.querySelectorAll(".ev").forEach(b=>b.onclick=async()=>{stop();try{const u=await NAJMA.decrypt(QC.explV[b.dataset.k]);aud=new Audio(u);aud.play()}catch(e){}});
   if(!MY&&!Object.keys(X).length)B.insertAdjacentHTML("beforeend",'<div class="score" style="color:#fff">📘 المعنى يظهر عند الاتصال بالإنترنت</div>');bindAyat(B)}
 async function watch(B,from){const id=++runId;let i=from||0;
   const show=()=>{const g=GR[i];B.innerHTML=`<div class="card">${scene(g.bg,g.em,N+":"+g.ay[0])}${g.ay.map(a=>ayahHTML(a)).join("")}${g.tx?`<div class="mean"><b>💡</b> ${esc(g.tx)}</div>`:""}
