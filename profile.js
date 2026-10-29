@@ -88,6 +88,16 @@
   async function rpc(fn,args){const r=await fetch(`${SB.url}/rest/v1/rpc/${fn}`,{method:"POST",headers:Object.assign({apikey:SB.key,"Content-Type":"application/json"},/^eyJ/.test(SB.key)?{Authorization:"Bearer "+SB.key}:{}),body:JSON.stringify(args)});
     if(!r.ok)throw new Error(r.status);const t=await r.text();return t?JSON.parse(t):null}
   window.NAJMA.rpc=SB?rpc:null;
+  /* natural AI Arabic voice (Google) for anything the parent has not recorded yet; long text is read in parts */
+  let aiA=null,aiRun=0;
+  window.NAJMA.aiSay=function(text,lang){const id=++aiRun;if(aiA){aiA.onended=null;aiA.pause()}
+    const parts=[];let cur="";String(text).replace(/\s+/g," ").trim().split(/(?<=[،,.؛!؟?])\s*/).forEach(s=>{
+      while(s.length>180){let i=s.lastIndexOf(" ",180);if(i<40)i=180;if(cur){parts.push(cur);cur=""}parts.push(s.slice(0,i));s=s.slice(i).trim()}
+      if((cur+" "+s).trim().length>180){parts.push(cur);cur=s}else cur=(cur+" "+s).trim()});if(cur)parts.push(cur);
+    return new Promise(res=>{let k=0;const next=()=>{if(id!==aiRun||k>=parts.length)return res();
+      aiA=new Audio("https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl="+(lang||"ar")+"&q="+encodeURIComponent(parts[k++]));
+      aiA.onended=next;aiA.onerror=()=>res();aiA.play().catch(()=>res())};next()})};
+  window.NAJMA.aiStop=()=>{aiRun++;if(aiA){aiA.onended=null;aiA.pause()}};
   if(SB&&DEV){const isProg=k=>typeof k==="string"&&!k.startsWith("najma:");
     const queue={};let qt=null;
     const flush=()=>{qt=null;const ks=Object.keys(queue);ks.forEach(k=>{const v=queue[k];delete queue[k];

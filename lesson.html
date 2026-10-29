@@ -156,12 +156,13 @@ const popSnd=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)},fanfare
 const MINE={},IMG={};let mA=null,voice=null;
 function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}
 if(!AR&&"speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
-const QA=SEC.qaudio||{};const hasV=t=>!!MINE[t]||!!QA[t]||!AR;
+const QA=SEC.qaudio||{};const hasV=t=>true;
 function play(t){return new Promise(res=>{try{speechSynthesis.cancel()}catch(e){}if(mA){mA.onended=null;mA.pause()}
   const src=MINE[t]||QA[t];if(src){const t0=Date.now();mA=new Audio(src);mA.onended=mA.onerror=()=>res((Date.now()-t0)/1000);mA.play().catch(()=>res(0));return}
+  if(AR){const t0=Date.now();NAJMA.aiSay(t).then(()=>res((Date.now()-t0)/1000));return}
   if(!AR&&"speechSynthesis" in window){const t0=Date.now(),u=new SpeechSynthesisUtterance(t);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.8;u.onend=u.onerror=()=>res((Date.now()-t0)/1000);speechSynthesis.speak(u);return}
   res(0)})}
-const stopAll=()=>{try{speechSynthesis.cancel()}catch(e){}if(mA){mA.onended=null;mA.pause()}};
+const stopAll=()=>{try{speechSynthesis.cancel();NAJMA.aiStop()}catch(e){}if(mA){mA.onended=null;mA.pause()}};
 /* confetti */
 const cv=$("fx"),cx=cv.getContext("2d");let parts=[],running=false;
 function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}size();addEventListener("resize",size);

@@ -91,10 +91,10 @@ function draw(){if(!LIST.length){$("view").innerHTML='<div class="score">لا ت
   const d=LIST[cur],c=COL[cur%COL.length],pic=PIC[d.id]||PACK["duas:"+d.id],k="dua:"+d.id;
   $("view").innerHTML=`<div class="card" style="--c:${c}"><div class="pic">${pic?`<img src="${pic}" alt="">`:`<span class="em">${esc(d.e||"🤲")}</span>`}</div>
     <span class="pill">دعاء ${esc(d.w||"")}</span><div class="txt" id="tx">${esc(d.t)}</div>
-    <div class="btns">${REC[d.id]?'<button class="b" id="mum">🔊 استمع للدعاء</button>':""}<button class="b r" id="mic">🎤 سجّل صوتي</button><button class="b t" id="me"${kid[k]?"":" disabled"}>▶️ صوتي</button><button class="b y" id="got">${done[d.t]?"⭐ حفظته":"✅ حفظته"}</button></div></div>
+    <div class="btns"><button class="b" id="mum">🔊 استمع للدعاء</button><button class="b r" id="mic">🎤 سجّل صوتي</button><button class="b t" id="me"${kid[k]?"":" disabled"}>▶️ صوتي</button><button class="b y" id="got">${done[d.t]?"⭐ حفظته":"✅ حفظته"}</button></div></div>
     <div class="nav"><button id="nx">➡️ السابق</button><button id="pv">التالي ⬅️</button></div>`;
   $("nx").onclick=()=>go(cur-1);$("pv").onclick=()=>go(cur+1);
-  if(REC[d.id]){const m=async()=>{try{play(await NAJMA.decrypt(REC[d.id]))}catch(e){}};$("mum").onclick=m;$("tx").onclick=m}
+  {const m=async()=>{if(aud)aud.pause();if(REC[d.id]){try{NAJMA.aiStop();play(await NAJMA.decrypt(REC[d.id]))}catch(e){}}else NAJMA.aiSay(d.t)};$("mum").onclick=m;$("tx").onclick=m}
   $("got").onclick=e=>{done[d.t]=3;save();fan();burstAt(e.target);setTimeout(draw,600)};
   $("me").onclick=()=>kid[k]&&play(kid[k]);
   let rec=null;$("mic").onclick=async()=>{const b=$("mic");if(rec){rec.stop();return}

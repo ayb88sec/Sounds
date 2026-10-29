@@ -146,8 +146,8 @@ if(!AR&&"speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
 /* parent's recorded voice (encrypted) is used when there is one */
 const AUD=SEC.audio||{},MINE={};let mA=null;
 Promise.all(Object.keys(AUD).map(w=>NAJMA.decrypt(AUD[w]).then(u=>MINE[w]=u).catch(()=>{}))).then(()=>{if(AR&&cur!=null&&wm.classList.contains("show"))document.getElementById("wSayBar").style.display=MINE[WORDS[cur]]?"":"none"});
-const hasV=w=>!AR||!!MINE[w];
-function sayW(w){if(MINE[w]){try{speechSynthesis.cancel()}catch(e){}try{if(mA)mA.pause();mA=new Audio(MINE[w]);mA.play()}catch(e){}return}if(AR)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(w);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.75;speechSynthesis.speak(u)}catch(e){}}
+const hasV=w=>true;
+function sayW(w){if(MINE[w]){try{speechSynthesis.cancel()}catch(e){}try{if(mA)mA.pause();mA=new Audio(MINE[w]);mA.play()}catch(e){}return}if(AR){NAJMA.aiSay(w);return}try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(w);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.75;speechSynthesis.speak(u)}catch(e){}}
 
 
 let ac;
