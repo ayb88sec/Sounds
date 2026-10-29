@@ -12,6 +12,7 @@
 <title>بوابة الوالدين · نجمة</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&display=swap">
 <style>
+@font-face{font-family:"Amiri Quran";src:url(fonts/amiri-quran.woff2) format("woff2");font-display:swap}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0}
 body{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif;color:#2b2340;background:#f4f1fb;min-height:100vh}
@@ -375,15 +376,19 @@ async function qEdit(){const n=+$("qpS").value,E=$("qpE");E.innerHTML="";if(!n)r
   const A=$("qpA");
   S.a.forEach((x,i)=>{if(x[3]===-1)return;const a=i+1,k=n+":"+a;let last=a;while(S.a[last]&&S.a[last][3]===-1)last++;
     const r=document.createElement("div");r.className="rrow";r.style.flexWrap="wrap";
-    r.innerHTML=`<div class="pimg">${Q.img[k]?"⏳":Array.from(x[1])[0]}</div><b dir="rtl" style="font-size:15px;font-family:'Amiri Quran',serif">﴿${AD(a)}${last>a?"–"+AD(last):""}﴾ ${S.t[i].split(" ").slice(0,5).join(" ")}…</b><button class="b cam">📷</button>${Q.img[k]?'<button class="b rm">🗑️</button>':""}
+    r.innerHTML=`<div class="pimg">${Q.img[k]?"⏳":Array.from(x[1])[0]}</div><b dir="rtl" style="font-size:15px">﴿${AD(a)}${last>a?"–"+AD(last):""}﴾</b><button class="b cam">📷</button>${Q.img[k]?'<button class="b rm">🗑️</button>':""}
       <div style="flex-basis:100%;display:flex;gap:6px;align-items:center"><button class="b vr">${Q.explV[k]?"🔁 أعد تسجيل الشرح":"🎤 سجّل شرحك"}</button>${Q.explV[k]?'<button class="b vp">▶️</button><button class="b vd">🗑️</button>':""}</div>
 `;
     if(Q.img[k])qDec("i"+k,Q.img[k]).then(u=>{if(u)r.querySelector(".pimg").innerHTML=`<img src="${u}">`});
     r.querySelector(".cam").onclick=()=>{qPicFor=k;$("qpF").value="";$("qpF").click()};
     if(Q.img[k])r.querySelector(".rm").onclick=()=>{delete Q.img[k];delete qPlain["i"+k];qSave(false)};
     if(Q.explV[k]){r.querySelector(".vp").onclick=async()=>{const u=await qDec("v"+k,Q.explV[k]);if(u)new Audio(u).play()};r.querySelector(".vd").onclick=()=>{delete Q.explV[k];delete qPlain["v"+k];qSave(false)}}
-    const vt=S.t.slice(i,last).map((t,j)=>t+" ﴿"+AD(i+j+1)+"﴾").join(" "),mn=(S.x&&S.x[a]&&S.x[a].mn)||x[2]||"";
-    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{Q.explV[k]=u.enc;qPlain["v"+k]=u.url},vt+(mn?"\n\n💡 المعنى: "+mn:""));A.appendChild(r)});
+    const vt=S.t.slice(i,last).map((t,j)=>t+" ﴿"+AD(i+j+1)+"﴾").join(" ");let mn=(S.x&&S.x[a]&&S.x[a].mn)||"";
+    /* the verse and the same meaning the children see, to read before recording */
+    const tx=document.createElement("div");tx.style.cssText="flex-basis:100%;margin-top:6px";tx.innerHTML=`<div dir="rtl" style="font-family:'Amiri Quran',serif;font-size:22px;line-height:2">${esc(vt)}</div><div class="mn" dir="rtl" style="background:#eef6ff;border-radius:12px;padding:6px 10px;font-size:17px;line-height:1.7"><b style="color:#2f6fd6">📘 المعنى:</b> <span>${esc(mn||"⏳")}</span></div>`;
+    r.insertBefore(tx,r.children[r.children.length-1]);
+    if(!mn)qMY(n).then(M=>{mn=M?S.t.slice(i,last).map((_,j)=>M[i+j]).filter(Boolean).join(" "):"";tx.querySelector(".mn span").textContent=mn||"—"});
+    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{Q.explV[k]=u.enc;qPlain["v"+k]=u.url},vt+(mn?"\n\n📘 المعنى: "+mn:""));A.appendChild(r)});
   $("qpPo").onclick=()=>{qPicFor="poster";$("qpF").value="";$("qpF").click()};
   /* one recording per part of the story tab */
   const parts=[];if(Q.story[n]!=null?Q.story[n]:S.i)parts.push(["i","📜 قصة السورة"]);if(S.imp)parts.push(["imp","⭐ أهمية السورة"]);
@@ -404,6 +409,8 @@ async function qEdit(){const n=+$("qpS").value,E=$("qpE");E.innerHTML="";if(!n)r
   $("qpSave").onclick=()=>qSave(true);
   if(isX)$("qpDel").onclick=()=>{if(!confirm("حذف سورة "+S.name+"؟"))return;delete Q.extra[n];["story","expl","explA","poster"].forEach(f=>delete Q[f][n]);
     Object.keys(Q.img).concat(Object.keys(Q.simp)).forEach(k=>{if(k.startsWith(n+":")){delete Q.img[k];delete Q.simp[k]}});$("qpS").value="";saveS();qList();qEdit()}}
+/* Tafsir Al-Muyassar for a surah (same meaning the children see), fetched once */
+const qMYc={};function qMY(n){if(!qMYc[n])qMYc[n]=fetch(`${QAPI}/surah/${n}/ar.muyassar`).then(r=>r.json()).then(j=>j.code===200?j.data.ayahs.map(a=>a.text):null).catch(()=>null);return qMYc[n]}
 /* record the parent's voice, encrypt it, then save */
 let qRec=null,qTm=null;
 /* teleprompter: while recording, show the words to read in big letters */
