@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<script src="supa.js"></script>
+<script src="profile.js"></script>
+<script src="data/kidq.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon.png"><link rel="icon" href="icon.png">
+<title>أدعية يومية</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&display=swap">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0}
+body{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif;color:#2b2340;min-height:100vh;background:linear-gradient(170deg,#fff6e3,#ffe3ef 55%,#e9e3ff);background-attachment:fixed}
+main{max-width:720px;margin:0 auto;padding:16px 12px 60px}
+.head{text-align:center;margin:4px 0 10px}.head img{max-width:92%;height:auto}
+.head h1{display:inline-block;margin:0;background:#ffe066;border-radius:999px;padding:4px 28px;font-size:34px;box-shadow:0 5px 0 #e0b200}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:6px 2px 12px;scrollbar-width:none;scroll-snap-type:x mandatory}.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;scroll-snap-align:center;font-family:inherit;font-size:17px;font-weight:800;border:3px solid transparent;border-radius:999px;padding:7px 14px;background:#fff;color:#2b2340;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.08);white-space:nowrap}
+.tabs button.on{border-color:#ff5d8f;background:#fff0f5;color:#d23a6c}
+.tabs button .ok{font-size:13px}
+.card{background:#fff;border-radius:30px;overflow:hidden;box-shadow:0 8px 0 rgba(0,0,0,.08);border:3px dashed var(--c,#ffb3cb);animation:in .35s ease}
+@keyframes in{from{transform:translateY(12px);opacity:0}}
+.pic{position:relative;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#fff4d6,#ffe0ec)}
+.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.pic .em{font-size:110px;filter:drop-shadow(0 6px 4px rgba(0,0,0,.15));animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}
+.pill{display:block;width:max-content;max-width:90%;margin:-22px auto 0;position:relative;background:var(--c,#ff5d8f);color:#fff;border-radius:999px;padding:4px 22px;font-size:21px;font-weight:800;box-shadow:0 4px 0 rgba(0,0,0,.12)}
+.txt{font-size:clamp(24px,6.6vw,34px);font-weight:700;line-height:1.9;text-align:center;padding:12px 16px 4px;cursor:pointer}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:6px 12px 16px}
+.b{font-family:inherit;font-size:19px;font-weight:800;border:0;border-radius:999px;padding:10px 18px;cursor:pointer;color:#fff;background:#a66bff;box-shadow:0 5px 0 #7a46d0}
+.b:active{transform:translateY(4px);box-shadow:0 1px 0 #7a46d0}
+.b.t{background:#22c7b8;box-shadow:0 5px 0 #149488}.b.r{background:#ff5d73;box-shadow:0 5px 0 #c93a50}.b.y{background:#ffd23f;color:#2b2340;box-shadow:0 5px 0 #d9a400}
+.b:disabled{opacity:.4}.b.on{animation:pulse 1s infinite}@keyframes pulse{50%{transform:scale(1.07)}}
+.nav{display:flex;justify-content:space-between;margin-top:14px}
+.nav button{font-family:inherit;font-size:18px;font-weight:800;border:0;border-radius:999px;padding:9px 18px;background:#fff;color:#6a5cff;box-shadow:0 4px 0 #ddd3ee;cursor:pointer}
+.score{text-align:center;color:#7a7090;font-weight:700;margin-top:8px}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+</style>
+</head>
+<body>
+<a href="home.html" id="homeBtn" aria-label="Home" style="position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;z-index:15;width:52px;height:52px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18)">🏠</a>
+<canvas id="fx"></canvas>
+<main>
+  <div class="head" id="head"><h1>📿 أدعية يومية</h1></div>
+  <div class="tabs" id="tabs"></div>
+  <div id="view"></div>
+  <div class="score" id="score"></div>
+</main>
+<script>
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const COL=["#ff5d8f","#4f8bff","#3fc35a","#ffb020","#a66bff","#22a8d6"];
+/* the parent's list (edited in the portal) or the default list */
+const D=((NAJMA.sections.find(s=>s.type==="qimg")||{}).duas)||{};
+const LIST=(D.list||(window.KID_DUAS||[])).filter(d=>d&&d.t);
+const REC=D.rec||{},IMG=D.img||{},PACK={},PIC={};
+const KEY="sec_duas";let done={};try{done=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}};
+let cur=0;try{cur=Math.min(LIST.length-1,+(sessionStorage.getItem("duaTab")||0))}catch(e){}
+/* sounds and confetti */
+let ac;function tone(f,d,w=0){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type="triangle";o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(.15,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
+const pop=()=>{tone(520,.12);tone(880,.14,.07)},fan=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12));
+const cv=$("fx"),cx=cv.getContext("2d");let parts=[],run=false;function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}size();addEventListener("resize",size);
+function burst(x,y,n=40){for(let i=0;i<n;i++){const a=Math.random()*6.28,v=3+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:4+Math.random()*6,c:COL[i%6],rot:0,vr:(Math.random()-.5)*.4,life:100})}if(!run){run=true;requestAnimationFrame(loop)}}
+function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.life-->0);for(const p of parts){p.vy+=.25;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);cx.fillStyle=p.c;cx.globalAlpha=Math.min(1,p.life/30);cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);cx.restore()}if(parts.length)requestAnimationFrame(loop);else run=false}
+const burstAt=el=>{const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2)};
+/* audio: mum's recording and the child's own practice recording */
+let aud=null;const play=src=>{try{if(aud)aud.pause();aud=new Audio(src);aud.play()}catch(e){}};
+const kid={};let kdb=null;
+try{const r=indexedDB.open("kidDuas",1);r.onupgradeneeded=()=>r.result.createObjectStore("v");r.onsuccess=()=>{kdb=r.result;kdb.transaction("v").objectStore("v").openCursor().onsuccess=e=>{const c=e.target.result;if(c){kid[c.key]=URL.createObjectURL(c.value);c.continue()}else draw()}}}catch(e){}
+
+function tabs(){const T=$("tabs");T.innerHTML="";
+  LIST.forEach((d,i)=>{const b=document.createElement("button");b.className=i===cur?"on":"";b.innerHTML=`${esc(d.e||"🤲")} ${esc(d.w||"دعاء")} ${done[d.t]?'<span class="ok">✅</span>':""}`;
+    b.onclick=()=>{pop();go(i)};T.appendChild(b)});
+  const on=T.children[cur];on&&on.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"})}
+function go(i){if(aud)aud.pause();cur=(i+LIST.length)%LIST.length;try{sessionStorage.setItem("duaTab",cur)}catch(e){}draw()}
+function draw(){if(!LIST.length){$("view").innerHTML='<div class="score">لا توجد أدعية بعد.</div>';return}
+  tabs();const d=LIST[cur],c=COL[cur%COL.length],pic=PIC[d.id]||PACK["duas:"+d.id],k="dua:"+d.id;
+  $("view").innerHTML=`<div class="card" style="--c:${c}"><div class="pic">${pic?`<img src="${pic}" alt="">`:`<span class="em">${esc(d.e||"🤲")}</span>`}</div>
+    <span class="pill">دعاء ${esc(d.w||"")}</span><div class="txt" id="tx">${esc(d.t)}</div>
+    <div class="btns">${REC[d.id]?'<button class="b" id="mum">🔊 اسمع ماما</button>':""}<button class="b r" id="mic">🎤 سجّل صوتي</button><button class="b t" id="me"${kid[k]?"":" disabled"}>▶️ صوتي</button><button class="b y" id="got">${done[d.t]?"⭐ حفظته":"✅ حفظته"}</button></div></div>
+    <div class="nav"><button id="nx">➡️ السابق</button><button id="pv">التالي ⬅️</button></div>`;
+  $("nx").onclick=()=>go(cur-1);$("pv").onclick=()=>go(cur+1);
+  if(REC[d.id]){const m=async()=>{try{play(await NAJMA.decrypt(REC[d.id]))}catch(e){}};$("mum").onclick=m;$("tx").onclick=m}
+  $("got").onclick=e=>{done[d.t]=3;save();fan();burstAt(e.target);setTimeout(draw,600)};
+  $("me").onclick=()=>kid[k]&&play(kid[k]);
+  let rec=null;$("mic").onclick=async()=>{const b=$("mic");if(rec){rec.stop();return}
+    try{const st=await navigator.mediaDevices.getUserMedia({audio:true}),ch=[];rec=new MediaRecorder(st);b.textContent="⏹️ إيقاف";b.classList.add("on");rec.ondataavailable=e=>ch.push(e.data);
+      rec.onstop=()=>{st.getTracks().forEach(t=>t.stop());const bl=new Blob(ch,{type:rec.mimeType||"audio/mp4"});if(kid[k])URL.revokeObjectURL(kid[k]);kid[k]=URL.createObjectURL(bl);
+        try{kdb.transaction("v","readwrite").objectStore("v").put(bl,k)}catch(e){}rec=null;play(kid[k]);fan();burstAt(b);draw()};
+      rec.start();setTimeout(()=>{if(rec&&rec.state==="recording")rec.stop()},30000)}catch(e){b.textContent="⚠️ 🎤"}};
+  const n=LIST.filter(x=>done[x.t]).length;$("score").textContent=`⭐ حفظت ${n} من ${LIST.length}`}
+window.NAJMA_PROGRESS=()=>({done:LIST.filter(x=>done[x.t]).length,total:LIST.length});
+window.NAJMA_RESET=()=>{localStorage.removeItem(KEY);done={};draw()};
+draw();
+/* pictures: the poster pack (encrypted) and any photos the parent added */
+NAJMA.loadAudio("qp/duas","QPD").then(o=>{Object.assign(PACK,o||{});if(PACK["duas:head"])$("head").innerHTML=`<img src="${PACK["duas:head"]}" alt="أدعية يومية">`;draw()}).catch(()=>{});
+Promise.all(LIST.filter(d=>IMG[d.id]).map(d=>NAJMA.decrypt(IMG[d.id]).then(u=>PIC[d.id]=u).catch(()=>{}))).then(()=>draw());
+</script>
+<script src="extras.js?v=10"></script>
+</body>
+</html>

@@ -126,7 +126,7 @@ body.quran .line .t,body.quran .bigq{font-family:"Amiri Quran","Baloo Bhaijaan 2
 const $=id=>document.getElementById(id);
 const SID=new URLSearchParams(location.search).get("s");
 /* the built-in duas app: the parent's edited list, recordings and pictures, or the default list */
-function duaSec(){const D=((NAJMA.sections.find(s=>s.type==="qimg")||{}).duas)||{},L=D.list||(window.KID_DUAS||[]).map((d,i)=>({id:"d"+i,t:d[0],e:d[1],w:d[2]}));
+function duaSec(){const D=((NAJMA.sections.find(s=>s.type==="qimg")||{}).duas)||{},L=D.list||(window.KID_DUAS||[]).map(d=>Object.assign({},d));
   const s={id:"duas",type:"listen",lang:"ar",title:"أدعية",icon:"📿",words:L.map(d=>d.t),mean:{},img:{},audio:{}};
   L.forEach(d=>{if(d.w)s.mean[d.t]=d.w;s.img[d.t]=(D.img&&D.img[d.id])||{e:d.e||"🤲"};if(D.rec&&D.rec[d.id])s.audio[d.t]=D.rec[d.id]});return s}
 const SEC=SID==="duas"?duaSec():NAJMA.sections.find(s=>s.id===SID);
