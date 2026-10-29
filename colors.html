@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<script src="supa.js"></script>
+<script src="profile.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon.png"><link rel="icon" href="icon.png">
+<title>Colors · الألوان</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;800&family=Andika:wght@400;700&display=swap">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0}
+body{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif;color:#2b2340;min-height:100vh;background:linear-gradient(160deg,#ff9a9e,#fad0c4 30%,#fbc2eb 55%,#a6c1ee 80%,#c2f0c8);background-attachment:fixed}
+body.en{font-family:"Andika","Baloo Bhaijaan 2",system-ui,sans-serif}
+main{max-width:860px;margin:0 auto;padding:16px 12px 60px}
+h1{color:#fff;text-align:center;font-size:clamp(40px,10vw,60px);margin:6px 0 4px;text-shadow:0 4px 0 rgba(0,0,0,.18)}
+h1 span{display:inline-block;animation:hue 6s linear infinite}
+@keyframes hue{to{filter:hue-rotate(360deg)}}
+.sub{text-align:center;color:#fff;font-weight:800;font-size:19px;margin:0 0 10px;text-shadow:0 2px 0 rgba(0,0,0,.15)}
+.bar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0 14px}
+.btn{font-family:inherit;font-size:20px;font-weight:800;border:0;border-radius:999px;padding:10px 20px;cursor:pointer;color:#fff;background:#a66bff;box-shadow:0 6px 0 #7a46d0}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 #7a46d0}
+.btn.t{background:#22c7b8;box-shadow:0 6px 0 #149488}.btn.y{background:#ffd23f;color:#2b2340;box-shadow:0 6px 0 #d9a400}.btn.g{background:#fff;color:#6a5cff;box-shadow:0 6px 0 #ddd3ee}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.sw{position:relative;border:0;border-radius:28px;min-height:150px;cursor:pointer;font-family:inherit;box-shadow:0 8px 0 rgba(0,0,0,.18);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:10px;animation:pop .4s backwards}
+.sw:active{transform:translateY(5px)}
+.sw .ob{font-size:44px;margin-bottom:auto;margin-top:6px}
+.sw .nm{background:rgba(255,255,255,.92);color:#2b2340;border-radius:999px;padding:2px 14px;font-size:22px;font-weight:800}
+.sw .st{position:absolute;top:8px;inset-inline-end:10px;font-size:14px}
+@keyframes pop{from{transform:scale(0)}}
+.modal{position:fixed;inset:0;background:rgba(30,20,60,.55);display:none;align-items:center;justify-content:center;z-index:40;padding:12px}
+.modal.show{display:flex}
+.card{background:#fff;border-radius:34px;padding:18px;max-width:560px;width:100%;text-align:center;position:relative;animation:zoom .4s cubic-bezier(.3,1.6,.5,1);max-height:96vh;overflow:auto}
+@keyframes zoom{from{transform:scale(.3);opacity:0}}
+.x{position:absolute;top:10px;inset-inline-start:12px;border:0;background:#f0edf7;border-radius:50%;width:42px;height:42px;font-size:20px;cursor:pointer}
+.blob{width:180px;height:180px;margin:26px auto 8px;border-radius:44% 56% 52% 48%/48% 44% 56% 52%;box-shadow:inset 0 -12px 0 rgba(0,0,0,.12),0 8px 0 rgba(0,0,0,.1);animation:wob 3s ease-in-out infinite;cursor:pointer}
+@keyframes wob{50%{border-radius:56% 44% 48% 52%/52% 56% 44% 48%;transform:rotate(6deg)}}
+.big{font-size:54px;font-weight:800;margin:0;line-height:1.2}
+.alt{font-size:22px;color:#7a7090;margin-bottom:6px}
+.objs{font-size:52px;letter-spacing:10px;margin:6px 0}
+.q{font-size:26px;font-weight:800;margin:30px 0 4px}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.opts button{border:0;border-radius:24px;aspect-ratio:1;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.15);font-size:50px;font-family:inherit}
+.opts button.wrong{animation:shake .4s;opacity:.35}.opts button.right{outline:6px solid #3fc35a}
+.opts.words button{aspect-ratio:auto;padding:16px 6px;font-size:24px;font-weight:800;background:#f3f0fa;color:#2b2340}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.score{color:#7a7090;font-weight:700}
+.mix{display:flex;align-items:center;justify-content:center;gap:10px;margin:24px 0 6px;font-size:40px;font-weight:800}
+.mix i{display:inline-block;width:80px;height:80px;border-radius:50%;box-shadow:0 5px 0 rgba(0,0,0,.12)}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+</style>
+</head>
+<body>
+<a href="home.html" id="homeBtn" aria-label="Home" style="position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;z-index:15;width:52px;height:52px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18)">🏠</a>
+<canvas id="fx"></canvas>
+<main>
+  <h1><span id="title"></span></h1>
+  <p class="sub" id="sub"></p>
+  <div class="bar" id="bar"></div>
+  <div class="grid" id="grid"></div>
+</main>
+<div class="modal" id="m"><div class="card"><button class="x" data-close>✕</button><div id="mb"></div></div></div>
+<script>
+const $=id=>document.getElementById(id);
+const EN=new URLSearchParams(location.search).get("l")==="en";
+if(EN){document.documentElement.lang="en";document.documentElement.dir="ltr";document.body.classList.add("en")}
+/* id, colour, Arabic, English, things that are this colour */
+const C=[["red","#ff3b3b","أحمر","red","🍎🍓🚒"],["blue","#2f7bff","أزرق","blue","🐳🫐💙"],["yellow","#ffd23f","أصفر","yellow","🍌🌻🐥"],["green","#2fbf4f","أخضر","green","🐸🥦🍀"],
+ ["orange","#ff8c1a","برتقالي","orange","🍊🥕🎃"],["purple","#9b4dff","بنفسجي","purple","🍇🍆🔮"],["pink","#ff7eb6","وردي","pink","🌸🐷🦩"],["brown","#8b5a2b","بني","brown","🐻🍫🪵"],
+ ["black","#222","أسود","black","🎱🐈‍⬛🕷️"],["white","#ffffff","أبيض","white","☁️🥛⛄"],["grey","#9aa0a6","رمادي","grey","🐘🐭🪨"]];
+const MIX=[["red","yellow","orange"],["blue","yellow","green"],["red","blue","purple"],["red","white","pink"],["black","white","grey"]];
+const nm=c=>EN?c[3]:c[2],other=c=>EN?c[2]:c[3],byId=id=>C.find(c=>c[0]===id);
+const T=EN?{t:"Colours",s:"Tap a colour and say it!",find:"🎯 Find the colour",obj:"🍎 What colour is it?",mix:"🎨 Mix colours",q:"Tap",q2:"What colour is",mixq:"What do we get?",praise:["Amazing!","Well done!","Super!","Brilliant!"],done:"All done! 🏆"}
+  :{t:"الألوان",s:"اضغط على لون وقُله معي!",find:"🎯 أين اللون؟",obj:"🍎 ما لونه؟",mix:"🎨 اخلط الألوان",q:"اضغط على",q2:"ما لون",mixq:"ماذا نحصل؟",praise:["أحسنت!","رائع!","ممتاز!","شاطر!"],done:"أنهيت! 🏆"};
+$("title").textContent=(EN?"🎨 ":"🎨 ")+T.t;$("sub").textContent=T.s;document.title=T.t;
+const KEY=EN?"colorsEn":"colorsAr";let done={};try{done=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
+const star=(k,s)=>{done[k]=Math.max(done[k]||0,s);try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}};
+const shuf=a=>[...a].sort(()=>Math.random()-.5),rnd=a=>a[Math.floor(Math.random()*a.length)],seg=s=>window.Intl&&Intl.Segmenter?[...new Intl.Segmenter("en",{granularity:"grapheme"}).segment(s)].map(x=>x.segment):Array.from(s);
+/* voice: English uses the iPad's British voice; Arabic plays the parent's recordings (no robot voice) */
+const REC=((NAJMA.sections.find(s=>s.type==="qimg")||{}).colorRec)||{},MINE={};let aud=null,voice=null;
+function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}
+if(EN&&"speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
+Object.keys(REC).forEach(k=>NAJMA.decrypt(REC[k]).then(u=>MINE[k]=u).catch(()=>{}));
+function say(c){if(EN){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(c[3]);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.8;speechSynthesis.speak(u)}catch(e){}return}
+  if(MINE[c[0]]){try{if(aud)aud.pause();aud=new Audio(MINE[c[0]]);aud.play()}catch(e){}}}
+/* sounds + confetti */
+let ac;function tone(f,d,w=0,ty="triangle",v=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(v,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
+const pop=()=>{tone(520,.12);tone(880,.14,.07)},fan=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12)),buzz=()=>tone(160,.25,0,"sawtooth",.08);
+const cv=$("fx"),cx=cv.getContext("2d");let parts=[],run=false;function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}size();addEventListener("resize",size);
+function burst(x,y,col,n=40){for(let i=0;i<n;i++){const a=Math.random()*6.28,v=3+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:4+Math.random()*7,c:col||C[i%C.length][1],rot:0,vr:(Math.random()-.5)*.4,life:100})}if(!run){run=true;requestAnimationFrame(loop)}}
+function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.life-->0);for(const p of parts){p.vy+=.25;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);cx.fillStyle=p.c;cx.globalAlpha=Math.min(1,p.life/30);cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);cx.restore()}if(parts.length)requestAnimationFrame(loop);else run=false}
+const burstAt=(el,col)=>{const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,col)};
+const rain=()=>{for(let i=0;i<110;i++)setTimeout(()=>burst(Math.random()*innerWidth,-10,null,1),i*12)};
+const M=$("m"),open=h=>{$("mb").innerHTML=h;M.classList.add("show")},close=()=>{M.classList.remove("show");runId++};let runId=0;
+M.addEventListener("click",e=>{if(e.target===M||e.target.hasAttribute("data-close"))close()});
+const fg=c=>["yellow","white"].includes(c[0])?"#2b2340":"#fff";
+/* learn */
+function draw(){const G=$("grid");G.innerHTML="";
+  C.forEach((c,i)=>{const b=document.createElement("button");b.className="sw";b.style.background=c[1];b.style.animationDelay=(i*.04)+"s";if(c[0]==="white")b.style.boxShadow="0 8px 0 rgba(0,0,0,.18),inset 0 0 0 3px #eee";
+    b.innerHTML=`<span class="ob">${seg(c[4])[0]}</span><span class="nm">${nm(c)}</span><span class="st">${done[c[0]]?"⭐".repeat(done[c[0]]):""}</span>`;b.onclick=()=>{pop();burstAt(b,c[1]);openC(i)};G.appendChild(b)})}
+function openC(i){const c=C[i];star(c[0],1);
+  open(`<div class="blob" id="bl" style="background:${c[1]}"></div><p class="big" style="color:${c[0]==="white"?"#b8b8b8":c[1]}">${nm(c)}</p><div class="alt">${other(c)}</div><div class="objs">${c[4]}</div>
+    <div class="bar">${EN||MINE[c[0]]?`<button class="btn" id="sy">🔊</button>`:""}<button class="btn g" id="pv">${EN?"⬅️":"➡️"}</button><button class="btn g" id="nx">${EN?"➡️":"⬅️"}</button></div>`);
+  if($("sy"))$("sy").onclick=()=>say(c);$("bl").onclick=e=>{burstAt(e.target,c[1]);say(c)};
+  $("pv").onclick=()=>openC((i+C.length-1)%C.length);$("nx").onclick=()=>openC((i+1)%C.length);setTimeout(()=>say(c),250);draw()}
+/* game: find the colour by its name */
+function findGame(){const L=shuf(C).slice(0,8);let k=0,score=0;const id=++runId;
+  const step=()=>{if(id!==runId)return;if(k>=L.length){fan();rain();open(`<div class="q">${T.done}</div><div class="big">⭐ ${score}</div>`);return}
+    const c=L[k],opts=shuf([c,...shuf(C.filter(x=>x!==c)).slice(0,2)]);let miss=0;
+    open(`<div class="q">${T.q} <span style="color:${c[0]==="white"?"#999":c[1]}">${nm(c)}</span></div>${EN||MINE[c[0]]?'<button class="btn g" id="sy">🔊</button>':""}<div class="opts" id="op"></div><div class="score">${k+1} / ${L.length}</div>`);
+    if($("sy"))$("sy").onclick=()=>say(c);say(c);
+    opts.forEach(o=>{const b=document.createElement("button");b.style.background=o[1];if(o[0]==="white")b.style.boxShadow="0 6px 0 rgba(0,0,0,.15),inset 0 0 0 3px #ddd";
+      b.onclick=()=>{if(o===c){b.classList.add("right");const s=miss?1:3;score+=s;star(c[0],s);fan();burstAt(b,c[1]);k++;setTimeout(step,1000)}else{miss++;b.classList.add("wrong");buzz()}};$("op").appendChild(b)})};step()}
+/* game: what colour is this thing? */
+function objGame(){const L=shuf(C).slice(0,8);let k=0,score=0;const id=++runId;
+  const step=()=>{if(id!==runId)return;if(k>=L.length){fan();rain();open(`<div class="q">${T.done}</div><div class="big">⭐ ${score}</div>`);return}
+    const c=L[k],ob=rnd(seg(c[4])),opts=shuf([c,...shuf(C.filter(x=>x!==c)).slice(0,2)]);let miss=0;
+    open(`<div class="q">${T.q2} ${EN?"this":"هذا"}؟</div><div style="font-size:110px;line-height:1.2">${ob}</div><div class="opts words" id="op"></div><div class="score">${k+1} / ${L.length}</div>`);
+    opts.forEach(o=>{const b=document.createElement("button");b.innerHTML=`<span style="display:inline-block;width:26px;height:26px;border-radius:50%;background:${o[1]};vertical-align:middle;box-shadow:inset 0 0 0 2px rgba(0,0,0,.12)"></span> ${nm(o)}`;
+      b.onclick=()=>{if(o===c){b.classList.add("right");const s=miss?1:3;score+=s;star(c[0],s);say(c);fan();burstAt(b,c[1]);k++;setTimeout(step,1100)}else{miss++;b.classList.add("wrong");buzz()}};$("op").appendChild(b)})};step()}
+/* game: mixing colours */
+function mixGame(){const L=shuf(MIX);let k=0,score=0;const id=++runId;
+  const step=()=>{if(id!==runId)return;if(k>=L.length){fan();rain();open(`<div class="q">${T.done}</div><div class="big">⭐ ${score}</div>`);return}
+    const [a,b2,r]=L[k].map(byId),opts=shuf([r,...shuf(C.filter(x=>x!==r&&x!==a&&x!==b2)).slice(0,2)]);let miss=0;
+    open(`<div class="mix"><i style="background:${a[1]}"></i>+<i style="background:${b2[1]};${b2[0]==="white"?"box-shadow:inset 0 0 0 3px #ddd":""}"></i>=❓</div><div class="q" style="margin-top:4px">${T.mixq}</div><div class="opts words" id="op"></div><div class="score">${k+1} / ${L.length}</div>`);
+    opts.forEach(o=>{const b=document.createElement("button");b.innerHTML=`<span style="display:inline-block;width:26px;height:26px;border-radius:50%;background:${o[1]};vertical-align:middle;box-shadow:inset 0 0 0 2px rgba(0,0,0,.12)"></span> ${nm(o)}`;
+      b.onclick=()=>{if(o===r){b.classList.add("right");const s=miss?1:3;score+=s;say(r);fan();burstAt(b,r[1]);k++;setTimeout(step,1200)}else{miss++;b.classList.add("wrong");buzz()}};$("op").appendChild(b)})};step()}
+const bar=$("bar");[[T.find,"",findGame],[T.obj,"t",objGame],[T.mix,"y",mixGame]].forEach(([t,c,f])=>{const b=document.createElement("button");b.className="btn "+c;b.textContent=t;b.onclick=f;bar.appendChild(b)});
+draw();
+window.NAJMA_PROGRESS=()=>({done:C.filter(c=>done[c[0]]).length,total:C.length});
+window.NAJMA_RESET=()=>{localStorage.removeItem(KEY);done={};draw()};
+</script>
+<script src="extras.js?v=10"></script>
+</body>
+</html>
