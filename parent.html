@@ -84,6 +84,7 @@ textarea{min-height:160px;line-height:1.5}
 .pr.off{opacity:.45}
 .dh{margin:18px 4px 8px;font-size:20px}
 .devnote{font-size:13px;color:#7a7090;margin-top:8px}
+@keyframes pulse{50%{transform:scale(1.3);opacity:.6}}
 </style>
 </head>
 <body>
@@ -332,10 +333,10 @@ async function recWord(w){if(rec){const same=recW===w;rec.stop();if(same)return}
   if(!NAJMA.hasKey()){alert("أدخل كود العائلة في التطبيق أولًا");return}
   try{const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}),ch=[];
     let o={};try{o={audioBitsPerSecond:48000}}catch(e){}
-    rec=new MediaRecorder(st,o);recW=w;drawRec();rec.ondataavailable=e=>ch.push(e.data);
-    rec.onstop=async()=>{clearTimeout(recT);st.getTracks().forEach(t=>t.stop());const blob=new Blob(ch,{type:rec.mimeType||"audio/mp4"});rec=null;recW=null;
+    rec=new MediaRecorder(st,o);recW=w;drawRec();const hideW=prompter(w,()=>{if(rec&&rec.state==="recording")rec.stop()});rec.ondataavailable=e=>ch.push(e.data);
+    rec.onstop=async()=>{clearTimeout(recT);hideW();st.getTracks().forEach(t=>t.stop());const blob=new Blob(ch,{type:rec.mimeType||"audio/mp4"});rec=null;recW=null;
       const url=await toURL(blob);plain[w]=url;try{es.audio[w]=await NAJMA.encrypt(url)}catch(e){alert("تعذّر حفظ الصوت");delete plain[w]}drawRec();playWord(w)};
-    rec.start();recT=setTimeout(()=>{if(rec&&rec.state==="recording")rec.stop()},4000)}
+    rec.start();recT=setTimeout(()=>{if(rec&&rec.state==="recording")rec.stop()},30000)}
   catch(e){rec=null;recW=null;drawRec();alert("اسمح للمايكروفون: Settings ← Safari ← Microphone")}}
 $("addSec").onclick=()=>editSec(null);
 $("sSave").onclick=()=>{if(rec)rec.stop();es.title=$("sTitle").value.trim()||"قسم";if(es.type==="quiz"){es.items=es.items.map(q=>{const ct=(q.a[q.c]||"").trim(),a=q.a.map(x=>x.trim()).filter(Boolean);return {q:q.q.trim(),a,c:Math.max(0,a.indexOf(ct))}}).filter(q=>q.q&&q.a.length>=2)}else delete es.items;
@@ -381,21 +382,23 @@ async function qEdit(){const n=+$("qpS").value,E=$("qpE");E.innerHTML="";if(!n)r
     r.querySelector(".cam").onclick=()=>{qPicFor=k;$("qpF").value="";$("qpF").click()};
     if(Q.img[k])r.querySelector(".rm").onclick=()=>{delete Q.img[k];delete qPlain["i"+k];qSave(false)};
     if(Q.explV[k]){r.querySelector(".vp").onclick=async()=>{const u=await qDec("v"+k,Q.explV[k]);if(u)new Audio(u).play()};r.querySelector(".vd").onclick=()=>{delete Q.explV[k];delete qPlain["v"+k];qSave(false)}}
-    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{Q.explV[k]=u.enc;qPlain["v"+k]=u.url});A.appendChild(r)});
+    const vt=S.t.slice(i,last).map((t,j)=>t+" ﴿"+AD(i+j+1)+"﴾").join(" "),mn=(S.x&&S.x[a]&&S.x[a].mn)||x[2]||"";
+    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{Q.explV[k]=u.enc;qPlain["v"+k]=u.url},vt+(mn?"\n\n💡 المعنى: "+mn:""));A.appendChild(r)});
   $("qpPo").onclick=()=>{qPicFor="poster";$("qpF").value="";$("qpF").click()};
   /* one recording per part of the story tab */
   const parts=[];if(Q.story[n]!=null?Q.story[n]:S.i)parts.push(["i","📜 قصة السورة"]);if(S.imp)parts.push(["imp","⭐ أهمية السورة"]);
   (S.cards||[]).forEach((c,i)=>parts.push(["c"+i,c[0]]));if(S.l&&S.l.length)parts.push(["l","🌟 الدروس المستفادة"]);if(S.m)parts.push(["m","💖 رسالة السورة"]);
+  const ptext=key=>key==="i"?$("qpI").value:key==="imp"?S.imp:key==="l"?(S.l||[]).join("\n"):key==="m"?S.m:((S.cards||[])[+key.slice(1)]||[])[1]||"";
   parts.forEach(([key,lab])=>{const k=n+":"+key,v=Q.secV[k],r=document.createElement("div");r.className="rrow";
     r.innerHTML=`<b style="font-size:16px">${esc(lab)}</b><button class="b vr">${v?"🔁 أعد التسجيل":"🎤 سجّل"}</button>${v?'<button class="b vp">▶️</button><button class="b vd">🗑️</button>':""}`;
-    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{Q.secV[k]=u.enc;qPlain["s"+k]=u.url});
+    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{Q.secV[k]=u.enc;qPlain["s"+k]=u.url},lab+"\n\n"+ptext(key));
     if(v){r.querySelector(".vp").onclick=async()=>{const u=await qDec("s"+k,v);if(u)new Audio(u).play()};r.querySelector(".vd").onclick=()=>{delete Q.secV[k];delete qPlain["s"+k];qSave(false)}}
     $("qpSec").appendChild(r)});
   if(poster)$("qpPoD").onclick=()=>{delete Q.poster[n];delete qPlain["p"+n];qSave(false)};
   if(voice){$("qpP").onclick=async()=>{const u=await qDec("a"+n,Q.explA[n]);if(u)new Audio(u).play()};$("qpRD").onclick=()=>{delete Q.explA[n];delete qPlain["a"+n];qSave(false)}}
   let rec=null,tm=null;$("qpR").onclick=async()=>{if(rec){rec.stop();return}
-    try{const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}}),ch=[];rec=new MediaRecorder(st,{audioBitsPerSecond:32000});$("qpR").textContent="⏹️ إيقاف";$("qpR").style.background="#ff5d73";
-      rec.ondataavailable=e=>ch.push(e.data);rec.onstop=async()=>{clearTimeout(tm);st.getTracks().forEach(t=>t.stop());const bl=new Blob(ch,{type:rec.mimeType||"audio/mp4"});rec=null;
+    try{const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}}),ch=[];rec=new MediaRecorder(st,{audioBitsPerSecond:32000});$("qpR").textContent="⏹️ إيقاف";$("qpR").style.background="#ff5d73";const hideP=prompter($("qpX").value||"🎙️ اشرح السورة بكلماتك",()=>{if(rec&&rec.state==="recording")rec.stop()});
+      rec.ondataavailable=e=>ch.push(e.data);rec.onstop=async()=>{clearTimeout(tm);hideP();st.getTracks().forEach(t=>t.stop());const bl=new Blob(ch,{type:rec.mimeType||"audio/mp4"});rec=null;
         const u=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(bl)});try{Q.explA[n]=await NAJMA.encrypt(u);qPlain["a"+n]=u;new Audio(u).play();qSave(false)}catch(e){alert("أدخل كود العائلة في التطبيق أولًا")}};
       rec.start();tm=setTimeout(()=>{if(rec&&rec.state==="recording")rec.stop()},180000)}catch(e){alert("اسمح للمايكروفون: Settings ← Safari ← Microphone")}};
   $("qpSave").onclick=()=>qSave(true);
@@ -403,9 +406,16 @@ async function qEdit(){const n=+$("qpS").value,E=$("qpE");E.innerHTML="";if(!n)r
     Object.keys(Q.img).concat(Object.keys(Q.simp)).forEach(k=>{if(k.startsWith(n+":")){delete Q.img[k];delete Q.simp[k]}});$("qpS").value="";saveS();qList();qEdit()}}
 /* record the parent's voice, encrypt it, then save */
 let qRec=null,qTm=null;
-async function qRecord(btn,put){if(qRec){qRec.stop();return}
-  try{const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}}),ch=[];qRec=new MediaRecorder(st,{audioBitsPerSecond:32000});btn.textContent="⏹️ إيقاف";btn.style.background="#ff5d73";btn.style.color="#fff";
-    qRec.ondataavailable=e=>ch.push(e.data);qRec.onstop=async()=>{clearTimeout(qTm);st.getTracks().forEach(t=>t.stop());const bl=new Blob(ch,{type:qRec.mimeType||"audio/mp4"});qRec=null;
+/* teleprompter: while recording, show the words to read in big letters */
+function prompter(text,onStop){let o=document.getElementById("prm");if(!o){o=document.createElement("div");o.id="prm";
+    o.style.cssText="position:fixed;inset:0;z-index:200;background:rgba(30,20,60,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px calc(16px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom));gap:16px";
+    o.innerHTML='<div style="color:#ffb3c7;font:800 18px inherit;display:flex;align-items:center;gap:8px"><span style="width:14px;height:14px;border-radius:50%;background:#ff3b5c;animation:pulse 1s infinite"></span>جاري التسجيل… اقرأ:</div><div id="prmT" dir="rtl" style="background:#fff;color:#2b2340;border-radius:24px;padding:18px 20px;max-width:640px;width:100%;max-height:62vh;overflow:auto;font:700 clamp(24px,6.5vw,34px)/1.9 \'Baloo Bhaijaan 2\',system-ui;text-align:center;white-space:pre-line"></div><button id="prmS" style="font:800 22px inherit;border:0;border-radius:999px;padding:14px 34px;background:#ff5d73;color:#fff;box-shadow:0 6px 0 #c93a50">⏹️ إيقاف التسجيل</button>';
+    document.body.appendChild(o)}
+  document.getElementById("prmT").textContent=text||"🎤";o.style.display="flex";document.getElementById("prmS").onclick=()=>{o.style.display="none";onStop()};
+  return ()=>{o.style.display="none"}}
+async function qRecord(btn,put,text){if(qRec){qRec.stop();return}
+  try{const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}}),ch=[];qRec=new MediaRecorder(st,{audioBitsPerSecond:32000});btn.textContent="⏹️ إيقاف";btn.style.background="#ff5d73";btn.style.color="#fff";const hide=prompter(text,()=>{if(qRec&&qRec.state==="recording")qRec.stop()});
+    qRec.ondataavailable=e=>ch.push(e.data);qRec.onstop=async()=>{clearTimeout(qTm);hide();st.getTracks().forEach(t=>t.stop());const bl=new Blob(ch,{type:qRec.mimeType||"audio/mp4"});qRec=null;
       const url=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(bl)});
       try{qCollect();put({enc:await NAJMA.encrypt(url),url});new Audio(url).play();qSave(false)}catch(e){alert("أدخل كود العائلة في التطبيق أولًا")}};
     qRec.start();qTm=setTimeout(()=>{if(qRec&&qRec.state==="recording")qRec.stop()},120000)}catch(e){alert("اسمح للمايكروفون: Settings ← Safari ← Microphone")}}
@@ -441,7 +451,7 @@ function dDraw(){const Q=qSec();Q.duas=Q.duas||{};const rec=Q.duas.rec||{},img=Q
     if(img[d.id])r.querySelector(".rmi").onclick=()=>{delete Q.duas.img[d.id];dSave()};
     r.querySelector(".del").onclick=()=>{if(!confirm("حذف هذا الدعاء؟"))return;dWork.splice(i,1);dDraw()};
     if(rec[d.id]){r.querySelector(".vp").onclick=async()=>{const u=await qDec("dv"+d.id,rec[d.id]);if(u)new Audio(u).play()};r.querySelector(".vd").onclick=()=>{delete Q.duas.rec[d.id];dSave()}}
-    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{Q.duas.rec=Q.duas.rec||{};Q.duas.rec[d.id]=u.enc;qPlain["dv"+d.id]=u.url;dSave(true)});L.appendChild(r)})}
+    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{Q.duas.rec=Q.duas.rec||{};Q.duas.rec[d.id]=u.enc;qPlain["dv"+d.id]=u.url;dSave(true)},(d.w?"دعاء "+d.w+"\n\n":"")+d.t);L.appendChild(r)})}
 function dSave(quiet){const Q=qSec();Q.duas=Q.duas||{};Q.duas.list=dWork.filter(d=>d.t.trim()).map(d=>({id:d.id,t:d.t.trim(),e:d.e||"🤲",w:(d.w||"").trim()}));
   const ids=new Set(Q.duas.list.map(d=>d.id));["rec","img"].forEach(f=>Object.keys(Q.duas[f]||{}).forEach(k=>{if(!ids.has(k))delete Q.duas[f][k]}));
   saveS();dWork=null;dDraw();if(quiet!==true){const m=$("dMsg");m.style.display="";m.textContent="✅ تم الحفظ. يصل إلى أجهزة الأطفال عند فتح التطبيق.";setTimeout(()=>m.style.display="none",4000)}}
@@ -475,10 +485,11 @@ async function drawBase(){if(!window.BASE)return;const A=Object.keys(BASE);
   vPick("bVoice",bApp==="colors"?"colors":bApp,bApp==="colors"?"ai":"mine");
   const G=BASE[bApp].groups;$("bGrp").style.display=G.length>1?"":"none";if(G.length>1)chips("bGrp",G.map(g=>g[0]),(x,k)=>k===bG,(x,k)=>{bG=k;drawBase()});
   const L=$("bList");L.innerHTML="";const mine=bPeek(bApp),def=await bDefault(bApp);
-  G[bG][1].forEach(([key,lab])=>{const v=mine[key],r=document.createElement("div");r.className="rrow";
+  G[bG][1].forEach(([key,lab,say])=>{const v=mine[key],r=document.createElement("div");r.className="rrow";if(say&&say!==lab)r.style.flexWrap="wrap";
     r.innerHTML=`<b dir="rtl" style="font-size:20px">${esc(lab)}</b>${v?'<span class="ok">🎤 صوتك</span>':""}${v||def[key]?'<button class="b pl">▶️</button>':""}<button class="b vr">${v?"🔁":"🎤"}</button>${v?'<button class="b rs">↩️</button>':""}`;
     const pl=r.querySelector(".pl");if(pl)pl.onclick=async()=>{const u=v?await qDec("b"+bApp+key,v):def[key];if(u)new Audio(u).play()};
-    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{bStore(bApp)[key]=u.enc;qPlain["b"+bApp+key]=u.url;setTimeout(drawBase,50)});
+    if(say&&!lab.includes(say)){const t=document.createElement("div");t.dir="rtl";t.style.cssText="flex-basis:100%;font-size:16px;color:#5a5070;line-height:1.7";t.textContent=say;r.appendChild(t)}
+    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{bStore(bApp)[key]=u.enc;qPlain["b"+bApp+key]=u.url;setTimeout(drawBase,50)},(say&&!lab.includes(say)?lab+"\n\n"+say:lab).replace(/^💡 شرح: /,"💡 "));
     if(v)r.querySelector(".rs").onclick=()=>{delete bStore(bApp)[key];delete qPlain["b"+bApp+key];saveS();drawBase()};L.appendChild(r)})}
 document.querySelector('nav [data-t="base"]').addEventListener("click",()=>drawBase());
 document.querySelector('nav [data-t="quran"]').addEventListener("click",()=>{if($("rD").style.display==="none")vPick("qVoice","quran","mine");else vPick("dVoice","duas","mine")});
