@@ -228,6 +228,8 @@ function intro(B){const hasP=!!QC.poster[N],head=PACK[N+":head"],ex=QC.expl[N],h
   B.innerHTML=`${hasP||head?`<div class="box" style="padding:8px"><img id="poster" alt="" src="${!hasP&&head?head:""}" style="width:100%;border-radius:20px;display:block;min-height:80px;background:#f3f0fa;cursor:zoom-in"></div>`:""}
     ${S.i?`<div class="box"><div class="intro"><h3>📜 قصة السورة</h3>${esc(S.i)}</div></div>`:""}
     ${S.imp?`<div class="box"><div class="intro" style="background:linear-gradient(135deg,#e9fff1,#fff7e0)"><h3>⭐ أهمية السورة</h3>${esc(S.imp)}</div></div>`:""}
+    ${(S.cards||[]).map(([t,x,p],i)=>`<div class="box"><div class="intro" style="background:${["linear-gradient(135deg,#fff7e0,#ffe9f3)","linear-gradient(135deg,#fffbe0,#fff1d6)","linear-gradient(135deg,#e7f3ff,#f1e9ff)","linear-gradient(135deg,#f4e9ff,#ffe9f3)"][i%4]};display:flex;gap:10px;align-items:center">
+      ${p&&PACK[N+":"+p]?`<img src="${PACK[N+":"+p]}" alt="" style="width:96px;border-radius:14px;flex:none">`:""}<div style="flex:1"><h3>${esc(t)}</h3><div style="white-space:pre-line">${esc(x)}</div></div></div></div>`).join("")}
     ${ex||hasV?`<div class="box"><div class="intro" style="background:linear-gradient(135deg,#e7f7ff,#f1e9ff)"><h3>👩 شرح ماما</h3>${ex?esc(ex):""}${hasV?`<div class="row"><button class="btn p" id="ev">🔊 اسمع شرح ماما</button></div>`:""}</div></div>`:""}
     ${S.l&&S.l.length?`<div class="box lessons"><h3>🌟 الدروس المستفادة</h3><ul>${S.l.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
     ${S.m?`<div class="msg">💖 ${esc(S.m)}</div>`:""}
