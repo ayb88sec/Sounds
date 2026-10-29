@@ -2,6 +2,7 @@
    Must load before any page script. */
 (function(){
   const S=Storage.prototype,G=S.getItem,SET=S.setItem,RM=S.removeItem;
+  const STANDALONE=navigator.standalone===true||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches);
   if(location.hash.startsWith("#key=")||location.hash.startsWith("#dev=")){const hp=new URLSearchParams(location.hash.slice(1));
     let parentPhone=false;for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith("sb-"))parentPhone=true}
     /* a parent opening a child's link by mistake: ask before turning this phone into the child's device */
@@ -9,7 +10,12 @@
     if(hp.get("key"))SET.call(localStorage,"najma:key",(hp.get("key")||"").trim().toUpperCase());
     if(ok&&hp.get("kid")){SET.call(localStorage,"najma:lock",hp.get("kid"));SET.call(localStorage,"najma:cur",hp.get("kid"))}
     if(ok&&hp.get("dev")){SET.call(localStorage,"najma:dev",hp.get("dev"));if(hp.get("kid"))SET.call(localStorage,"najma:lock",hp.get("kid"))}
-    history.replaceState(null,"",location.pathname+location.search)}
+    /* iPhone/iPad: a Home Screen app has its own storage and only keeps the address it was saved from,
+       so the link stays in the address until the app is opened from the Home Screen */
+    if(STANDALONE)history.replaceState(null,"",location.pathname+location.search)}
+  else if(!STANDALONE&&/home\.html$/.test(location.pathname)&&G.call(localStorage,"najma:lock")){
+    const q=new URLSearchParams();const d=G.call(localStorage,"najma:dev");if(d)q.set("dev",d);q.set("key",G.call(localStorage,"najma:key")||"");q.set("kid",G.call(localStorage,"najma:lock"));
+    history.replaceState(null,"",location.pathname+location.search+"#"+q.toString())}
   /* a child's iPad is locked to that child: no switching, no seeing siblings */
   const LOCK=G.call(localStorage,"najma:lock");if(LOCK)SET.call(localStorage,"najma:cur",LOCK);
   let profiles=[];try{profiles=JSON.parse(G.call(localStorage,"najma:profiles")||"[]")}catch(e){}
