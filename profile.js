@@ -3,9 +3,12 @@
 (function(){
   const S=Storage.prototype,G=S.getItem,SET=S.setItem,RM=S.removeItem;
   if(location.hash.startsWith("#key=")||location.hash.startsWith("#dev=")){const hp=new URLSearchParams(location.hash.slice(1));
-    SET.call(localStorage,"najma:key",(hp.get("key")||"").trim().toUpperCase());
-    if(hp.get("kid")){SET.call(localStorage,"najma:lock",hp.get("kid"));SET.call(localStorage,"najma:cur",hp.get("kid"))}
-    if(hp.get("dev")){SET.call(localStorage,"najma:dev",hp.get("dev"));if(hp.get("kid"))SET.call(localStorage,"najma:lock",hp.get("kid"))}
+    let parentPhone=false;for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith("sb-"))parentPhone=true}
+    /* a parent opening a child's link by mistake: ask before turning this phone into the child's device */
+    const ok=!parentPhone||!hp.get("kid")||confirm("هذا الرابط يحوّل هذا الجهاز إلى جهاز الطفل فقط.\nهل هذا جهاز الطفل؟\n(اضغط «إلغاء» إذا كان هذا جوالك)");
+    if(hp.get("key"))SET.call(localStorage,"najma:key",(hp.get("key")||"").trim().toUpperCase());
+    if(ok&&hp.get("kid")){SET.call(localStorage,"najma:lock",hp.get("kid"));SET.call(localStorage,"najma:cur",hp.get("kid"))}
+    if(ok&&hp.get("dev")){SET.call(localStorage,"najma:dev",hp.get("dev"));if(hp.get("kid"))SET.call(localStorage,"najma:lock",hp.get("kid"))}
     history.replaceState(null,"",location.pathname+location.search)}
   /* a child's iPad is locked to that child: no switching, no seeing siblings */
   const LOCK=G.call(localStorage,"najma:lock");if(LOCK)SET.call(localStorage,"najma:cur",LOCK);

@@ -488,7 +488,7 @@ $("famSave").onclick=async()=>{const v=$("fam").value.trim().toUpperCase();if(!v
   if(await NAJMA.checkCode(v)){location.reload()}else status("❌ الرمز غير صحيح.")};
 $("tokDel").onclick=()=>{R.remove(TK);$("tok").value="";connect()};
 function drawDev(){const cur=R.get("najma:lock");chips("devLock",["👨‍👩‍👧 كل الأطفال (جهاز الوالدين)",...profs.map(p=>p.avatar+" "+p.name)],(x,k)=>k?profs[k-1].id===cur:!cur,
-  (x,k)=>{if(k){R.set("najma:lock",profs[k-1].id);R.set("najma:cur",profs[k-1].id)}else R.remove("najma:lock")})}
+  (x,k)=>{if(k){R.set("najma:lock",profs[k-1].id);R.set("najma:cur",profs[k-1].id)}else{R.remove("najma:lock");R.remove("najma:dev");R.set("najma:profiles",JSON.stringify(profs))}})}
 /* dashboard */
 const APPS_D=[["arabic","حروفي","arDone","arabic",[7,7,7,7,10]],["numAr","الأرقام","numDoneAr",null,null],["islam","أركان الإسلام","islamDone",null,null],["iman","أركان الإيمان","imanDone",null,null],
   ["sounds","Sounds","soundsDone","sounds",[25,7]],["cvc","Word Time","cvcDone","wt",[7,20,17,18,16,18,15]],["sent","Sentences","sentDone","sent",[4,4,4,4]],
