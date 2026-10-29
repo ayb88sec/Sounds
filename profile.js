@@ -3,7 +3,9 @@
 (function(){
   const S=Storage.prototype,G=S.getItem,SET=S.setItem,RM=S.removeItem;
   const STANDALONE=navigator.standalone===true||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches);
-  if(location.hash.startsWith("#key=")||location.hash.startsWith("#dev=")){const hp=new URLSearchParams(location.hash.slice(1));
+  /* the child link can arrive as #dev=…&key=…&kid=… or as ?dev=…&key=…&kid=… (the Home Screen keeps the ? form reliably) */
+  const QS=new URLSearchParams(location.search),HAS_Q=QS.get("kid")&&(QS.get("dev")||QS.get("key"));
+  if(location.hash.startsWith("#key=")||location.hash.startsWith("#dev=")||HAS_Q){const hp=HAS_Q?QS:new URLSearchParams(location.hash.slice(1));
     let parentPhone=false;for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith("sb-"))parentPhone=true}
     /* a parent opening a child's link by mistake: ask before turning this phone into the child's device */
     const ok=!parentPhone||!hp.get("kid")||confirm("هذا الرابط يحوّل هذا الجهاز إلى جهاز الطفل فقط.\nهل هذا جهاز الطفل؟\n(اضغط «إلغاء» إذا كان هذا جوالك)");
@@ -12,10 +14,10 @@
     if(ok&&hp.get("dev")){SET.call(localStorage,"najma:dev",hp.get("dev"));if(hp.get("kid"))SET.call(localStorage,"najma:lock",hp.get("kid"))}
     /* iPhone/iPad: a Home Screen app has its own storage and only keeps the address it was saved from,
        so the link stays in the address until the app is opened from the Home Screen */
-    if(STANDALONE)history.replaceState(null,"",location.pathname+location.search)}
-  else if(!STANDALONE&&/home\.html$/.test(location.pathname)&&G.call(localStorage,"najma:lock")){
+    if(STANDALONE)history.replaceState(null,"",location.pathname)}
+  if(!STANDALONE&&/home\.html$/.test(location.pathname)&&G.call(localStorage,"najma:lock")){
     const q=new URLSearchParams();const d=G.call(localStorage,"najma:dev");if(d)q.set("dev",d);q.set("key",G.call(localStorage,"najma:key")||"");q.set("kid",G.call(localStorage,"najma:lock"));
-    history.replaceState(null,"",location.pathname+location.search+"#"+q.toString())}
+    history.replaceState(null,"",location.pathname+"?"+q.toString())}
   /* a child's iPad is locked to that child: no switching, no seeing siblings */
   const LOCK=G.call(localStorage,"najma:lock");if(LOCK)SET.call(localStorage,"najma:cur",LOCK);
   let profiles=[];try{profiles=JSON.parse(G.call(localStorage,"najma:profiles")||"[]")}catch(e){}
