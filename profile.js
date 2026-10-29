@@ -54,7 +54,10 @@
   async function decrypt(o){const k=await cryptoKey();const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:ub(o.iv)},k,ub(o.ct));return JSON.parse(new TextDecoder().decode(pt))}
   async function encrypt(obj){const k=await cryptoKey();const iv=crypto.getRandomValues(new Uint8Array(12));
     const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv},k,new TextEncoder().encode(JSON.stringify(obj)));return {v:1,iv:bu(iv),ct:bu(new Uint8Array(ct))}}
-  async function loadAudio(name,v){window[v]=window[v]||{};try{const r=await fetch(`audio/${name}.enc`);const d=await decrypt(await r.json());Object.assign(window[v],d)}catch(e){}return window[v]}
+  async function loadAudio(name,v){window[v]=window[v]||{};try{const r=await fetch(`audio/${name}.enc`);const d=await decrypt(await r.json());Object.assign(window[v],d)}catch(e){}
+    /* the parent's own re-recordings (portal → 🧩 الأساسية) replace the built-in ones */
+    try{const Q=(sections||[]).find(s=>s.type==="qimg"),O=Q&&Q.ov&&Q.ov[name];if(O)await Promise.all(Object.keys(O).map(k=>decrypt(O[k]).then(u=>{window[v][k]=u}).catch(()=>{})))}catch(e){}
+    return window[v]}
   async function checkCode(code){const old=G.call(localStorage,"najma:key");SET.call(localStorage,"najma:key",code);ckey=null;
     try{const r=await fetch("audio/numbers.enc");await decrypt(await r.json());return true}catch(e){if(old)SET.call(localStorage,"najma:key",old);else RM.call(localStorage,"najma:key");ckey=null;return false}}
   Object.assign(window.NAJMA,{lock:G.call(localStorage,"najma:lock"),decrypt,encrypt,loadAudio,checkCode,hasKey:()=>!!G.call(localStorage,"najma:key")});

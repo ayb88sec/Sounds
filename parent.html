@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <script src="supa.js"></script>
-<script src="profile.js"></script><script src="data/kidq.js"></script><script src="data/qk.js"></script><script src="data/qnames.js"></script>
+<script src="profile.js"></script><script src="data/kidq.js"></script><script src="data/qk.js"></script><script src="data/qnames.js"></script><script src="data/base.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,8 +19,8 @@ header{background:linear-gradient(135deg,#6a5cff,#8f6bff 60%,#ff7eb6);color:#fff
 header img{width:48px;height:48px;border-radius:14px}
 header h1{margin:0;font-size:26px;flex:1}
 header a{color:#fff;text-decoration:none;background:rgba(255,255,255,.22);border-radius:14px;padding:8px 14px;font-weight:800}
-nav{display:flex;gap:6px;padding:12px 14px 0;max-width:860px;margin:0 auto}
-nav button{flex:1;font-family:inherit;font-size:18px;font-weight:800;border:0;border-radius:16px 16px 0 0;padding:12px 6px;background:#e6e0f5;color:#6a5cff;cursor:pointer}
+nav{display:flex;gap:6px;padding:12px 14px 0;max-width:860px;margin:0 auto;overflow-x:auto;scrollbar-width:none}nav::-webkit-scrollbar{display:none}
+nav button{flex:1 0 auto;min-width:68px;font-family:inherit;font-size:18px;font-weight:800;border:0;border-radius:16px 16px 0 0;padding:12px 6px;background:#e6e0f5;color:#6a5cff;cursor:pointer}
 nav button.on{background:#fff;color:#2b2340}
 main{max-width:860px;margin:0 auto;padding:0 14px 60px}
 .panel{background:#fff;border-radius:0 0 22px 22px;padding:16px;display:none}
@@ -104,7 +104,7 @@ textarea{min-height:160px;line-height:1.5}
   <div style="margin:12px 0 6px;color:#7a7090">أو</div><input class="in" id="fCode" dir="ltr" placeholder="رمز الدعوة" style="text-transform:uppercase;margin-bottom:8px"><button class="b" id="fJoin" style="width:100%">🔗 انضمام</button></div>
   <div id="aMsg" style="margin-top:10px;color:#c93a50;font-weight:700;min-height:1em"></div></div></div>
 <header><img src="icon.png" alt=""><h1>بوابة الوالدين</h1><a href="guide.html" style="margin-inline-end:6px">📘 الدليل</a><a href="home.html">🏠 التطبيق</a></header>
-<nav><button data-t="dash" class="on">📊 اللوحة</button><button data-t="kids">👧 الأطفال</button><button data-t="secs">📚 الأقسام</button><button data-t="quran">🕌 ديني</button><button data-t="parents" id="navParents" style="display:none">👨‍👩‍👧 الوالدين</button><button data-t="cloud">☁️ الاتصال</button></nav>
+<nav><button data-t="dash" class="on">📊 اللوحة</button><button data-t="kids">👧 الأطفال</button><button data-t="secs">📚 الأقسام</button><button data-t="quran">🕌 ديني</button><button data-t="base">🧩 الأساسية</button><button data-t="parents" id="navParents" style="display:none">👨‍👩‍👧 الوالدين</button><button data-t="cloud">☁️ الاتصال</button></nav>
 <main>
   <div class="panel on" id="dash">
     <div class="stats3" id="dStats"></div>
@@ -116,7 +116,7 @@ textarea{min-height:160px;line-height:1.5}
   <div class="panel" id="secs">
     <div class="note">أضف قوائم كلمات خاصة بك: إملاء، كلمات المدرسة، أو أي قسم جديد. كل قسم يظهر كتطبيق على الشاشة الرئيسية، مع تهجئة وكتابة وتسجيل.</div>
     <div id="secList"></div><button class="b add" id="addSec">➕ إضافة قسم</button>
-    <div class="qbox" style="margin-top:16px"><label style="margin-top:0">🎨 أصوات الألوان بالعربي</label><div class="note" style="margin:0 0 6px">سجّل اسم كل لون بصوتك ليسمعه الأطفال في «الألوان». (الإنجليزي ينطقه الجهاز.)</div><div id="colRec"></div></div></div>
+</div>
   <div class="panel" id="quran">
     <div class="chips" id="relTabs" style="margin-bottom:10px;justify-content:center"><button class="on" data-r="rQ" style="font-size:19px">📖 القرآن</button><button data-r="rD" style="font-size:19px">📿 الأدعية</button></div>
     <div id="rD" style="display:none"><div class="note">📿 <b>الأدعية</b>: تظهر للأطفال في «ديني». سجّل صوتك لكل دعاء بـ 🎤، وغيّر الصورة بـ 📷، أو أضف دعاءً جديدًا.</div>
@@ -127,6 +127,9 @@ textarea{min-height:160px;line-height:1.5}
     <div style="display:flex;gap:8px;margin-top:8px"><select class="in" id="qpN" style="flex:1"></select><button class="b go" id="qpAdd" style="flex:none">➕ إضافة سورة</button></div>
     <div id="qpMsg" class="note" style="margin-top:6px;display:none"></div>
     <div id="qpE"></div><input type="file" id="qpF" accept="image/*" style="display:none"></div></div>
+  <div class="panel" id="base">
+    <div class="note">🧩 <b>التطبيقات الأساسية</b>: هنا تسجّل صوتك بالعربي لأي شيء في التطبيقات الجاهزة. اضغط ▶️ لتسمع الصوت الحالي، و🎤 لتسجّل صوتك مكانه، و↩️ للرجوع إلى الأصلي.</div>
+    <div class="chips" id="bApp" style="justify-content:center;margin-bottom:8px"></div><div class="chips" id="bGrp" style="margin-bottom:8px"></div><div id="bList"></div></div>
   <div class="panel" id="parents">
     <div class="note" id="pFam"></div><div id="pList"></div>
     <button class="b add" id="pInvite">✉️ دعوة شخص جديد</button>
@@ -454,15 +457,22 @@ $("dImport").onclick=()=>{const Q=qSec();Q.duas=Q.duas||{};Q.duas.rec=Q.duas.rec
   (dWork||duaList()).forEach(d=>{if(Q.duas.rec[d.id])return;const o=O.find(x=>same(x.t,d.t));if(o){Q.duas.rec[d.id]=o.enc;n++}});
   if(!dWork)dWork=JSON.parse(JSON.stringify(duaList()));dSave(true);const m=$("dMsg");m.style.display="";m.textContent=n?`✅ استرجعت ${n} تسجيل من الأقسام القديمة.`:"لم أجد تسجيلات قديمة مطابقة لهذه الأدعية.";setTimeout(()=>m.style.display="none",6000)};
 document.querySelectorAll("#relTabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#relTabs button").forEach(x=>x.classList.toggle("on",x===b));$("rQ").style.display=b.dataset.r==="rQ"?"":"none";$("rD").style.display=b.dataset.r==="rD"?"":"none";if(b.dataset.r==="rD"){dWork=null;dDraw()}});
-/* Arabic colour names in the parent's voice */
-const COLS=[["red","أحمر","#ff3b3b"],["blue","أزرق","#2f7bff"],["yellow","أصفر","#ffd23f"],["green","أخضر","#2fbf4f"],["orange","برتقالي","#ff8c1a"],["purple","بنفسجي","#9b4dff"],["pink","وردي","#ff7eb6"],["brown","بني","#8b5a2b"],["black","أسود","#222"],["white","أبيض","#fff"],["grey","رمادي","#9aa0a6"]];
-function drawColRec(){const Q=qSec();Q.colorRec=Q.colorRec||{};const L=$("colRec");L.innerHTML="";
-  COLS.forEach(([id,ar,hex])=>{const v=Q.colorRec[id],r=document.createElement("div");r.className="rrow";
-    r.innerHTML=`<span style="width:30px;height:30px;border-radius:50%;background:${hex};box-shadow:inset 0 0 0 2px rgba(0,0,0,.15);flex:none"></span><b>${ar}</b>${v?'<span class="ok">✅</span>':""}<button class="b vr">${v?"🔁":"🎤 سجّل"}</button>${v?'<button class="b vp">▶️</button><button class="b vd">🗑️</button>':""}`;
-    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{Q.colorRec[id]=u.enc;qPlain["col"+id]=u.url;setTimeout(drawColRec,50)});
-    if(v){r.querySelector(".vp").onclick=async()=>{const u=await qDec("col"+id,v);if(u)new Audio(u).play()};r.querySelector(".vd").onclick=()=>{delete Q.colorRec[id];saveS();drawColRec()}}
-    L.appendChild(r)})}
-drawColRec();{const _d=drawSecs;drawSecs=function(){_d();drawColRec()}}
+/* built-in apps: re-record any Arabic sound */
+let bApp="clips",bG=0;const bDef={};
+async function bDefault(app){if(app==="colors")return {};if(bDef[app])return bDef[app];try{bDef[app]=await NAJMA.decrypt(await (await fetch(`audio/${app}.enc`)).json())}catch(e){bDef[app]={}}return bDef[app]}
+function bStore(app){const Q=qSec();if(app==="colors"){Q.colorRec=Q.colorRec||{};return Q.colorRec}Q.ov=Q.ov||{};Q.ov[app]=Q.ov[app]||{};return Q.ov[app]}
+function bPeek(app){const Q=secs.find(x=>x.type==="qimg");return Q?(app==="colors"?Q.colorRec:(Q.ov||{})[app])||{}:{}}
+async function drawBase(){if(!window.BASE)return;const A=Object.keys(BASE);
+  chips("bApp",A.map(k=>BASE[k].t),(x,k)=>A[k]===bApp,(x,k)=>{bApp=A[k];bG=0;drawBase()});
+  const G=BASE[bApp].groups;$("bGrp").style.display=G.length>1?"":"none";if(G.length>1)chips("bGrp",G.map(g=>g[0]),(x,k)=>k===bG,(x,k)=>{bG=k;drawBase()});
+  const L=$("bList");L.innerHTML="";const mine=bPeek(bApp),def=await bDefault(bApp);
+  G[bG][1].forEach(([key,lab])=>{const v=mine[key],r=document.createElement("div");r.className="rrow";
+    r.innerHTML=`<b dir="rtl" style="font-size:20px">${esc(lab)}</b>${v?'<span class="ok">🎤 صوتك</span>':""}${v||def[key]?'<button class="b pl">▶️</button>':""}<button class="b vr">${v?"🔁":"🎤"}</button>${v?'<button class="b rs">↩️</button>':""}`;
+    const pl=r.querySelector(".pl");if(pl)pl.onclick=async()=>{const u=v?await qDec("b"+bApp+key,v):def[key];if(u)new Audio(u).play()};
+    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{bStore(bApp)[key]=u.enc;qPlain["b"+bApp+key]=u.url;setTimeout(drawBase,50)});
+    if(v)r.querySelector(".rs").onclick=()=>{delete bStore(bApp)[key];delete qPlain["b"+bApp+key];saveS();drawBase()};L.appendChild(r)})}
+document.querySelector('nav [data-t="base"]').addEventListener("click",()=>drawBase());
+{const _d=drawSecs;drawSecs=function(){_d();if($("base").classList.contains("on"))drawBase()}}
 if(window.QK){qList();const _dsq=drawSecs;drawSecs=function(){_dsq();qList()}}
 /* cloud: save to config.json in GitHub so every iPad updates by itself */
 const TK="najma:ghToken";let sha=null,pushT=null;
