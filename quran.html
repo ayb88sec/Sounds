@@ -83,6 +83,20 @@ h1{color:#fff;text-align:center;font-size:clamp(34px,9vw,52px);margin:6px 0 2px;
 .score{text-align:center;color:#7a7090;font-weight:700}
 .stop{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;z-index:30}
 canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+/* memorisation path */
+.path{position:relative;margin:4px auto 0;max-width:420px}
+.path svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.node{position:absolute;transform:translate(-50%,-50%);width:86px;text-align:center;border:0;background:none;padding:0;cursor:pointer;font-family:inherit}
+.node .c{width:64px;height:64px;margin:0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;background:#e9e4f7;color:#9a90b5;box-shadow:0 5px 0 rgba(0,0,0,.15);border:4px solid #fff}
+.node.done .c{background:linear-gradient(150deg,#3fc35a,#22c7b8);color:#fff}
+.node.cur .c{background:linear-gradient(150deg,#ffd23f,#ff9a3c);color:#fff;animation:pulse 1.4s infinite}
+.node .t{font-family:"Amiri Quran",serif;font-size:17px;line-height:1.5;color:#2b2340;background:rgba(255,255,255,.92);border-radius:10px;padding:0 6px;display:inline-block;margin-top:3px}
+.node.end .c{width:76px;height:76px;font-size:38px;background:linear-gradient(150deg,#ffe066,#ffb020)}
+.node.end.lock .c{filter:grayscale(.8);opacity:.7}
+@keyframes pulse{50%{transform:scale(1.1)}}
+.hero{position:absolute;font-size:40px;transform:translate(-50%,-115%);transition:left 1.6s cubic-bezier(.5,0,.3,1),top 1.6s cubic-bezier(.5,0,.3,1);z-index:3;filter:drop-shadow(0 4px 2px rgba(0,0,0,.25));pointer-events:none}
+.cert{background:linear-gradient(150deg,#fff8e1,#ffe9f3);border:6px double #e0a800;border-radius:26px;padding:20px 14px;text-align:center}
+.cert h2{margin:6px 0;font-size:30px;color:#c27c00}.cert .big{font-size:80px;line-height:1}
 .pip{display:flex;align-items:center;justify-content:center;gap:8px;color:#fff;font-size:18px;font-weight:700}
 </style>
 </head>
@@ -100,10 +114,13 @@ const seg=s=>window.Intl&&Intl.Segmenter?[...new Intl.Segmenter("ar",{granularit
 const PRAISE=["أحسنت!","رائع!","ممتاز!","ما شاء الله!","بطل!"];
 /* which surahs this child can see (parent sets levels) */
 const GROUPS=[[1],[114,113,112,111,110,109,108,107,106],[105,104,103,102,101,100,99,98,97],[96,95,94,93,92,91,90,89],[88,87,86,85,84,83,82,81,80,79,78]];
-const ALLOWED=new Set(NAJMA.lv("quran").flatMap(i=>GROUPS[i]||[]));
-const LIST=QK_ORDER.filter(n=>ALLOWED.has(n));
-/* parent's own pictures for ayat (encrypted), from the hidden "qimg" section */
-const QIMG=(NAJMA.sections.find(s=>s.type==="qimg")||{}).img||{},PH={};
+/* everything the parent added in the portal: story, explanation, pictures, simple meanings, extra surahs */
+const QC=NAJMA.sections.find(s=>s.type==="qimg")||{};["img","poster","story","expl","explA","simp","extra"].forEach(k=>QC[k]=QC[k]||{});
+const QIMG=QC.img,PH={};
+Object.keys(QC.extra).forEach(n=>{QK[n]=QC.extra[n]});
+const XN=Object.keys(QC.extra).map(Number).sort((a,b)=>b-a);
+const ALLOWED=new Set([...NAJMA.lv("quran").flatMap(i=>GROUPS[i]||[]),...XN]);
+const LIST=[...QK_ORDER,...XN].filter(n=>ALLOWED.has(n));
 const prog=n=>{try{return JSON.parse(localStorage.getItem("qk_"+n)||"{}")}catch(e){return {}}};
 const star=(n,a,s)=>{const p=prog(n);p[a]=Math.max(p[a]||0,s);try{localStorage.setItem("qk_"+n,JSON.stringify(p));const d=JSON.parse(localStorage.getItem("qkDone")||"{}");d[n+":"+a]=1;localStorage.setItem("qkDone",JSON.stringify(d))}catch(e){}};
 
@@ -146,34 +163,84 @@ function scene(bg,em,key,cls){const ph=key&&QIMG[key];let inner;
 const P=new URLSearchParams(location.search),N=+P.get("n");
 const M=$("main");
 function hub(){let done=0,tot=0;
-  M.innerHTML=`<h1>📖 قصص القرآن</h1><p class="sub">اختر سورة، واسمع قصتها، واحفظها</p><div class="grid" id="g"></div>`;
+  M.innerHTML=`<h1>📖 قصص القرآن</h1><p class="sub">اختر سورة، واسمع قصتها، واحفظها</p>
+    <div class="box" style="background:linear-gradient(170deg,#e9fbff,#fff6e0)"><h3 style="margin:0;text-align:center;font-size:24px">🗺️ رحلة حفظ ١٠ سور</h3><p class="score" style="margin:2px 0 6px">احفظ كل سورة لتتقدّم في الطريق 🏁</p><div class="path" id="path"></div></div>
+    <h3 style="color:#fff;margin:18px 4px 6px;font-size:22px">📚 كل السور</h3><div class="grid" id="g"></div>`;
+  drawPath();
   LIST.forEach((n,k)=>{const s=QK[n],p=prog(n),d=Object.keys(p).length,pct=Math.round(d/s.t.length*100);done+=d;tot+=s.t.length;
-    const b=document.createElement("button");b.className="sc";b.innerHTML=`<span class="num">${AD(n)}</span><div class="nm">${s.name}</div><div class="ic">${seg(s.a[0][1])[0]}</div><div class="meta">${AD(s.t.length)} آيات ${pct>=100?"🏆":""}</div><div class="bar"><i style="width:${pct}%"></i></div>`;
+    const b=document.createElement("button");b.className="sc";b.innerHTML=`<span class="num">${AD(n)}</span><div class="nm">${s.name}</div><div class="ic">${QC.extra[n]?"⭐":seg(s.a[0][1])[0]}</div><div class="meta">${AD(s.t.length)} آيات ${pct>=100?"🏆":""}</div><div class="bar"><i style="width:${pct}%"></i></div>`;
     b.onclick=()=>{pop();location.href="quran.html?n="+n};$("g").appendChild(b)});
   window.NAJMA_PROGRESS=()=>({done,total:tot})}
 
+/* ---------- the path: last 10 surahs, Al-Nas to Al-Fil ---------- */
+const PATH=[114,113,112,111,110,109,108,107,106,105];
+const hifz=n=>{try{return JSON.parse(localStorage.getItem("qkH_"+n)||"{}")}catch(e){return {}}};
+const isDone=n=>QK[n]&&Object.keys(hifz(n)).length>=QK[n].t.length;
+function memorise(n,a){const h=hifz(n);h[a]=1;try{localStorage.setItem("qkH_"+n,JSON.stringify(h))}catch(e){}star(n,a,3)}
+function drawPath(){const P=$("path");if(!P)return;const n=PATH.length,STEP=96,H=(n+1)*STEP+40;P.style.height=H+"px";
+  const pts=PATH.map((s,i)=>({x:[22,50,78,50][i%4],y:H-50-i*STEP})),end={x:50,y:H-50-n*STEP};const all=[...pts,end];
+  let d=`M ${all[0].x} ${all[0].y}`;for(let i=1;i<all.length;i++){const a=all[i-1],b=all[i],my=(a.y+b.y)/2;d+=` C ${a.x} ${my}, ${b.x} ${my}, ${b.x} ${b.y}`}
+  const doneN=PATH.filter(isDone).length,cur=PATH.findIndex(s=>!isDone(s));
+  P.innerHTML=`<svg viewBox="0 0 100 ${H}" preserveAspectRatio="none"><path d="${d}" fill="none" stroke="#d7cdea" stroke-width="7" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+    <path d="${d}" fill="none" stroke="#3fc35a" stroke-width="7" stroke-linecap="round" vector-effect="non-scaling-stroke" pathLength="100" stroke-dasharray="${doneN/n*100} 100"/>
+    <path d="${d}" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="2 8" vector-effect="non-scaling-stroke"/></svg>`;
+  PATH.forEach((s,i)=>{const b=document.createElement("button"),dn=isDone(s),c=i===cur;b.className="node"+(dn?" done":c?" cur":"");b.style.left=pts[i].x+"%";b.style.top=pts[i].y+"px";
+    b.innerHTML=`<div class="c">${dn?"✅":c?"⭐":AD(i+1)}</div><span class="t">${QK[s].name}</span>`;b.onclick=()=>{pop();location.href="quran.html?n="+s};P.appendChild(b)});
+  const e=document.createElement("button");e.className="node end"+(cur===-1?"":" lock");e.style.left=end.x+"%";e.style.top=end.y+"px";e.innerHTML=`<div class="c">🏆</div><span class="t" style="font-family:inherit">الجائزة</span>`;
+  e.onclick=()=>{if(cur===-1)reward();else{buzz();e.animate([{transform:"translate(-50%,-50%) rotate(-8deg)"},{transform:"translate(-50%,-50%) rotate(8deg)"},{transform:"translate(-50%,-50%)"}],400)}};P.appendChild(e);
+  /* the child's character walks to the next stop when a surah is finished */
+  const hero=document.createElement("div");hero.className="hero";hero.textContent=(NAJMA.me&&NAJMA.me.avatar)||"🧒";P.appendChild(hero);
+  const at=k=>{const p=k<0?end:pts[k];hero.style.left=p.x+"%";hero.style.top=p.y+"px"};
+  const target=cur===-1?n:cur,last=+(localStorage.getItem("qkPathPos")||0);
+  hero.style.transition="none";at(Math.min(last,n-1)>=0&&last<n?last:-1);void hero.offsetWidth;hero.style.transition="";
+  if(target!==last){setTimeout(()=>{at(target>=n?-1:target);if(target>last){fan();setTimeout(()=>burstAt(hero),1500)}},500);try{localStorage.setItem("qkPathPos",String(target))}catch(e){}
+    if(target>=n&&!localStorage.getItem("qkReward")){setTimeout(()=>{reward();try{localStorage.setItem("qkReward","1")}catch(e){}},2300)}}
+  else at(target>=n?-1:target);
+  setTimeout(()=>{const c=P.querySelector(".node.cur")||P.querySelector(".node.end");c&&c.scrollIntoView({behavior:"smooth",block:"center"})},300)}
+function reward(){const nm=NAJMA.me?NAJMA.me.name:"";fan();rain();setTimeout(rain,900);
+  openM(`<div class="cert" style="margin-top:34px"><div class="big">🏆</div><h2>ما شاء الله!</h2><div style="font-size:24px;font-weight:800">${esc(nm)}</div>
+    <div style="font-size:21px;margin:8px 0">أنت الآن تحفظ <b>١٠ سور</b> من القرآن الكريم 🌟</div><div class="q" style="font-size:18px;color:#7a7090">${PATH.map(s=>QK[s].name).join(" · ")}</div>
+    <div style="font-size:40px;margin-top:8px">🥇🎉📖</div><div style="margin-top:6px;font-size:17px">بارك الله فيك، واصل رحلتك مع القرآن!</div></div>`)}
+
 /* ---------- surah ---------- */
-let S,GR,tab="story";
+let S,GR,tab="intro";
 function groups(){const g=[];S.a.forEach((x,i)=>{if(x[3]===-1)g[g.length-1].ay.push(i+1);else g.push({bg:x[0],em:x[1],tx:x[2],ay:[i+1]})});return g}
 function ayahHTML(a,extra){return `<div class="ayah q ${extra||""}" data-a="${a}">${esc(S.t[a-1])} <span class="no">﴿${AD(a)}﴾</span></div>`}
-function surah(){S=QK[N];if(!S||!ALLOWED.has(N)){location.replace("quran.html");return}GR=groups();
+function surah(){S=QK[N];if(!S||!ALLOWED.has(N)){location.replace("quran.html");return}
+  S=Object.assign({},S,{i:QC.story[N]!=null?QC.story[N]:S.i,a:S.a.map((x,i)=>{const k=N+":"+(i+1);return QC.simp[k]!=null?[x[0],x[1],QC.simp[k],x[3]].filter(v=>v!==undefined):x})});
+  GR=groups();loadMuyassar();
   document.title=S.name;
   M.innerHTML=`<h1 class="q" style="font-family:'Amiri Quran',serif">سورة ${S.name}</h1><p class="sub">${AD(S.t.length)} آيات · ${S.type==="meccan"?"مكية":"مدنية"}</p>
     <div class="tabs" id="tabs"></div><div id="body"></div>`;
-  const T=[["story","📖 القصة"],["watch","🎬 شاهد"],["learn","🎧 احفظ"],["play","🎮 العب"],["lessons","🌟 الدروس"]];
+  const T=[["intro","📜 قصة السورة"],["story","📖 الآيات"],["watch","🎬 شاهد"],["learn","🎧 احفظ"],["play","🎮 العب"]];if(S.l&&S.l.length)T.push(["lessons","🌟 الدروس"]);
   T.forEach(([k,t])=>{const b=document.createElement("button");b.textContent=t;b.dataset.k=k;b.onclick=()=>{stop();tab=k;draw()};$("tabs").appendChild(b)});
   draw();
   window.NAJMA_PROGRESS=()=>({done:Object.keys(prog(N)).length,total:S.t.length});
-  window.NAJMA_RESET=()=>{localStorage.removeItem("qk_"+N);try{const d=JSON.parse(localStorage.getItem("qkDone")||"{}");Object.keys(d).forEach(k=>{if(k.startsWith(N+":"))delete d[k]});localStorage.setItem("qkDone",JSON.stringify(d))}catch(e){}}}
+  window.NAJMA_RESET=()=>{localStorage.removeItem("qk_"+N);localStorage.removeItem("qkH_"+N);try{const d=JSON.parse(localStorage.getItem("qkDone")||"{}");Object.keys(d).forEach(k=>{if(k.startsWith(N+":"))delete d[k]});localStorage.setItem("qkDone",JSON.stringify(d))}catch(e){}}}
 function draw(){document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.k===tab));const B=$("body");B.innerHTML="";hidden=false;
-  ({story,watch,learn,play:games,lessons})[tab](B)}
+  ({intro,story,watch,learn,play:games,lessons})[tab](B)}
 function bindAyat(root){root.querySelectorAll(".ayah[data-a]").forEach(el=>el.onclick=async()=>{stop();const id=runId;document.querySelectorAll(".ayah.now").forEach(x=>x.classList.remove("now"));el.classList.add("now");await play(S.g+(+el.dataset.a)-1);if(id===runId)el.classList.remove("now")})}
-function story(B){B.innerHTML=`<div class="box"><div class="intro"><h3>📜 قصة السورة</h3>${esc(S.i)}</div></div>`;
+/* المعنى: Tafsir Al-Muyassar (King Fahd Complex), fetched once and kept on the iPad */
+let MY=null;function loadMuyassar(){try{MY=JSON.parse(localStorage.getItem("qkM_"+N)||"null")}catch(e){}if(MY)return;
+  fetch(`https://api.alquran.cloud/v1/surah/${N}/ar.muyassar`).then(r=>r.json()).then(j=>{if(j.code!==200)return;MY=j.data.ayahs.map(a=>a.text);try{localStorage.setItem("qkM_"+N,JSON.stringify(MY))}catch(e){}if(tab==="story")draw()}).catch(()=>{})}
+function intro(B){const hasP=!!QC.poster[N],ex=QC.expl[N],hasV=!!QC.explA[N];
+  B.innerHTML=`${hasP?`<div class="box" style="padding:8px"><img id="poster" alt="" style="width:100%;border-radius:20px;display:block;min-height:120px;background:#f3f0fa;cursor:zoom-in"></div>`:""}
+    ${S.i?`<div class="box"><div class="intro"><h3>📜 قصة السورة</h3>${esc(S.i)}</div></div>`:""}
+    ${ex||hasV?`<div class="box"><div class="intro" style="background:linear-gradient(135deg,#e7f7ff,#f1e9ff)"><h3>👩 شرح ماما</h3>${ex?esc(ex):""}${hasV?`<div class="row"><button class="btn p" id="ev">🔊 اسمع شرح ماما</button></div>`:""}</div></div>`:""}
+    <div class="row"><button class="btn t" id="go">📖 هيا نقرأ الآيات</button></div>`;
+  if(hasP)NAJMA.decrypt(QC.poster[N]).then(u=>{const im=$("poster");if(im){im.src=u;im.onclick=()=>openM(`<img src="${u}" style="width:100%;border-radius:16px;margin-top:40px">`)}}).catch(()=>{});
+  if(hasV)$("ev").onclick=async()=>{stop();try{const u=await NAJMA.decrypt(QC.explA[N]);aud=new Audio(u);aud.play()}catch(e){}};
+  $("go").onclick=()=>{tab="story";draw()}}
+function story(B){
   GR.forEach(g=>{const c=document.createElement("div");c.className="card";const key=N+":"+g.ay[0];
-    c.innerHTML=scene(g.bg,g.em,key)+g.ay.map(a=>ayahHTML(a)).join("")+`<div class="mean"><b>💡 ${g.ay.length>1?`الآيات ${AD(g.ay[0])}–${AD(g.ay[g.ay.length-1])}`:"المعنى"}:</b> ${esc(g.tx)}</div>`;
-    B.appendChild(c)});bindAyat(B)}
+    const my=MY?g.ay.map(a=>MY[a-1]).filter(Boolean).join(" "):"";
+    c.innerHTML=scene(g.bg,g.em,key)+g.ay.map(a=>ayahHTML(a)).join("")+
+      (my?`<div class="mean" style="background:#eef6ff"><b style="color:#2f6fd6">📘 المعنى:</b> ${esc(my)}</div>`:"")+
+      (g.tx?`<div class="mean"><b>💡 تبسيط:</b> ${esc(g.tx)}</div>`:"");
+    B.appendChild(c)});
+  if(!MY)B.insertAdjacentHTML("afterbegin",'<div class="score" style="color:#fff">📘 المعنى يظهر عند الاتصال بالإنترنت</div>');bindAyat(B)}
 async function watch(B,from){const id=++runId;let i=from||0;
-  const show=()=>{const g=GR[i];B.innerHTML=`<div class="card">${scene(g.bg,g.em,N+":"+g.ay[0])}${g.ay.map(a=>ayahHTML(a)).join("")}<div class="mean"><b>💡</b> ${esc(g.tx)}</div>
+  const show=()=>{const g=GR[i];B.innerHTML=`<div class="card">${scene(g.bg,g.em,N+":"+g.ay[0])}${g.ay.map(a=>ayahHTML(a)).join("")}${g.tx?`<div class="mean"><b>💡</b> ${esc(g.tx)}</div>`:""}
     <div class="row"><button class="btn g sm" id="wp">➡️</button><button class="btn t sm" id="wa">⏸️ إيقاف</button><button class="btn g sm" id="wn">⬅️</button></div><div class="score">${AD(i+1)} / ${AD(GR.length)}</div></div>`;
     $("wp").onclick=()=>{stop();watch(B,Math.max(0,i-1))};$("wn").onclick=()=>{stop();watch(B,Math.min(GR.length-1,i+1))};
     $("wa").onclick=()=>{if(id===runId){stop();$("wa").textContent="▶️ تشغيل";$("wa").onclick=()=>watch(B,i)}};bindAyat(B)};
@@ -186,11 +253,14 @@ function rain(){for(let i=0;i<100;i++)setTimeout(()=>burst(Math.random()*innerWi
 let hidden=false,times=1;const kid={};let kdb=null;
 try{const r=indexedDB.open("kidQuran",1);r.onupgradeneeded=()=>r.result.createObjectStore("v");r.onsuccess=()=>{kdb=r.result;kdb.transaction("v").objectStore("v").openCursor().onsuccess=e=>{const c=e.target.result;if(c){kid[c.key]=URL.createObjectURL(c.value);c.continue()}}}}catch(e){}
 function learn(B){const p=prog(N);
-  B.innerHTML=`<div class="row"><button class="btn p" id="la">▶️ استمع للكل</button><button class="btn t" id="lr">🔁 ردّد معي</button><button class="btn" id="lx">🔂 كرّر ×${times}</button><button class="btn g" id="lh">🙈 اختبر حفظك</button></div><div id="ll"></div>`;
+  B.innerHTML=`<div class="row"><button class="btn p" id="la">▶️ استمع للكل</button><button class="btn t" id="lr">🔁 ردّد معي</button><button class="btn" id="lx">🔂 كرّر ×${times}</button><button class="btn g" id="lh">🙈 اختبر حفظك</button></div><div id="ll"></div>
+    <div class="row" style="margin-top:14px"><button class="btn t" id="lall" style="font-size:21px;padding:12px 22px">${isDone(N)?"🏆 حفظت السورة كاملة":"🏁 سمّعت السورة كاملة"}</button></div>
+    <p class="score" style="color:#fff">اضغط بعد أن تسمّع السورة كاملة لماما أو بابا</p>`;
   const L=$("ll");S.t.forEach((t,i)=>{const a=i+1,x=S.a[i],g=x[3]===-1?GR.find(g=>g.ay.includes(a)):null,src=g?[g.bg,g.em,N+":"+g.ay[0]]:[x[0],x[1],N+":"+a];
-    const d=document.createElement("div");d.className="line";d.id="ln"+a;d.innerHTML=scene(src[0],src[1],src[2],"sm")+ayahHTML(a)+`<span class="st">${p[a]?"⭐".repeat(p[a]):""}</span><button class="btn g sm">⋯</button>`;
+    const d=document.createElement("div");d.className="line";d.id="ln"+a;d.innerHTML=scene(src[0],src[1],src[2],"sm")+ayahHTML(a)+`<span class="st">${hifz(N)[a]?"✅":p[a]?"⭐".repeat(p[a]):""}</span><button class="btn g sm">⋯</button>`;
     d.querySelector(".ayah").onclick=e=>{e.stopPropagation();if(hidden&&!d.classList.contains("peek")){d.classList.add("peek");setTimeout(()=>d.classList.remove("peek"),2500);return}stop();play(S.g+a-1)};
     d.querySelector("button").onclick=()=>ayahSheet(a);L.appendChild(d)});
+  $("lall").onclick=e=>{if(isDone(N))return;S.t.forEach((_,i)=>memorise(N,i+1));fan();rain();burstAt(e.target);setTimeout(()=>{draw();checkDone()},600)};
   $("la").onclick=()=>seq(false);$("lr").onclick=()=>seq(true);$("lx").onclick=()=>{times=times===1?3:times===3?5:1;$("lx").textContent=`🔂 كرّر ×${times}`};
   $("lh").onclick=()=>{hidden=!hidden;B.classList.toggle("hide",hidden);$("lh").textContent=hidden?"👀 أظهر النص":"🙈 اختبر حفظك"}}
 async function seq(rep){stop();const id=runId;const bar=document.createElement("div");bar.className="stop";const sb=document.createElement("button");sb.className="btn p";sb.textContent="⏹️ إيقاف";sb.onclick=()=>stop();bar.appendChild(sb);document.body.appendChild(bar);
@@ -200,14 +270,28 @@ async function seq(rep){stop();const id=runId;const bar=document.createElement("
 function ayahSheet(a){const k=N+":"+a;openM(`${ayahHTML(a)}<div class="row"><button class="btn" id="sp">🔊 استمع</button></div>
   <div class="row"><button class="btn p" id="sr">🎤 سجّل صوتي</button><button class="btn t" id="sm"${kid[k]?"":" disabled style='opacity:.4'"}>▶️ صوتي</button></div><div class="row"><button class="btn t" id="sg">✅ حفظتها</button></div>`);
   bindAyat($("mb"));$("sp").onclick=()=>play(S.g+a-1);
-  $("sg").onclick=e=>{star(N,a,3);fan();burstAt(e.target);setTimeout(()=>{closeM();draw()},700)};
+  $("sg").onclick=e=>{memorise(N,a);fan();burstAt(e.target);setTimeout(()=>{closeM();draw();checkDone()},700)};
   let rec=null;$("sr").onclick=async()=>{if(rec){rec.stop();return}stop();try{const st=await navigator.mediaDevices.getUserMedia({audio:true}),ch=[];rec=new MediaRecorder(st);$("sr").textContent="⏹️";rec.ondataavailable=e=>ch.push(e.data);
     rec.onstop=()=>{st.getTracks().forEach(t=>t.stop());const bl=new Blob(ch,{type:rec.mimeType||"audio/mp4"});kid[k]=URL.createObjectURL(bl);try{kdb.transaction("v","readwrite").objectStore("v").put(bl,k)}catch(e){}rec=null;$("sr").textContent="🎤 سجّل صوتي";$("sm").disabled=false;$("sm").style.opacity=1;new Audio(kid[k]).play()};
     rec.start();setTimeout(()=>{if(rec&&rec.state==="recording")rec.stop()},30000)}catch(e){$("sr").textContent="⚠️ 🎤"}};
   $("sm").onclick=()=>{if(kid[k])new Audio(kid[k]).play()}}
 /* games */
-function games(B){B.innerHTML=`<div class="games"><button style="background:#ff5d73" id="g1">🖼️ اختر الصورة الصحيحة</button><button style="background:#22c7b8" id="g2">🔢 رتّب الآيات</button><button style="background:#a66bff" id="g3">❓ اختبر فهمك</button></div>`;
-  $("g1").onclick=pickPic;$("g2").onclick=orderGame;$("g3").onclick=quiz}
+function checkDone(){if(!isDone(N))return;const onPath=PATH.includes(N),left=PATH.filter(s=>!isDone(s)).length;
+  openM(`<div class="cert" style="margin-top:34px"><div class="big">🌟</div><h2>أحسنت!</h2><div style="font-size:22px">حفظت سورة <b class="q">${S.name}</b></div>
+    ${onPath?`<div style="font-size:19px;margin-top:8px">${left?`باقي ${AD(left)} في رحلة الحفظ 🗺️`:"أكملت رحلة الـ١٠ سور! 🏆"}</div>`:""}<div class="row"><button class="btn p" id="toPath">🗺️ إلى الرحلة</button></div></div>`);
+  fan();rain();$("toPath").onclick=()=>location.href="quran.html"}
+function games(B){const pics=GR.length>=2;
+  B.innerHTML=`<div class="games">${pics?'<button style="background:#ff5d73" id="g1">🖼️ اختر الصورة الصحيحة</button><button style="background:#ffb020" id="g4">🔗 وصّل الآية بصورتها</button>':""}<button style="background:#22c7b8" id="g2">🔢 رتّب الآيات</button>${S.q&&S.q.length?'<button style="background:#a66bff" id="g3">❓ اختبر فهمك</button>':""}</div>`;
+  if(pics){$("g1").onclick=pickPic;$("g4").onclick=matchGame}$("g2").onclick=orderGame;if($("g3"))$("g3").onclick=quiz}
+function matchGame(){const set=shuf(GR).slice(0,Math.min(4,GR.length)),sc=shuf(set);let sel=null,left=set.length,miss=0;
+  openM(`<div style="height:34px"></div><div class="score">اضغط الآية، ثم صورتها</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px"><div id="mA" style="display:grid;gap:8px"></div><div id="mP" style="display:grid;gap:8px"></div></div>`);
+  set.forEach(g=>{const b=document.createElement("button");b.className="pool";b.style.cssText="border:0;border-radius:16px;background:#f3f0fa;padding:6px 8px;font-family:'Amiri Quran',serif;font-size:19px;line-height:1.9;cursor:pointer;color:#2b2340";
+    b.textContent=S.t[g.ay[0]-1].split(" ").slice(0,6).join(" ")+(S.t[g.ay[0]-1].split(" ").length>6?"…":"");
+    b.onclick=()=>{document.querySelectorAll("#mA button").forEach(x=>x.style.outline="");b.style.outline="4px solid #ffb020";sel={g,b};play(S.g+g.ay[0]-1)};$("mA").appendChild(b)});
+  sc.forEach(g=>{const b=document.createElement("button");b.style.cssText="border:0;padding:0;background:none;cursor:pointer";b.innerHTML=scene(g.bg,g.em,N+":"+g.ay[0]);b.firstChild.style.aspectRatio="4/3";
+    b.onclick=()=>{if(!sel)return;if(sel.g===g){pop();burstAt(b);sel.b.style.visibility="hidden";b.style.visibility="hidden";g.ay.forEach(a=>star(N,a,miss?2:3));sel=null;
+        if(--left===0){fan();rain();setTimeout(()=>openM(`<div class="msg">🏆 ${rnd(PRAISE)}</div><div class="row"><button class="btn p" id="ag">🔁 مرة ثانية</button></div>`),700);setTimeout(()=>{const a=$("ag");if(a)a.onclick=matchGame},800)}}
+      else{miss++;buzz();b.firstChild.animate([{transform:"translateX(-8px)"},{transform:"translateX(8px)"},{transform:"none"}],300)}};$("mP").appendChild(b)})}
 function pickPic(){const order=shuf(GR);let k=0,score=0;const id=++runId;
   const step=async()=>{if(id!==runId)return;if(k>=order.length){fan();rain();openM(`<div class="msg">🏆 ${rnd(PRAISE)}<br>⭐ ${AD(score)}</div>`);return}
     const g=order[k],others=shuf(GR.filter(x=>x!==g)).slice(0,2),opts=shuf([g,...others]);let miss=0;
@@ -225,7 +309,7 @@ function quiz(){const L=shuf(S.q);let k=0,score=0;
     const [q,a]=L[k];let miss=0;openM(`<div style="height:30px"></div><div class="intro" style="font-size:22px;font-weight:700;text-align:center">${esc(q)}</div><div class="ans" id="an"></div><div class="score">${AD(k+1)} / ${AD(L.length)}</div>`);
     shuf(a.map((x,i)=>[x,i])).forEach(([x,i],c)=>{const b=document.createElement("button");b.textContent=x;b.style.background=COL[c%6];
       b.onclick=()=>{if(i===0){b.classList.add("right");score+=miss?1:3;fan();burstAt(b);k++;setTimeout(step,1100)}else{miss++;b.classList.add("wrong");buzz()}};$("an").appendChild(b)})};step()}
-function lessons(B){B.innerHTML=`<div class="box lessons"><h3>🌟 الدروس المستفادة</h3><ul>${S.l.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div class="msg">💖 ${esc(S.m)}</div>`}
+function lessons(B){B.innerHTML=`<div class="box lessons"><h3>🌟 الدروس المستفادة</h3><ul>${(S.l||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>${S.m?`<div class="msg">💖 ${esc(S.m)}</div>`:""}`}
 /* modal */
 const MD=$("m");function openM(h){$("mb").innerHTML=h;MD.classList.add("show")}function closeM(){MD.classList.remove("show");stop()}
 MD.addEventListener("click",e=>{if(e.target===MD||e.target.hasAttribute("data-close"))closeM()});
@@ -233,7 +317,7 @@ MD.addEventListener("click",e=>{if(e.target===MD||e.target.hasAttribute("data-cl
 if(N)surah();else hub();
 /* decrypt the parent's photos, then redraw */
 const jobs=Object.keys(QIMG).filter(k=>!N||k.startsWith(N+":")).map(k=>NAJMA.decrypt(QIMG[k]).then(u=>PH[k]=u).catch(()=>{}));
-if(jobs.length)Promise.all(jobs).then(()=>{if(N&&(tab==="story"||tab==="learn"))draw()});
+if(jobs.length)Promise.all(jobs).then(()=>{if(N&&(tab==="story"||tab==="learn"))draw();else if(!N)hub()});
 </script>
 <script src="extras.js?v=10"></script>
 </body>
