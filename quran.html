@@ -338,7 +338,8 @@ const MD=$("m");function openM(h){$("mb").innerHTML=h;MD.classList.add("show")}f
 MD.addEventListener("click",e=>{if(e.target===MD||e.target.hasAttribute("data-close"))closeM()});
 
 if(N)surah();else hub();
-NAJMA.loadAudio("qpics","QPICS").then(o=>{const has=Object.keys(o||{}).some(k=>k.startsWith(N+":"));Object.assign(PACK,o||{});if(N&&has&&(tab==="story"||tab==="intro"||tab==="learn"))draw()});
+/* poster pictures: one encrypted file per surah */
+if(N)fetch("audio/qp/index.json").then(r=>r.json()).then(L=>{if(!L.includes(N))return;return NAJMA.loadAudio("qp/"+N,"QP"+N).then(o=>{Object.assign(PACK,o||{});if(Object.keys(o||{}).length&&(tab==="story"||tab==="intro"||tab==="learn"))draw()})}).catch(()=>{});
 /* decrypt the parent's photos, then redraw */
 const jobs=Object.keys(QIMG).filter(k=>!N||k.startsWith(N+":")).map(k=>NAJMA.decrypt(QIMG[k]).then(u=>PH[k]=u).catch(()=>{}));
 if(jobs.length)Promise.all(jobs).then(()=>{if(N&&(tab==="story"||tab==="learn"))draw();else if(!N)hub()});
