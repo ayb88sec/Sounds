@@ -83,7 +83,8 @@ function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]GB/i.te
 if(EN&&"speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
 Object.keys(REC).forEach(k=>NAJMA.decrypt(REC[k]).then(u=>MINE[k]=u).catch(()=>{}));
 function say(c){if(EN){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(c[3]);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.8;speechSynthesis.speak(u)}catch(e){}return}
-  if(MINE[c[0]]){try{if(aud)aud.pause();aud=new Audio(MINE[c[0]]);aud.play()}catch(e){}}else NAJMA.aiSay(c[2])}
+  if(MINE[c[0]]){try{if(aud)aud.pause();aud=new Audio(MINE[c[0]]);aud.play()}catch(e){}}else NAJMA.aiSay(VOC[c[0]]||c[2])}
+const VOC={red:"أَحْمَرْ",blue:"أَزْرَقْ",yellow:"أَصْفَرْ",green:"أَخْضَرْ",orange:"بُرْتُقَالِي",purple:"بَنَفْسَجِي",pink:"وَرْدِي",brown:"بُنِّي",black:"أَسْوَدْ",white:"أَبْيَضْ",grey:"رَمَادِي"};
 /* sounds + confetti */
 let ac;function tone(f,d,w=0,ty="triangle",v=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(v,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
 const pop=()=>{tone(520,.12);tone(880,.14,.07)},fan=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12)),buzz=()=>tone(160,.25,0,"sawtooth",.08);
