@@ -344,7 +344,7 @@ $("sDel").onclick=()=>{if(!confirmDel(es.title))return;secs=secs.filter(s=>s.id!
 
 /* Quran stories: everything the parent adds (story, explanation, pictures, simple meanings, extra surahs) lives in one hidden section, encrypted where private */
 function qSec(){let s=secs.find(x=>x.type==="qimg");if(!s){s={id:"qimg"+Date.now().toString(36),type:"qimg",title:"qimg",icon:"📖",lang:"ar",words:[]};secs.push(s)}
-  ["img","poster","story","expl","explA","explV","simp","extra"].forEach(k=>s[k]=s[k]||{});return s}
+  ["img","poster","story","expl","explA","explV","secV","simp","extra"].forEach(k=>s[k]=s[k]||{});return s}
 const QAPI="https://api.alquran.cloud/v1",AD=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
 const qSurah=n=>(qSec().extra[n])||QK[n];
 const qPlain={};const qDec=async(k,v)=>{if(!v)return null;if(qPlain[k])return qPlain[k];try{return qPlain[k]=await NAJMA.decrypt(v)}catch(e){return null}};
@@ -356,10 +356,11 @@ let qPicFor=null;
 async function qEdit(){const n=+$("qpS").value,E=$("qpE");E.innerHTML="";if(!n)return;const Q=qSec(),S=qSurah(n),isX=!!Q.extra[n];
   const poster=await qDec("p"+n,Q.poster[n]),voice=Q.explA[n];
   E.innerHTML=`<div class="qbox" style="margin-top:12px"><label style="margin-top:0">📜 قصة السورة (سبب النزول أو الفكرة)</label><textarea class="in" id="qpI" dir="rtl" style="min-height:110px;font-size:17px"></textarea>
-    <label>👩 شرحي للسورة</label><textarea class="in" id="qpX" dir="rtl" placeholder="اكتب بكلماتك ماذا تعني هذه السورة لأطفالك" style="min-height:90px;font-size:17px"></textarea>
+    <label>🎙️ الشرح العام للسورة</label><textarea class="in" id="qpX" dir="rtl" placeholder="اكتب بكلماتك ماذا تعني هذه السورة لأطفالك" style="min-height:90px;font-size:17px"></textarea>
     <div class="rrow"><b>🎤 سجّل شرحك بصوتك</b><button class="b" id="qpR">${voice?"🔁 أعد التسجيل":"🎤 سجّل"}</button><button class="b" id="qpP"${voice?"":" disabled style='opacity:.35'"}>▶️</button>${voice?'<button class="b" id="qpRD">🗑️</button>':""}</div>
     <label>🖼️ صورة السورة (لوحة أو ملخّص مصوّر)</label>
-    <div class="rrow"><div class="pimg" style="width:80px;height:80px">${poster?`<img src="${poster}">`:"🖼️"}</div><span style="flex:1"></span><button class="b" id="qpPo">📷 ${poster?"تغيير":"إضافة"}</button>${poster?'<button class="b" id="qpPoD">🗑️</button>':""}</div></div>
+    <div class="rrow"><div class="pimg" style="width:80px;height:80px">${poster?`<img src="${poster}">`:"🖼️"}</div><span style="flex:1"></span><button class="b" id="qpPo">📷 ${poster?"تغيير":"إضافة"}</button>${poster?'<button class="b" id="qpPoD">🗑️</button>':""}</div>
+    <label>🎤 سجّل شرحك لكل جزء في «القصة»</label><div id="qpSec"></div></div>
     <div class="qbox"><label style="margin-top:0">📖 الآيات: الصورة وشرحك</label><div class="note" style="margin:0 0 6px">«المعنى» يأتي تلقائيًا. اضغط 📷 لتضع صورتك، و🎤 لتسجّل شرحك لهذه الآية بصوتك.</div><div id="qpA"></div></div>
     <div class="actions">${isX?'<button class="b del" id="qpDel">🗑️ حذف السورة</button>':"<span></span>"}<button class="b go" id="qpSave">💾 حفظ</button></div>`;
   $("qpI").value=Q.story[n]!=null?Q.story[n]:(S.i||"");$("qpX").value=Q.expl[n]||"";
@@ -375,6 +376,14 @@ async function qEdit(){const n=+$("qpS").value,E=$("qpE");E.innerHTML="";if(!n)r
     if(Q.explV[k]){r.querySelector(".vp").onclick=async()=>{const u=await qDec("v"+k,Q.explV[k]);if(u)new Audio(u).play()};r.querySelector(".vd").onclick=()=>{delete Q.explV[k];delete qPlain["v"+k];qSave(false)}}
     r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{Q.explV[k]=u.enc;qPlain["v"+k]=u.url});A.appendChild(r)});
   $("qpPo").onclick=()=>{qPicFor="poster";$("qpF").value="";$("qpF").click()};
+  /* one recording per part of the story tab */
+  const parts=[];if(Q.story[n]!=null?Q.story[n]:S.i)parts.push(["i","📜 قصة السورة"]);if(S.imp)parts.push(["imp","⭐ أهمية السورة"]);
+  (S.cards||[]).forEach((c,i)=>parts.push(["c"+i,c[0]]));if(S.l&&S.l.length)parts.push(["l","🌟 الدروس المستفادة"]);if(S.m)parts.push(["m","💖 رسالة السورة"]);
+  parts.forEach(([key,lab])=>{const k=n+":"+key,v=Q.secV[k],r=document.createElement("div");r.className="rrow";
+    r.innerHTML=`<b style="font-size:16px">${esc(lab)}</b><button class="b vr">${v?"🔁 أعد التسجيل":"🎤 سجّل"}</button>${v?'<button class="b vp">▶️</button><button class="b vd">🗑️</button>':""}`;
+    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{Q.secV[k]=u.enc;qPlain["s"+k]=u.url});
+    if(v){r.querySelector(".vp").onclick=async()=>{const u=await qDec("s"+k,v);if(u)new Audio(u).play()};r.querySelector(".vd").onclick=()=>{delete Q.secV[k];delete qPlain["s"+k];qSave(false)}}
+    $("qpSec").appendChild(r)});
   if(poster)$("qpPoD").onclick=()=>{delete Q.poster[n];delete qPlain["p"+n];qSave(false)};
   if(voice){$("qpP").onclick=async()=>{const u=await qDec("a"+n,Q.explA[n]);if(u)new Audio(u).play()};$("qpRD").onclick=()=>{delete Q.explA[n];delete qPlain["a"+n];qSave(false)}}
   let rec=null,tm=null;$("qpR").onclick=async()=>{if(rec){rec.stop();return}
