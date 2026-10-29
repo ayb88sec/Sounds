@@ -54,13 +54,20 @@
   async function decrypt(o){const k=await cryptoKey();const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:ub(o.iv)},k,ub(o.ct));return JSON.parse(new TextDecoder().decode(pt))}
   async function encrypt(obj){const k=await cryptoKey();const iv=crypto.getRandomValues(new Uint8Array(12));
     const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv},k,new TextEncoder().encode(JSON.stringify(obj)));return {v:1,iv:bu(iv),ct:bu(new Uint8Array(ct))}}
-  async function loadAudio(name,v){window[v]=window[v]||{};try{const r=await fetch(`audio/${name}.enc`);const d=await decrypt(await r.json());Object.assign(window[v],d)}catch(e){}
+  /* voice choice per part of the app, set by the parent: "mine" (recordings), "ai", or "none" */
+  function vmode(area,def){try{const Q=(sections||[]).find(s=>s.type==="qimg");return (Q&&Q.voice&&Q.voice[area])||def||"mine"}catch(e){return def||"mine"}}
+  const aiURL=(q,lang)=>`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang||"ar"}&q=${encodeURIComponent(q)}&total=1&idx=0&textlen=${q.length}`;
+  const noEmoji=t=>String(t||"").replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\uFE0F\u200D•]/gu," ").replace(/\s+/g," ").trim();
+  async function loadAudio(name,v){window[v]=window[v]||{};const mode=vmode(name,"mine");if(mode==="none")return window[v];
+    if(mode==="ai"){try{if(!window.BASE)await new Promise(r=>{const s=document.createElement("script");s.src="data/base.js";s.onload=s.onerror=r;document.head.appendChild(s)});
+      ((window.BASE||{})[name]||{groups:[]}).groups.forEach(g=>g[1].forEach(([k,lab,say])=>{let t=noEmoji(say||lab).replace(/^حرف\s*/,"");if(t.split(" ").length<=2)t=t.replace(/([\u0628-\u0647\u0629\u0646\u0648\u064A])(?=\s|$)/g,"$1\u0652");window[v][k]=aiURL(t)}))}catch(e){}return window[v]}
+    try{const r=await fetch(`audio/${name}.enc`);const d=await decrypt(await r.json());Object.assign(window[v],d)}catch(e){}
     /* the parent's own re-recordings (portal → 🧩 الأساسية) replace the built-in ones */
     try{const Q=(sections||[]).find(s=>s.type==="qimg"),O=Q&&Q.ov&&Q.ov[name];if(O)await Promise.all(Object.keys(O).map(k=>decrypt(O[k]).then(u=>{window[v][k]=u}).catch(()=>{})))}catch(e){}
     return window[v]}
   async function checkCode(code){const old=G.call(localStorage,"najma:key");SET.call(localStorage,"najma:key",code);ckey=null;
     try{const r=await fetch("audio/numbers.enc");await decrypt(await r.json());return true}catch(e){if(old)SET.call(localStorage,"najma:key",old);else RM.call(localStorage,"najma:key");ckey=null;return false}}
-  Object.assign(window.NAJMA,{lock:G.call(localStorage,"najma:lock"),decrypt,encrypt,loadAudio,checkCode,hasKey:()=>!!G.call(localStorage,"najma:key")});
+  Object.assign(window.NAJMA,{vmode,lock:G.call(localStorage,"najma:lock"),decrypt,encrypt,loadAudio,checkCode,hasKey:()=>!!G.call(localStorage,"najma:key")});
   const SBX=window.SUPA&&SUPA.url;
   /* cloud settings: children and sections live in config.json on GitHub; every device follows it */
   const REPO="ayb88sec/Sounds";

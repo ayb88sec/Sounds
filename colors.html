@@ -82,8 +82,10 @@ const REC=((NAJMA.sections.find(s=>s.type==="qimg")||{}).colorRec)||{},MINE={};l
 function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}
 if(EN&&"speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
 Object.keys(REC).forEach(k=>NAJMA.decrypt(REC[k]).then(u=>MINE[k]=u).catch(()=>{}));
-function say(c){if(EN){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(c[3]);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.8;speechSynthesis.speak(u)}catch(e){}return}
-  if(MINE[c[0]]){try{if(aud)aud.pause();aud=new Audio(MINE[c[0]]);aud.play()}catch(e){}}else NAJMA.aiSay(VOC[c[0]]||c[2])}
+const VM=EN?"en":NAJMA.vmode("colors","ai");
+function say(c){if(VM==="none")return;if(EN){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(c[3]);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.8;speechSynthesis.speak(u)}catch(e){}return}
+  if(VM==="ai"){NAJMA.aiSay(VOC[c[0]]||c[2]);return}
+  if(MINE[c[0]]){try{if(aud)aud.pause();aud=new Audio(MINE[c[0]]);aud.play()}catch(e){}}}
 const VOC={red:"أَحْمَرْ",blue:"أَزْرَقْ",yellow:"أَصْفَرْ",green:"أَخْضَرْ",orange:"بُرْتُقَالِي",purple:"بَنَفْسَجِي",pink:"وَرْدِي",brown:"بُنِّي",black:"أَسْوَدْ",white:"أَبْيَضْ",grey:"رَمَادِي"};
 /* sounds + confetti */
 let ac;function tone(f,d,w=0,ty="triangle",v=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(v,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
@@ -102,14 +104,14 @@ function draw(){const G=$("grid");G.innerHTML="";
     b.innerHTML=`<span class="ob">${seg(c[4])[0]}</span><span class="nm">${nm(c)}</span><span class="st">${done[c[0]]?"⭐".repeat(done[c[0]]):""}</span>`;b.onclick=()=>{pop();burstAt(b,c[1]);openC(i)};G.appendChild(b)})}
 function openC(i){const c=C[i];star(c[0],1);
   open(`<div class="blob" id="bl" style="background:${c[1]}"></div><p class="big" style="color:${c[0]==="white"?"#b8b8b8":c[1]}">${nm(c)}</p><div class="alt">${other(c)}</div><div class="objs">${c[4]}</div>
-    <div class="bar"><button class="btn" id="sy">🔊</button><button class="btn g" id="pv">${EN?"⬅️":"➡️"}</button><button class="btn g" id="nx">${EN?"➡️":"⬅️"}</button></div>`);
+    <div class="bar">${VM!=="none"?'<button class="btn" id="sy">🔊</button>':""}<button class="btn g" id="pv">${EN?"⬅️":"➡️"}</button><button class="btn g" id="nx">${EN?"➡️":"⬅️"}</button></div>`);
   if($("sy"))$("sy").onclick=()=>say(c);$("bl").onclick=e=>{burstAt(e.target,c[1]);say(c)};
   $("pv").onclick=()=>openC((i+C.length-1)%C.length);$("nx").onclick=()=>openC((i+1)%C.length);setTimeout(()=>say(c),250);draw()}
 /* game: find the colour by its name */
 function findGame(){const L=shuf(C).slice(0,8);let k=0,score=0;const id=++runId;
   const step=()=>{if(id!==runId)return;if(k>=L.length){fan();rain();open(`<div class="q">${T.done}</div><div class="big">⭐ ${score}</div>`);return}
     const c=L[k],opts=shuf([c,...shuf(C.filter(x=>x!==c)).slice(0,2)]);let miss=0;
-    open(`<div class="q">${T.q} <span style="color:${c[0]==="white"?"#999":c[1]}">${nm(c)}</span></div><button class="btn g" id="sy">🔊</button><div class="opts" id="op"></div><div class="score">${k+1} / ${L.length}</div>`);
+    open(`<div class="q">${T.q} <span style="color:${c[0]==="white"?"#999":c[1]}">${nm(c)}</span></div>${VM!=="none"?'<button class="btn g" id="sy">🔊</button>':""}<div class="opts" id="op"></div><div class="score">${k+1} / ${L.length}</div>`);
     if($("sy"))$("sy").onclick=()=>say(c);say(c);
     opts.forEach(o=>{const b=document.createElement("button");b.style.background=o[1];if(o[0]==="white")b.style.boxShadow="0 6px 0 rgba(0,0,0,.15),inset 0 0 0 3px #ddd";
       b.onclick=()=>{if(o===c){b.classList.add("right");const s=miss?1:3;score+=s;star(c[0],s);fan();burstAt(b,c[1]);k++;setTimeout(step,1000)}else{miss++;b.classList.add("wrong");buzz()}};$("op").appendChild(b)})};step()}

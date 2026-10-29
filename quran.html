@@ -224,7 +224,8 @@ function bindAyat(root){root.querySelectorAll(".ayah[data-a]").forEach(el=>el.on
 /* المعنى: Tafsir Al-Muyassar (King Fahd Complex), fetched once and kept on the iPad */
 let MY=null;function loadMuyassar(){try{MY=JSON.parse(localStorage.getItem("qkM_"+N)||"null")}catch(e){}if(MY)return;
   fetch(`https://api.alquran.cloud/v1/surah/${N}/ar.muyassar`).then(r=>r.json()).then(j=>{if(j.code!==200)return;MY=j.data.ayahs.map(a=>a.text);try{localStorage.setItem("qkM_"+N,JSON.stringify(MY))}catch(e){}if(tab==="story")draw()}).catch(()=>{})}
-const sv=k=>`<div class="row" style="margin:8px 0 0"><button class="btn p sm sv" data-s="${k}">🔊 ${QC.secV[N+":"+k]?"الشرح":"استمع"}</button></div>`;
+const VM=NAJMA.vmode("quran","mine");
+const sv=k=>VM==="ai"||(VM==="mine"&&QC.secV[N+":"+k])?`<div class="row" style="margin:8px 0 0"><button class="btn p sm sv" data-s="${k}">🔊 الشرح</button></div>`:"";
 /* the text of each part, for the AI voice when the parent has not recorded it */
 const partText=k=>k==="i"?S.i:k==="imp"?S.imp:k==="l"?(S.l||[]).join("، "):k==="m"?S.m:k[0]==="c"?((S.cards||[])[+k.slice(1)]||[])[1]:"";
 function intro(B){const hasP=!!QC.poster[N],head=PACK[N+":head"],ex=QC.expl[N],hasV=!!QC.explA[N];
@@ -233,14 +234,14 @@ function intro(B){const hasP=!!QC.poster[N],head=PACK[N+":head"],ex=QC.expl[N],h
     ${S.imp?`<div class="box"><div class="intro" style="background:linear-gradient(135deg,#e9fff1,#fff7e0)"><h3>⭐ أهمية السورة</h3>${esc(S.imp)}${sv("imp")}</div></div>`:""}
     ${(S.cards||[]).map(([t,x,p],i)=>`<div class="box"><div class="intro" style="background:${["linear-gradient(135deg,#fff7e0,#ffe9f3)","linear-gradient(135deg,#fffbe0,#fff1d6)","linear-gradient(135deg,#e7f3ff,#f1e9ff)","linear-gradient(135deg,#f4e9ff,#ffe9f3)"][i%4]};display:flex;gap:10px;align-items:center">
       ${p&&PACK[N+":"+p]?`<img src="${PACK[N+":"+p]}" alt="" style="width:96px;border-radius:14px;flex:none">`:""}<div style="flex:1"><h3>${esc(t)}</h3><div style="white-space:pre-line">${esc(x)}</div>${sv("c"+i)}</div></div></div>`).join("")}
-    ${ex||hasV?`<div class="box"><div class="intro" style="background:linear-gradient(135deg,#e7f7ff,#f1e9ff)"><h3>🎙️ الشرح</h3>${ex?esc(ex):""}<div class="row"><button class="btn p" id="ev">🔊 اسمع الشرح</button></div></div></div>`:""}
+    ${ex||hasV?`<div class="box"><div class="intro" style="background:linear-gradient(135deg,#e7f7ff,#f1e9ff)"><h3>🎙️ الشرح</h3>${ex?esc(ex):""}${VM==="ai"||(VM==="mine"&&hasV)?'<div class="row"><button class="btn p" id="ev">🔊 اسمع الشرح</button></div>':""}</div></div>`:""}
     ${S.l&&S.l.length?`<div class="box lessons"><h3>🌟 الدروس المستفادة</h3><ul>${S.l.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>${sv("l")}</div>`:""}
     ${S.m?`<div class="msg">💖 ${esc(S.m)}${sv("m")}</div>`:""}
     <div class="row"><button class="btn t" id="go">🎮 هيا إلى الأنشطة</button></div>`;
   const im=$("poster");if(im){im.onclick=()=>im.src&&openM(`<img src="${im.src}" style="width:100%;border-radius:16px;margin-top:40px">`);
     if(hasP)NAJMA.decrypt(QC.poster[N]).then(u=>{im.src=u}).catch(()=>{})}
-  B.querySelectorAll(".sv").forEach(b=>b.onclick=async()=>{stop();const v=QC.secV[N+":"+b.dataset.s];if(!v){NAJMA.aiSay(partText(b.dataset.s));return}try{const u=await NAJMA.decrypt(v);aud=new Audio(u);aud.play()}catch(e){}});
-  if($("ev"))$("ev").onclick=async()=>{stop();if(!hasV){NAJMA.aiSay(ex||"");return}try{const u=await NAJMA.decrypt(QC.explA[N]);aud=new Audio(u);aud.play()}catch(e){}};
+  B.querySelectorAll(".sv").forEach(b=>b.onclick=async()=>{stop();const v=QC.secV[N+":"+b.dataset.s];if(VM==="ai"){NAJMA.aiSay(partText(b.dataset.s));return}try{const u=await NAJMA.decrypt(v);aud=new Audio(u);aud.play()}catch(e){}});
+  if($("ev"))$("ev").onclick=async()=>{stop();if(VM==="ai"){NAJMA.aiSay(ex||"");return}try{const u=await NAJMA.decrypt(QC.explA[N]);aud=new Audio(u);aud.play()}catch(e){}};
   $("go").onclick=()=>{tab="play";draw()}}
 function story(B){const X=S.x||{};
   GR.forEach((g,gi)=>{const c=document.createElement("div");c.className="card";c.style.borderTop=`8px solid ${COL[gi%6]}`;const key=N+":"+g.ay[0],x=X[g.ay[0]]||{};
@@ -249,9 +250,9 @@ function story(B){const X=S.x||{};
       scene(g.bg,g.em,key)+g.ay.map(a=>ayahHTML(a)).join("")+
       (my?`<div class="mean" style="background:#eef6ff"><b style="color:#2f6fd6">📘 المعنى:</b> ${esc(my)}</div>`:"")+
 
-      (QC.explV&&QC.explV[key]||my?`<div class="row" style="margin:8px 0 2px"><button class="btn p sm ev" data-k="${key}" data-t="${esc(my)}">🔊 ${QC.explV&&QC.explV[key]?"شرح":"استمع للمعنى"}</button></div>`:"");
+      ((VM==="mine"&&QC.explV&&QC.explV[key])||(VM==="ai"&&my)?`<div class="row" style="margin:8px 0 2px"><button class="btn p sm ev" data-k="${key}" data-t="${esc(my)}">🔊 شرح</button></div>`:"");
     B.appendChild(c)});
-  B.querySelectorAll(".ev").forEach(b=>b.onclick=async()=>{stop();if(!(QC.explV&&QC.explV[b.dataset.k])){NAJMA.aiSay(b.dataset.t);return}try{const u=await NAJMA.decrypt(QC.explV[b.dataset.k]);aud=new Audio(u);aud.play()}catch(e){}});
+  B.querySelectorAll(".ev").forEach(b=>b.onclick=async()=>{stop();if(VM==="ai"){NAJMA.aiSay(b.dataset.t);return}try{const u=await NAJMA.decrypt(QC.explV[b.dataset.k]);aud=new Audio(u);aud.play()}catch(e){}});
   if(!MY&&!Object.keys(X).length)B.insertAdjacentHTML("beforeend",'<div class="score" style="color:#fff">📘 المعنى يظهر عند الاتصال بالإنترنت</div>');bindAyat(B)}
 async function watch(B,from){const id=++runId;let i=from||0;
   const show=()=>{const g=GR[i];B.innerHTML=`<div class="card">${scene(g.bg,g.em,N+":"+g.ay[0])}${g.ay.map(a=>ayahHTML(a)).join("")}${g.tx?`<div class="mean"><b>💡</b> ${esc(g.tx)}</div>`:""}
