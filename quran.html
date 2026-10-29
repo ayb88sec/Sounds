@@ -37,7 +37,7 @@ h1{color:#fff;text-align:center;font-size:clamp(34px,9vw,52px);margin:6px 0 2px;
 .scene .e{position:relative;font-size:clamp(46px,15vw,92px);animation:float 3s ease-in-out infinite;filter:drop-shadow(0 6px 4px rgba(0,0,0,.18));line-height:1}
 .scene .e:nth-child(3){animation-delay:-1s}.scene .e:nth-child(4){animation-delay:-2s}
 .scene.sm{aspect-ratio:1;width:64px;flex:none;border-radius:14px;box-shadow:none}.scene.sm .e{font-size:26px;animation:none}
-.scene img.ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.scene img.ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.scene img.ph.fit{object-fit:contain;background:#fffdf6}.card .scene:has(img.fit){aspect-ratio:4/3}
 @keyframes float{50%{transform:translateY(-8%)}}
 .bg-sky{background:linear-gradient(#8fd3ff,#e3f6ff)}.bg-night{background:linear-gradient(#14214f,#3b4c9b)}.bg-desert{background:linear-gradient(#ffe2a8,#f6b765)}
 .bg-fire{background:linear-gradient(#ffb36b,#e4572e)}.bg-garden{background:linear-gradient(#c9f5c1,#6cc673)}.bg-sea{background:linear-gradient(#a6e6ff,#2a86c9)}
@@ -116,7 +116,7 @@ const PRAISE=["أحسنت!","رائع!","ممتاز!","ما شاء الله!","�
 const GROUPS=[[1],[114,113,112,111,110,109,108,107,106],[105,104,103,102,101,100,99,98,97],[96,95,94,93,92,91,90,89],[88,87,86,85,84,83,82,81,80,79,78]];
 /* everything the parent added in the portal: story, explanation, pictures, simple meanings, extra surahs */
 const QC=NAJMA.sections.find(s=>s.type==="qimg")||{};["img","poster","story","expl","explA","simp","extra"].forEach(k=>QC[k]=QC[k]||{});
-const QIMG=QC.img,PH={};
+const QIMG=QC.img,PH={},PACK={};
 Object.keys(QC.extra).forEach(n=>{QK[n]=QC.extra[n]});
 const XN=Object.keys(QC.extra).map(Number).sort((a,b)=>b-a);
 const ALLOWED=new Set([...NAJMA.lv("quran").flatMap(i=>GROUPS[i]||[]),...XN]);
@@ -156,6 +156,7 @@ const DECO={sky:'<circle cx="85" cy="18" r="9" fill="#fff6a8"/><g fill="#fff" op
  dawn:'<circle cx="50" cy="50" r="16" fill="#ffd36b"/><path d="M0 48 Q50 40 100 48 V57 H0Z" fill="#e0794f"/>'};
 function scene(bg,em,key,cls){const ph=key&&QIMG[key];let inner;
   if(ph)inner=PH[key]?`<img class="ph" src="${PH[key]}" alt="">`:"";
+  else if(key&&PACK[key])inner=`<img class="ph fit" src="${PACK[key]}" alt="">`;
   else inner=seg(em).filter(x=>x.trim()).map(e=>`<span class="e">${e}</span>`).join("");
   return `<div class="scene bg-${bg} ${cls||""}" data-k="${key||""}"><svg class="d" viewBox="0 0 100 57" preserveAspectRatio="none">${DECO[bg]||""}</svg>${inner}</div>`}
 
@@ -203,7 +204,7 @@ function reward(){const nm=NAJMA.me?NAJMA.me.name:"";fan();rain();setTimeout(rai
     <div style="font-size:40px;margin-top:8px">🥇🎉📖</div><div style="margin-top:6px;font-size:17px">بارك الله فيك، واصل رحلتك مع القرآن!</div></div>`)}
 
 /* ---------- surah ---------- */
-let S,GR,tab="intro";
+let S,GR,tab="story";
 function groups(){const g=[];S.a.forEach((x,i)=>{if(x[3]===-1)g[g.length-1].ay.push(i+1);else g.push({bg:x[0],em:x[1],tx:x[2],ay:[i+1]})});return g}
 function ayahHTML(a,extra){return `<div class="ayah q ${extra||""}" data-a="${a}">${esc(S.t[a-1])} <span class="no">﴿${AD(a)}﴾</span></div>`}
 function surah(){S=QK[N];if(!S||!ALLOWED.has(N)){location.replace("quran.html");return}
@@ -212,33 +213,40 @@ function surah(){S=QK[N];if(!S||!ALLOWED.has(N)){location.replace("quran.html");
   document.title=S.name;
   M.innerHTML=`<h1 class="q" style="font-family:'Amiri Quran',serif">سورة ${S.name}</h1><p class="sub">${AD(S.t.length)} آيات · ${S.type==="meccan"?"مكية":"مدنية"}</p>
     <div class="tabs" id="tabs"></div><div id="body"></div>`;
-  const T=[["intro","📜 قصة السورة"],["story","📖 الآيات"],["watch","🎬 شاهد"],["learn","🎧 احفظ"],["play","🎮 العب"]];if(S.l&&S.l.length)T.push(["lessons","🌟 الدروس"]);
+  const T=[["story","📖 الآيات"],["intro","📜 القصة"],["play","🎮 الأنشطة"],["learn","🎧 احفظ"]];
   T.forEach(([k,t])=>{const b=document.createElement("button");b.textContent=t;b.dataset.k=k;b.onclick=()=>{stop();tab=k;draw()};$("tabs").appendChild(b)});
   draw();
   window.NAJMA_PROGRESS=()=>({done:Object.keys(prog(N)).length,total:S.t.length});
   window.NAJMA_RESET=()=>{localStorage.removeItem("qk_"+N);localStorage.removeItem("qkH_"+N);try{const d=JSON.parse(localStorage.getItem("qkDone")||"{}");Object.keys(d).forEach(k=>{if(k.startsWith(N+":"))delete d[k]});localStorage.setItem("qkDone",JSON.stringify(d))}catch(e){}}}
 function draw(){document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.k===tab));const B=$("body");B.innerHTML="";hidden=false;
-  ({intro,story,watch,learn,play:games,lessons})[tab](B)}
+  ({intro,story,watch,learn,play:games})[tab](B)}
 function bindAyat(root){root.querySelectorAll(".ayah[data-a]").forEach(el=>el.onclick=async()=>{stop();const id=runId;document.querySelectorAll(".ayah.now").forEach(x=>x.classList.remove("now"));el.classList.add("now");await play(S.g+(+el.dataset.a)-1);if(id===runId)el.classList.remove("now")})}
 /* المعنى: Tafsir Al-Muyassar (King Fahd Complex), fetched once and kept on the iPad */
 let MY=null;function loadMuyassar(){try{MY=JSON.parse(localStorage.getItem("qkM_"+N)||"null")}catch(e){}if(MY)return;
   fetch(`https://api.alquran.cloud/v1/surah/${N}/ar.muyassar`).then(r=>r.json()).then(j=>{if(j.code!==200)return;MY=j.data.ayahs.map(a=>a.text);try{localStorage.setItem("qkM_"+N,JSON.stringify(MY))}catch(e){}if(tab==="story")draw()}).catch(()=>{})}
-function intro(B){const hasP=!!QC.poster[N],ex=QC.expl[N],hasV=!!QC.explA[N];
-  B.innerHTML=`${hasP?`<div class="box" style="padding:8px"><img id="poster" alt="" style="width:100%;border-radius:20px;display:block;min-height:120px;background:#f3f0fa;cursor:zoom-in"></div>`:""}
+function intro(B){const hasP=!!QC.poster[N],head=PACK[N+":head"],ex=QC.expl[N],hasV=!!QC.explA[N];
+  B.innerHTML=`${hasP||head?`<div class="box" style="padding:8px"><img id="poster" alt="" src="${!hasP&&head?head:""}" style="width:100%;border-radius:20px;display:block;min-height:80px;background:#f3f0fa;cursor:zoom-in"></div>`:""}
     ${S.i?`<div class="box"><div class="intro"><h3>📜 قصة السورة</h3>${esc(S.i)}</div></div>`:""}
+    ${S.imp?`<div class="box"><div class="intro" style="background:linear-gradient(135deg,#e9fff1,#fff7e0)"><h3>⭐ أهمية السورة</h3>${esc(S.imp)}</div></div>`:""}
     ${ex||hasV?`<div class="box"><div class="intro" style="background:linear-gradient(135deg,#e7f7ff,#f1e9ff)"><h3>👩 شرح ماما</h3>${ex?esc(ex):""}${hasV?`<div class="row"><button class="btn p" id="ev">🔊 اسمع شرح ماما</button></div>`:""}</div></div>`:""}
-    <div class="row"><button class="btn t" id="go">📖 هيا نقرأ الآيات</button></div>`;
-  if(hasP)NAJMA.decrypt(QC.poster[N]).then(u=>{const im=$("poster");if(im){im.src=u;im.onclick=()=>openM(`<img src="${u}" style="width:100%;border-radius:16px;margin-top:40px">`)}}).catch(()=>{});
+    ${S.l&&S.l.length?`<div class="box lessons"><h3>🌟 الدروس المستفادة</h3><ul>${S.l.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+    ${S.m?`<div class="msg">💖 ${esc(S.m)}</div>`:""}
+    <div class="row"><button class="btn t" id="go">🎮 هيا إلى الأنشطة</button></div>`;
+  const im=$("poster");if(im){im.onclick=()=>im.src&&openM(`<img src="${im.src}" style="width:100%;border-radius:16px;margin-top:40px">`);
+    if(hasP)NAJMA.decrypt(QC.poster[N]).then(u=>{im.src=u}).catch(()=>{})}
   if(hasV)$("ev").onclick=async()=>{stop();try{const u=await NAJMA.decrypt(QC.explA[N]);aud=new Audio(u);aud.play()}catch(e){}};
-  $("go").onclick=()=>{tab="story";draw()}}
-function story(B){
-  GR.forEach(g=>{const c=document.createElement("div");c.className="card";const key=N+":"+g.ay[0];
-    const my=MY?g.ay.map(a=>MY[a-1]).filter(Boolean).join(" "):"";
-    c.innerHTML=scene(g.bg,g.em,key)+g.ay.map(a=>ayahHTML(a)).join("")+
+  $("go").onclick=()=>{tab="play";draw()}}
+function story(B){const X=S.x||{};
+  B.innerHTML=`<div class="row" style="margin:0 0 10px"><button class="btn p" id="wgo">🎬 شاهد السورة كقصة</button></div>`;$("wgo").onclick=()=>{stop();watch(B)};
+  GR.forEach((g,gi)=>{const c=document.createElement("div");c.className="card";c.style.borderTop=`8px solid ${COL[gi%6]}`;const key=N+":"+g.ay[0],x=X[g.ay[0]]||{};
+    const my=x.mn||(MY?g.ay.map(a=>MY[a-1]).filter(Boolean).join(" "):""),tb=x.tb||g.tx;
+    c.innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="background:${COL[gi%6]};color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px">${AD(g.ay[0])}</span></div>`+
+      scene(g.bg,g.em,key)+g.ay.map(a=>ayahHTML(a)).join("")+
       (my?`<div class="mean" style="background:#eef6ff"><b style="color:#2f6fd6">📘 المعنى:</b> ${esc(my)}</div>`:"")+
-      (g.tx?`<div class="mean"><b>💡 تبسيط:</b> ${esc(g.tx)}</div>`:"");
+      (tb?`<div class="mean"><b>💡 تبسيط:</b> ${esc(tb)}</div>`:"")+
+      (x.id?`<div class="mean" style="background:#f1fbe9"><b style="color:#3a9a3f">🖼️ فكرة الصورة:</b> ${esc(x.id)}</div>`:"");
     B.appendChild(c)});
-  if(!MY)B.insertAdjacentHTML("afterbegin",'<div class="score" style="color:#fff">📘 المعنى يظهر عند الاتصال بالإنترنت</div>');bindAyat(B)}
+  if(!MY&&!Object.keys(X).length)B.insertAdjacentHTML("beforeend",'<div class="score" style="color:#fff">📘 المعنى يظهر عند الاتصال بالإنترنت</div>');bindAyat(B)}
 async function watch(B,from){const id=++runId;let i=from||0;
   const show=()=>{const g=GR[i];B.innerHTML=`<div class="card">${scene(g.bg,g.em,N+":"+g.ay[0])}${g.ay.map(a=>ayahHTML(a)).join("")}${g.tx?`<div class="mean"><b>💡</b> ${esc(g.tx)}</div>`:""}
     <div class="row"><button class="btn g sm" id="wp">➡️</button><button class="btn t sm" id="wa">⏸️ إيقاف</button><button class="btn g sm" id="wn">⬅️</button></div><div class="score">${AD(i+1)} / ${AD(GR.length)}</div></div>`;
@@ -281,8 +289,21 @@ function checkDone(){if(!isDone(N))return;const onPath=PATH.includes(N),left=PAT
     ${onPath?`<div style="font-size:19px;margin-top:8px">${left?`باقي ${AD(left)} في رحلة الحفظ 🗺️`:"أكملت رحلة الـ١٠ سور! 🏆"}</div>`:""}<div class="row"><button class="btn p" id="toPath">🗺️ إلى الرحلة</button></div></div>`);
   fan();rain();$("toPath").onclick=()=>location.href="quran.html"}
 function games(B){const pics=GR.length>=2;
-  B.innerHTML=`<div class="games">${pics?'<button style="background:#ff5d73" id="g1">🖼️ اختر الصورة الصحيحة</button><button style="background:#ffb020" id="g4">🔗 وصّل الآية بصورتها</button>':""}<button style="background:#22c7b8" id="g2">🔢 رتّب الآيات</button>${S.q&&S.q.length?'<button style="background:#a66bff" id="g3">❓ اختبر فهمك</button>':""}</div>`;
+  B.innerHTML=`<div class="games">${S.pick?'<button style="background:#3fc35a" id="g5">👆 اختر الصحّ</button>':""}${S.chk?'<button style="background:#4f8bff" id="g6">✔️ ضع علامة</button>':""}${pics?'<button style="background:#ff5d73" id="g1">🖼️ اختر الصورة الصحيحة</button><button style="background:#ffb020" id="g4">🔗 وصّل الآية بصورتها</button>':""}<button style="background:#22c7b8" id="g2">🔢 رتّب الآيات</button>${S.q&&S.q.length?'<button style="background:#a66bff" id="g3">❓ اختبر فهمك</button>':""}</div>`;
+  if(S.pick)$("g5").onclick=pickRight;if(S.chk)$("g6").onclick=tickGame;
   if(pics){$("g1").onclick=pickPic;$("g4").onclick=matchGame}$("g2").onclick=orderGame;if($("g3"))$("g3").onclick=quiz}
+function pickRight(){const P=S.pick;let miss=0;
+  openM(`<div style="height:34px"></div><div class="intro" style="font-size:22px;font-weight:800;text-align:center">${esc(P.q)}</div><div class="opts" id="op"></div>`);
+  shuf(P.o).forEach(([lab,img,ok],c)=>{const b=document.createElement("button");const src=PACK[N+":"+img];
+    b.innerHTML=`<div style="background:#fff;border-radius:18px;box-shadow:0 5px 0 rgba(0,0,0,.12);padding:6px">${src?`<img src="${src}" style="width:100%;border-radius:12px;display:block">`:""}<div style="font-size:19px;font-weight:800;margin-top:4px">${esc(lab)}</div></div>`;
+    b.onclick=()=>{if(ok){fan();rain();burstAt(b);b.firstChild.style.outline="5px solid #3fc35a";setTimeout(()=>openM(`<div class="msg">✅ ${rnd(PRAISE)}<br>${esc(lab)} 💖</div>`),900)}else{miss++;b.classList.add("wrong");buzz()}};$("op").appendChild(b)})}
+function tickGame(){const C=S.chk,sel=new Set();
+  openM(`<div style="height:34px"></div><div class="intro" style="font-size:21px;font-weight:800;text-align:center">${esc(C.q)}</div><div id="tk" style="display:grid;gap:10px;margin:12px 0"></div><div class="row"><button class="btn t" id="tkGo">✅ تحقّق</button></div>`);
+  C.o.forEach(([t,ok],i)=>{const b=document.createElement("button");b.style.cssText="display:flex;align-items:center;gap:12px;border:0;border-radius:16px;background:#f3f0fa;padding:10px 14px;font-family:inherit;font-size:21px;font-weight:700;cursor:pointer;color:#2b2340;text-align:start";
+    b.innerHTML=`<span class="bx" style="width:34px;height:34px;border-radius:8px;border:3px solid #6a5cff;background:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none"></span><span style="flex:1">${esc(t)}</span><span class="rs"></span>`;
+    b.onclick=()=>{pop();sel.has(i)?sel.delete(i):sel.add(i);b.querySelector(".bx").textContent=sel.has(i)?"✔️":""};$("tk").appendChild(b)});
+  $("tkGo").onclick=()=>{let good=0;[...$("tk").children].forEach((b,i)=>{const ok=C.o[i][1]===sel.has(i);if(ok)good++;b.querySelector(".rs").textContent=ok?"✅":"❌";b.style.background=ok?"#e3f8e7":"#ffe3e7"});
+    if(good===C.o.length){fan();rain()}else{buzz()}}}
 function matchGame(){const set=shuf(GR).slice(0,Math.min(4,GR.length)),sc=shuf(set);let sel=null,left=set.length,miss=0;
   openM(`<div style="height:34px"></div><div class="score">اضغط الآية، ثم صورتها</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px"><div id="mA" style="display:grid;gap:8px"></div><div id="mP" style="display:grid;gap:8px"></div></div>`);
   set.forEach(g=>{const b=document.createElement("button");b.className="pool";b.style.cssText="border:0;border-radius:16px;background:#f3f0fa;padding:6px 8px;font-family:'Amiri Quran',serif;font-size:19px;line-height:1.9;cursor:pointer;color:#2b2340";
@@ -315,6 +336,7 @@ const MD=$("m");function openM(h){$("mb").innerHTML=h;MD.classList.add("show")}f
 MD.addEventListener("click",e=>{if(e.target===MD||e.target.hasAttribute("data-close"))closeM()});
 
 if(N)surah();else hub();
+NAJMA.loadAudio("qpics","QPICS").then(o=>{const has=Object.keys(o||{}).some(k=>k.startsWith(N+":"));Object.assign(PACK,o||{});if(N&&has&&(tab==="story"||tab==="intro"||tab==="learn"))draw()});
 /* decrypt the parent's photos, then redraw */
 const jobs=Object.keys(QIMG).filter(k=>!N||k.startsWith(N+":")).map(k=>NAJMA.decrypt(QIMG[k]).then(u=>PH[k]=u).catch(()=>{}));
 if(jobs.length)Promise.all(jobs).then(()=>{if(N&&(tab==="story"||tab==="learn"))draw();else if(!N)hub()});
