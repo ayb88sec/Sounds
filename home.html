@@ -213,5 +213,14 @@ if(!NAJMA.hasKey()){const o=document.createElement("div");o.className="pm show";
   document.getElementById("famOk").onclick=async()=>{const v=document.getElementById("famIn").value.trim().toUpperCase();
     if(await NAJMA.checkCode(v)){sessionStorage.removeItem("najma:reloaded");location.reload()}else{document.getElementById("famIn").value="";document.getElementById("famIn").placeholder="❌"}}}
 </script>
+<div id="syncInfo" style="text-align:center;font:600 13px system-ui;color:rgba(255,255,255,.85);padding:6px 0 18px"></div>
+<script>
+/* small sync status, so a parent can see if this device gets updates from the portal */
+(function(){const G=k=>Storage.prototype.getItem.call(localStorage,k),el=document.getElementById("syncInfo");
+  if(!(window.SUPA&&SUPA.url)){el.textContent="";return}
+  if(!G("najma:dev")){el.textContent="⚠️ هذا الجهاز غير مربوط بالبوابة: افتحي «📲 رابط الآيباد» للطفل وافتحي الرابط هنا";return}
+  const t=+G("najma:syncAt")||0,e=G("najma:syncErr");
+  el.textContent=(e==="full"?"⚠️ ذاكرة الجهاز ممتلئة · ":e?"⚠️ تعذّر التحديث ("+e+") · ":"☁️ ")+(t?"آخر تحديث: "+new Date(t).toLocaleString("ar",{dateStyle:"short",timeStyle:"short"}):"لم يتحدّث بعد")})();
+</script>
 </body>
 </html>

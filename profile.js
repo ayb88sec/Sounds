@@ -60,7 +60,8 @@
     const changed=P!==G.call(localStorage,"najma:profiles")||Sx!==G.call(localStorage,"najma:sections");
     SET.call(localStorage,"najma:profiles",P);
       /* if the iPad's storage is full, keep voices first and drop the biggest pictures */
-      try{SET.call(localStorage,"najma:sections",Sx)}catch(e){try{const L=JSON.parse(Sx);L.forEach(s=>{if(s.type==="qimg"){s.poster={}}});let t=JSON.stringify(L);
+      SET.call(localStorage,"najma:syncAt",String(Date.now()));RM.call(localStorage,"najma:syncErr");
+      try{SET.call(localStorage,"najma:sections",Sx)}catch(e){SET.call(localStorage,"najma:syncErr","full");try{const L=JSON.parse(Sx);L.forEach(s=>{if(s.type==="qimg"){s.poster={}}});let t=JSON.stringify(L);
         try{SET.call(localStorage,"najma:sections",t)}catch(e2){L.forEach(s=>{if(s.type==="qimg")s.img={};if(s.duas)s.duas.img={}});t=JSON.stringify(L);try{SET.call(localStorage,"najma:sections",t)}catch(e3){}}}catch(e4){}}SET.call(localStorage,"najma:pulledAt",String(Date.now()));
     const c=G.call(localStorage,"najma:cur");if(!G.call(localStorage,"najma:lock")&&(cfg.profiles||[]).length&&!(cfg.profiles||[]).some(p=>p.id===c))SET.call(localStorage,"najma:cur",cfg.profiles[0].id);
     return changed}
@@ -92,7 +93,7 @@
         const m=Object.assign({},srv);Object.entries(loc).forEach(([x,v])=>{m[x]=typeof v==="number"&&typeof srv[x]==="number"?Math.max(v,srv[x]):v});
         const ms=JSON.stringify(m);if(ms!==G.call(localStorage,ns(k))){SET.call(localStorage,ns(k),ms);changed=true}if(ms!==JSON.stringify(srv))push(k,ms)});
       for(let i=0;i<localStorage.length;i++){const full=localStorage.key(i);if(full&&full.startsWith(`najma:${kid.id}:`)){const k=full.slice(kid.id.length+8);if(!(k in (js.progress||{})))push(k,G.call(localStorage,full))}}
-      if(changed&&/home\.html$/.test(location.pathname)&&!sessionStorage.getItem("najma:reloaded")){sessionStorage.setItem("najma:reloaded","1");location.reload()}else if(!changed)sessionStorage.removeItem("najma:reloaded")}).catch(()=>{})}
+      if(changed&&/home\.html$/.test(location.pathname)&&!sessionStorage.getItem("najma:reloaded")){sessionStorage.setItem("najma:reloaded","1");location.reload()}else if(!changed)sessionStorage.removeItem("najma:reloaded")}).catch(e=>{try{SET.call(localStorage,"najma:syncErr",String(e&&e.message||e))}catch(x){}})}
   /* offline: cache everything once it has been opened online */
   if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}
 })();
