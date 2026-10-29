@@ -46,6 +46,10 @@ textarea{min-height:160px;line-height:1.5}
 .chips.av button{font-size:28px;padding:2px 8px}
 .chips .sw{width:38px;height:38px;border-radius:50%;padding:0}
 .chips .sw.on{border-color:#2b2340}
+.qbox{background:#f8f6fd;border-radius:16px;padding:10px;margin-bottom:10px}.qbox .in{font-size:18px;padding:6px 10px;margin-bottom:6px}
+.qr{display:flex;gap:6px;align-items:center}.qr .ck{flex:none;width:40px;height:40px;border-radius:50%;padding:0;font-size:18px}.qa .ck.on{background:#3fc35a;color:#fff}
+.pimg{width:52px;height:52px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;overflow:hidden;flex:none}.pimg img{width:100%;height:100%;object-fit:cover}
+.rrow .em{width:70px;flex:none;font-size:22px;padding:4px 6px;text-align:center}
 .rrow{display:flex;align-items:center;gap:8px;background:#f8f6fd;border-radius:14px;padding:6px 10px;margin-bottom:6px}
 .rrow b{flex:1;font-size:22px}.rrow .b{padding:7px 12px}.rrow .b.on{background:#ff5d73;color:#fff}.rrow .ok{color:#2a9442;font-size:14px}
 .sheet{position:fixed;inset:0;background:rgba(30,15,70,.55);display:none;align-items:flex-end;justify-content:center;z-index:20}
@@ -156,12 +160,15 @@ textarea{min-height:160px;line-height:1.5}
 
 <div class="sheet" id="secSheet"><div class="in-s">
   <h3 id="sT"></h3>
+  <label>النوع</label><div class="chips" id="sType"></div>
   <label>اسم القسم</label><input class="in" id="sTitle" maxlength="24" dir="auto">
   <label>الأيقونة</label><div class="chips av" id="sIcon"></div>
   <label>اللغة</label><div class="chips" id="sLang"></div>
   <label>يظهر لـ</label><div class="chips" id="sKids"></div><div class="note" id="sKidsNote" style="margin:4px 0 0"></div>
-  <label>الكلمات (كلمة في كل سطر)</label><textarea id="sWords" dir="auto"></textarea>
-  <div id="sRecBox" style="display:none"><label>🎤 سجّل صوتك لكل كلمة</label><div class="note" style="margin:0 0 6px">اضغط 🎤، قل الكلمة، ثم اضغط ⏹️. الصوت مشفّر بكود العائلة.</div><div id="sRec"></div></div>
+  <div id="sTxtBox"><label id="sTxtL">الكلمات (كلمة في كل سطر)</label><textarea id="sWords" dir="auto"></textarea></div>
+  <div id="sPicBox" style="display:none"><label>🖼️ صورة لكل كلمة</label><div class="note" style="margin:0 0 6px">اكتب إيموجي (مثل 🍎) أو اضغط 📷 لصورة من الجوال.</div><div id="sPic"></div><input type="file" id="sFile" accept="image/*" style="display:none"></div>
+  <div id="sQuizBox" style="display:none"><label>❓ الأسئلة</label><div class="note" style="margin:0 0 6px">اكتب السؤال والأجوبة، واضغط ✓ على الجواب الصحيح.</div><div id="sQuiz"></div><button class="b" id="sQAdd" style="width:100%">➕ سؤال</button></div>
+  <div id="sRecBox" style="display:none"><label>🎤 سجّل صوتك</label><div class="note" style="margin:0 0 6px">اضغط 🎤، قل الكلمة، ثم اضغط ⏹️. الصوت مشفّر بكود العائلة.</div><div id="sRec"></div></div>
   <div class="actions"><button class="b del" id="sDel">🗑️ حذف</button><span><button class="b" data-close>إلغاء</button> <button class="b go" id="sSave">حفظ</button></span></div>
 </div></div>
 
@@ -173,7 +180,7 @@ async function ipadLink(p){if(!DB)return baseLink(p);const {data,error}=await sb
 let profs=NAJMA.profiles.slice(),secs=JSON.parse(JSON.stringify(NAJMA.sections));
 const AV=["🦁","🐼","🦊","🐰","🐯","🦄","🐬","🐻","🐸","🐨","🦋","🚀","⚽","🌸","👑","🦖"];
 const PC=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a","#ff7eb6","#2b2340"];
-const ICONS=["🐝","📝","📚","✏️","🍎","🌟","🧠","🏫","🔤","🌍","🧪","🎵"];
+const ICONS=["💬","🖼️","❓","🎧","📖","🕌","🐝","📝","📚","✏️","🍎","🌟","🧠","🏫","🔤","🌍","🧪","🎵"];
 const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["cvc","Word Time"],["sent","Sentences"],["writeEn","Handwriting"],["numEn","Numbers"],["shapes","2D Shapes"]];
 const PROG=[["arDone","حروفي",38],["numDoneAr","الأرقام",20],["islamDone","الإسلام",5],["imanDone","الإيمان",6],["soundsDone","Sounds",32],["cvcDone","Word Time",111],["sentDone","Sentences",16],["writeEn","Writing",62],["numDoneEn","Numbers",20],["shapesDone","Shapes",10]];
 let saveP=()=>R.set("najma:profiles",JSON.stringify(profs));
@@ -246,30 +253,59 @@ let delArm=0;function confirmDel(n){if(Date.now()-delArm<4000)return true;delArm
 /* sections */
 function drawSecs(){const L=$("secList");L.innerHTML="";
   secs.forEach(s=>{const d=document.createElement("div");d.className="row";
-    d.innerHTML=`<div class="av" style="background:#fff3c4">${s.icon}</div><div class="info"><b dir="auto">${s.title}</b><small dir="auto">${s.lang==="ar"?"عربي":"English"} · ${s.words.length} كلمات: ${s.words.slice(0,6).join("، ")}${s.words.length>6?"…":""}</small></div><button class="b">✏️ تعديل</button>`;
+    d.innerHTML=`<div class="av" style="background:#fff3c4">${s.icon}</div><div class="info"><b dir="auto">${s.title}</b><small dir="auto">${(STYPES.find(x=>x[0]===(s.type||"words"))||STYPES[0])[1]} · ${s.lang==="ar"?"عربي":"English"} · ${s.words.length}: ${s.words.slice(0,6).join("، ")}${s.words.length>6?"…":""}</small></div><button class="b">✏️ تعديل</button>`;
     d.querySelector("button").onclick=()=>editSec(s);L.appendChild(d)})}
 let es;
-function editSec(s){es=s?JSON.parse(JSON.stringify(s)):{id:"s"+Date.now().toString(36),title:"",icon:"📝",lang:"en",words:[]};
+const STYPES=[["words","📝 كلمات"],["sent","💬 جمل"],["pic","🖼️ صورة وكلمة"],["quiz","❓ اختبار"],["listen","🎧 استماع وحفظ (قرآن، دعاء)"]];
+const TXTL={words:"الكلمات (كلمة في كل سطر)",sent:"الجمل (جملة في كل سطر)",pic:"الكلمات (كلمة في كل سطر)",listen:"الآيات أو الأسطر (سطر لكل آية)"};
+const TICON={words:"📝",sent:"💬",pic:"🖼️",quiz:"❓",listen:"🎧"};
+function setType(t){es.type=t;$("sTxtBox").style.display=t==="quiz"?"none":"";$("sTxtL").textContent=TXTL[t]||"";$("sPicBox").style.display=t==="pic"?"":"none";
+  $("sQuizBox").style.display=t==="quiz"?"":"none";if(t==="quiz"){es.items=es.items||[];if(!es.items.length)es.items.push({q:"",a:["","","",""],c:0});drawQuiz()}drawRec();drawPic()}
+function editSec(s){es=s?JSON.parse(JSON.stringify(s)):{id:"s"+Date.now().toString(36),title:"",icon:"📝",lang:"en",words:[],type:"words"};es.type=es.type||"words";es.img=es.img||{};
   $("sT").textContent=s?"تعديل "+s.title:"قسم جديد";$("sTitle").value=es.title;$("sWords").value=es.words.join("\n");$("sDel").style.visibility=s?"visible":"hidden";
   chips("sIcon",ICONS,i=>i===es.icon,i=>es.icon=i,"av");
   chips("sLang",["English","عربي"],(x,k)=>es.lang===(k?"ar":"en"),(x,k)=>{es.lang=k?"ar":"en";$("sWords").dir=k?"rtl":"ltr";drawRec()});
   $("sWords").dir=es.lang==="ar"?"rtl":"ltr";
+  chips("sType",STYPES.map(x=>x[1]),(x,k)=>es.type===STYPES[k][0],(x,k)=>{const old=es.type;setType(STYPES[k][0]);if(es.icon===TICON[old])es.icon=TICON[es.type];chips("sIcon",ICONS,i=>i===es.icon,i=>es.icon=i,"av")});
   sKids=new Set(s?profs.filter(p=>!p.apps||p.apps["s:"+es.id]!==false).map(p=>p.id):[]);drawSKids();
-  es.audio=es.audio||{};drawRec();$("secSheet").classList.add("show")}
+  es.audio=es.audio||{};setType(es.type);$("secSheet").classList.add("show")}
 let sKids=new Set();
 function drawSKids(){chips("sKids",profs.map(p=>p.id),id=>sKids.has(id),id=>{sKids.has(id)?sKids.delete(id):sKids.add(id);drawSKids()});
   [...$("sKids").children].forEach((b,k)=>b.textContent=`${profs[k].avatar||"⭐"} ${profs[k].name}`);
   $("sKidsNote").textContent=sKids.size?"":"اختر طفلًا واحدًا على الأقل ليظهر القسم عنده."}
 /* parent's own voice for Arabic words, encrypted with the family code */
 let rec=null,recW=null,recT=null,plain={},curA=null;
-const curWords=()=>$("sWords").value.split(/[\n,،]+/).map(w=>w.trim()).filter(Boolean);
-function drawRec(){const box=$("sRec");$("sRecBox").style.display=es.lang==="ar"?"":"none";if(es.lang!=="ar")return;box.innerHTML="";
-  const ws=curWords();if(!ws.length){box.innerHTML='<div class="note">اكتب الكلمات أولًا.</div>';return}
+const curWords=()=>es.type==="quiz"?(es.items||[]).map(q=>q.q.trim()).filter(Boolean):$("sWords").value.split(es.type==="words"||es.type==="pic"?/[\n,،]+/:/\n+/).map(w=>w.trim()).filter(Boolean);
+function drawRec(){const box=$("sRec");const on=es.lang==="ar"||es.type!=="words";$("sRecBox").style.display=on?"":"none";if(!on)return;box.innerHTML="";
+  const ws=curWords();if(!ws.length){box.innerHTML='<div class="note">اكتب النص أولًا.</div>';return}
   ws.forEach(w=>{const r=document.createElement("div");r.className="rrow";const has=!!es.audio[w];
-    r.innerHTML=`<b dir="rtl">${w}</b>${has?'<span class="ok">✅</span>':""}<button class="b mic${recW===w?" on":""}">${recW===w?"⏹️":"🎤"}</button><button class="b pl"${has?"":" disabled style='opacity:.35'"}>▶️</button><button class="b rm"${has?"":" style='display:none'"}>🗑️</button>`;
+    r.innerHTML=`<b dir="auto" style="font-size:${w.length>14?16:22}px">${w}</b>${has?'<span class="ok">✅</span>':""}<button class="b mic${recW===w?" on":""}">${recW===w?"⏹️":"🎤"}</button><button class="b pl"${has?"":" disabled style='opacity:.35'"}>▶️</button><button class="b rm"${has?"":" style='display:none'"}>🗑️</button>`;
     r.querySelector(".mic").onclick=()=>recWord(w);r.querySelector(".pl").onclick=()=>playWord(w);
     r.querySelector(".rm").onclick=()=>{delete es.audio[w];delete plain[w];drawRec()};box.appendChild(r)})}
-$("sWords").addEventListener("input",()=>{clearTimeout(window._rw);window._rw=setTimeout(drawRec,400)});
+$("sWords").addEventListener("input",()=>{clearTimeout(window._rw);window._rw=setTimeout(()=>{drawRec();drawPic()},400)});
+/* pictures */
+let plainI={},picFor=null;
+const imgHTML=w=>{const v=es.img[w];if(!v)return"❔";if(v.e)return v.e;return plainI[w]?`<img src="${plainI[w]}">`:"🖼️"};
+function drawPic(){if(es.type!=="pic")return;const box=$("sPic");box.innerHTML="";const ws=curWords();if(!ws.length){box.innerHTML='<div class="note">اكتب الكلمات أولًا.</div>';return}
+  ws.forEach(w=>{const v=es.img[w];if(v&&v.ct&&!plainI[w])NAJMA.decrypt(v).then(u=>{plainI[w]=u;drawPic()}).catch(()=>{});
+    const r=document.createElement("div");r.className="rrow";
+    r.innerHTML=`<div class="pimg">${imgHTML(w)}</div><b dir="auto">${w}</b><input class="in em" maxlength="4" placeholder="🍎" value="${v&&v.e?v.e:""}"><button class="b cam">📷</button>`;
+    r.querySelector(".em").oninput=e=>{const x=e.target.value.trim();if(x)es.img[w]={e:x};else if(es.img[w]&&es.img[w].e)delete es.img[w];r.querySelector(".pimg").innerHTML=imgHTML(w)};
+    r.querySelector(".cam").onclick=()=>{picFor=w;$("sFile").value="";$("sFile").click()};box.appendChild(r)})}
+$("sFile").onchange=e=>{const f=e.target.files[0];if(!f||!picFor)return;const w=picFor,url=URL.createObjectURL(f),im=new Image();
+  im.onload=async()=>{const M=320,k=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+    c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);const d=c.toDataURL("image/jpeg",.72);
+    try{es.img[w]=await NAJMA.encrypt(d);plainI[w]=d}catch(err){alert("أدخل كود العائلة في التطبيق أولًا")}drawPic()};im.src=url};
+/* quiz */
+function drawQuiz(){const box=$("sQuiz");box.innerHTML="";
+  es.items.forEach((q,n)=>{const d=document.createElement("div");d.className="qbox";
+    d.innerHTML=`<div class="qr"><b>${n+1}.</b><input class="in qq" dir="auto" placeholder="السؤال" value="${(q.q||"").replace(/"/g,"&quot;")}"><button class="b rm" style="flex:none">🗑️</button></div>`+
+      q.a.map((a,k)=>`<div class="qr"><button class="b ck${q.c===k?" on":""}" data-k="${k}">✓</button><input class="in qa${k}" dir="auto" placeholder="جواب ${k+1}${k>1?" (اختياري)":""}" value="${(a||"").replace(/"/g,"&quot;")}"></div>`).join("");
+    d.querySelector(".qq").oninput=e=>{q.q=e.target.value;clearTimeout(window._rq);window._rq=setTimeout(drawRec,500)};
+    q.a.forEach((a,k)=>d.querySelector(".qa"+k).oninput=e=>q.a[k]=e.target.value);
+    d.querySelectorAll(".ck").forEach(b=>b.onclick=()=>{q.c=+b.dataset.k;drawQuiz()});
+    d.querySelector(".rm").onclick=()=>{es.items.splice(n,1);drawQuiz();drawRec()};box.appendChild(d)})}
+$("sQAdd").onclick=()=>{es.items.push({q:"",a:["","","",""],c:0});drawQuiz()};
 async function playWord(w){try{if(curA)curA.pause();const src=plain[w]||(plain[w]=await NAJMA.decrypt(es.audio[w]));curA=new Audio(src);curA.play()}catch(e){alert("تعذّر تشغيل الصوت")}}
 const toURL=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)});
 async function recWord(w){if(rec){const same=recW===w;rec.stop();if(same)return}
@@ -282,8 +318,10 @@ async function recWord(w){if(rec){const same=recW===w;rec.stop();if(same)return}
     rec.start();recT=setTimeout(()=>{if(rec&&rec.state==="recording")rec.stop()},4000)}
   catch(e){rec=null;recW=null;drawRec();alert("اسمح للمايكروفون: Settings ← Safari ← Microphone")}}
 $("addSec").onclick=()=>editSec(null);
-$("sSave").onclick=()=>{if(rec)rec.stop();es.title=$("sTitle").value.trim()||"قسم";es.words=curWords();
-  if(es.lang!=="ar")delete es.audio;else{Object.keys(es.audio||{}).forEach(w=>{if(!es.words.includes(w))delete es.audio[w]});if(!Object.keys(es.audio).length)delete es.audio}
+$("sSave").onclick=()=>{if(rec)rec.stop();es.title=$("sTitle").value.trim()||"قسم";if(es.type==="quiz"){es.items=es.items.map(q=>{const ct=(q.a[q.c]||"").trim(),a=q.a.map(x=>x.trim()).filter(Boolean);return {q:q.q.trim(),a,c:Math.max(0,a.indexOf(ct))}}).filter(q=>q.q&&q.a.length>=2)}else delete es.items;
+  es.words=curWords();
+  Object.keys(es.audio||{}).forEach(w=>{if(!es.words.includes(w))delete es.audio[w]});if(!Object.keys(es.audio||{}).length)delete es.audio;
+  if(es.type==="pic"){Object.keys(es.img).forEach(w=>{if(!es.words.includes(w))delete es.img[w]})}if(es.type!=="pic"||!Object.keys(es.img||{}).length)delete es.img;
   profs.forEach(p=>{p.apps=Object.assign({},p.apps||{});p.apps["s:"+es.id]=sKids.has(p.id)});saveP();
   const i=secs.findIndex(s=>s.id===es.id);if(i>=0)secs[i]=es;else secs.push(es);saveS();$("secSheet").classList.remove("show");drawSecs();drawKids()};
 $("sDel").onclick=()=>{if(!confirmDel(es.title))return;secs=secs.filter(s=>s.id!==es.id);saveS();$("secSheet").classList.remove("show");drawSecs();drawKids()};

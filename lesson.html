@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="supa.js"></script>
+<script src="profile.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<title>Lesson</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&family=Baloo+Bhaijaan+2:wght@600;800&family=Amiri+Quran&display=swap">
+<style>
+:root{--ink:#2b2340}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{font-family:"Andika","Baloo Bhaijaan 2",system-ui,sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
+  background:linear-gradient(160deg,#ffcf3c,#ff9a3c 45%,#ff6f91);background-attachment:fixed}
+body.ar{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif}
+.bubbles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bubbles span{position:absolute;bottom:-80px;border-radius:50%;background:rgba(255,255,255,.18);animation:rise linear infinite}
+@keyframes rise{to{transform:translateY(-120vh)}}
+main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:16px 12px 50px}
+h1{font-family:"Baloo 2","Baloo Bhaijaan 2";font-weight:800;font-size:clamp(40px,10vw,60px);margin:0;line-height:1.15;color:#fff;text-align:center;text-shadow:0 4px 0 rgba(0,0,0,.18)}
+.mascotWrap{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:6px 0 0}
+#pip{width:80px;height:80px;cursor:pointer;animation:bob 2s ease-in-out infinite;filter:drop-shadow(0 6px 0 rgba(0,0,0,.15));flex:none}
+#pip.jump{animation:jump .7s ease}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
+@keyframes jump{0%{transform:none}30%{transform:translateY(-30px) scale(1.1)}60%{transform:translateY(0)}100%{transform:none}}
+.bubble{background:#fff;border-radius:22px;padding:10px 16px;font-family:"Baloo 2","Baloo Bhaijaan 2";font-weight:700;font-size:20px;max-width:260px;box-shadow:0 5px 0 rgba(0,0,0,.12);margin-bottom:28px}
+.pop{animation:pop .4s}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.15)}100%{transform:scale(1)}}
+section{background:rgba(255,255,255,.93);border-radius:30px;padding:14px 14px 20px;margin-top:16px;box-shadow:0 10px 0 rgba(0,0,0,.08)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.tile{position:relative;border:0;border-radius:22px;min-height:84px;padding:10px 8px;color:#fff;font-family:inherit;font-weight:700;font-size:28px;cursor:pointer;
+  box-shadow:0 7px 0 rgba(0,0,0,.2);animation:enter .45s backwards;text-shadow:0 3px 0 rgba(0,0,0,.15);word-break:break-word}
+.tile:active{transform:translateY(5px) scale(.96)}
+.tile .st{position:absolute;top:2px;inset-inline-end:6px;font-size:14px}
+@keyframes enter{from{transform:scale(0);opacity:0}}
+.bar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0 4px}
+.btn{font-family:"Baloo 2","Baloo Bhaijaan 2";font-size:20px;font-weight:800;border:0;border-radius:999px;padding:10px 20px;cursor:pointer;color:var(--ink);background:#ffe066;box-shadow:0 6px 0 #d9a400}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 #d9a400}
+.btn.pink{background:#a66bff;box-shadow:0 6px 0 #7a46d0;color:#fff}
+.btn.teal{background:#22c7b8;box-shadow:0 6px 0 #149488;color:#fff}
+.btn.ghost{background:#fff;box-shadow:0 6px 0 #f0dcc8;font-size:17px}
+.modal{position:fixed;inset:0;background:rgba(70,25,20,.5);display:none;align-items:center;justify-content:center;z-index:20;padding:12px}
+.modal.show{display:flex}
+.card{background:#fff;border-radius:34px;padding:18px 14px;text-align:center;max-width:560px;width:100%;max-height:96vh;overflow:auto;animation:zoom .45s cubic-bezier(.3,1.6,.5,1);position:relative}
+@keyframes zoom{from{transform:scale(.3);opacity:0}}
+.x{position:absolute;top:10px;inset-inline-end:12px;border:0;background:#f0edf7;border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer}
+.big{font-size:clamp(44px,13vw,84px);font-weight:700;line-height:1.3;border-radius:26px;color:#fff;margin:26px 0 10px;padding:4px 10px;cursor:pointer;text-shadow:0 4px 0 rgba(0,0,0,.15);word-break:break-word}
+.big b{color:#ffe066}
+.spell{display:flex;gap:5px;justify-content:center;margin:6px 0 4px;flex-wrap:wrap}
+.spell button{font-family:inherit;font-size:28px;font-weight:700;border:0;border-radius:12px;min-width:44px;height:54px;background:#f3f0fa;cursor:pointer;color:var(--ink)}
+.spell button.lit{background:#ffe066;transform:translateY(-4px)}
+.lbl{font-size:16px;color:#7a7090;margin:12px 0 6px}
+.prow{display:flex;gap:10px;justify-content:center}
+.pbtn{font-family:inherit;font-size:19px;font-weight:800;border:0;border-radius:999px;padding:10px 16px;cursor:pointer;color:#fff;background:#ff5d73;box-shadow:0 5px 0 #c93a50}
+.pbtn.me{background:#22c7b8;box-shadow:0 5px 0 #149488}
+.pbtn:disabled{opacity:.4}
+.pbtn.on{animation:pop 1s infinite;background:#a66bff}
+.navrow{display:flex;justify-content:space-between;margin-top:14px}
+/* spelling game */
+.q{font-family:"Baloo 2","Baloo Bhaijaan 2";font-size:24px;font-weight:800;margin:28px 0 6px}
+.show{font-size:clamp(40px,12vw,72px);font-weight:700;min-height:1.4em;line-height:1.3;color:#4f8bff;transition:opacity .3s}
+.slots{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.slots span{min-width:42px;height:56px;border-bottom:5px solid #d6cfe6;font-size:34px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.slots span.f{border-color:#3fc35a;color:#2a9442;animation:pop .3s}
+.pool{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.pool button{font-family:inherit;font-size:32px;font-weight:700;border:0;border-radius:16px;width:58px;height:62px;color:#fff;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.18)}
+.pool button.used{visibility:hidden}
+.pool button.wrong{animation:shake .4s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.score{font-family:"Baloo 2","Baloo Bhaijaan 2";font-size:19px;font-weight:700;color:#7a7090}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+
+.grid.wide{grid-template-columns:1fr}
+.tile.s{font-size:24px;text-align:start;padding:14px 16px;min-height:64px}
+.tile.p{background:#fff !important;color:var(--ink);text-shadow:none;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:24px;box-shadow:0 7px 0 rgba(0,0,0,.12)}
+.pic{width:96px;height:96px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:72px;overflow:hidden;background:#fff7e0}
+.pic img{width:100%;height:100%;object-fit:cover}.pic.xl{width:180px;height:180px;font-size:140px;margin:30px auto 6px}
+.line{display:flex;align-items:center;gap:10px;background:#fff;border-radius:18px;padding:10px 14px;margin-bottom:10px;box-shadow:0 5px 0 rgba(0,0,0,.08);cursor:pointer}
+.line .t{flex:1;font-size:26px;line-height:1.9}.line.now{outline:4px solid #ffe066}.line .st{font-size:14px;white-space:nowrap}
+body.quran .line .t,body.quran .bigq{font-family:"Amiri Quran","Baloo Bhaijaan 2",serif}
+.hide .line .t{filter:blur(9px)}.hide .line.peek .t{filter:none}
+.bigq{font-size:clamp(28px,7vw,42px);line-height:2;margin:30px 0 10px;font-weight:700}
+.chipw{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.chipw button{font-family:inherit;font-size:24px;font-weight:700;border:0;border-radius:14px;padding:8px 14px;color:#fff;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.18)}
+.chipw button.used{visibility:hidden}.chipw button.wrong{animation:shake .4s}
+.built{min-height:60px;font-size:28px;font-weight:700;border-bottom:4px dashed #d6cfe6;margin:10px 0;padding:6px;color:#2a9442}
+.ans{display:grid;gap:10px;margin:14px 0}.ans button{font-family:inherit;font-size:24px;font-weight:700;border:0;border-radius:18px;padding:14px;color:#fff;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.ans button.wrong{animation:shake .4s;opacity:.4}.ans button.right{background:#3fc35a !important}
+.opts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:14px 0}.opts button{border:0;background:none;padding:0;cursor:pointer}.opts button.wrong{animation:shake .4s;opacity:.4}
+.opts .pic{box-shadow:0 6px 0 rgba(0,0,0,.15)}
+.wordbig{font-size:clamp(40px,11vw,70px);font-weight:700;margin:6px 0}
+.startbig{font-size:30px;padding:18px 34px}
+</style>
+</head>
+<body>
+<a href="home.html" id="homeBtn" aria-label="Home" style="position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;z-index:15;width:52px;height:52px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18)">🏠</a>
+<div class="bubbles" id="bubbles"></div>
+<canvas id="fx"></canvas>
+<main>
+  <h1 id="title"></h1>
+  <div class="mascotWrap">
+    <svg id="pip" viewBox="0 0 100 100">
+      <path d="M50 6 L62 36 L94 38 L69 58 L77 90 L50 72 L23 90 L31 58 L6 38 L38 36 Z" fill="#ffe066" stroke="#e0a800" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="41" cy="48" r="5" fill="#2b2340"/><circle cx="59" cy="48" r="5" fill="#2b2340"/>
+      <circle cx="43" cy="46" r="1.8" fill="#fff"/><circle cx="61" cy="46" r="1.8" fill="#fff"/>
+      <circle cx="34" cy="58" r="4" fill="#ff8fab" opacity=".7"/><circle cx="66" cy="58" r="4" fill="#ff8fab" opacity=".7"/>
+      <path d="M42 59 Q50 67 58 59" fill="none" stroke="#2b2340" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+    <div class="bubble" id="say"></div>
+  </div>
+  <section id="sec">
+    <div class="bar" id="topbar" style="margin:0 0 14px"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+</main>
+<div class="modal" id="m"><div class="card"><button class="x" data-close>✕</button><div id="mc"></div></div></div>
+<script src="writepad.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const SID=new URLSearchParams(location.search).get("s");
+const SEC=NAJMA.sections.find(s=>s.id===SID);
+if(!SEC){location.replace("home.html");throw new Error("no section")}
+const TYPE=SEC.type||"words";if(TYPE==="words"){location.replace("words.html?s="+encodeURIComponent(SID));throw new Error("words")}
+const AR=SEC.lang==="ar";document.documentElement.lang=AR?"ar":"en";document.documentElement.dir=AR?"rtl":"ltr";if(AR)document.body.classList.add("ar");
+if(TYPE==="listen"&&AR)document.body.classList.add("quran");
+document.title=SEC.title;$("title").textContent=`${SEC.icon||""} ${SEC.title}`;
+const ITEMS=(SEC.words||[]).filter(Boolean),QZ=SEC.items||[];
+const T=AR?{hi:{sent:"اضغط على جملة واقرأها!",pic:"اضغط على صورة!",quiz:"جاهز للاختبار؟",listen:"استمع وردّد معي!"},build:"🧩 رتّب الجملة",buildAll:"🧩 رتّب الجمل",write:"✏️ اكتب",find:"🎯 أين الصورة؟",name:"🔤 ما اسمها؟",start:"▶️ ابدأ",all:"▶️ استمع للكل",rep:"🔁 ردّد معي",hide:"🙈 اختبر حفظك",show:"👀 أظهر النص",turn:"🎤 دورك!",got:"✅ حفظتها",rec:"🎤 سجّل",me:"▶️ صوتي",prev:"➡️ السابق",next:"التالي ⬅️",praise:["أحسنت!","رائع!","ممتاز!","شاطر!","ما شاء الله!"],again:"حاول مرة ثانية 💪",done:"أنهيت! 🏆",stop:"⏹️ إيقاف"}
+  :{hi:{sent:"Tap a sentence and read it!",pic:"Tap a picture!",quiz:"Ready for the quiz?",listen:"Listen and repeat!"},build:"🧩 Build it",buildAll:"🧩 Build sentences",write:"✏️ Write",find:"🎯 Find the picture",name:"🔤 What is it?",start:"▶️ Start",all:"▶️ Listen to all",rep:"🔁 Repeat after me",hide:"🙈 Test yourself",show:"👀 Show text",turn:"🎤 Your turn!",got:"✅ I know it",rec:"🎤 Record",me:"▶️ My voice",prev:"⬅️ Back",next:"Next ➡️",praise:["Amazing!","Well done!","Brilliant!","You got it!"],again:"Try again 💪",done:"All done! 🏆",stop:"⏹️ Stop"};
+const COLORS=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
+const rnd=a=>a[Math.floor(Math.random()*a.length)],shuf=a=>[...a].sort(()=>Math.random()-.5),sleep=t=>new Promise(r=>setTimeout(r,t));
+const KEY="sec_"+SEC.id;let done={};try{done=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}};
+const star=(k,s)=>{done[k]=Math.max(done[k]||0,s);save()};
+const bb=$("bubbles");for(let i=0;i<14;i++){const s=document.createElement("span"),z=20+Math.random()*70;
+  s.style.cssText=`left:${Math.random()*100}%;width:${z}px;height:${z}px;animation-duration:${10+Math.random()*14}s;animation-delay:${-Math.random()*20}s`;bb.appendChild(s)}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* sounds */
+let ac;function tone(f,d,type="sine",w=0,vol=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(vol,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);
+  o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
+const popSnd=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)},fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",i*.12)),buzz=()=>tone(160,.25,"sawtooth",0,.08);
+/* parent's recorded voice first; English falls back to the iPad voice; Arabic has no robot voice */
+const MINE={},IMG={};let mA=null,voice=null;
+function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}
+if(!AR&&"speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
+const hasV=t=>!!MINE[t]||!AR;
+function play(t){return new Promise(res=>{try{speechSynthesis.cancel()}catch(e){}if(mA){mA.onended=null;mA.pause()}
+  if(MINE[t]){const t0=Date.now();mA=new Audio(MINE[t]);mA.onended=mA.onerror=()=>res((Date.now()-t0)/1000);mA.play().catch(()=>res(0));return}
+  if(!AR&&"speechSynthesis" in window){const t0=Date.now(),u=new SpeechSynthesisUtterance(t);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.8;u.onend=u.onerror=()=>res((Date.now()-t0)/1000);speechSynthesis.speak(u);return}
+  res(0)})}
+const stopAll=()=>{try{speechSynthesis.cancel()}catch(e){}if(mA){mA.onended=null;mA.pause()}};
+/* confetti */
+const cv=$("fx"),cx=cv.getContext("2d");let parts=[],running=false;
+function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}size();addEventListener("resize",size);
+function burst(x,y,n=36){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,v=3+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:4+Math.random()*6,c:COLORS[i%6],rot:Math.random()*6,vr:(Math.random()-.5)*.4,life:90+Math.random()*40})}if(!running){running=true;requestAnimationFrame(loop)}}
+function rain(){for(let i=0;i<120;i++)setTimeout(()=>burst(Math.random()*innerWidth,-10,1),i*12)}
+function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.life-->0&&p.y<innerHeight+40);
+  for(const p of parts){p.vy+=.25;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);cx.fillStyle=p.c;cx.globalAlpha=Math.min(1,p.life/30);cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);cx.restore()}
+  if(parts.length)requestAnimationFrame(loop);else{running=false;cx.clearRect(0,0,innerWidth,innerHeight)}}
+const burstAt=el=>{const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2)};
+const pip=$("pip"),say=$("say");let sayT;const HI=T.hi[TYPE]||"";say.textContent=HI;
+function talk(t){say.textContent=t;say.classList.remove("pop");void say.offsetWidth;say.classList.add("pop");pip.classList.remove("jump");void pip.offsetWidth;pip.classList.add("jump");clearTimeout(sayT);sayT=setTimeout(()=>say.textContent=HI,6000)}
+pip.onclick=()=>{popSnd();talk(rnd(T.praise));burstAt(pip)};
+const M=$("m"),MC=$("mc");const openM=html=>{MC.innerHTML=html;M.classList.add("show")};const closeM=()=>{M.classList.remove("show");stopAll();runId++};
+M.addEventListener("click",e=>{if(e.target===M||e.target.hasAttribute("data-close"))closeM()});
+const btn=(txt,cls,fn)=>{const b=document.createElement("button");b.className="btn "+(cls||"");b.textContent=txt;b.onclick=fn;return b};
+const stars=k=>done[k]?"⭐".repeat(done[k]):"";
+let runId=0;
+const picHTML=(w,cls)=>{const v=SEC.img&&SEC.img[w];const inner=!v?"🖼️":v.e?v.e:IMG[w]?`<img src="${IMG[w]}" alt="">`:"⏳";return `<div class="pic ${cls||""}">${inner}</div>`};
+function writeOpen(list,i,aspect){WritePad.open({items:list,index:i,lang:AR?"ar":"en",rtl:AR,font:AR?'"Baloo Bhaijaan 2"':'"Andika"',aspect,yShift:AR?.48:.45,
+  onSay:t=>play(t),onStar:(w,s,res)=>{if(s>=2){fanfare();burstAt(res)}else buzz()}})}
+
+/* ---------- sentences ---------- */
+function sentence(){const G=$("grid");G.className="grid wide";
+  $("topbar").append(btn(T.buildAll,"pink",()=>buildRun(shuf(ITEMS),0)),btn(T.write,"teal",()=>writeOpen(ITEMS,0,3.6)));
+  const draw=()=>{G.innerHTML="";ITEMS.forEach((s,i)=>{const b=document.createElement("button");b.className="tile s";b.style.background=COLORS[i%6];b.innerHTML=esc(s)+`<span class="st">${stars(s)}</span>`;b.onclick=()=>openS(i);G.appendChild(b)})};
+  window._redraw=draw;draw()}
+function openS(i){const s=ITEMS[i];popSnd();
+  openM(`<div class="bigq" style="font-family:inherit">${s.split(/\s+/).map(w=>`<span class="w" style="cursor:pointer">${esc(w)}</span>`).join(" ")}</div><div class="bar" id="sb"></div><div class="navrow"><button class="btn ghost" id="pv"></button><button class="btn ghost" id="nx"></button></div>`);
+  MC.querySelectorAll(".w").forEach(x=>x.onclick=()=>{x.style.color="#ff5d73";if(!AR)play(x.textContent)});
+  const sb=$("sb");if(hasV(s))sb.append(btn("🔊","",()=>play(s)));sb.append(btn(T.build,"pink",()=>buildRun([s],0)),btn(T.write,"teal",()=>writeOpen(ITEMS,i,3.6)));
+  nav(i,ITEMS.length,openS);setTimeout(()=>play(s),250)}
+function nav(i,n,f){const a=$("pv"),b=$("nx");a.textContent=T.prev;b.textContent=T.next;a.style.visibility=i>0?"visible":"hidden";b.style.visibility=i<n-1?"visible":"hidden";a.onclick=()=>f(i-1);b.onclick=()=>f(i+1)}
+function buildRun(list,k){if(k>=list.length){fanfare();rain();talk(T.done);closeM();return}
+  const s=list[k],ws=s.split(/\s+/);let pos=0,miss=0;
+  openM(`<div class="q">${T.build}</div><div class="built" id="bt"></div><div class="chipw" id="cw"></div><div class="score">${k+1} / ${list.length}</div>`);
+  if(hasV(s))play(s);
+  shuf(ws.map((w,n)=>[w,n])).forEach(([w,n],c)=>{const b=document.createElement("button");b.textContent=w;b.style.background=COLORS[c%6];
+    b.onclick=()=>{if(w===ws[pos]){b.classList.add("used");popSnd();pos++;$("bt").textContent=ws.slice(0,pos).join(" ");
+        if(pos===ws.length){const st=miss?miss>2?1:2:3;star(s,st);window._redraw&&window._redraw();fanfare();burstAt($("bt"));talk(`${"⭐".repeat(st)} ${rnd(T.praise)}`);play(s);setTimeout(()=>buildRun(list,k+1),1800)}}
+      else{miss++;b.classList.remove("wrong");void b.offsetWidth;b.classList.add("wrong");buzz();talk(T.again)}};$("cw").appendChild(b)})}
+
+/* ---------- picture + word ---------- */
+function picture(){const G=$("grid");
+  $("topbar").append(btn(T.find,"pink",()=>choose("find")),btn(T.name,"teal",()=>choose("name")),btn(T.write,"",()=>writeOpen(ITEMS,0,2.2)));
+  const draw=()=>{G.innerHTML="";ITEMS.forEach((w,i)=>{const b=document.createElement("button");b.className="tile p";b.innerHTML=picHTML(w)+`<span>${esc(w)}</span><span class="st">${stars(w)}</span>`;b.onclick=()=>openP(i);G.appendChild(b)})};
+  window._redraw=draw;draw()}
+function openP(i){const w=ITEMS[i];popSnd();openM(`${picHTML(w,"xl")}<div class="wordbig">${esc(w)}</div><div class="bar" id="sb"></div><div class="navrow"><button class="btn ghost" id="pv"></button><button class="btn ghost" id="nx"></button></div>`);
+  if(hasV(w))$("sb").append(btn("🔊","",()=>play(w)));$("sb").append(btn(T.write,"teal",()=>writeOpen(ITEMS,i,2.2)));nav(i,ITEMS.length,openP);setTimeout(()=>play(w),250)}
+function choose(mode){const order=shuf(ITEMS);let k=0,score=0;const id=++runId;
+  const step=()=>{if(id!==runId)return;if(k>=order.length){fanfare();rain();talk(T.done);openM(`<div class="q">${T.done}</div><div class="wordbig">⭐ ${score}</div>`);return}
+    const w=order[k],opts=shuf([w,...shuf(ITEMS.filter(x=>x!==w)).slice(0,2)]);let miss=0;
+    openM(mode==="find"?`<div class="wordbig" style="margin-top:34px">${esc(w)}</div><div class="bar" id="sb" style="margin:0"></div><div class="opts" id="op"></div><div class="score">${k+1} / ${order.length}</div>`
+      :`${picHTML(w,"xl")}<div class="bar" id="sb" style="margin:0"></div><div class="ans" id="op"></div><div class="score">${k+1} / ${order.length}</div>`);
+    if(hasV(w)){$("sb").append(btn("🔊","ghost",()=>play(w)));play(w)}
+    opts.forEach((o,c)=>{const b=document.createElement("button");if(mode==="find")b.innerHTML=picHTML(o);else{b.textContent=o;b.style.background=COLORS[c%6]}
+      b.onclick=()=>{if(o===w){const st=miss?1:3;score+=st;star(w,st);window._redraw();fanfare();burstAt(b);talk(`${"⭐".repeat(st)} ${rnd(T.praise)}`);k++;setTimeout(step,1300)}
+        else{miss++;b.classList.add("wrong");buzz();talk(T.again)}};$("op").appendChild(b)})};step()}
+
+/* ---------- quiz ---------- */
+function quiz(){const G=$("grid");G.className="grid wide";
+  const draw=()=>{G.innerHTML="";const b=btn(T.start,"pink startbig",()=>runQuiz());const w=document.createElement("div");w.style.textAlign="center";w.appendChild(b);G.appendChild(w);
+    QZ.forEach((q,i)=>{const d=document.createElement("div");d.className="line";d.innerHTML=`<div class="t" style="font-size:22px">${i+1}. ${esc(q.q)}</div><span class="st">${stars(q.q)}</span>`;d.onclick=()=>runQuiz(i);G.appendChild(d)})};
+  window._redraw=draw;draw()}
+function runQuiz(only){const list=only!=null?[QZ[only]]:shuf(QZ);let k=0,score=0;const id=++runId;
+  const step=()=>{if(id!==runId)return;if(k>=list.length){fanfare();rain();talk(T.done);openM(`<div class="q">${T.done}</div><div class="wordbig">⭐ ${score} / ${list.length*3}</div>`);return}
+    const q=list[k];let miss=0;openM(`<div class="bigq" style="font-family:inherit">${esc(q.q)}</div><div class="bar" id="sb" style="margin:0"></div><div class="ans" id="op"></div><div class="score">${k+1} / ${list.length}</div>`);
+    if(MINE[q.q]){$("sb").append(btn("🔊","ghost",()=>play(q.q)));play(q.q)}else if(!AR){$("sb").append(btn("🔊","ghost",()=>play(q.q)));play(q.q)}
+    shuf(q.a.map((a,n)=>[a,n])).forEach(([a,n],c)=>{const b=document.createElement("button");b.textContent=a;b.style.background=COLORS[c%6];
+      b.onclick=()=>{if(n===q.c){b.classList.add("right");const st=miss?1:3;score+=st;star(q.q,st);window._redraw();fanfare();burstAt(b);talk(`${"⭐".repeat(st)} ${rnd(T.praise)}`);k++;setTimeout(step,1400)}
+        else{miss++;b.classList.add("wrong");buzz();talk(T.again)}};$("op").appendChild(b)})};step()}
+
+/* ---------- listen & memorise (Quran, dua, nasheed, story) ---------- */
+let hidden=false;
+function listen(){const G=$("grid");G.className="grid wide";
+  const bAll=btn(T.all,"pink",()=>seq(false)),bRep=btn(T.rep,"teal",()=>seq(true)),bHide=btn(T.hide,"",()=>{hidden=!hidden;$("sec").classList.toggle("hide",hidden);bHide.textContent=hidden?T.show:T.hide});
+  $("topbar").append(bAll,bRep,bHide);
+  const draw=()=>{G.innerHTML="";ITEMS.forEach((s,i)=>{const d=document.createElement("div");d.className="line";d.id="ln"+i;
+    d.innerHTML=`<div class="t" dir="auto">${esc(s)}</div><span class="st">${stars(s)}</span>`;
+    d.onclick=()=>{if(hidden&&!d.classList.contains("peek")){d.classList.add("peek");setTimeout(()=>d.classList.remove("peek"),2500);return}openL(i)};G.appendChild(d)})};
+  window._redraw=draw;draw()}
+async function seq(rep){stopAll();const id=++runId;const bar=document.createElement("div");bar.style.cssText="position:fixed;bottom:calc(16px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;z-index:30";
+  const stop=btn(T.stop,"pink",()=>{runId++;stopAll()});bar.appendChild(stop);document.body.appendChild(bar);
+  for(let i=0;i<ITEMS.length&&id===runId;i++){const el=$("ln"+i);document.querySelectorAll(".line.now").forEach(x=>x.classList.remove("now"));if(el){el.classList.add("now");el.scrollIntoView({behavior:"smooth",block:"center"})}
+    if(!hasV(ITEMS[i])){await sleep(2500);continue}
+    const d=await play(ITEMS[i]);if(id!==runId)break;
+    if(rep){talk(T.turn);await sleep(Math.max(1800,d*1000+900))}else await sleep(400)}
+  document.querySelectorAll(".line.now").forEach(x=>x.classList.remove("now"));bar.remove();if(id===runId){fanfare();talk(T.done)}}
+/* the child's own recording per line, kept on this iPad */
+const kid={};let kdb=null,pRec=null,pTimer=null,kA=null;
+try{const r=indexedDB.open("kidLesson",1);r.onupgradeneeded=()=>r.result.createObjectStore("v");
+  r.onsuccess=()=>{kdb=r.result;kdb.transaction("v").objectStore("v").openCursor().onsuccess=e=>{const c=e.target.result;if(c){kid[c.key]=URL.createObjectURL(c.value);c.continue()}}}}catch(e){}
+function openL(i){const s=ITEMS[i],k=SEC.id+":"+s;popSnd();
+  openM(`<div class="bigq" dir="auto">${esc(s)}</div><div class="bar" id="sb"></div><div class="prow" style="margin-top:10px"><button class="pbtn mic">${T.rec}</button><button class="pbtn me"${kid[k]?"":" disabled"}>${T.me}</button></div>
+    <div class="bar"><button class="btn teal" id="got">${T.got}</button></div><div class="navrow"><button class="btn ghost" id="pv"></button><button class="btn ghost" id="nx"></button></div>`);
+  if(hasV(s))$("sb").append(btn("🔊","",()=>play(s)));
+  $("got").onclick=e=>{star(s,3);window._redraw();fanfare();burstAt(e.target);talk(rnd(T.praise))};
+  const mic=MC.querySelector(".mic"),me=MC.querySelector(".me");
+  mic.onclick=async()=>{if(pRec){pRec.stop();return}stopAll();
+    try{const st=await navigator.mediaDevices.getUserMedia({audio:true}),ch=[];pRec=new MediaRecorder(st);mic.classList.add("on");mic.textContent="⏹️";pRec.ondataavailable=e=>ch.push(e.data);
+      pRec.onstop=()=>{clearTimeout(pTimer);st.getTracks().forEach(t=>t.stop());const blob=new Blob(ch,{type:pRec.mimeType||"audio/mp4"});
+        if(kid[k])URL.revokeObjectURL(kid[k]);kid[k]=URL.createObjectURL(blob);try{kdb.transaction("v","readwrite").objectStore("v").put(blob,k)}catch(e){}
+        pRec=null;mic.classList.remove("on");mic.textContent=T.rec;me.disabled=false;try{if(kA)kA.pause();kA=new Audio(kid[k]);kA.play()}catch(e){}};
+      pRec.start();pTimer=setTimeout(()=>{if(pRec&&pRec.state==="recording")pRec.stop()},20000)}catch(e){mic.textContent="⚠️ 🎤";pRec=null}};
+  me.onclick=()=>{try{if(kA)kA.pause();kA=new Audio(kid[k]);kA.play()}catch(e){}};
+  nav(i,ITEMS.length,openL);setTimeout(()=>play(s),250)}
+
+/* start: decrypt the parent's voice and photos first */
+const jobs=[];Object.keys(SEC.audio||{}).forEach(t=>jobs.push(NAJMA.decrypt(SEC.audio[t]).then(u=>MINE[t]=u).catch(()=>{})));
+Object.keys(SEC.img||{}).forEach(w=>{const v=SEC.img[w];if(v&&v.ct)jobs.push(NAJMA.decrypt(v).then(u=>IMG[w]=u).catch(()=>{}))});
+({sent:sentence,pic:picture,quiz:quiz,listen:listen}[TYPE]||sentence)();
+Promise.all(jobs).then(()=>{window._redraw&&window._redraw();if(TYPE==="listen"&&!ITEMS.some(hasV)){}});
+window.NAJMA_PROGRESS=()=>{const all=TYPE==="quiz"?QZ.map(q=>q.q):ITEMS;return {done:all.filter(x=>done[x]).length,total:all.length}};
+window.NAJMA_RESET=()=>localStorage.removeItem(KEY);
+</script>
+<script src="extras.js?v=10"></script>
+</body>
+</html>
