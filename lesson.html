@@ -92,6 +92,9 @@ body.quran .line .t,body.quran .bigq{font-family:"Amiri Quran","Baloo Bhaijaan 2
 .ans button.wrong{animation:shake .4s;opacity:.4}.ans button.right{background:#3fc35a !important}
 .opts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:14px 0}.opts button{border:0;background:none;padding:0;cursor:pointer}.opts button.wrong{animation:shake .4s;opacity:.4}
 .opts .pic{box-shadow:0 6px 0 rgba(0,0,0,.15)}
+.line .pic{width:54px;height:54px;font-size:38px;flex:none;border-radius:14px}
+.meaning{background:#fff7e0;border-radius:18px;padding:10px 14px;font-size:20px;line-height:1.7;margin:8px 0;font-family:"Baloo Bhaijaan 2",system-ui,sans-serif}
+.story .pic.xl{margin-top:20px}.story .bigq{margin:10px 0 6px}
 .wordbig{font-size:clamp(40px,11vw,70px);font-weight:700;margin:6px 0}
 .startbig{font-size:30px;padding:18px 34px}
 </style>
@@ -129,8 +132,8 @@ const AR=SEC.lang==="ar";document.documentElement.lang=AR?"ar":"en";document.doc
 if(TYPE==="listen"&&AR)document.body.classList.add("quran");
 document.title=SEC.title;$("title").textContent=`${SEC.icon||""} ${SEC.title}`;
 const ITEMS=(SEC.words||[]).filter(Boolean),QZ=SEC.items||[];
-const T=AR?{hi:{sent:"اضغط على جملة واقرأها!",pic:"اضغط على صورة!",quiz:"جاهز للاختبار؟",listen:"استمع وردّد معي!"},build:"🧩 رتّب الجملة",buildAll:"🧩 رتّب الجمل",write:"✏️ اكتب",find:"🎯 أين الصورة؟",name:"🔤 ما اسمها؟",start:"▶️ ابدأ",all:"▶️ استمع للكل",rep:"🔁 ردّد معي",hide:"🙈 اختبر حفظك",x:"🔂 كرّر",show:"👀 أظهر النص",turn:"🎤 دورك!",got:"✅ حفظتها",rec:"🎤 سجّل",me:"▶️ صوتي",prev:"➡️ السابق",next:"التالي ⬅️",praise:["أحسنت!","رائع!","ممتاز!","شاطر!","ما شاء الله!"],again:"حاول مرة ثانية 💪",done:"أنهيت! 🏆",stop:"⏹️ إيقاف"}
-  :{hi:{sent:"Tap a sentence and read it!",pic:"Tap a picture!",quiz:"Ready for the quiz?",listen:"Listen and repeat!"},build:"🧩 Build it",buildAll:"🧩 Build sentences",write:"✏️ Write",find:"🎯 Find the picture",name:"🔤 What is it?",start:"▶️ Start",all:"▶️ Listen to all",rep:"🔁 Repeat after me",hide:"🙈 Test yourself",x:"🔂 Repeat",show:"👀 Show text",turn:"🎤 Your turn!",got:"✅ I know it",rec:"🎤 Record",me:"▶️ My voice",prev:"⬅️ Back",next:"Next ➡️",praise:["Amazing!","Well done!","Brilliant!","You got it!"],again:"Try again 💪",done:"All done! 🏆",stop:"⏹️ Stop"};
+const T=AR?{hi:{sent:"اضغط على جملة واقرأها!",pic:"اضغط على صورة!",quiz:"جاهز للاختبار؟",listen:"استمع وردّد معي!"},build:"🧩 رتّب الجملة",buildAll:"🧩 رتّب الجمل",write:"✏️ اكتب",find:"🎯 أين الصورة؟",name:"🔤 ما اسمها؟",start:"▶️ ابدأ",all:"▶️ استمع للكل",rep:"🔁 ردّد معي",hide:"🙈 اختبر حفظك",x:"🔂 كرّر",story:"📖 القصة",auto:"▶️ تلقائي",pause:"⏸️ إيقاف",show:"👀 أظهر النص",turn:"🎤 دورك!",got:"✅ حفظتها",rec:"🎤 سجّل",me:"▶️ صوتي",prev:"➡️ السابق",next:"التالي ⬅️",praise:["أحسنت!","رائع!","ممتاز!","شاطر!","ما شاء الله!"],again:"حاول مرة ثانية 💪",done:"أنهيت! 🏆",stop:"⏹️ إيقاف"}
+  :{hi:{sent:"Tap a sentence and read it!",pic:"Tap a picture!",quiz:"Ready for the quiz?",listen:"Listen and repeat!"},build:"🧩 Build it",buildAll:"🧩 Build sentences",write:"✏️ Write",find:"🎯 Find the picture",name:"🔤 What is it?",start:"▶️ Start",all:"▶️ Listen to all",rep:"🔁 Repeat after me",hide:"🙈 Test yourself",x:"🔂 Repeat",story:"📖 Story",auto:"▶️ Auto",pause:"⏸️ Pause",show:"👀 Show text",turn:"🎤 Your turn!",got:"✅ I know it",rec:"🎤 Record",me:"▶️ My voice",prev:"⬅️ Back",next:"Next ➡️",praise:["Amazing!","Well done!","Brilliant!","You got it!"],again:"Try again 💪",done:"All done! 🏆",stop:"⏹️ Stop"};
 const COLORS=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
 const rnd=a=>a[Math.floor(Math.random()*a.length)],shuf=a=>[...a].sort(()=>Math.random()-.5),sleep=t=>new Promise(r=>setTimeout(r,t));
 const KEY="sec_"+SEC.id;let done={};try{done=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
@@ -231,9 +234,11 @@ let hidden=false,times=1;
 function listen(){const G=$("grid");G.className="grid wide";
   const bAll=btn(T.all,"pink",()=>seq(false)),bRep=btn(T.rep,"teal",()=>seq(true)),bHide=btn(T.hide,"",()=>{hidden=!hidden;$("sec").classList.toggle("hide",hidden);bHide.textContent=hidden?T.show:T.hide});
   const bX=btn(`${T.x} ×1`,"",()=>{times=times===1?3:times===3?5:1;bX.textContent=`${T.x} ×${times}`});
+  const MEAN=SEC.mean||{},hasStory=ITEMS.some(s=>MEAN[s]||(SEC.img&&SEC.img[s]));
+  if(hasStory)$("topbar").append(btn(T.story,"pink",()=>story(0,false)));
   $("topbar").append(bAll,bRep,bX,bHide);
   const draw=()=>{G.innerHTML="";ITEMS.forEach((s,i)=>{const d=document.createElement("div");d.className="line";d.id="ln"+i;
-    d.innerHTML=`<div class="t" dir="auto">${esc(s)}</div><span class="st">${stars(s)}</span>`;
+    d.innerHTML=(SEC.img&&SEC.img[s]?picHTML(s):"")+`<div class="t" dir="auto">${esc(s)}</div><span class="st">${stars(s)}</span>`;
     d.onclick=()=>{if(hidden&&!d.classList.contains("peek")){d.classList.add("peek");setTimeout(()=>d.classList.remove("peek"),2500);return}openL(i)};G.appendChild(d)})};
   window._redraw=draw;draw()}
 async function seq(rep){stopAll();const id=++runId;const bar=document.createElement("div");bar.style.cssText="position:fixed;bottom:calc(16px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;z-index:30";
@@ -243,12 +248,23 @@ async function seq(rep){stopAll();const id=++runId;const bar=document.createElem
     for(let r=0;r<times&&id===runId;r++){const d=await play(ITEMS[i]);if(id!==runId)break;
       if(rep){talk(T.turn);await sleep(Math.max(1800,d*1000+900))}else await sleep(400)}}
   document.querySelectorAll(".line.now").forEach(x=>x.classList.remove("now"));bar.remove();if(id===runId){fanfare();talk(T.done)}}
+/* story: picture, ayah, simple meaning, recitation; one card at a time */
+let storyAuto=false;
+function story(i,auto){storyAuto=auto;const id=++runId;if(i>=ITEMS.length){fanfare();rain();talk(T.done);closeM();return}
+  const s=ITEMS[i],mn=(SEC.mean||{})[s];
+  openM(`<div class="story">${SEC.img&&SEC.img[s]?picHTML(s,"xl"):'<div style="height:24px"></div>'}<div class="bigq" dir="auto">${esc(s)}</div>${mn?`<div class="meaning" dir="rtl">💡 ${esc(mn)}</div>`:""}
+    <div class="bar" id="sb"></div><div class="score">${i+1} / ${ITEMS.length}</div><div class="navrow"><button class="btn ghost" id="pv"></button><button class="btn ghost" id="nx"></button></div></div>`);
+  const sb=$("sb");if(hasV(s))sb.append(btn("🔊","",()=>play(s)));
+  const ab=btn(storyAuto?T.pause:T.auto,"teal",()=>{if(storyAuto){storyAuto=false;runId++;stopAll();ab.textContent=T.auto}else story(i,true)});sb.append(ab);
+  nav(i,ITEMS.length,k=>story(k,false));$("nx").style.visibility="visible";$("nx").onclick=()=>story(i+1,storyAuto);
+  (async()=>{await sleep(300);if(id!==runId)return;const d=await play(s);if(id!==runId||!storyAuto)return;await sleep(Math.max(1500,(mn||"").length*45));if(id===runId&&storyAuto)story(i+1,true)})()}
 /* the child's own recording per line, kept on this iPad */
 const kid={};let kdb=null,pRec=null,pTimer=null,kA=null;
 try{const r=indexedDB.open("kidLesson",1);r.onupgradeneeded=()=>r.result.createObjectStore("v");
   r.onsuccess=()=>{kdb=r.result;kdb.transaction("v").objectStore("v").openCursor().onsuccess=e=>{const c=e.target.result;if(c){kid[c.key]=URL.createObjectURL(c.value);c.continue()}}}}catch(e){}
 function openL(i){const s=ITEMS[i],k=SEC.id+":"+s;popSnd();
-  openM(`<div class="bigq" dir="auto">${esc(s)}</div><div class="bar" id="sb"></div><div class="prow" style="margin-top:10px"><button class="pbtn mic">${T.rec}</button><button class="pbtn me"${kid[k]?"":" disabled"}>${T.me}</button></div>
+  const mn=(SEC.mean||{})[s];
+  openM(`${SEC.img&&SEC.img[s]?picHTML(s,"xl"):""}<div class="bigq" dir="auto">${esc(s)}</div>${mn?`<div class="meaning" dir="rtl">💡 ${esc(mn)}</div>`:""}<div class="bar" id="sb"></div><div class="prow" style="margin-top:10px"><button class="pbtn mic">${T.rec}</button><button class="pbtn me"${kid[k]?"":" disabled"}>${T.me}</button></div>
     <div class="bar"><button class="btn teal" id="got">${T.got}</button></div><div class="navrow"><button class="btn ghost" id="pv"></button><button class="btn ghost" id="nx"></button></div>`);
   if(hasV(s))$("sb").append(btn("🔊","",()=>play(s)));
   $("got").onclick=e=>{star(s,3);window._redraw();fanfare();burstAt(e.target);talk(rnd(T.praise))};

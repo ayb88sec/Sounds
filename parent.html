@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <script src="supa.js"></script>
-<script src="profile.js"></script>
+<script src="profile.js"></script><script src="data/kidq.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -69,7 +69,7 @@ textarea{min-height:160px;line-height:1.5}
 .stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
 .stats3 div{background:#f8f6fd;border-radius:18px;padding:10px;text-align:center}
 .stats3 b{display:block;font-size:28px;color:#6a5cff}.stats3 span{font-size:14px;color:#7a7090}
-.qa{display:flex;gap:8px;margin-bottom:14px}.qa .b{flex:1;padding:12px}
+.qa{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}.qa .b{flex:1;padding:12px}
 .dk{border-radius:22px;background:#f8f6fd;padding:14px;margin-bottom:12px}
 .dk .top{display:flex;align-items:center;gap:12px}
 .dk .av{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;flex:none}
@@ -108,7 +108,7 @@ textarea{min-height:160px;line-height:1.5}
 <main>
   <div class="panel on" id="dash">
     <div class="stats3" id="dStats"></div>
-    <div class="qa"><button class="b go" id="qKid">➕ طفل</button><button class="b go" id="qSec">➕ قسم</button></div>
+    <div class="qa"><button class="b go" id="qKid">➕ طفل</button><button class="b go" id="qSec">➕ قسم</button><button class="b go" id="qDua" style="flex-basis:100%">📿 إضافة قسم الأدعية</button></div>
     <div id="dKids"></div>
     <h3 class="dh">📚 الأقسام</h3><div id="dSecs"></div>
   </div>
@@ -173,7 +173,7 @@ textarea{min-height:160px;line-height:1.5}
     <button class="b go" id="qGo" style="width:100%">⬇️ جلب الآيات</button>
     <div class="note" id="qMsg" style="margin:6px 0 0">النص من AlQuran.cloud (مصدره Tanzil.net) بالرسم العثماني، مع تلاوة كل آية.</div></div>
   <div id="sTxtBox"><label id="sTxtL">الكلمات (كلمة في كل سطر)</label><textarea id="sWords" dir="auto"></textarea></div>
-  <div id="sPicBox" style="display:none"><label>🖼️ صورة لكل كلمة</label><div class="note" style="margin:0 0 6px">اكتب إيموجي (مثل 🍎) أو اضغط 📷 لصورة من الجوال.</div><div id="sPic"></div><input type="file" id="sFile" accept="image/*" style="display:none"></div>
+  <div id="sPicBox" style="display:none"><label id="sPicL">🖼️ صورة لكل كلمة</label><div class="note" style="margin:0 0 6px">اكتب إيموجي (مثل 🍎) أو اضغط 📷 لصورة من الجوال.</div><div id="sPic"></div><input type="file" id="sFile" accept="image/*" style="display:none"></div>
   <div id="sQuizBox" style="display:none"><label>❓ الأسئلة</label><div class="note" style="margin:0 0 6px">اكتب السؤال والأجوبة، واضغط ✓ على الجواب الصحيح.</div><div id="sQuiz"></div><button class="b" id="sQAdd" style="width:100%">➕ سؤال</button></div>
   <div id="sRecBox" style="display:none"><label>🎤 سجّل صوتك</label><div class="note" style="margin:0 0 6px">اضغط 🎤، قل الكلمة، ثم اضغط ⏹️. الصوت مشفّر بكود العائلة.</div><div id="sRec"></div></div>
   <div class="actions"><button class="b del" id="sDel">🗑️ حذف</button><span><button class="b" data-close>إلغاء</button> <button class="b go" id="sSave">حفظ</button></span></div>
@@ -187,7 +187,7 @@ async function ipadLink(p){if(!DB)return baseLink(p);const {data,error}=await sb
 let profs=NAJMA.profiles.slice(),secs=JSON.parse(JSON.stringify(NAJMA.sections));
 const AV=["🦁","🐼","🦊","🐰","🐯","🦄","🐬","🐻","🐸","🐨","🦋","🚀","⚽","🌸","👑","🦖"];
 const PC=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a","#ff7eb6","#2b2340"];
-const ICONS=["💬","🖼️","❓","🎧","📖","🕌","🐝","📝","📚","✏️","🍎","🌟","🧠","🏫","🔤","🌍","🧪","🎵"];
+const ICONS=["📿","💬","🖼️","❓","🎧","📖","🕌","🐝","📝","📚","✏️","🍎","🌟","🧠","🏫","🔤","🌍","🧪","🎵"];
 const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["cvc","Word Time"],["sent","Sentences"],["writeEn","Handwriting"],["numEn","Numbers"],["shapes","2D Shapes"]];
 const PROG=[["arDone","حروفي",38],["numDoneAr","الأرقام",20],["islamDone","الإسلام",5],["imanDone","الإيمان",6],["soundsDone","Sounds",32],["cvcDone","Word Time",111],["sentDone","Sentences",16],["writeEn","Writing",62],["numDoneEn","Numbers",20],["shapesDone","Shapes",10]];
 let saveP=()=>R.set("najma:profiles",JSON.stringify(profs));
@@ -266,14 +266,14 @@ let es;
 const STYPES=[["words","📝 كلمات"],["sent","💬 جمل"],["pic","🖼️ صورة وكلمة"],["quiz","❓ اختبار"],["listen","🎧 استماع وحفظ (قرآن، دعاء)"]];
 const TXTL={words:"الكلمات (كلمة في كل سطر)",sent:"الجمل (جملة في كل سطر)",pic:"الكلمات (كلمة في كل سطر)",listen:"الآيات أو الأسطر (سطر لكل آية)"};
 const TICON={words:"📝",sent:"💬",pic:"🖼️",quiz:"❓",listen:"🎧"};
-function setType(t){es.type=t;$("sQBox").style.display=t==="listen"?"":"none";if(t==="listen")loadSurahs();$("sTxtBox").style.display=t==="quiz"?"none":"";$("sTxtL").textContent=TXTL[t]||"";$("sPicBox").style.display=t==="pic"?"":"none";
+function setType(t){es.type=t;chips("sType",STYPES.map(x=>x[1]),(x,k)=>es.type===STYPES[k][0],(x,k)=>{const old=es.type;setType(STYPES[k][0]);if(es.icon===TICON[old])es.icon=TICON[es.type];chips("sIcon",ICONS,i=>i===es.icon,i=>es.icon=i,"av")});$("sQBox").style.display=t==="listen"?"":"none";if(t==="listen")loadSurahs();$("sTxtBox").style.display=t==="quiz"?"none":"";$("sTxtL").textContent=TXTL[t]||"";$("sPicBox").style.display=t==="pic"||t==="listen"?"":"none";$("sPicL").textContent=t==="listen"?"🖼️ صورة ومعنى لكل سطر (للقصة، اختياري)":"🖼️ صورة لكل كلمة";es.mean=es.mean||{};
   $("sQuizBox").style.display=t==="quiz"?"":"none";if(t==="quiz"){es.items=es.items||[];if(!es.items.length)es.items.push({q:"",a:["","","",""],c:0});drawQuiz()}drawRec();drawPic()}
 function editSec(s){es=s?JSON.parse(JSON.stringify(s)):{id:"s"+Date.now().toString(36),title:"",icon:"📝",lang:"en",words:[],type:"words"};es.type=es.type||"words";es.img=es.img||{};
   $("sT").textContent=s?"تعديل "+s.title:"قسم جديد";$("sTitle").value=es.title;$("sWords").value=es.words.join("\n");$("sDel").style.visibility=s?"visible":"hidden";
   chips("sIcon",ICONS,i=>i===es.icon,i=>es.icon=i,"av");
   chips("sLang",["English","عربي"],(x,k)=>es.lang===(k?"ar":"en"),(x,k)=>{es.lang=k?"ar":"en";$("sWords").dir=k?"rtl":"ltr";drawRec()});
   $("sWords").dir=es.lang==="ar"?"rtl":"ltr";
-  chips("sType",STYPES.map(x=>x[1]),(x,k)=>es.type===STYPES[k][0],(x,k)=>{const old=es.type;setType(STYPES[k][0]);if(es.icon===TICON[old])es.icon=TICON[es.type];chips("sIcon",ICONS,i=>i===es.icon,i=>es.icon=i,"av")});
+
   sKids=new Set(s?profs.filter(p=>!p.apps||p.apps["s:"+es.id]!==false).map(p=>p.id):[]);drawSKids();
   es.audio=es.audio||{};setType(es.type);$("secSheet").classList.add("show")}
 let sKids=new Set();
@@ -298,30 +298,34 @@ async function loadSurahs(){if(SUR)return;try{const r=await fetch(QAPI+"/surah")
 $("qS").onchange=()=>{const s=SUR&&SUR.find(x=>x.number==$("qS").value);if(s){$("qF").value=1;$("qT").value=s.numberOfAyahs;$("qT").max=s.numberOfAyahs;$("qF").max=s.numberOfAyahs}};
 $("qGo").onclick=async()=>{const n=+$("qS").value;if(!n)return;const s=SUR.find(x=>x.number===n),f=Math.max(1,+$("qF").value||1),t=Math.min(s.numberOfAyahs,+$("qT").value||s.numberOfAyahs),rc=$("qR").value;
   $("qMsg").textContent="⏳ جاري الجلب...";
-  try{const r=await fetch(`${QAPI}/surah/${n}/editions/quran-uthmani,${rc}`);const j=await r.json();if(j.code!==200)throw 0;
-    const [tx,au]=j.data,lines=[],qa={};
-    if(f===1&&n!==1&&n!==9){const r1=await fetch(`${QAPI}/ayah/1/editions/quran-uthmani,${rc}`).then(x=>x.json());const b=r1.data[0].text.trim();lines.push(b);qa[b]=r1.data[1].audio}
+  try{const r=await fetch(`${QAPI}/surah/${n}/editions/quran-uthmani,${rc},ar.muyassar`);const j=await r.json();if(j.code!==200)throw 0;
+    const [tx,au,tf]=j.data,lines=[],qa={},K=(window.KIDQ||{})[n];es.img={};es.mean={};plainI={};
+    if(f===1&&n!==1&&n!==9){const r1=await fetch(`${QAPI}/ayah/1/editions/quran-uthmani,${rc}`).then(x=>x.json());const b=r1.data[0].text.trim();lines.push(b);qa[b]=r1.data[1].audio;es.img[b]={e:KIDQ_BASMALA[0]};es.mean[b]=KIDQ_BASMALA[1]}
     for(let i=f-1;i<t;i++){let a=tx.ayahs[i].text.trim();
       if(i===0&&n!==1&&n!==9){const w=a.split(/\s+/);if(/^بِسْمِ/.test(w[0])&&w.length>4)a=w.slice(4).join(" ")}
-      const line=a+" ﴿"+AD(i+1)+"﴾";lines.push(line);qa[line]=au.ayahs[i].audio}
+      const line=a+" ﴿"+AD(i+1)+"﴾";lines.push(line);qa[line]=au.ayahs[i].audio;
+      if(K&&K[i]){es.img[line]={e:K[i][0]};es.mean[line]=K[i][1]}else if(tf&&tf.ayahs[i])es.mean[line]=tf.ayahs[i].text}
     $("sWords").value=lines.join("\n");es.qaudio=qa;es.quran={s:n,f,t,r:rc};es.lang="ar";$("sWords").dir="rtl";
     chips("sLang",["English","عربي"],(x,k)=>es.lang===(k?"ar":"en"),(x,k)=>{es.lang=k?"ar":"en";$("sWords").dir=k?"rtl":"ltr";drawRec()});
     if(!$("sTitle").value.trim())$("sTitle").value="سورة "+s.name.replace(/^سُورَةُ\s*/,"").replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g,"").replace(/ٱ/g,"ا");if(es.icon==="🎧"||!es.icon){es.icon="📖";chips("sIcon",ICONS,i=>i===es.icon,i=>es.icon=i,"av")}
-    drawRec();$("qMsg").textContent=`✅ ${lines.length} سطر، مع التلاوة. يمكنك أيضًا تسجيل صوتك لأي آية.`}
+    drawRec();drawPic();$("qMsg").textContent=`✅ ${lines.length} سطر، مع التلاوة${K?" وقصة مصوّرة للأطفال":" ومعنى من التفسير الميسر (أضف صورة لكل آية إن أردت)"}.`}
   catch(e){$("qMsg").textContent="⚠️ تعذّر الجلب. تأكد من الإنترنت وحاول مرة ثانية."}};
 /* pictures */
 let plainI={},picFor=null;
 const imgHTML=w=>{const v=es.img[w];if(!v)return"❔";if(v.e)return v.e;return plainI[w]?`<img src="${plainI[w]}">`:"🖼️"};
-function drawPic(){if(es.type!=="pic")return;const box=$("sPic");box.innerHTML="";const ws=curWords();if(!ws.length){box.innerHTML='<div class="note">اكتب الكلمات أولًا.</div>';return}
+function drawPic(){if(es.type!=="pic"&&es.type!=="listen")return;const L=es.type==="listen";const box=$("sPic");box.innerHTML="";const ws=curWords();if(!ws.length){box.innerHTML='<div class="note">اكتب الكلمات أولًا.</div>';return}
   ws.forEach(w=>{const v=es.img[w];if(v&&v.ct&&!plainI[w])NAJMA.decrypt(v).then(u=>{plainI[w]=u;drawPic()}).catch(()=>{});
-    const r=document.createElement("div");r.className="rrow";
-    r.innerHTML=`<div class="pimg">${imgHTML(w)}</div><b dir="auto">${w}</b><input class="in em" maxlength="4" placeholder="🍎" value="${v&&v.e?v.e:""}"><button class="b cam">📷</button>`;
+    const r=document.createElement("div");r.className="rrow";if(L)r.style.flexWrap="wrap";
+    r.innerHTML=`<div class="pimg">${imgHTML(w)}</div><b dir="auto"${L?' style="font-size:16px"':""}>${w}</b><input class="in em" maxlength="8" placeholder="🍎" value="${v&&v.e?v.e:""}"><button class="b cam">📷</button>`+
+      (L?`<textarea class="in mean" dir="rtl" placeholder="المعنى أو القصة" style="flex-basis:100%;min-height:54px;font-size:16px;margin:0">${esc((es.mean||{})[w]||"")}</textarea>`:"");
+    if(L)r.querySelector(".mean").oninput=e=>{es.mean[w]=e.target.value};
     r.querySelector(".em").oninput=e=>{const x=e.target.value.trim();if(x)es.img[w]={e:x};else if(es.img[w]&&es.img[w].e)delete es.img[w];r.querySelector(".pimg").innerHTML=imgHTML(w)};
     r.querySelector(".cam").onclick=()=>{picFor=w;$("sFile").value="";$("sFile").click()};box.appendChild(r)})}
 $("sFile").onchange=e=>{const f=e.target.files[0];if(!f||!picFor)return;const w=picFor,url=URL.createObjectURL(f),im=new Image();
   im.onload=async()=>{const M=320,k=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
     c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);const d=c.toDataURL("image/jpeg",.72);
     try{es.img[w]=await NAJMA.encrypt(d);plainI[w]=d}catch(err){alert("أدخل كود العائلة في التطبيق أولًا")}drawPic()};im.src=url};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 /* quiz */
 function drawQuiz(){const box=$("sQuiz");box.innerHTML="";
   es.items.forEach((q,n)=>{const d=document.createElement("div");d.className="qbox";
@@ -348,7 +352,9 @@ $("sSave").onclick=()=>{if(rec)rec.stop();es.title=$("sTitle").value.trim()||"ق
   es.words=curWords();
   Object.keys(es.audio||{}).forEach(w=>{if(!es.words.includes(w))delete es.audio[w]});
   if(es.type!=="listen")delete es.qaudio,delete es.quran;else if(es.qaudio){Object.keys(es.qaudio).forEach(w=>{if(!es.words.includes(w))delete es.qaudio[w]});if(!Object.keys(es.qaudio).length)delete es.qaudio,delete es.quran}if(!Object.keys(es.audio||{}).length)delete es.audio;
-  if(es.type==="pic"){Object.keys(es.img).forEach(w=>{if(!es.words.includes(w))delete es.img[w]})}if(es.type!=="pic"||!Object.keys(es.img||{}).length)delete es.img;
+  if(es.type==="pic"){Object.keys(es.img).forEach(w=>{if(!es.words.includes(w))delete es.img[w]})}if(es.type==="listen"){Object.keys(es.img||{}).forEach(w=>{if(!es.words.includes(w))delete es.img[w]});const m={};es.words.forEach(w=>{const x=((es.mean||{})[w]||"").trim();if(x)m[w]=x});es.mean=m}
+  if(es.type!=="listen"||!Object.keys(es.mean||{}).length)delete es.mean;
+  if((es.type!=="pic"&&es.type!=="listen")||!Object.keys(es.img||{}).length)delete es.img;
   profs.forEach(p=>{p.apps=Object.assign({},p.apps||{});p.apps["s:"+es.id]=sKids.has(p.id)});saveP();
   const i=secs.findIndex(s=>s.id===es.id);if(i>=0)secs[i]=es;else secs.push(es);saveS();$("secSheet").classList.remove("show");drawSecs();drawKids()};
 $("sDel").onclick=()=>{if(!confirmDel(es.title))return;secs=secs.filter(s=>s.id!==es.id);saveS();$("secSheet").classList.remove("show");drawSecs();drawKids()};
@@ -419,7 +425,11 @@ function drawDash(){
   secs.forEach(s=>{const d=document.createElement("div");d.className="row";
     d.innerHTML=`<div class="av" style="background:#fff3c4">${s.icon}</div><div class="info"><b dir="auto">${s.title}</b><small>${s.lang==="ar"?"عربي":"English"} · ${s.words.length} كلمات · ${profs.filter(p=>!p.apps||p.apps["s:"+s.id]!==false).map(p=>p.avatar).join(" ")}</small></div><button class="b">✏️</button>`;
     d.querySelector("button").onclick=()=>editSec(s);S.appendChild(d)})}
-$("qKid").onclick=()=>editKid(null);$("qSec").onclick=()=>editSec(null);
+$("qKid").onclick=()=>editKid(null);
+$("qDua").onclick=()=>{editSec(null);es.lang="ar";es.icon="📿";setType("listen");$("sTitle").value="أدعية";
+  const D=window.KID_DUAS||[];$("sWords").value=D.map(d=>d[0]).join("\n");es.img={};es.mean={};D.forEach(d=>{es.img[d[0]]={e:d[1]};es.mean[d[0]]=d[2]});
+  chips("sIcon",ICONS,i=>i===es.icon,i=>es.icon=i,"av");chips("sLang",["English","عربي"],(x,k)=>es.lang===(k?"ar":"en"),(x,k)=>{es.lang=k?"ar":"en";drawRec()});
+  $("sWords").dir="rtl";$("sQBox").style.display="none";drawRec();drawPic();$("sKidsNote").textContent="اختر الأطفال، وسجّل صوتك لكل دعاء بـ 🎤، ثم اضغط حفظ."};$("qSec").onclick=()=>editSec(null);
 const _dk=drawKids,_ds=drawSecs;drawKids=function(){_dk();drawDash()};drawSecs=function(){_ds();drawDash()};
 /* ---------- database mode ---------- */
 let devSeen={};let sb=null,FID=null,ME=null,PRG={},loadedK=new Set(),loadedS=new Set();
