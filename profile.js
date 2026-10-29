@@ -93,8 +93,8 @@
   /* Google refuses the voice when the request says which website asked for it */
   try{const m=document.createElement("meta");m.name="referrer";m.content="no-referrer";document.head.appendChild(m)}catch(e){}
   /* stop at the end of each word (no added "u"/"un" ending): put a sukun on the last letter when it has no vowel mark */
-  const pause=t=>String(t).replace(/([\u0628-\u0647\u0629\u0646\u0648\u064A])(?=[\s،,.؛!؟?]|$)/g,"$1\u0652");
-  window.NAJMA.aiSay=function(text,lang){const id=++aiRun;if(aiA){aiA.onended=null;aiA.pause()}if(!lang||lang==="ar")text=pause(text);
+  const pause=t=>String(t).trim().split(/\s+/).length>2?String(t):String(t).replace(/([\u0628-\u0647\u0629\u0646\u0648\u064A])(?=[\s،,.؛!؟?]|$)/g,"$1\u0652");
+  window.NAJMA.aiSay=function(text,lang){const id=++aiRun;if(aiA){aiA.onended=null;aiA.pause()}if(!lang||lang==="ar")text=pause(String(text||"").replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\uFE0F\u200D•]/gu," ").replace(/ﷺ/g,"صلى الله عليه وسلم"));
     const parts=[];let cur="";String(text).replace(/\s+/g," ").trim().split(/(?<=[،,.؛!؟?])\s*/).forEach(s=>{
       while(s.length>180){let i=s.lastIndexOf(" ",180);if(i<40)i=180;if(cur){parts.push(cur);cur=""}parts.push(s.slice(0,i));s=s.slice(i).trim()}
       if((cur+" "+s).trim().length>180){parts.push(cur);cur=s}else cur=(cur+" "+s).trim()});if(cur)parts.push(cur);
