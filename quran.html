@@ -242,7 +242,7 @@ function story(B){const X=S.x||{};
     c.innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="background:${COL[gi%6]};color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px">${AD(g.ay[0])}</span></div>`+
       scene(g.bg,g.em,key)+g.ay.map(a=>ayahHTML(a)).join("")+
       (my?`<div class="mean" style="background:#eef6ff"><b style="color:#2f6fd6">📘 المعنى:</b> ${esc(my)}</div>`:"")+
-      (tb||x.id?`<div class="mean"><b>💡 تبسيط:</b> ${esc(tb||"")}${x.id?`<div style="margin-top:4px">🖼️ ${esc(x.id)}</div>`:""}</div>`:"")+
+      (x.id?`<div class="mean" style="background:#f1fbe9">🖼️ ${esc(x.id)}</div>`:"")+
       (QC.explV&&QC.explV[key]?`<div class="row" style="margin:8px 0 2px"><button class="btn p sm ev" data-k="${key}">🔊 شرح ماما</button></div>`:"");
     B.appendChild(c)});
   B.querySelectorAll(".ev").forEach(b=>b.onclick=async()=>{stop();try{const u=await NAJMA.decrypt(QC.explV[b.dataset.k]);aud=new Audio(u);aud.play()}catch(e){}});

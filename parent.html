@@ -356,7 +356,7 @@ async function qEdit(){const n=+$("qpS").value,E=$("qpE");E.innerHTML="";if(!n)r
     <div class="rrow"><b>🎤 سجّل شرحك بصوتك</b><button class="b" id="qpR">${voice?"🔁 أعد التسجيل":"🎤 سجّل"}</button><button class="b" id="qpP"${voice?"":" disabled style='opacity:.35'"}>▶️</button>${voice?'<button class="b" id="qpRD">🗑️</button>':""}</div>
     <label>🖼️ صورة السورة (لوحة أو ملخّص مصوّر)</label>
     <div class="rrow"><div class="pimg" style="width:80px;height:80px">${poster?`<img src="${poster}">`:"🖼️"}</div><span style="flex:1"></span><button class="b" id="qpPo">📷 ${poster?"تغيير":"إضافة"}</button>${poster?'<button class="b" id="qpPoD">🗑️</button>':""}</div></div>
-    <div class="qbox"><label style="margin-top:0">📖 الآيات: الصورة والتبسيط</label><div class="note" style="margin:0 0 6px">«المعنى» يأتي تلقائيًا. اكتب «التبسيط» للأطفال، واضغط 📷 لتضع صورتك، و🎤 لتسجّل شرحك لهذه الآية بصوتك.</div><div id="qpA"></div></div>
+    <div class="qbox"><label style="margin-top:0">📖 الآيات: الصورة وشرحك</label><div class="note" style="margin:0 0 6px">«المعنى» يأتي تلقائيًا. اضغط 📷 لتضع صورتك، و🎤 لتسجّل شرحك لهذه الآية بصوتك.</div><div id="qpA"></div></div>
     <div class="actions">${isX?'<button class="b del" id="qpDel">🗑️ حذف السورة</button>':"<span></span>"}<button class="b go" id="qpSave">💾 حفظ</button></div>`;
   $("qpI").value=Q.story[n]!=null?Q.story[n]:(S.i||"");$("qpX").value=Q.expl[n]||"";
   const A=$("qpA");
@@ -364,8 +364,7 @@ async function qEdit(){const n=+$("qpS").value,E=$("qpE");E.innerHTML="";if(!n)r
     const r=document.createElement("div");r.className="rrow";r.style.flexWrap="wrap";
     r.innerHTML=`<div class="pimg">${Q.img[k]?"⏳":Array.from(x[1])[0]}</div><b dir="rtl" style="font-size:15px;font-family:'Amiri Quran',serif">﴿${AD(a)}${last>a?"–"+AD(last):""}﴾ ${S.t[i].split(" ").slice(0,5).join(" ")}…</b><button class="b cam">📷</button>${Q.img[k]?'<button class="b rm">🗑️</button>':""}
       <div style="flex-basis:100%;display:flex;gap:6px;align-items:center"><button class="b vr">${Q.explV[k]?"🔁 أعد تسجيل الشرح":"🎤 سجّل شرحك"}</button>${Q.explV[k]?'<button class="b vp">▶️</button><button class="b vd">🗑️</button>':""}</div>
-      <textarea class="in simp" dir="rtl" placeholder="التبسيط للأطفال" style="flex-basis:100%;min-height:50px;font-size:16px;margin:0"></textarea>`;
-    r.querySelector(".simp").value=Q.simp[k]!=null?Q.simp[k]:x[2];r.querySelector(".simp").dataset.k=k;r.querySelector(".simp").dataset.def=x[2];
+`;
     if(Q.img[k])qDec("i"+k,Q.img[k]).then(u=>{if(u)r.querySelector(".pimg").innerHTML=`<img src="${u}">`});
     r.querySelector(".cam").onclick=()=>{qPicFor=k;$("qpF").value="";$("qpF").click()};
     if(Q.img[k])r.querySelector(".rm").onclick=()=>{delete Q.img[k];delete qPlain["i"+k];qSave(false)};
