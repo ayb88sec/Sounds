@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <script src="supa.js"></script>
-<script src="profile.js"></script>
+<script src="profile.js"></script><script src="data/kidq.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -118,7 +118,8 @@ const ROWS=[
  {t:"🕌 ديني",apps:[
   {id:"islam",href:"islam.html",glyph:"🕌",name:"أركان الإسلام",sub:"خمسة أركان",bg:"linear-gradient(150deg,#1fb59a,#0f9b8e)",key:"islamDone",total:5},
   {id:"iman",href:"iman.html",glyph:"✨",name:"أركان الإيمان",sub:"ستة أركان",bg:"linear-gradient(150deg,#8a5cff,#ff7eb6)",key:"imanDone",total:6},
-  {id:"quran",href:"quran.html",glyph:"📖",name:"قصص القرآن",sub:"رحلة الحفظ",bg:"linear-gradient(150deg,#3fd3a8,#1fa2c9)",key:"qkDone",total:571}]},
+  {id:"quran",href:"quran.html",glyph:"📖",name:"قصص القرآن",sub:"رحلة الحفظ",bg:"linear-gradient(150deg,#3fd3a8,#1fa2c9)",key:"qkDone",total:571},
+  {id:"duas",href:"lesson.html?s=duas",glyph:"📿",name:"أدعية",sub:"أدعية يومية",bg:"linear-gradient(150deg,#ffb020,#ff6f91)",key:"sec_duas",total:(((NAJMA.sections.find(s=>s.type==="qimg")||{}).duas||{}).list||window.KID_DUAS||[]).length}]},
  {t:"🇬🇧 English",apps:[
   {id:"sounds",href:"index.html",glyph:"🔤",name:"Sounds",sub:"Phonics",bg:"linear-gradient(150deg,#ff7eb6,#a66bff)",key:"soundsDone",total:32},
   {id:"cvc",href:"cvc.html",glyph:"cat",name:"Word Time",sub:"RWI 1.1 – 1.7",bg:"linear-gradient(150deg,#22c7b8,#4f8bff)",key:"cvcDone",total:52},

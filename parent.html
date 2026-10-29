@@ -104,11 +104,11 @@ textarea{min-height:160px;line-height:1.5}
   <div style="margin:12px 0 6px;color:#7a7090">أو</div><input class="in" id="fCode" dir="ltr" placeholder="رمز الدعوة" style="text-transform:uppercase;margin-bottom:8px"><button class="b" id="fJoin" style="width:100%">🔗 انضمام</button></div>
   <div id="aMsg" style="margin-top:10px;color:#c93a50;font-weight:700;min-height:1em"></div></div></div>
 <header><img src="icon.png" alt=""><h1>بوابة الوالدين</h1><a href="guide.html" style="margin-inline-end:6px">📘 الدليل</a><a href="home.html">🏠 التطبيق</a></header>
-<nav><button data-t="dash" class="on">📊 اللوحة</button><button data-t="kids">👧 الأطفال</button><button data-t="secs">📚 الأقسام</button><button data-t="quran">📖 القرآن</button><button data-t="parents" id="navParents" style="display:none">👨‍👩‍👧 الوالدين</button><button data-t="cloud">☁️ الاتصال</button></nav>
+<nav><button data-t="dash" class="on">📊 اللوحة</button><button data-t="kids">👧 الأطفال</button><button data-t="secs">📚 الأقسام</button><button data-t="quran">🕌 ديني</button><button data-t="parents" id="navParents" style="display:none">👨‍👩‍👧 الوالدين</button><button data-t="cloud">☁️ الاتصال</button></nav>
 <main>
   <div class="panel on" id="dash">
     <div class="stats3" id="dStats"></div>
-    <div class="qa"><button class="b go" id="qKid">➕ طفل</button><button class="b go" id="qSec">➕ قسم</button><button class="b go" id="qDua" style="flex-basis:100%">📿 إضافة قسم الأدعية</button></div>
+    <div class="qa"><button class="b go" id="qKid">➕ طفل</button><button class="b go" id="qSec">➕ قسم</button></div>
     <div id="dKids"></div>
     <h3 class="dh">📚 الأقسام</h3><div id="dSecs"></div>
   </div>
@@ -117,11 +117,15 @@ textarea{min-height:160px;line-height:1.5}
     <div class="note">أضف قوائم كلمات خاصة بك: إملاء، كلمات المدرسة، أو أي قسم جديد. كل قسم يظهر كتطبيق على الشاشة الرئيسية، مع تهجئة وكتابة وتسجيل.</div>
     <div id="secList"></div><button class="b add" id="addSec">➕ إضافة قسم</button></div>
   <div class="panel" id="quran">
+    <div class="chips" id="relTabs" style="margin-bottom:10px;justify-content:center"><button class="on" data-r="rQ" style="font-size:19px">📖 القرآن</button><button data-r="rD" style="font-size:19px">📿 الأدعية</button></div>
+    <div id="rD" style="display:none"><div class="note">📿 <b>الأدعية</b>: تظهر للأطفال في «ديني». سجّل صوتك لكل دعاء بـ 🎤، وغيّر الصورة بـ 📷، أو أضف دعاءً جديدًا.</div>
+      <div id="dL"></div><button class="b add" id="dAdd">➕ دعاء جديد</button><div class="actions"><span></span><button class="b go" id="dSave">💾 حفظ</button></div><div id="dMsg" class="note" style="display:none"></div></div>
+    <div id="rQ">
     <div class="note">📖 <b>قصص القرآن</b>: الفاتحة وجزء عمّ جاهزة. اختر سورة لتعدّل قصتها، وتكتب أو تسجّل شرحك، وتضيف صورة السورة وصور الآيات. أو أضف سورة جديدة بنفس الطريقة.</div>
     <select class="in" id="qpS"></select>
     <div style="display:flex;gap:8px;margin-top:8px"><select class="in" id="qpN" style="flex:1"></select><button class="b go" id="qpAdd" style="flex:none">➕ إضافة سورة</button></div>
     <div id="qpMsg" class="note" style="margin-top:6px;display:none"></div>
-    <div id="qpE"></div><input type="file" id="qpF" accept="image/*" style="display:none"></div>
+    <div id="qpE"></div><input type="file" id="qpF" accept="image/*" style="display:none"></div></div>
   <div class="panel" id="parents">
     <div class="note" id="pFam"></div><div id="pList"></div>
     <button class="b add" id="pInvite">✉️ دعوة شخص جديد</button>
@@ -187,7 +191,7 @@ let profs=NAJMA.profiles.slice(),secs=JSON.parse(JSON.stringify(NAJMA.sections))
 const AV=["🦁","🐼","🦊","🐰","🐯","🦄","🐬","🐻","🐸","🐨","🦋","🚀","⚽","🌸","👑","🦖"];
 const PC=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a","#ff7eb6","#2b2340"];
 const ICONS=["📿","💬","🖼️","❓","🎧","📖","🕌","🐝","📝","📚","✏️","🍎","🌟","🧠","🏫","🔤","🌍","🧪","🎵"];
-const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["cvc","Word Time"],["sent","Sentences"],["writeEn","Handwriting"],["numEn","Numbers"],["shapes","2D Shapes"],["quran","📖 قصص القرآن"]];
+const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["cvc","Word Time"],["sent","Sentences"],["writeEn","Handwriting"],["numEn","Numbers"],["shapes","2D Shapes"],["quran","📖 قصص القرآن"],["duas","📿 أدعية"]];
 const PROG=[["arDone","حروفي",38],["numDoneAr","الأرقام",20],["islamDone","الإسلام",5],["imanDone","الإيمان",6],["soundsDone","Sounds",32],["cvcDone","Word Time",111],["sentDone","Sentences",16],["writeEn","Writing",62],["numDoneEn","Numbers",20],["shapesDone","Shapes",10]];
 let saveP=()=>R.set("najma:profiles",JSON.stringify(profs));
 let saveS=()=>R.set("najma:sections",JSON.stringify(secs));
@@ -262,7 +266,7 @@ function drawSecs(){const L=$("secList");L.innerHTML="";
     d.innerHTML=`<div class="av" style="background:#fff3c4">${s.icon}</div><div class="info"><b dir="auto">${s.title}</b><small dir="auto">${(STYPES.find(x=>x[0]===(s.type||"words"))||STYPES[0])[1]} · ${s.lang==="ar"?"عربي":"English"} · ${s.words.length}: ${s.words.slice(0,6).join("، ")}${s.words.length>6?"…":""}</small></div><button class="b">✏️ تعديل</button>`;
     d.querySelector("button").onclick=()=>editSec(s);L.appendChild(d)})}
 let es;
-const STYPES=[["words","📝 كلمات"],["sent","💬 جمل"],["pic","🖼️ صورة وكلمة"],["quiz","❓ اختبار"],["listen","🎧 استماع وحفظ (أدعية، أناشيد)"]];
+const STYPES=[["words","📝 كلمات"],["sent","💬 جمل"],["pic","🖼️ صورة وكلمة"],["quiz","❓ اختبار"]];
 const TXTL={words:"الكلمات (كلمة في كل سطر)",sent:"الجمل (جملة في كل سطر)",pic:"الكلمات (كلمة في كل سطر)",listen:"الأسطر (سطر لكل دعاء أو بيت)"};
 const TICON={words:"📝",sent:"💬",pic:"🖼️",quiz:"❓",listen:"🎧"};
 function setType(t){es.type=t;chips("sType",STYPES.map(x=>x[1]),(x,k)=>es.type===STYPES[k][0],(x,k)=>{const old=es.type;setType(STYPES[k][0]);if(es.icon===TICON[old])es.icon=TICON[es.type];chips("sIcon",ICONS,i=>i===es.icon,i=>es.icon=i,"av")});$("sTxtBox").style.display=t==="quiz"?"none":"";$("sTxtL").textContent=TXTL[t]||"";$("sPicBox").style.display=t==="pic"||t==="listen"?"":"none";$("sPicL").textContent=t==="listen"?"🖼️ صورة ومعنى لكل سطر (للقصة، اختياري)":"🖼️ صورة لكل كلمة";es.mean=es.mean||{};
@@ -398,6 +402,7 @@ $("qpS").onchange=qEdit;
 $("qpF").onchange=e=>{const f=e.target.files[0];if(!f||!qPicFor)return;const n=+$("qpS").value,key=qPicFor,big=key==="poster",url=URL.createObjectURL(f),im=new Image();
   im.onload=async()=>{const M=big?1400:520,s=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
     c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);const d=c.toDataURL("image/jpeg",big?.78:.72);
+    if(key.startsWith("dua:")){try{const Q=qSec(),id=key.slice(4);Q.duas=Q.duas||{};Q.duas.img=Q.duas.img||{};Q.duas.img[id]=await NAJMA.encrypt(d);qPlain["di"+id]=d;dSave(true)}catch(err){alert("أدخل كود العائلة في التطبيق أولًا")}return}
     try{qCollect();const Q=qSec(),enc=await NAJMA.encrypt(d);if(big){Q.poster[n]=enc;qPlain["p"+n]=d}else{Q.img[key]=enc;qPlain["i"+key]=d}qSave(false)}catch(err){alert("أدخل كود العائلة في التطبيق أولًا")}};im.src=url};
 $("qpAdd").onclick=async()=>{const n=+$("qpN").value;if(!n)return;const m=$("qpMsg");m.style.display="";m.textContent="⏳ جاري جلب السورة...";
   try{const j=await (await fetch(`${QAPI}/surah/${n}/quran-uthmani`)).json();if(j.code!==200)throw 0;const d=j.data;
@@ -405,6 +410,28 @@ $("qpAdd").onclick=async()=>{const n=+$("qpN").value;if(!n)return;const m=$("qpM
     qSec().extra[n]={n,name:QNAMES[n-1][0],t,g:d.ayahs[0].number,a:t.map(()=>["light","📖",""]),i:"",l:[],q:[],m:"",type:d.revelationType==="Medinan"?"medinan":"meccan"};
     saveS();qList();$("qpS").value=n;qEdit();m.textContent="✅ أُضيفت السورة. اكتب قصتها وشرحك، وأضف الصور، ثم اضغط حفظ."}
   catch(e){m.textContent="⚠️ تعذّر الجلب. تأكد من الإنترنت وحاول مرة ثانية."}};
+/* duas: built-in list the parent can edit, record and illustrate */
+function duaList(){const Q=secs.find(x=>x.type==="qimg");return (Q&&Q.duas&&Q.duas.list)||(window.KID_DUAS||[]).map((d,i)=>({id:"d"+i,t:d[0],e:d[1],w:d[2]}))}
+let dWork=null;
+function dDraw(){const Q=qSec();Q.duas=Q.duas||{};const rec=Q.duas.rec||{},img=Q.duas.img||{};if(!dWork)dWork=JSON.parse(JSON.stringify(duaList()));const L=$("dL");L.innerHTML="";
+  dWork.forEach((d,i)=>{const r=document.createElement("div");r.className="qbox";
+    r.innerHTML=`<div class="rrow" style="background:none;padding:0"><div class="pimg">${img[d.id]?"⏳":esc(d.e||"🤲")}</div><input class="in em" maxlength="8" value="${esc(d.e||"")}" placeholder="🤲"><button class="b cam">📷</button>${img[d.id]?'<button class="b rmi">🗑️</button>':""}<span style="flex:1"></span><button class="b del">✖</button></div>
+      <textarea class="in tx" dir="rtl" style="min-height:54px;font-size:19px;margin-top:6px" placeholder="نص الدعاء"></textarea><input class="in wn" dir="rtl" style="font-size:16px;margin-top:6px" placeholder="متى نقوله؟">
+      <div style="display:flex;gap:6px;margin-top:6px"><button class="b vr">${rec[d.id]?"🔁 أعد التسجيل":"🎤 سجّل صوتك"}</button>${rec[d.id]?'<button class="b vp">▶️</button><button class="b vd">🗑️</button>':""}</div>`;
+    r.querySelector(".tx").value=d.t;r.querySelector(".wn").value=d.w||"";
+    r.querySelector(".tx").oninput=e=>d.t=e.target.value;r.querySelector(".wn").oninput=e=>d.w=e.target.value;r.querySelector(".em").oninput=e=>{d.e=e.target.value.trim();if(!img[d.id])r.querySelector(".pimg").textContent=d.e||"🤲"};
+    if(img[d.id])qDec("di"+d.id,img[d.id]).then(u=>{if(u)r.querySelector(".pimg").innerHTML=`<img src="${u}">`});
+    r.querySelector(".cam").onclick=()=>{qPicFor="dua:"+d.id;$("qpF").value="";$("qpF").click()};
+    if(img[d.id])r.querySelector(".rmi").onclick=()=>{delete Q.duas.img[d.id];dSave()};
+    r.querySelector(".del").onclick=()=>{if(!confirm("حذف هذا الدعاء؟"))return;dWork.splice(i,1);dDraw()};
+    if(rec[d.id]){r.querySelector(".vp").onclick=async()=>{const u=await qDec("dv"+d.id,rec[d.id]);if(u)new Audio(u).play()};r.querySelector(".vd").onclick=()=>{delete Q.duas.rec[d.id];dSave()}}
+    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{Q.duas.rec=Q.duas.rec||{};Q.duas.rec[d.id]=u.enc;qPlain["dv"+d.id]=u.url;dSave(true)});L.appendChild(r)})}
+function dSave(quiet){const Q=qSec();Q.duas=Q.duas||{};Q.duas.list=dWork.filter(d=>d.t.trim()).map(d=>({id:d.id,t:d.t.trim(),e:d.e||"🤲",w:(d.w||"").trim()}));
+  const ids=new Set(Q.duas.list.map(d=>d.id));["rec","img"].forEach(f=>Object.keys(Q.duas[f]||{}).forEach(k=>{if(!ids.has(k))delete Q.duas[f][k]}));
+  saveS();dWork=null;dDraw();if(quiet!==true){const m=$("dMsg");m.style.display="";m.textContent="✅ تم الحفظ. يصل إلى أجهزة الأطفال عند فتح التطبيق.";setTimeout(()=>m.style.display="none",4000)}}
+$("dAdd").onclick=()=>{dWork.push({id:"d"+Date.now().toString(36),t:"",e:"🤲",w:""});dDraw();const t=[...document.querySelectorAll("#dL .tx")].pop();t&&t.focus()};
+$("dSave").onclick=()=>dSave();
+document.querySelectorAll("#relTabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#relTabs button").forEach(x=>x.classList.toggle("on",x===b));$("rQ").style.display=b.dataset.r==="rQ"?"":"none";$("rD").style.display=b.dataset.r==="rD"?"":"none";if(b.dataset.r==="rD"){dWork=null;dDraw()}});
 if(window.QK){qList();const _dsq=drawSecs;drawSecs=function(){_dsq();qList()}}
 /* cloud: save to config.json in GitHub so every iPad updates by itself */
 const TK="najma:ghToken";let sha=null,pushT=null;
@@ -446,7 +473,7 @@ function drawDev(){const cur=R.get("najma:lock");chips("devLock",["👨‍👩�
 /* dashboard */
 const APPS_D=[["arabic","حروفي","arDone","arabic",[7,7,7,7,10]],["numAr","الأرقام","numDoneAr",null,null],["islam","أركان الإسلام","islamDone",null,null],["iman","أركان الإيمان","imanDone",null,null],
   ["sounds","Sounds","soundsDone","sounds",[25,7]],["cvc","Word Time","cvcDone","wt",[7,20,17,18,16,18,15]],["sent","Sentences","sentDone","sent",[4,4,4,4]],
-  ["writeEn","Handwriting","writeEn","writeEn",[26,26,10]],["numEn","Numbers","numDoneEn",null,null],["shapes","2D Shapes","shapesDone","shapes",[4,4,2]],["quran","قصص القرآن","qkDone","quran",[7,43,68,132,321]]];
+  ["writeEn","Handwriting","writeEn","writeEn",[26,26,10]],["numEn","Numbers","numDoneEn",null,null],["shapes","2D Shapes","shapesDone","shapes",[4,4,2]],["quran","قصص القرآن","qkDone","quran",[7,43,68,132,321]],["duas","أدعية","sec_duas",null,null]];
 function lvOf(p,app){const L=p.levels&&p.levels[app];return Array.isArray(L)&&L.length?L:NAJMA.LEVELS[app].map((_,i)=>i)}
 function lvText(p,app){const all=NAJMA.LEVELS[app],on=lvOf(p,app);if(on.length===all.length)return "";return on.map(i=>all[i].split(" · ")[0]).join("، ")}
 function drawDash(){
@@ -454,7 +481,7 @@ function drawDash(){
   $("dStats").innerHTML=`<div><b>${profs.length}</b><span>أطفال</span></div><div><b>${vis().length}</b><span>أقسام</span></div><div><b>${(DB?FID:R.get(TK))?"☁️":"⚠️"}</b><span>${(DB?FID:R.get(TK))?"متصل":"غير متصل"}</span></div>`;
   const D=$("dKids");D.innerHTML=profs.length?"":'<div class="note">لا يوجد أطفال بعد. اضغط ➕ طفل.</div>';
   profs.forEach(p=>{const apps=p.apps||{},max=p.numMax||20;
-    const rows=APPS_D.map(([id,name,key,lvk,sizes])=>{const on=apps[id]!==false;let total=id==="numAr"||id==="numEn"?max:id==="islam"?5:id==="iman"?6:lvOf(p,lvk).reduce((s,i)=>s+sizes[i],0);
+    const rows=APPS_D.map(([id,name,key,lvk,sizes])=>{const on=apps[id]!==false;let total=id==="duas"?duaList().length:id==="numAr"||id==="numEn"?max:id==="islam"?5:id==="iman"?6:lvOf(p,lvk).reduce((s,i)=>s+sizes[i],0);
       const n=Math.min(count(p.id,key),total),pct=total?Math.round(n/total*100):0;
       const lt=lvk?lvText(p,lvk):"";const lv=lt?`<div class="lv">🎚️ ${lt}</div>`:(id.startsWith("num")&&max<20?`<div class="lv">🎚️ حتى ${max}</div>`:"");
       return `<div class="pr${on?"":" off"}"><span dir="auto">${name}${on?"":" (مخفي)"}</span><span class="bar"><i style="width:${pct}%"></i></span><span>${n}/${total}</span>${lv}</div>`}).join("")+
@@ -473,10 +500,7 @@ function drawDash(){
     d.innerHTML=`<div class="av" style="background:#fff3c4">${s.icon}</div><div class="info"><b dir="auto">${s.title}</b><small>${s.lang==="ar"?"عربي":"English"} · ${s.words.length} كلمات · ${profs.filter(p=>!p.apps||p.apps["s:"+s.id]!==false).map(p=>p.avatar).join(" ")}</small></div><button class="b">✏️</button>`;
     d.querySelector("button").onclick=()=>editSec(s);S.appendChild(d)})}
 $("qKid").onclick=()=>editKid(null);
-$("qDua").onclick=()=>{editSec(null);es.lang="ar";es.icon="📿";setType("listen");$("sTitle").value="أدعية";
-  const D=window.KID_DUAS||[];$("sWords").value=D.map(d=>d[0]).join("\n");es.img={};es.mean={};D.forEach(d=>{es.img[d[0]]={e:d[1]};es.mean[d[0]]=d[2]});
-  chips("sIcon",ICONS,i=>i===es.icon,i=>es.icon=i,"av");chips("sLang",["English","عربي"],(x,k)=>es.lang===(k?"ar":"en"),(x,k)=>{es.lang=k?"ar":"en";drawRec()});
-  $("sWords").dir="rtl";drawRec();drawPic();$("sKidsNote").textContent="اختر الأطفال، وسجّل صوتك لكل دعاء بـ 🎤، ثم اضغط حفظ."};$("qSec").onclick=()=>editSec(null);
+$("qSec").onclick=()=>editSec(null);
 const _dk=drawKids,_ds=drawSecs;drawKids=function(){_dk();drawDash()};drawSecs=function(){_ds();drawDash()};
 /* ---------- database mode ---------- */
 let devSeen={};let sb=null,FID=null,ME=null,PRG={},loadedK=new Set(),loadedS=new Set();

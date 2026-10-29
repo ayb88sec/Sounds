@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <script src="supa.js"></script>
-<script src="profile.js"></script>
+<script src="profile.js"></script><script src="data/kidq.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="icon.png">
@@ -125,7 +125,11 @@ body.quran .line .t,body.quran .bigq{font-family:"Amiri Quran","Baloo Bhaijaan 2
 <script>
 const $=id=>document.getElementById(id);
 const SID=new URLSearchParams(location.search).get("s");
-const SEC=NAJMA.sections.find(s=>s.id===SID);
+/* the built-in duas app: the parent's edited list, recordings and pictures, or the default list */
+function duaSec(){const D=((NAJMA.sections.find(s=>s.type==="qimg")||{}).duas)||{},L=D.list||(window.KID_DUAS||[]).map((d,i)=>({id:"d"+i,t:d[0],e:d[1],w:d[2]}));
+  const s={id:"duas",type:"listen",lang:"ar",title:"أدعية",icon:"📿",words:L.map(d=>d.t),mean:{},img:{},audio:{}};
+  L.forEach(d=>{if(d.w)s.mean[d.t]=d.w;s.img[d.t]=(D.img&&D.img[d.id])||{e:d.e||"🤲"};if(D.rec&&D.rec[d.id])s.audio[d.t]=D.rec[d.id]});return s}
+const SEC=SID==="duas"?duaSec():NAJMA.sections.find(s=>s.id===SID);
 if(!SEC){location.replace("home.html");throw new Error("no section")}
 const TYPE=SEC.type||"words";if(TYPE==="words"){location.replace("words.html?s="+encodeURIComponent(SID));throw new Error("words")}
 const AR=SEC.lang==="ar";document.documentElement.lang=AR?"ar":"en";document.documentElement.dir=AR?"rtl":"ltr";if(AR)document.body.classList.add("ar");

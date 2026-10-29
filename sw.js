@@ -1,5 +1,5 @@
 /* Najma offline cache. Pages update from the internet when online and fall back to the saved copy offline. */
-const CACHE="najma-v27";
+const CACHE="najma-v28";
 const FILES=["home.html","parent.html","arabic.html","numbers-ar.html","numbers-en.html","islam.html","iman.html","index.html","sight.html","words.html","lesson.html","data/kidq.js","data/qk.js","data/qnames.js","quran.html","fonts/amiri-quran.woff2","name.html","guide.html","cvc.html","sentences.html","shapes.html","writing.html","kit.js","kit.css","extras.js","audio/phonics-uk.json",
   "supa.js","profile.js","writepad.js","icon.png","audio/clips.enc","audio/clips2.enc","audio/islam.enc","audio/iman.enc","audio/numbers.enc","audio/qpics.enc","arabic2.html"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>Promise.all(FILES.map(f=>c.add(f).catch(()=>{})))).then(()=>self.skipWaiting()))});
