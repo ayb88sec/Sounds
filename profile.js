@@ -58,7 +58,10 @@
   async function pull(){let cfg=await fetchConfig();if(cfg&&cfg.ct){try{cfg=await decrypt(cfg)}catch(e){return false}}if(!cfg||!cfg.updated)return false;
     const P=JSON.stringify(cfg.profiles||[]),Sx=JSON.stringify(cfg.sections||[]);
     const changed=P!==G.call(localStorage,"najma:profiles")||Sx!==G.call(localStorage,"najma:sections");
-    SET.call(localStorage,"najma:profiles",P);SET.call(localStorage,"najma:sections",Sx);SET.call(localStorage,"najma:pulledAt",String(Date.now()));
+    SET.call(localStorage,"najma:profiles",P);
+      /* if the iPad's storage is full, keep voices first and drop the biggest pictures */
+      try{SET.call(localStorage,"najma:sections",Sx)}catch(e){try{const L=JSON.parse(Sx);L.forEach(s=>{if(s.type==="qimg"){s.poster={}}});let t=JSON.stringify(L);
+        try{SET.call(localStorage,"najma:sections",t)}catch(e2){L.forEach(s=>{if(s.type==="qimg")s.img={};if(s.duas)s.duas.img={}});t=JSON.stringify(L);try{SET.call(localStorage,"najma:sections",t)}catch(e3){}}}catch(e4){}}SET.call(localStorage,"najma:pulledAt",String(Date.now()));
     const c=G.call(localStorage,"najma:cur");if(!G.call(localStorage,"najma:lock")&&(cfg.profiles||[]).length&&!(cfg.profiles||[]).some(p=>p.id===c))SET.call(localStorage,"najma:cur",cfg.profiles[0].id);
     return changed}
   window.NAJMA.REPO=REPO;window.NAJMA.fetchConfig=fetchConfig;

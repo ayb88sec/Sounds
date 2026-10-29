@@ -194,7 +194,7 @@ const ICONS=["📿","💬","🖼️","❓","🎧","📖","🕌","🐝","📝","�
 const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["cvc","Word Time"],["sent","Sentences"],["writeEn","Handwriting"],["numEn","Numbers"],["shapes","2D Shapes"],["quran","📖 قصص القرآن"],["duas","📿 أدعية"]];
 const PROG=[["arDone","حروفي",38],["numDoneAr","الأرقام",20],["islamDone","الإسلام",5],["imanDone","الإيمان",6],["soundsDone","Sounds",32],["cvcDone","Word Time",111],["sentDone","Sentences",16],["writeEn","Writing",62],["numDoneEn","Numbers",20],["shapesDone","Shapes",10]];
 let saveP=()=>R.set("najma:profiles",JSON.stringify(profs));
-let saveS=()=>R.set("najma:sections",JSON.stringify(secs));
+let saveS=()=>{try{R.set("najma:sections",JSON.stringify(secs))}catch(e){/* phone storage full: the database copy still saves */}};
 const $=id=>document.getElementById(id);
 
 /* gate */
@@ -409,8 +409,8 @@ function qCollect(){const n=+$("qpS").value;if(!n||!$("qpI"))return;const Q=qSec
 function qSave(msg){qCollect();saveS();qEdit();if(msg){const m=$("qpMsg");m.style.display="";m.textContent="✅ تم الحفظ. يصل إلى أجهزة الأطفال عند فتح التطبيق.";setTimeout(()=>m.style.display="none",4000)}}
 $("qpS").onchange=qEdit;
 $("qpF").onchange=e=>{const f=e.target.files[0];if(!f||!qPicFor)return;const n=+$("qpS").value,key=qPicFor,big=key==="poster",url=URL.createObjectURL(f),im=new Image();
-  im.onload=async()=>{const M=big?1400:520,s=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
-    c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);const d=c.toDataURL("image/jpeg",big?.78:.72);
+  im.onload=async()=>{const M=big?1000:520,s=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
+    c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);const d=c.toDataURL("image/jpeg",big?.7:.72);
     if(key.startsWith("dua:")){try{const Q=qSec(),id=key.slice(4);Q.duas=Q.duas||{};Q.duas.img=Q.duas.img||{};Q.duas.img[id]=await NAJMA.encrypt(d);qPlain["di"+id]=d;dSave(true)}catch(err){alert("أدخل كود العائلة في التطبيق أولًا")}return}
     try{qCollect();const Q=qSec(),enc=await NAJMA.encrypt(d);if(big){Q.poster[n]=enc;qPlain["p"+n]=d}else{Q.img[key]=enc;qPlain["i"+key]=d}qSave(false)}catch(err){alert("أدخل كود العائلة في التطبيق أولًا")}};im.src=url};
 $("qpAdd").onclick=async()=>{const n=+$("qpN").value;if(!n)return;const m=$("qpMsg");m.style.display="";m.textContent="⏳ جاري جلب السورة...";
