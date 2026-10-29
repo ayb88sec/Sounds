@@ -129,7 +129,7 @@ textarea{min-height:160px;line-height:1.5}
     <div id="qpE"></div><input type="file" id="qpF" accept="image/*" style="display:none"></div></div>
   <div class="panel" id="base">
     <div class="note">🧩 <b>التطبيقات الأساسية</b>: هنا تسجّل صوتك بالعربي لأي شيء في التطبيقات الجاهزة. اضغط ▶️ لتسمع الصوت الحالي، و🎤 لتسجّل صوتك مكانه، و↩️ للرجوع إلى الأصلي.</div>
-    <div class="chips" id="bApp" style="justify-content:center;margin-bottom:8px"></div><div id="bSrc" class="qbox" style="display:none;margin-bottom:8px"><b>🔊 مصدر صوت الحروف</b><div class="chips" id="bSrcC" style="margin-top:6px"></div><div class="note" id="bSrcN" style="margin:6px 0 0"></div></div><div class="chips" id="bGrp" style="margin-bottom:8px"></div><div id="bList"></div></div>
+    <div class="chips" id="bApp" style="justify-content:center;margin-bottom:8px"></div><div class="chips" id="bGrp" style="margin-bottom:8px"></div><div id="bList"></div></div>
   <div class="panel" id="parents">
     <div class="note" id="pFam"></div><div id="pList"></div>
     <button class="b add" id="pInvite">✉️ دعوة شخص جديد</button>
@@ -460,15 +460,11 @@ document.querySelectorAll("#relTabs button").forEach(b=>b.onclick=()=>{document.
 /* built-in apps: re-record any Arabic sound */
 let bApp="clips",bG=0;const bDef={};
 async function bLoad(f){if(bDef[f])return bDef[f];try{bDef[f]=await NAJMA.decrypt(await (await fetch(`audio/${f}.enc`)).json())}catch(e){bDef[f]={}}return bDef[f]}
-const useLib=()=>{const Q=secs.find(x=>x.type==="qimg");return !!(Q&&Q.src&&Q.src.clips==="lib")};
-async function bDefault(app){if(app==="colors")return {};const d=await bLoad(app);if(app==="clips"&&useLib())return Object.assign({},d,await bLoad("arlib"));return d}
+async function bDefault(app){if(app==="colors")return {};return await bLoad(app)}
 function bStore(app){const Q=qSec();if(app==="colors"){Q.colorRec=Q.colorRec||{};return Q.colorRec}Q.ov=Q.ov||{};Q.ov[app]=Q.ov[app]||{};return Q.ov[app]}
 function bPeek(app){const Q=secs.find(x=>x.type==="qimg");return Q?(app==="colors"?Q.colorRec:(Q.ov||{})[app])||{}:{}}
 async function drawBase(){if(!window.BASE)return;const A=Object.keys(BASE);
   chips("bApp",A.map(k=>BASE[k].t),(x,k)=>A[k]===bApp,(x,k)=>{bApp=A[k];bG=0;drawBase()});
-  $("bSrc").style.display=bApp==="clips"?"":"none";
-  if(bApp==="clips"){chips("bSrcC",["🎙️ صوتي المسجّل","📚 مكتبة الحروف"],(x,k)=>useLib()===!!k,(x,k)=>{const Q=qSec();Q.src=Q.src||{};if(k)Q.src.clips="lib";else delete Q.src.clips;saveS();drawBase()});
-    $("bSrcN").textContent=useLib()?"تسجيلات جاهزة لأسماء الحروف والحركات و٢١ كلمة. الكلمات غير الموجودة تبقى بصوتك، وتسجيلاتك هنا تتقدّم على المكتبة.":"صوتك الذي سجّلته سابقًا."}
   const G=BASE[bApp].groups;$("bGrp").style.display=G.length>1?"":"none";if(G.length>1)chips("bGrp",G.map(g=>g[0]),(x,k)=>k===bG,(x,k)=>{bG=k;drawBase()});
   const L=$("bList");L.innerHTML="";const mine=bPeek(bApp),def=await bDefault(bApp);
   G[bG][1].forEach(([key,lab])=>{const v=mine[key],r=document.createElement("div");r.className="rrow";
