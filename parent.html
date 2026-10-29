@@ -184,9 +184,11 @@ textarea{min-height:160px;line-height:1.5}
 
 <script>
 const R=NAJMA.raw;const DB=NAJMA.db;
-const baseLink=p=>location.href.replace(/parent\.html.*$/,"home.html")+"#key="+encodeURIComponent(R.get("najma:key")||"")+"&kid="+p.id;
+/* child links always point at the latest version, never at an old saved copy */
+const homeURL=()=>location.href.replace(/parent\.html.*$/,"home.html").replace(/\/ayb88sec\/Sounds\/[0-9a-f]{7,40}\//,"/ayb88sec/Sounds/main/");
+const baseLink=p=>homeURL()+"#key="+encodeURIComponent(R.get("najma:key")||"")+"&kid="+p.id;
 async function ipadLink(p){if(!DB)return baseLink(p);const {data,error}=await sb.rpc("create_device",{cid:p.id,dlabel:p.name});if(error)throw new Error(error.message);
-  return location.href.replace(/parent\.html.*$/,"home.html")+"#dev="+data+"&key="+encodeURIComponent(R.get("najma:key")||"")+"&kid="+p.id}
+  return homeURL()+"#dev="+data+"&key="+encodeURIComponent(R.get("najma:key")||"")+"&kid="+p.id}
 let profs=NAJMA.profiles.slice(),secs=JSON.parse(JSON.stringify(NAJMA.sections));const vis=()=>secs.filter(s=>s.type!=="qimg");
 const AV=["🦁","🐼","🦊","🐰","🐯","🦄","🐬","🐻","🐸","🐨","🦋","🚀","⚽","🌸","👑","🦖"];
 const PC=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a","#ff7eb6","#2b2340"];
