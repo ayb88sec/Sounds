@@ -46,6 +46,8 @@ textarea{min-height:160px;line-height:1.5}
 .chips.av button{font-size:28px;padding:2px 8px}
 .chips .sw{width:38px;height:38px;border-radius:50%;padding:0}
 .chips .sw.on{border-color:#2b2340}
+.rrow{display:flex;align-items:center;gap:8px;background:#f8f6fd;border-radius:14px;padding:6px 10px;margin-bottom:6px}
+.rrow b{flex:1;font-size:22px}.rrow .b{padding:7px 12px}.rrow .b.on{background:#ff5d73;color:#fff}.rrow .ok{color:#2a9442;font-size:14px}
 .sheet{position:fixed;inset:0;background:rgba(30,15,70,.55);display:none;align-items:flex-end;justify-content:center;z-index:20}
 .sheet.show{display:flex}
 .sheet .in-s{background:#fff;border-radius:26px 26px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));width:100%;max-width:640px;max-height:92vh;overflow:auto;animation:up .3s}
@@ -157,7 +159,9 @@ textarea{min-height:160px;line-height:1.5}
   <label>اسم القسم</label><input class="in" id="sTitle" maxlength="24" dir="auto">
   <label>الأيقونة</label><div class="chips av" id="sIcon"></div>
   <label>اللغة</label><div class="chips" id="sLang"></div>
+  <label>يظهر لـ</label><div class="chips" id="sKids"></div><div class="note" id="sKidsNote" style="margin:4px 0 0"></div>
   <label>الكلمات (كلمة في كل سطر)</label><textarea id="sWords" dir="auto"></textarea>
+  <div id="sRecBox" style="display:none"><label>🎤 سجّل صوتك لكل كلمة</label><div class="note" style="margin:0 0 6px">اضغط 🎤، قل الكلمة، ثم اضغط ⏹️. الصوت مشفّر بكود العائلة.</div><div id="sRec"></div></div>
   <div class="actions"><button class="b del" id="sDel">🗑️ حذف</button><span><button class="b" data-close>إلغاء</button> <button class="b go" id="sSave">حفظ</button></span></div>
 </div></div>
 
@@ -248,10 +252,39 @@ let es;
 function editSec(s){es=s?JSON.parse(JSON.stringify(s)):{id:"s"+Date.now().toString(36),title:"",icon:"📝",lang:"en",words:[]};
   $("sT").textContent=s?"تعديل "+s.title:"قسم جديد";$("sTitle").value=es.title;$("sWords").value=es.words.join("\n");$("sDel").style.visibility=s?"visible":"hidden";
   chips("sIcon",ICONS,i=>i===es.icon,i=>es.icon=i,"av");
-  chips("sLang",["English","عربي"],(x,k)=>es.lang===(k?"ar":"en"),(x,k)=>{es.lang=k?"ar":"en";$("sWords").dir=k?"rtl":"ltr"});
-  $("sWords").dir=es.lang==="ar"?"rtl":"ltr";$("secSheet").classList.add("show")}
+  chips("sLang",["English","عربي"],(x,k)=>es.lang===(k?"ar":"en"),(x,k)=>{es.lang=k?"ar":"en";$("sWords").dir=k?"rtl":"ltr";drawRec()});
+  $("sWords").dir=es.lang==="ar"?"rtl":"ltr";
+  sKids=new Set(s?profs.filter(p=>!p.apps||p.apps["s:"+es.id]!==false).map(p=>p.id):[]);drawSKids();
+  es.audio=es.audio||{};drawRec();$("secSheet").classList.add("show")}
+let sKids=new Set();
+function drawSKids(){chips("sKids",profs.map(p=>p.id),id=>sKids.has(id),id=>{sKids.has(id)?sKids.delete(id):sKids.add(id);drawSKids()});
+  [...$("sKids").children].forEach((b,k)=>b.textContent=`${profs[k].avatar||"⭐"} ${profs[k].name}`);
+  $("sKidsNote").textContent=sKids.size?"":"اختر طفلًا واحدًا على الأقل ليظهر القسم عنده."}
+/* parent's own voice for Arabic words, encrypted with the family code */
+let rec=null,recW=null,recT=null,plain={},curA=null;
+const curWords=()=>$("sWords").value.split(/[\n,،]+/).map(w=>w.trim()).filter(Boolean);
+function drawRec(){const box=$("sRec");$("sRecBox").style.display=es.lang==="ar"?"":"none";if(es.lang!=="ar")return;box.innerHTML="";
+  const ws=curWords();if(!ws.length){box.innerHTML='<div class="note">اكتب الكلمات أولًا.</div>';return}
+  ws.forEach(w=>{const r=document.createElement("div");r.className="rrow";const has=!!es.audio[w];
+    r.innerHTML=`<b dir="rtl">${w}</b>${has?'<span class="ok">✅</span>':""}<button class="b mic${recW===w?" on":""}">${recW===w?"⏹️":"🎤"}</button><button class="b pl"${has?"":" disabled style='opacity:.35'"}>▶️</button><button class="b rm"${has?"":" style='display:none'"}>🗑️</button>`;
+    r.querySelector(".mic").onclick=()=>recWord(w);r.querySelector(".pl").onclick=()=>playWord(w);
+    r.querySelector(".rm").onclick=()=>{delete es.audio[w];delete plain[w];drawRec()};box.appendChild(r)})}
+$("sWords").addEventListener("input",()=>{clearTimeout(window._rw);window._rw=setTimeout(drawRec,400)});
+async function playWord(w){try{if(curA)curA.pause();const src=plain[w]||(plain[w]=await NAJMA.decrypt(es.audio[w]));curA=new Audio(src);curA.play()}catch(e){alert("تعذّر تشغيل الصوت")}}
+const toURL=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)});
+async function recWord(w){if(rec){const same=recW===w;rec.stop();if(same)return}
+  if(!NAJMA.hasKey()){alert("أدخل كود العائلة في التطبيق أولًا");return}
+  try{const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}),ch=[];
+    let o={};try{o={audioBitsPerSecond:48000}}catch(e){}
+    rec=new MediaRecorder(st,o);recW=w;drawRec();rec.ondataavailable=e=>ch.push(e.data);
+    rec.onstop=async()=>{clearTimeout(recT);st.getTracks().forEach(t=>t.stop());const blob=new Blob(ch,{type:rec.mimeType||"audio/mp4"});rec=null;recW=null;
+      const url=await toURL(blob);plain[w]=url;try{es.audio[w]=await NAJMA.encrypt(url)}catch(e){alert("تعذّر حفظ الصوت");delete plain[w]}drawRec();playWord(w)};
+    rec.start();recT=setTimeout(()=>{if(rec&&rec.state==="recording")rec.stop()},4000)}
+  catch(e){rec=null;recW=null;drawRec();alert("اسمح للمايكروفون: Settings ← Safari ← Microphone")}}
 $("addSec").onclick=()=>editSec(null);
-$("sSave").onclick=()=>{es.title=$("sTitle").value.trim()||"قسم";es.words=$("sWords").value.split(/[\n,،]+/).map(w=>w.trim()).filter(Boolean);
+$("sSave").onclick=()=>{if(rec)rec.stop();es.title=$("sTitle").value.trim()||"قسم";es.words=curWords();
+  if(es.lang!=="ar")delete es.audio;else{Object.keys(es.audio||{}).forEach(w=>{if(!es.words.includes(w))delete es.audio[w]});if(!Object.keys(es.audio).length)delete es.audio}
+  profs.forEach(p=>{p.apps=Object.assign({},p.apps||{});p.apps["s:"+es.id]=sKids.has(p.id)});saveP();
   const i=secs.findIndex(s=>s.id===es.id);if(i>=0)secs[i]=es;else secs.push(es);saveS();$("secSheet").classList.remove("show");drawSecs();drawKids()};
 $("sDel").onclick=()=>{if(!confirmDel(es.title))return;secs=secs.filter(s=>s.id!==es.id);saveS();$("secSheet").classList.remove("show");drawSecs();drawKids()};
 
