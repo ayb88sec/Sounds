@@ -131,6 +131,13 @@
   function aiToast(t){try{let d=document.getElementById("aiToast");if(!d){d=document.createElement("div");d.id="aiToast";d.style.cssText="position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#2b2340;color:#fff;padding:10px 18px;border-radius:999px;font:700 16px system-ui;z-index:99";document.body.appendChild(d)}
     d.textContent=t;d.style.display="";clearTimeout(d._t);d._t=setTimeout(()=>d.style.display="none",3500)}catch(e){}}
   window.NAJMA.aiStop=()=>{aiRun++;if(aiA){aiA.onended=null;aiA.onerror=null;aiA.pause()}};
+  /* pages that play the AI voice as a normal sound go through the reliable player above (one element, fallback address) */
+  try{const MP=HTMLMediaElement.prototype,P0=MP.play,PA=MP.pause;
+    MP.play=function(){const s=this.src||"";if(this!==aiA&&s.startsWith("https://translate.google.com/translate_tts")){const el=this;
+        let q="",tl="ar";try{const u=new URL(s);q=u.searchParams.get("q")||"";tl=u.searchParams.get("tl")||"ar"}catch(e){}
+        el._ai=window.NAJMA.aiSay(q,tl).then(()=>{try{el.dispatchEvent(new Event("ended"))}catch(e){}});return Promise.resolve()}
+      return P0.apply(this,arguments)};
+    MP.pause=function(){if(this._ai&&this!==aiA){this._ai=null;window.NAJMA.aiStop();return}return PA.apply(this,arguments)}}catch(e){}
   if(SB&&DEV){const isProg=k=>typeof k==="string"&&!k.startsWith("najma:");
     const queue={};let qt=null;
     const flush=()=>{qt=null;const ks=Object.keys(queue);ks.forEach(k=>{const v=queue[k];delete queue[k];
