@@ -283,8 +283,11 @@ let delArm=0;function confirmDel(n){if(Date.now()-delArm<4000)return true;delArm
 function drawSecs(){const L=$("secList");L.innerHTML="";
   vis().forEach(s=>{const d=document.createElement("div");d.className="row";
     const mine=isMine(s),tag=s._shared?'<span style="background:#e3f8e7;color:#2a9442;border-radius:999px;padding:0 8px;font-size:13px;margin-inline-start:6px">🌍 مشترك</span>':s._proposed?'<span style="background:#fff3c4;border-radius:999px;padding:0 8px;font-size:13px;margin-inline-start:6px">📤 مقترح</span>':"";
-    d.innerHTML=`<div class="av" style="background:#fff3c4">${s.icon}</div><div class="info"><b dir="auto">${s.title}${tag}</b><small dir="auto">${(STYPES.find(x=>x[0]===(s.type||"words"))||STYPES[0])[1]} · ${s.lang==="ar"?"عربي":"English"} · ${s.words.length}: ${s.words.slice(0,6).join("، ")}${s.words.length>6?"…":""}</small></div><button class="b">✏️ تعديل</button>`;
-    if(!mine&&!IS_ADMIN){const b=d.querySelector("button");b.textContent="👀 من عائلة أخرى";b.disabled=true;b.style.opacity=.6}else d.querySelector("button").onclick=()=>editSec(s);L.appendChild(d)})}
+    d.innerHTML=`<div class="av" style="background:#fff3c4">${s.icon}</div><div class="info"><b dir="auto">${s.title}${tag}</b><small dir="auto">${(STYPES.find(x=>x[0]===(s.type||"words"))||STYPES[0])[1]} · ${s.lang==="ar"?"عربي":"English"} · ${s.words.length}: ${s.words.slice(0,6).join("، ")}${s.words.length>6?"…":""}</small></div><button class="b hd">${isHid(s)?"👁️ إظهار":"🙈 إخفاء"}</button><button class="b">✏️ تعديل</button>`;
+    if(isHid(s)){d.style.opacity=.5;d.querySelector(".info small").textContent="🙈 مخفي عن كل الأطفال"}
+    d.querySelector(".hd").onclick=()=>{const Q=qSec();Q.hide=Q.hide||{};if(Q.hide[s.id])delete Q.hide[s.id];else Q.hide[s.id]=1;saveS();drawSecs()};
+    if(!mine&&!IS_ADMIN){const b=d.querySelector("button:last-child");b.textContent="👀 من عائلة أخرى";b.disabled=true;b.style.opacity=.6}else d.querySelector("button:last-child").onclick=()=>editSec(s);L.appendChild(d)})}
+function isHid(s){const Q=ownQ();return !!(Q&&Q.hide&&Q.hide[s.id])}
 let es;
 const STYPES=[["words","📝 كلمات"],["sent","💬 جمل"],["pic","🖼️ صورة وكلمة"],["quiz","❓ اختبار"]];
 const TXTL={words:"الكلمات (كلمة في كل سطر)",sent:"الجمل (جملة في كل سطر)",pic:"الكلمات (كلمة في كل سطر)",listen:"الأسطر (سطر لكل دعاء أو بيت)"};

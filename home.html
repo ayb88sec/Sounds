@@ -137,7 +137,7 @@ for(let i=0;i<14;i++){const s=document.createElement("span"),z=20+Math.random()*
   s.style.cssText=`left:${Math.random()*100}%;width:${z}px;height:${z}px;animation-duration:${10+Math.random()*14}s;animation-delay:${-Math.random()*20}s`;bb.appendChild(s)}
 function count(k){try{return Object.keys(JSON.parse(localStorage.getItem(k)||"{}")).length}catch(e){return 0}}
 ROWS.push({t:"✏️ اسمي · My name",apps:[{id:"name",href:"name.html",glyph:NAJMA.me?(NAJMA.me.avatar||"✏️"):"✏️",name:"اسمي",sub:"My name",bg:"linear-gradient(150deg,#3fc35a,#22c7b8)",key:"_none",total:0}]});
-NAJMA.sections.filter(s=>s.type!=="qimg").forEach((s,k)=>{const row=ROWS[s.lang==="ar"?0:2];row.apps.push({id:"s:"+s.id,href:((s.type||"words")==="words"?"words.html":"lesson.html")+"?s="+encodeURIComponent(s.id),glyph:s.icon||"📝",name:s.title,
+NAJMA.sections.filter(s=>s.type!=="qimg"&&!(((NAJMA.sections.find(q=>q.type==="qimg")||{}).hide||{})[s.id])).forEach((s,k)=>{const row=ROWS[s.lang==="ar"?0:2];row.apps.push({id:"s:"+s.id,href:((s.type||"words")==="words"?"words.html":"lesson.html")+"?s="+encodeURIComponent(s.id),glyph:s.icon||"📝",name:s.title,
   sub:s.words.length+(s.lang==="ar"?" كلمات":" words"),bg:["linear-gradient(150deg,#ffcf3c,#ff6f91)","linear-gradient(150deg,#4f8bff,#a66bff)","linear-gradient(150deg,#22c7b8,#3fc35a)"][k%3],key:"sec_"+s.id,total:s.words.length})});
 const box=document.getElementById("apps");
 /* rings follow the levels switched on for this child */
