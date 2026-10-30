@@ -200,7 +200,7 @@ setTimeout(function(){var g=document.getElementById("gate");if(g&&getComputedSty
 <script>
 const R=NAJMA.raw;const DB=NAJMA.db;
 /* child links always point at the latest version, never at an old saved copy */
-const homeURL=()=>location.href.replace(/parent\.html.*$/,"home.html").replace(/\/ayb88sec\/Sounds\/[0-9a-f]{7,40}\//,"/ayb88sec/Sounds/main/");
+const homeURL=()=>location.href.replace(/parent\.html.*$/,"home.html");
 const baseLink=p=>homeURL()+"?key="+encodeURIComponent(R.get("najma:key")||"")+"&kid="+p.id;
 async function ipadLink(p){if(!DB)return baseLink(p);const {data,error}=await sb.rpc("create_device",{cid:p.id,dlabel:p.name});if(error)throw new Error(error.message);
   return homeURL()+"?dev="+data+"&key="+encodeURIComponent(R.get("najma:key")||"")+"&kid="+p.id}

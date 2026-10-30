@@ -1,6 +1,17 @@
 /* Najma profiles: gives each child their own progress by namespacing storage, and exposes their settings.
    Must load before any page script. */
 (function(){
+  /* always run the newest version: the main link can stay old for a while on the hosting site, a version link never does.
+     Same site, so each child's saved progress and settings stay. Checks at most every 5 minutes. */
+  try{const m=location.hostname==="raw.githack.com"&&location.pathname.match(/^\/ayb88sec\/Sounds\/([^\/]+)\/(.*)$/i);
+    if(m){const at=m[1],page=m[2]||"home.html",K="najma:latest",GI=Storage.prototype.getItem,SI=Storage.prototype.setItem;
+      const go=sha=>{if(sha&&at!==sha)location.replace("/ayb88sec/Sounds/"+sha+"/"+page+location.search+location.hash)};
+      let c={};try{c=JSON.parse(GI.call(localStorage,K)||"{}")}catch(e){}
+      if(c.sha&&Date.now()-c.t<3e5)go(c.sha);
+      else fetch("https://api.github.com/repos/ayb88sec/Sounds/commits/main",{cache:"no-store"}).then(r=>r.ok?r.json():null)
+        .then(j=>{if(!j||!/^[0-9a-f]{40}$/.test(j.sha||""))return;try{SI.call(localStorage,K,JSON.stringify({sha:j.sha,t:Date.now()}))}catch(e){}go(j.sha)}).catch(()=>{})}}catch(e){}
+})();
+(function(){
   const S=Storage.prototype,G=S.getItem,SET=S.setItem,RM=S.removeItem;
   const STANDALONE=navigator.standalone===true||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches);
   /* the child link can arrive as #dev=…&key=…&kid=… or as ?dev=…&key=…&kid=… (the Home Screen keeps the ? form reliably) */
@@ -141,5 +152,5 @@
       for(let i=0;i<localStorage.length;i++){const full=localStorage.key(i);if(full&&full.startsWith(`najma:${kid.id}:`)){const k=full.slice(kid.id.length+8);if(!(k in (js.progress||{})))push(k,G.call(localStorage,full))}}
       if(changed&&/home\.html$/.test(location.pathname)&&!sessionStorage.getItem("najma:reloaded")){sessionStorage.setItem("najma:reloaded","1");location.reload()}else if(!changed)sessionStorage.removeItem("najma:reloaded")}).catch(e=>{try{SET.call(localStorage,"najma:syncErr",String(e&&e.message||e))}catch(x){}})}
   /* offline: cache everything once it has been opened online */
-  if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}
+  if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").then(()=>navigator.serviceWorker.getRegistrations()).then(rs=>rs.forEach(x=>{if(!location.href.startsWith(x.scope))x.unregister()})).catch(()=>{})})}
 })();
