@@ -210,8 +210,8 @@ var IS_ADMIN=false;const isMine=x=>!x._fam||x._fam===FID;const ownQ=()=>secs.fin
 const AV=["🦁","🐼","🦊","🐰","🐯","🦄","🐬","🐻","🐸","🐨","🦋","🚀","⚽","🌸","👑","🦖"];
 const PC=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a","#ff7eb6","#2b2340"];
 const ICONS=["📿","💬","🖼️","❓","🎧","📖","🕌","🐝","📝","📚","✏️","🍎","🌟","🧠","🏫","🔤","🌍","🧪","🎵"];
-const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["cvc","Word Time"],["sent","Sentences"],["writeEn","Handwriting"],["numEn","Numbers"],["colorsAr","🎨 الألوان"],["colorsEn","🎨 Colours"],["shapes","2D Shapes"],["quran","📖 قصص القرآن"],["duas","📿 أدعية"]];
-const PROG=[["arDone","حروفي",38],["numDoneAr","الأرقام",20],["islamDone","الإسلام",5],["imanDone","الإيمان",6],["soundsDone","Sounds",32],["cvcDone","Word Time",111],["sentDone","Sentences",16],["writeEn","Writing",62],["numDoneEn","Numbers",20],["shapesDone","Shapes",10]];
+const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["spell","🧩 كلماتي الأولى"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["cvc","Word Time"],["sent","Sentences"],["writeEn","Handwriting"],["numEn","Numbers"],["colorsAr","🎨 الألوان"],["colorsEn","🎨 Colours"],["shapes","2D Shapes"],["quran","📖 قصص القرآن"],["duas","📿 أدعية"]];
+const PROG=[["arDone","حروفي",38],["spellDone","كلماتي الأولى",60],["numDoneAr","الأرقام",20],["islamDone","الإسلام",5],["imanDone","الإيمان",6],["soundsDone","Sounds",32],["cvcDone","Word Time",111],["sentDone","Sentences",16],["writeEn","Writing",62],["numDoneEn","Numbers",20],["shapesDone","Shapes",10]];
 let saveP=()=>R.set("najma:profiles",JSON.stringify(profs));
 let saveS=()=>{try{R.set("najma:sections",JSON.stringify(secs.map(x=>isMine(x)?x:Object.assign({},x,{mine:false}))))}catch(e){/* phone storage full: the database copy still saves */}};
 const $=id=>document.getElementById(id);
@@ -235,7 +235,7 @@ function chips(id,list,isOn,onTap,cls){const box=$(id);box.innerHTML="";box.clas
 function drawKids(){const L=$("kidList");L.innerHTML="";
   if(!profs.length)L.innerHTML='<div class="note">لا يوجد أطفال بعد. اضغط ➕ لإضافة أول طفل.</div>';
   profs.forEach(p=>{const d=document.createElement("div");d.className="row";
-    const prog=PROG.filter(([k])=>p.apps?p.apps[{arDone:"arabic",numDoneAr:"numAr",islamDone:"islam",imanDone:"iman",soundsDone:"sounds",cvcDone:"cvc",sentDone:"sent",writeEn:"writeEn",numDoneEn:"numEn",shapesDone:"shapes"}[k]]!==false:true)
+    const prog=PROG.filter(([k])=>p.apps?p.apps[{arDone:"arabic",spellDone:"spell",numDoneAr:"numAr",islamDone:"islam",imanDone:"iman",soundsDone:"sounds",cvcDone:"cvc",sentDone:"sent",writeEn:"writeEn",numDoneEn:"numEn",shapesDone:"shapes"}[k]]!==false:true)
       .map(([k,n,t])=>`<span>${n} ${Math.min(count(p.id,k),t)}/${t}</span>`).join("")+
       vis().filter(s=>!p.apps||p.apps["s:"+s.id]!==false).map(s=>`<span>${s.icon} ${s.title} ${count(p.id,"sec_"+s.id)}/${s.words.length}</span>`).join("");
     d.innerHTML=`<div class="av" style="background:${p.color}">${p.avatar}</div><div class="info"><b dir="auto">${p.name}</b>
@@ -256,12 +256,12 @@ function editKid(p){
   chips("kCol",PC,c=>c===ed.color,c=>ed.color=c);
   const apps=[...BUILT,...vis().map(s=>["s:"+s.id,`${s.icon} ${s.title}`])];
   chips("kApps",apps.map(a=>a[1]),(x,k)=>ed.apps[apps[k][0]]!==false,(x,k)=>{const id=apps[k][0];ed.apps[id]=ed.apps[id]===false});
-  ed.levels=ed.levels||{};const LV=NAJMA.LEVELS,LN={arabic:"حروفي",sounds:"Sounds",wt:"Word Time (RWI)",sent:"Sentences",shapes:"2D Shapes",writeEn:"Handwriting",quran:"📖 قصص القرآن"};
+  ed.levels=ed.levels||{};const LV=NAJMA.LEVELS,LN={arabic:"حروفي",spell:"🧩 كلماتي الأولى (مراحل الكتيب)",sounds:"Sounds",wt:"Word Time (RWI)",sent:"Sentences",shapes:"2D Shapes",writeEn:"Handwriting",quran:"📖 قصص القرآن"};
   const lb=$("kLevels");lb.innerHTML="";
   Object.keys(LV).forEach(app=>{if(!Array.isArray(ed.levels[app])||!ed.levels[app].length)ed.levels[app]=LV[app].map((_,i)=>i);
     const row=document.createElement("div");row.style.cssText="background:#f8f6fd;border-radius:14px;padding:8px 10px;margin-bottom:8px";
-    row.innerHTML=`<div style="font-weight:800;margin-bottom:6px" dir="auto">${LN[app]}</div><div class="chips" id="lv_${app}" dir="${app==="arabic"||app==="quran"?"rtl":"ltr"}"></div>`;lb.appendChild(row);
-    chips("lv_"+app,LV[app].map((n,i)=>(app==="arabic"||app==="writeEn"||app==="sounds"||app==="wt"||app==="quran"?"":"L"+(i+1)+" ")+n),(x,k)=>ed.levels[app].includes(k),
+    row.innerHTML=`<div style="font-weight:800;margin-bottom:6px" dir="auto">${LN[app]}</div><div class="chips" id="lv_${app}" dir="${app==="arabic"||app==="quran"||app==="spell"?"rtl":"ltr"}"></div>`;lb.appendChild(row);
+    chips("lv_"+app,LV[app].map((n,i)=>(app==="arabic"||app==="spell"||app==="writeEn"||app==="sounds"||app==="wt"||app==="quran"?"":"L"+(i+1)+" ")+n),(x,k)=>ed.levels[app].includes(k),
       (x,k)=>{const a=ed.levels[app];ed.levels[app]=a.includes(k)?(a.length>1?a.filter(v=>v!==k):a):[...a,k].sort((p,q)=>p-q)})});
   chips("kNum",["١٠ / 10","٢٠ / 20"],(x,k)=>ed.numMax===(k?20:10),(x,k)=>ed.numMax=k?20:10);
   if(0)chips("kSight",["1","2","3","4","5","6","7","8","9"],(x,k)=>ed.sightGroups.includes(k),(x,k)=>{ed.sightGroups=ed.sightGroups.includes(k)?ed.sightGroups.filter(v=>v!==k):[...ed.sightGroups,k].sort((a,b)=>a-b)});
@@ -586,7 +586,7 @@ $("tokDel").onclick=()=>{R.remove(TK);$("tok").value="";connect()};
 function drawDev(){const cur=R.get("najma:lock");chips("devLock",["👨‍👩‍👧 كل الأطفال (جهاز الوالدين)",...profs.map(p=>p.avatar+" "+p.name)],(x,k)=>k?profs[k-1].id===cur:!cur,
   (x,k)=>{if(k){R.set("najma:lock",profs[k-1].id);R.set("najma:cur",profs[k-1].id)}else{R.remove("najma:lock");R.remove("najma:dev");R.set("najma:profiles",JSON.stringify(profs))}})}
 /* dashboard */
-const APPS_D=[["arabic","حروفي","arDone","arabic",[7,7,7,7,10]],["numAr","الأرقام","numDoneAr",null,null],["islam","أركان الإسلام","islamDone",null,null],["iman","أركان الإيمان","imanDone",null,null],
+const APPS_D=[["arabic","حروفي","arDone","arabic",[7,7,7,7,10]],["spell","كلماتي الأولى","spellDone","spell",[10,5,5,20,20]],["numAr","الأرقام","numDoneAr",null,null],["islam","أركان الإسلام","islamDone",null,null],["iman","أركان الإيمان","imanDone",null,null],
   ["sounds","Sounds","soundsDone","sounds",[25,7]],["cvc","Word Time","cvcDone","wt",[7,20,17,18,16,18,15]],["sent","Sentences","sentDone","sent",[4,4,4,4]],
   ["writeEn","Handwriting","writeEn","writeEn",[26,26,10]],["numEn","Numbers","numDoneEn",null,null],["colorsAr","الألوان","colorsAr",null,null],["colorsEn","Colours","colorsEn",null,null],["shapes","2D Shapes","shapesDone","shapes",[4,4,2]],["quran","قصص القرآن","qkDone","quran",[7,43,68,132,321]],["duas","أدعية","sec_duas",null,null]];
 function lvOf(p,app){const L=p.levels&&p.levels[app];return Array.isArray(L)&&L.length?L:NAJMA.LEVELS[app].map((_,i)=>i)}

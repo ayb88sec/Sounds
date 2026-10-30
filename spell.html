@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<script src="supa.js"></script>
+<script src="profile.js"></script>
+<script src="data/spell.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon.png"><link rel="icon" href="icon.png">
+<title>كلماتي الأولى</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;800&display=swap">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0}
+body{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif;color:#2b2340;min-height:100vh;background:linear-gradient(160deg,#22c7b8,#3fa9f5 45%,#a66bff);background-attachment:fixed}
+main{max-width:820px;margin:0 auto;padding:16px 12px 60px}
+h1{color:#fff;text-align:center;font-size:clamp(36px,9vw,54px);margin:6px 0 0;text-shadow:0 4px 0 rgba(0,0,0,.18)}
+.sub{text-align:center;color:#fff;font-weight:800;font-size:17px;margin:0 0 10px;opacity:.95}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;font-family:inherit;font-size:17px;font-weight:800;border:0;border-radius:999px;padding:8px 16px;background:rgba(255,255,255,.35);color:#fff;cursor:pointer}
+.tabs button.on{background:#fff;color:#2b2340;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.box{background:#fffdf7;border-radius:28px;padding:14px;box-shadow:0 8px 0 rgba(0,0,0,.12);margin-bottom:16px}
+.ttl{display:inline-block;border:3px solid #22b04b;border-radius:14px;padding:2px 18px;font-weight:800;font-size:20px;margin:0 auto 10px}
+.center{text-align:center}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.t{border:0;border-radius:14px;font-family:inherit;font-size:clamp(26px,7vw,40px);font-weight:800;padding:8px 0;cursor:pointer;color:#2b2340;box-shadow:0 4px 0 rgba(0,0,0,.1)}
+.t:active,.s:active,.wd:active{transform:translateY(3px)}
+.c0{background:#c9f2d6}.c1{background:#ffe1c6}.c2{background:#e3d9ff}.c3{background:#cfeaff}.c4{background:#ffd6e3}
+.lt{display:flex;gap:8px;align-items:stretch;border:3px solid;border-radius:16px;padding:6px;margin-bottom:10px;background:#fff}
+.lt .big{flex:none;width:72px;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:800;border-radius:12px;cursor:pointer}
+.lt .rows{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.lt .rows .t{font-size:32px;padding:4px 0}
+.lt.ok{box-shadow:0 0 0 4px #ffd23f}
+.wr{display:flex;align-items:center;gap:8px;border:3px solid;border-radius:18px;padding:8px;margin-bottom:10px;position:relative}
+.wr .syl{display:flex;gap:5px;flex:1}
+.s{border:2px solid currentColor;background:#fff;border-radius:12px;font-family:inherit;font-size:26px;font-weight:800;min-width:42px;padding:2px 6px;cursor:pointer;color:inherit}
+.s.lit{background:#ffd23f}
+.ar{font-size:22px;opacity:.6}
+.wd{border:2px solid currentColor;background:#fff;border-radius:12px;font-family:inherit;font-size:30px;font-weight:800;padding:2px 10px;min-width:104px;cursor:pointer;color:#2b2340}
+.wr .st{position:absolute;top:-10px;left:-6px;font-size:18px}
+.btn{font-family:inherit;font-size:20px;font-weight:800;border:0;border-radius:999px;padding:10px 22px;cursor:pointer;color:#fff;background:#ff6f91;box-shadow:0 6px 0 #d14d72;margin:4px}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 #d14d72}
+.btn.g{background:#fff;color:#6a5cff;box-shadow:0 6px 0 #ddd3ee}
+.modal{position:fixed;inset:0;background:rgba(30,20,60,.55);display:none;align-items:center;justify-content:center;z-index:40;padding:12px}
+.modal.show{display:flex}
+.card{background:#fff;border-radius:34px;padding:18px;max-width:520px;width:100%;text-align:center;position:relative;animation:zoom .35s cubic-bezier(.3,1.6,.5,1);max-height:96vh;overflow:auto}
+@keyframes zoom{from{transform:scale(.3);opacity:0}}
+.x{position:absolute;top:10px;inset-inline-start:12px;border:0;background:#f0edf7;border-radius:50%;width:42px;height:42px;font-size:20px;cursor:pointer}
+.q{font-size:24px;font-weight:800;margin:34px 0 6px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.opts button{border:0;border-radius:22px;padding:18px 0;font-family:inherit;font-size:44px;font-weight:800;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.12);color:#2b2340}
+.opts button.wrong{animation:shake .4s;opacity:.35}.opts button.right{outline:6px solid #3fc35a}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.slots{display:flex;gap:8px;justify-content:center;margin:14px 0;min-height:70px}
+.slots span{min-width:70px;border:3px dashed #c9c0e0;border-radius:16px;font-size:36px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.slots span.f{border-style:solid;border-color:#3fc35a;background:#eafbe9}
+.pool{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.pool button{border:0;border-radius:16px;font-family:inherit;font-size:36px;font-weight:800;min-width:70px;padding:4px 12px;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.12);color:#2b2340}
+.pool button.used{visibility:hidden}
+.score{color:#7a7090;font-weight:700}
+.hint{background:rgba(255,255,255,.9);border-radius:16px;padding:8px 12px;font-size:15px;text-align:center;margin-bottom:12px}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+</style>
+</head>
+<body>
+<a href="home.html" aria-label="Home" style="position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;z-index:15;width:52px;height:52px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18)">🏠</a>
+<canvas id="fx"></canvas>
+<main>
+  <h1>🧩 كلماتي الأولى</h1>
+  <p class="sub">حروفي وكلماتي الأولى</p>
+  <div class="tabs" id="tabs"></div>
+  <div class="hint" id="hint" style="display:none"></div>
+  <div id="pane"></div>
+</main>
+<div class="modal" id="m"><div class="card"><button class="x" data-close>✕</button><div id="mb"></div></div></div>
+<script>
+const $=id=>document.getElementById(id),S=window.SPELL;
+const PH=["الطويل والقصير","أ ب د س م","ل ن ف ق ر","المقاطع ١","المقاطع ٢"];
+const ON=NAJMA.lv("spell");
+let done={};try{done=JSON.parse(localStorage.getItem("spellDone")||"{}")}catch(e){}
+const mark=k=>{if(done[k])return;done[k]=1;try{localStorage.setItem("spellDone",JSON.stringify(done))}catch(e){}};
+const shuf=a=>[...a].sort(()=>Math.random()-.5),rnd=a=>a[Math.floor(Math.random()*a.length)];
+const praise=["أحسنت!","رائع!","ممتاز!","شاطر!","برافو!"];
+
+/* voice: the letters bundle (short sounds, already recorded) + this app's recordings from the portal (🧩 الأساسية) */
+const VM=NAJMA.vmode("spell","mine");window.CL={};window.SP={};
+NAJMA.loadAudio("clips","CL");NAJMA.loadAudio("spell","SP");
+let aud=null;
+function src(k){return k&&(k[0]==="l"?CL[k]:SP[k])}
+function play(k){return new Promise(res=>{const u=src(k);if(!u){res();return}
+  try{if(aud){aud.onended=null;aud.pause()}aud=new Audio(u);aud.onended=aud.onerror=()=>res();aud.play().catch(()=>res());setTimeout(res,2600)}catch(e){res()}})}
+const say=t=>play(S.keys[t]);
+let wordRun=0;
+async function sayWord(w,els){const id=++wordRun;for(let i=0;i<w.s.length;i++){if(id!==wordRun)return;if(els)els.forEach((e,j)=>e.classList.toggle("lit",j===i));await say(w.s[i]);await new Promise(r=>setTimeout(r,250))}
+  if(els)els.forEach(e=>e.classList.remove("lit"));if(id===wordRun)await play(w.k)}
+
+/* sounds + confetti */
+let ac;function tone(f,d,w=0,ty="triangle",v=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(v,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
+const fan=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12)),buzz=()=>tone(160,.25,0,"sawtooth",.08);
+const COL=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
+const cv=$("fx"),cx=cv.getContext("2d");let parts=[],run=false;function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}size();addEventListener("resize",size);
+function burst(x,y,n=36){for(let i=0;i<n;i++){const a=Math.random()*6.28,v=3+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:4+Math.random()*7,c:COL[i%6],rot:0,vr:(Math.random()-.5)*.4,life:90})}if(!run){run=true;requestAnimationFrame(loop)}}
+function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.life-->0);for(const p of parts){p.vy+=.25;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);cx.fillStyle=p.c;cx.globalAlpha=Math.min(1,p.life/30);cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);cx.restore()}if(parts.length)requestAnimationFrame(loop);else run=false}
+const burstAt=el=>{const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2)};
+const M=$("m"),open=h=>{$("mb").innerHTML=h;M.classList.add("show")},close=()=>{M.classList.remove("show");wordRun++};
+M.addEventListener("click",e=>{if(e.target===M||e.target.hasAttribute("data-close"))close()});
+
+/* tabs: only the phases switched on for this child */
+let cur=+(localStorage.getItem("spellTab")||ON[0]);if(!ON.includes(cur))cur=ON[0];
+function tabs(){$("tabs").innerHTML="";ON.forEach(i=>{const b=document.createElement("button");b.textContent="١٢٣٤٥"[i]+" · "+PH[i];if(i===cur)b.className="on";
+  b.onclick=()=>{cur=i;try{localStorage.setItem("spellTab",i)}catch(e){}tabs();draw()};$("tabs").appendChild(b)})}
+const missing=()=>VM==="mine"&&Object.keys(SP).length===0;
+function draw(){const P=$("pane");P.innerHTML="";window.scrollTo(0,0);
+  $("hint").style.display=missing()&&cur!==1&&cur!==2?"":"none";$("hint").textContent="🎙️ الأصوات الطويلة والكلمات تحتاج تسجيل صوت ماما من بوابة الوالدين.";
+  if(cur===0)drawGrid(P);else if(cur<3)drawLetters(P,S.letters[cur-1]);else drawWords(P,S.words[cur-3])}
+
+/* phase 1: long and short sounds (booklet pages 4 and 5) */
+function drawGrid(P){const g=document.createElement("div");g.className="center";g.innerHTML=`<button class="btn" id="go">🎯 قصير أم طويل؟</button>`;P.appendChild(g);
+  S.grid.forEach((G,p)=>{const b=document.createElement("div");b.className="box center";b.innerHTML=`<div class="ttl">تمييز الأصوات الطويلة والقصيرة</div><div class="grid"></div>`;
+    G.forEach((t,k)=>{const e=document.createElement("button");e.className="t c"+((k+p*2+Math.floor(k/5))%5);e.textContent=t;e.onclick=()=>{say(t);burstAt(e)};b.lastChild.appendChild(e)});P.appendChild(b)});
+  $("go").onclick=gameLS}
+const isLong=t=>/[اويآ]$/.test(t)||t==="آ";
+function pairOf(t){const k=S.keys[t];const all=Object.keys(S.keys);const m=k.match(/^[lg](\d\d)-(.)$/);if(!m)return null;
+  const v=k[0]==="l"?"aiu"[+m[2]]:m[2],other=k[0]==="l"?"g"+m[1]+"-"+v:"l"+m[1]+"-"+"aiu".indexOf(v);return all.find(x=>S.keys[x]===other)||null}
+function gameLS(){let right=0,n=0;const pool=[...new Set(S.grid.flat())].filter(t=>pairOf(t));
+  function round(){const t=rnd(pool),o=pairOf(t);const ch=shuf([t,o]);
+    open(`<div class="q">اسمع: قصير أم طويل؟</div><button class="btn g" id="ag">🔊 مرة ثانية</button><div class="opts">${ch.map((c,i)=>`<button class="c${i?1:3}" data-v="${c}">${c}</button>`).join("")}</div><div class="score">⭐ ${right} / 10</div>`);
+    say(t);$("ag").onclick=()=>say(t);
+    $("mb").querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(b.dataset.v===t){b.classList.add("right");burstAt(b);mark("g"+right);right++;n++;
+      if(right>=10){fan();setTimeout(()=>open(`<div class="q">${rnd(praise)} 🏆</div><div style="font-size:70px">⭐</div><button class="btn" id="again">🔁 العب مرة ثانية</button>`),700);setTimeout(()=>{const a=$("again");if(a)a.onclick=gameLS},760)}
+      else setTimeout(round,900)}else{b.classList.add("wrong");buzz()}})}
+  round()}
+
+/* phases 2 and 3: each letter with short and long sounds (booklet pages 6 and 7) */
+function drawLetters(P,LS){const g=document.createElement("div");g.className="center";g.innerHTML=`<button class="btn" id="go">🎯 اسمع واختر</button>`;P.appendChild(g);
+  const b=document.createElement("div");b.className="box";b.innerHTML=`<div class="center"><div class="ttl">قراءة</div></div>`;P.appendChild(b);
+  LS.forEach((L,i)=>{const e=document.createElement("div"),c=COL[i%6];e.className="lt"+(done["L:"+L.l]?" ok":"");e.style.borderColor=c;
+    e.innerHTML=`<div class="big" style="color:${c};background:${c}22">${L.l}</div><div class="rows"></div>`;const seen=new Set();
+    L.f.flat().forEach((t,k)=>{const x=document.createElement("button");x.className="t c"+(k<3?3:1);x.textContent=t;x.onclick=()=>{say(t);burstAt(x);seen.add(t);if(seen.size===6&&!done["L:"+L.l]){mark("L:"+L.l);e.classList.add("ok");fan()}};e.lastChild.appendChild(x)});
+    e.firstChild.onclick=async()=>{for(const t of L.f.flat()){await say(t);await new Promise(r=>setTimeout(r,200))}};b.appendChild(e)});
+  $("go").onclick=()=>gameLetters(LS)}
+function gameLetters(LS){let right=0;const all=LS.flatMap(L=>L.f.flat());
+  function round(){const t=rnd(all),L=LS.find(L=>L.f.flat().includes(t)),ch=shuf([t,...shuf(L.f.flat().filter(x=>x!==t)).slice(0,3)]);
+    open(`<div class="q">اسمع واضغط على الصوت</div><button class="btn g" id="ag">🔊 مرة ثانية</button><div class="opts">${ch.map((c,i)=>`<button class="c${i%5}" data-v="${c}">${c}</button>`).join("")}</div><div class="score">⭐ ${right}</div>`);
+    say(t);$("ag").onclick=()=>say(t);
+    $("mb").querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(b.dataset.v===t){b.classList.add("right");burstAt(b);right++;if(right%5===0)fan();setTimeout(round,900)}else{b.classList.add("wrong");buzz()}})}
+  round()}
+
+/* phases 4 and 5: read the syllables, then the word (booklet pages 8 to 15) */
+function drawWords(P,WS){const g=document.createElement("div");g.className="center";g.innerHTML=`<button class="btn" id="go">🧩 ركّب الكلمة</button>`;P.appendChild(g);
+  for(let p=0;p<WS.length;p+=5){const b=document.createElement("div");b.className="box";b.innerHTML=`<div class="center"><div class="ttl">اقرأ المقاطع ثُمَّ اقرأ الكلمات</div></div>`;
+    WS.slice(p,p+5).forEach((w,i)=>{const c=["#f59e2a","#3aa39a","#9b7fd6","#e0607e","#4f9be0"][i],r=document.createElement("div");r.className="wr";r.style.borderColor=c;r.style.color=c;r.style.background=c+"14";
+      r.innerHTML=`${done["W:"+w.k]?'<span class="st">⭐</span>':""}<div class="syl">${w.s.map(s=>`<button class="s">${s}</button>`).join("")}</div><span class="ar">←</span><button class="wd">${w.w}</button>`;
+      const ss=[...r.querySelectorAll(".s")];ss.forEach((e,j)=>e.onclick=()=>{wordRun++;say(w.s[j]);e.classList.add("lit");setTimeout(()=>e.classList.remove("lit"),500)});
+      r.querySelector(".wd").onclick=e=>{burstAt(e.target);sayWord(w,ss);if(!done["W:"+w.k]){mark("W:"+w.k);r.insertAdjacentHTML("afterbegin",'<span class="st">⭐</span>')}};b.appendChild(r)});P.appendChild(b)}
+  $("go").onclick=()=>gameBuild(WS)}
+function gameBuild(WS){let right=0,order=shuf(WS);
+  function round(){const w=order[right%order.length],extra=rnd(WS.flatMap(x=>x.s).filter(s=>!w.s.includes(s))),pool=shuf([...w.s,extra]);let at=0;
+    open(`<div class="q">اسمع وركّب الكلمة</div><button class="btn g" id="ag">🔊 مرة ثانية</button><div class="slots">${w.s.map(()=>"<span></span>").join("")}</div><div class="pool">${pool.map((s,i)=>`<button class="c${i%5}" data-v="${s}">${s}</button>`).join("")}</div><div class="score">⭐ ${right}</div>`);
+    play(w.k);$("ag").onclick=()=>play(w.k);const sl=$("mb").querySelectorAll(".slots span");
+    $("mb").querySelectorAll(".pool button").forEach(b=>b.onclick=()=>{if(b.dataset.v===w.s[at]){say(b.dataset.v);sl[at].textContent=b.dataset.v;sl[at].classList.add("f");b.classList.add("used");at++;
+      if(at===w.s.length){right++;mark("W:"+w.k);fan();burst(innerWidth/2,innerHeight/2,50);setTimeout(()=>{$("mb").querySelector(".q").textContent=w.w+" ✨ "+rnd(praise);play(w.k)},500);setTimeout(round,2600)}}
+      else{b.animate([{transform:"translateX(-8px)"},{transform:"translateX(8px)"},{transform:"none"}],{duration:300});buzz()}})}
+  round()}
+
+tabs();draw();
+setTimeout(()=>{if(missing())$("hint").style.display=cur!==1&&cur!==2?"":"none";else $("hint").style.display="none"},1500);
+</script>
+</body>
+</html>
