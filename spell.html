@@ -84,10 +84,13 @@ const praise=["أحسنت!","رائع!","ممتاز!","شاطر!","برافو!"]
 
 /* voice: the letters bundle (short sounds, already recorded) + this app's recordings from the portal (🧩 الأساسية) */
 const VM=NAJMA.vmode("spell","mine");window.CL={};window.SP={};
-NAJMA.loadAudio("clips","CL");NAJMA.loadAudio("spell","SP");
+/* this app has its own voice setting: AI reads everything here; "my voice" uses recordings (short sounds fall back to the حروفي recordings) */
+if(VM==="mine"){NAJMA.loadAudio("clips","CL");NAJMA.loadAudio("spell","SP")}
+const TXT={};Object.entries(S.keys).forEach(([t,k])=>TXT[k]=t);S.words.flat().forEach(w=>TXT[w.k]=w.w);
 let aud=null;
-function src(k){return k&&(k[0]==="l"?CL[k]:SP[k])}
-function play(k){return new Promise(res=>{const u=src(k);if(!u){res();return}
+function src(k){return k&&(k[0]==="l"?(SP[k]||CL[k]):SP[k])}
+function play(k){if(VM==="none")return Promise.resolve();if(VM==="ai")return NAJMA.aiSay(TXT[k]||"");
+  return new Promise(res=>{const u=src(k);if(!u){res();return}
   try{if(aud){aud.onended=null;aud.pause()}aud=new Audio(u);aud.onended=aud.onerror=()=>res();aud.play().catch(()=>res());setTimeout(res,2600)}catch(e){res()}})}
 const say=t=>play(S.keys[t]);
 let wordRun=0;
@@ -164,7 +167,7 @@ function gameBuild(WS){let right=0,order=shuf(WS);
   round()}
 
 tabs();draw();
-setTimeout(()=>{if(missing())$("hint").style.display=cur!==1&&cur!==2?"":"none";else $("hint").style.display="none"},1500);
+setTimeout(()=>{if(false)$("hint").style.display=cur!==1&&cur!==2?"":"none";else $("hint").style.display="none"},1500);
 </script>
 </body>
 </html>
