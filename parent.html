@@ -632,10 +632,18 @@ async function afterLogin(){const {data:mem}=await sb.from("family_members").sel
   FID=mem[0].family_id;$("auth").style.display="none";await loadAll()}
 $("fNew").onclick=async()=>{const {error}=await sb.rpc("create_family",{fname:$("fName").value.trim()});if(error)return msg(error.message);afterLogin()};
 $("fJoin").onclick=async()=>{const {error}=await sb.rpc("join_family",{icode:$("fCode").value.trim()});if(error)return msg("الرمز غير صحيح أو منتهي");afterLogin()};
-async function loadAll(){
-  const [k,s,pr,fam,mem]=await Promise.all([sb.from("children").select("id,data").eq("family_id",FID),sb.from("sections").select("id,data,family_id,shared,proposed").or(`family_id.eq.${FID},shared.eq.true`).order("updated_at"),
+/* show any problem on screen instead of an empty page */
+function showErr(m){let d=document.getElementById("errBox");if(!d){d=document.createElement("div");d.id="errBox";d.style.cssText="position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:300;background:#c93a50;color:#fff;border-radius:16px;padding:10px 14px;font:700 14px system-ui;direction:ltr;text-align:left;white-space:pre-wrap";d.onclick=()=>d.remove();document.body.appendChild(d)}d.textContent="⚠️ "+m}
+addEventListener("error",e=>showErr((e.message||"")+" @"+(e.lineno||"")));addEventListener("unhandledrejection",e=>showErr(String(e.reason&&e.reason.message||e.reason)));
+async function loadAll(){try{await loadAll0()}catch(e){showErr("load: "+(e&&e.message||e))}}
+async function loadAll0(){
+  let [k,s,pr,fam,mem]=await Promise.all([sb.from("children").select("id,data").eq("family_id",FID),sb.from("sections").select("id,data,family_id,shared,proposed").or(`family_id.eq.${FID},shared.eq.true`).order("updated_at"),
     sb.from("progress").select("child_id,app_key,data,children!inner(family_id)").eq("children.family_id",FID),
     sb.from("families").select("name").eq("id",FID).single(),sb.from("family_members").select("email,role,user_id").eq("family_id",FID)]);
+  /* if the sharing update is missing in the database, fall back to the simple queries */
+  if(s.error){console.warn(s.error);s=await sb.from("sections").select("id,data,family_id").eq("family_id",FID).order("updated_at")}
+  if(pr.error){console.warn(pr.error);const ids=(k.data||[]).map(r=>r.id);pr=ids.length?await sb.from("progress").select("child_id,app_key,data").in("child_id",ids):{data:[]}}
+  if(k.error){showErr("children: "+k.error.message);return}
   profs=(k.data||[]).map(r=>Object.assign({},r.data,{id:r.id}));secs=(s.data||[]).map(r=>Object.assign({},r.data,{id:r.id,_fam:r.family_id,_shared:!!r.shared,_proposed:!!r.proposed}));
   if(!secs.length&&!profs.length){/* first time: bring over what this phone already has */const lp=NAJMA.profiles,ls=NAJMA.sections;profs=lp.slice();secs=ls.slice();if(profs.length||secs.length){await dbSaveP();await dbSaveS()}}
   loadedK=new Set(profs.map(p=>p.id));loadedS=new Set(secs.filter(x=>isMine(x)||IS_ADMIN).map(x=>x.id));
