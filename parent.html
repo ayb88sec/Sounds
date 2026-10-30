@@ -89,6 +89,10 @@ textarea{min-height:160px;line-height:1.5}
 </style>
 </head>
 <body>
+<script>/* catch any startup error and show it */(function(){function box(m){var d=document.getElementById("errTop");if(!d){d=document.createElement("div");d.id="errTop";d.style.cssText="position:fixed;left:8px;right:8px;top:8px;z-index:999;background:#c93a50;color:#fff;border-radius:14px;padding:10px;font:700 13px system-ui;direction:ltr;text-align:left;white-space:pre-wrap";(document.body||document.documentElement).appendChild(d)}d.textContent+=(d.textContent?"\n":"")+"⚠️ "+m}
+window.addEventListener("error",function(e){box((e.message||"error")+" @"+(e.filename||"").split("/").pop()+":"+(e.lineno||""))});window.addEventListener("unhandledrejection",function(e){box(String(e.reason&&e.reason.message||e.reason))});
+window.__diag=function(){return "SUPA:"+(window.SUPA?"yes":"no")+" lib:"+(window.supabase?"yes":"no")+" NAJMA:"+(window.NAJMA?"yes":"no")};
+setTimeout(function(){var g=document.getElementById("gate");if(g&&getComputedStyle(g).display!=="none")box("still on gate · "+window.__diag())},4000)})();</script>
 <div class="gate" id="gate"><div class="box">
   <div style="font-size:44px">👨‍👩‍👧</div><h2 style="margin:0">للوالدين فقط</h2>
   <div class="q" id="gq" dir="ltr"></div>
