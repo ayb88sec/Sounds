@@ -1,17 +1,6 @@
 /* Najma profiles: gives each child their own progress by namespacing storage, and exposes their settings.
    Must load before any page script. */
 (function(){
-  /* always run the newest version: the main link can stay old for a while on the hosting site, a version link never does.
-     Same site, so each child's saved progress and settings stay. Checks at most every 5 minutes. */
-  try{const m=location.hostname==="raw.githack.com"&&location.pathname.match(/^\/ayb88sec\/Sounds\/([^\/]+)\/(.*)$/i);
-    if(m){const at=m[1],page=m[2]||"home.html",K="najma:latest",GI=Storage.prototype.getItem,SI=Storage.prototype.setItem;
-      const go=sha=>{if(sha&&at!==sha)location.replace("/ayb88sec/Sounds/"+sha+"/"+page+location.search+location.hash)};
-      let c={};try{c=JSON.parse(GI.call(localStorage,K)||"{}")}catch(e){}
-      if(c.sha&&Date.now()-c.t<3e5&&(at==="main"||c.sha===at))go(c.sha);/* on a version link, only GitHub decides (never send someone back to an older one) */
-      else fetch("https://api.github.com/repos/ayb88sec/Sounds/commits/main",{cache:"no-store"}).then(r=>r.ok?r.json():null)
-        .then(j=>{if(!j||!/^[0-9a-f]{40}$/.test(j.sha||""))return;try{SI.call(localStorage,K,JSON.stringify({sha:j.sha,t:Date.now()}))}catch(e){}go(j.sha)}).catch(()=>{})}}catch(e){}
-})();
-(function(){
   const S=Storage.prototype,G=S.getItem,SET=S.setItem,RM=S.removeItem;
   const STANDALONE=navigator.standalone===true||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches);
   /* the child link can arrive as #dev=…&key=…&kid=… or as ?dev=…&key=…&kid=… (the Home Screen keeps the ? form reliably) */
@@ -72,9 +61,7 @@
   async function encrypt(obj){const k=await cryptoKey();const iv=crypto.getRandomValues(new Uint8Array(12));
     const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv},k,new TextEncoder().encode(JSON.stringify(obj)));return {v:1,iv:bu(iv),ct:bu(new Uint8Array(ct))}}
   /* voice choice per part of the app, set by the parent: "mine" (recordings), "ai", or "none" */
-  function vmode(area,def){try{/* a parent's phone keeps its own small copy of the voice choices (the full settings can be too big for the phone) */
-    {const V=JSON.parse(G.call(localStorage,"najma:voice")||"{}");if(V[area])return V[area]}
-    const Q=(sections||[]).find(s=>s.type==="qimg");return (Q&&Q.voice&&Q.voice[area])||def||"mine"}catch(e){return def||"mine"}}
+  function vmode(area,def){try{const Q=(sections||[]).find(s=>s.type==="qimg");return (Q&&Q.voice&&Q.voice[area])||def||"mine"}catch(e){return def||"mine"}}
   const aiURL=(q,lang)=>`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang||"ar"}&q=${encodeURIComponent(q)}&total=1&idx=0&textlen=${q.length}`;
   const noEmoji=t=>String(t||"").replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\uFE0F\u200D•]/gu," ").replace(/\s+/g," ").trim();
   async function loadAudio(name,v){window[v]=window[v]||{};const mode=vmode(name,"mine");if(mode==="none")return window[v];
@@ -133,13 +120,6 @@
   function aiToast(t){try{let d=document.getElementById("aiToast");if(!d){d=document.createElement("div");d.id="aiToast";d.style.cssText="position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#2b2340;color:#fff;padding:10px 18px;border-radius:999px;font:700 16px system-ui;z-index:99";document.body.appendChild(d)}
     d.textContent=t;d.style.display="";clearTimeout(d._t);d._t=setTimeout(()=>d.style.display="none",3500)}catch(e){}}
   window.NAJMA.aiStop=()=>{aiRun++;if(aiA){aiA.onended=null;aiA.onerror=null;aiA.pause()}};
-  /* pages that play the AI voice as a normal sound go through the reliable player above (one element, fallback address) */
-  try{const MP=HTMLMediaElement.prototype,P0=MP.play,PA=MP.pause;
-    MP.play=function(){const s=this.src||"";if(this!==aiA&&s.startsWith("https://translate.google.com/translate_tts")){const el=this;
-        let q="",tl="ar";try{const u=new URL(s);q=u.searchParams.get("q")||"";tl=u.searchParams.get("tl")||"ar"}catch(e){}
-        el._ai=window.NAJMA.aiSay(q,tl).then(()=>{try{el.dispatchEvent(new Event("ended"))}catch(e){}});return Promise.resolve()}
-      return P0.apply(this,arguments)};
-    MP.pause=function(){if(this._ai&&this!==aiA){this._ai=null;window.NAJMA.aiStop();return}return PA.apply(this,arguments)}}catch(e){}
   if(SB&&DEV){const isProg=k=>typeof k==="string"&&!k.startsWith("najma:");
     const queue={};let qt=null;
     const flush=()=>{qt=null;const ks=Object.keys(queue);ks.forEach(k=>{const v=queue[k];delete queue[k];
@@ -161,5 +141,5 @@
       for(let i=0;i<localStorage.length;i++){const full=localStorage.key(i);if(full&&full.startsWith(`najma:${kid.id}:`)){const k=full.slice(kid.id.length+8);if(!(k in (js.progress||{})))push(k,G.call(localStorage,full))}}
       if(changed&&/home\.html$/.test(location.pathname)&&!sessionStorage.getItem("najma:reloaded")){sessionStorage.setItem("najma:reloaded","1");location.reload()}else if(!changed)sessionStorage.removeItem("najma:reloaded")}).catch(e=>{try{SET.call(localStorage,"najma:syncErr",String(e&&e.message||e))}catch(x){}})}
   /* offline: cache everything once it has been opened online */
-  if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").then(()=>navigator.serviceWorker.getRegistrations()).then(rs=>rs.forEach(x=>{if(!location.href.startsWith(x.scope))x.unregister()})).catch(()=>{})})}
+  if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}
 })();
