@@ -206,7 +206,7 @@ async function ipadLink(p){if(!DB)return baseLink(p);const {data,error}=await sb
   return homeURL()+"?dev="+data+"&key="+encodeURIComponent(R.get("najma:key")||"")+"&kid="+p.id}
 let profs=NAJMA.profiles.slice(),secs=JSON.parse(JSON.stringify(NAJMA.sections));const vis=()=>secs.filter(s=>s.type!=="qimg");
 /* sharing: sections from other families are read-only (except for the admin) */
-let IS_ADMIN=false;const isMine=x=>!x._fam||x._fam===FID;const ownQ=()=>secs.find(x=>x.type==="qimg"&&isMine(x));
+var IS_ADMIN=false;const isMine=x=>!x._fam||x._fam===FID;const ownQ=()=>secs.find(x=>x.type==="qimg"&&isMine(x));
 const AV=["🦁","🐼","🦊","🐰","🐯","🦄","🐬","🐻","🐸","🐨","🦋","🚀","⚽","🌸","👑","🦖"];
 const PC=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a","#ff7eb6","#2b2340"];
 const ICONS=["📿","💬","🖼️","❓","🎧","📖","🕌","🐝","📝","📚","✏️","🍎","🌟","🧠","🏫","🔤","🌍","🧪","🎵"];
@@ -618,7 +618,7 @@ $("qKid").onclick=()=>editKid(null);
 $("qSec").onclick=()=>editSec(null);
 const _dk=drawKids,_ds=drawSecs;drawKids=function(){_dk();drawDash()};drawSecs=function(){_ds();drawDash()};
 /* ---------- database mode ---------- */
-let devSeen={};let sb=null,FID=null,ME=null,PRG={},loadedK=new Set(),loadedS=new Set();
+var devSeen={},sb=null,FID=null,ME=null,PRG={},loadedK=new Set(),loadedS=new Set();
 function msg(t){$("aMsg").textContent=t||""}
 async function dbStart(){
   $("gate").remove();sb=supabase.createClient(SUPA.url,SUPA.key);$("navParents").style.display="";
