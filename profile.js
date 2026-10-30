@@ -7,7 +7,7 @@
     if(m){const at=m[1],page=m[2]||"home.html",K="najma:latest",GI=Storage.prototype.getItem,SI=Storage.prototype.setItem;
       const go=sha=>{if(sha&&at!==sha)location.replace("/ayb88sec/Sounds/"+sha+"/"+page+location.search+location.hash)};
       let c={};try{c=JSON.parse(GI.call(localStorage,K)||"{}")}catch(e){}
-      if(c.sha&&Date.now()-c.t<3e5)go(c.sha);
+      if(c.sha&&Date.now()-c.t<3e5&&(at==="main"||c.sha===at))go(c.sha);/* on a version link, only GitHub decides (never send someone back to an older one) */
       else fetch("https://api.github.com/repos/ayb88sec/Sounds/commits/main",{cache:"no-store"}).then(r=>r.ok?r.json():null)
         .then(j=>{if(!j||!/^[0-9a-f]{40}$/.test(j.sha||""))return;try{SI.call(localStorage,K,JSON.stringify({sha:j.sha,t:Date.now()}))}catch(e){}go(j.sha)}).catch(()=>{})}}catch(e){}
 })();
