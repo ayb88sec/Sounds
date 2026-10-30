@@ -59,7 +59,7 @@ end $$;
 
 grant execute on function is_admin() to authenticated;
 
--- 5) on a fresh install, whoever creates the first family becomes the admin
+-- 5) creating a family never makes anyone admin (the admin is added only by SQL, below)
 create or replace function create_family(fname text) returns uuid
 language plpgsql security definer set search_path = public, extensions as $$
 declare fid uuid;
@@ -67,6 +67,5 @@ begin
   if auth.uid() is null then raise exception 'not signed in'; end if;
   insert into families(name) values (coalesce(nullif(fname,''),'My family')) returning id into fid;
   insert into family_members(family_id,user_id,email,role) values (fid, auth.uid(), auth.jwt()->>'email', 'owner');
-  if not exists(select 1 from admins) then insert into admins(user_id) values (auth.uid()); end if;
   return fid;
 end $$;
