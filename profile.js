@@ -73,7 +73,7 @@
     const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv},k,new TextEncoder().encode(JSON.stringify(obj)));return {v:1,iv:bu(iv),ct:bu(new Uint8Array(ct))}}
   /* voice choice per part of the app, set by the parent: "mine" (recordings), "ai", or "none" */
   function vmode(area,def){try{/* a parent's phone keeps its own small copy of the voice choices (the full settings can be too big for the phone) */
-    if(!G.call(localStorage,"najma:dev")){const V=JSON.parse(G.call(localStorage,"najma:voice")||"{}");if(V[area])return V[area]}
+    {const V=JSON.parse(G.call(localStorage,"najma:voice")||"{}");if(V[area])return V[area]}
     const Q=(sections||[]).find(s=>s.type==="qimg");return (Q&&Q.voice&&Q.voice[area])||def||"mine"}catch(e){return def||"mine"}}
   const aiURL=(q,lang)=>`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang||"ar"}&q=${encodeURIComponent(q)}&total=1&idx=0&textlen=${q.length}`;
   const noEmoji=t=>String(t||"").replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\uFE0F\u200D•]/gu," ").replace(/\s+/g," ").trim();

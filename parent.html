@@ -639,7 +639,7 @@ $("fJoin").onclick=async()=>{const {error}=await sb.rpc("join_family",{icode:$("
 /* show any problem on screen instead of an empty page */
 function showErr(m){let d=document.getElementById("errBox");if(!d){d=document.createElement("div");d.id="errBox";d.style.cssText="position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:300;background:#c93a50;color:#fff;border-radius:16px;padding:10px 14px;font:700 14px system-ui;direction:ltr;text-align:left;white-space:pre-wrap";d.onclick=()=>d.remove();document.body.appendChild(d)}d.textContent="⚠️ "+m}
 addEventListener("error",e=>(!e.filename||/^Script error/.test(e.message||""))?0:showErr((e.message||"")+" @"+(e.lineno||"")));addEventListener("unhandledrejection",e=>showErr(String(e.reason&&e.reason.message||e.reason)));
-async function loadAll(){try{diag("loading");await loadAll0();diag("ok")}catch(e){showErr("load: "+(e&&e.message||e))}}
+async function loadAll(){try{diag("loading");await loadAll0();diag("ok");try{const Q=ownQ();if(Q&&Q.voice)R.set("najma:voice",JSON.stringify(Q.voice))}catch(e){}}catch(e){showErr("load: "+(e&&e.message||e))}}
 /* small status line at the bottom, so problems can be seen */
 function diag(step){let d=document.getElementById("diag");if(!d){d=document.createElement("div");d.id="diag";d.style.cssText="text-align:center;font:600 12px system-ui;color:#9a90b5;padding:10px 0 30px;direction:ltr";document.body.appendChild(d)}
   d.textContent=`v${(typeof NAJMA_V!=="undefined"?NAJMA_V:"")} · DB:${DB?"yes":"no"} · ${step} · ${ME&&ME.email||"-"} · fam:${FID?String(FID).slice(0,6):"-"} · kids:${profs.length} · admin:${IS_ADMIN?"yes":"no"}`}

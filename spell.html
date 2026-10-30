@@ -167,6 +167,7 @@ function gameBuild(WS){let right=0,order=shuf(WS);
   round()}
 
 tabs();draw();
+{const d=document.createElement("div");d.style.cssText="text-align:center;color:#fff;opacity:.7;font-size:13px;margin-top:-4px";d.textContent={ai:"🤖 صوت ذكاء اصطناعي",mine:"🎙️ صوت ماما",none:"🔇 بدون صوت"}[VM]||VM;document.querySelector(".sub").after(d)}
 setTimeout(()=>{if(false)$("hint").style.display=cur!==1&&cur!==2?"":"none";else $("hint").style.display="none"},1500);
 </script>
 </body>
