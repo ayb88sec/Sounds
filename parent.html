@@ -344,7 +344,7 @@ async function recWord(w){if(rec){const same=recW===w;rec.stop();if(same)return}
     let o={};try{o={audioBitsPerSecond:48000}}catch(e){}
     rec=new MediaRecorder(st,o);recW=w;drawRec();const hideW=prompter(w,()=>{if(rec&&rec.state==="recording")rec.stop()});rec.ondataavailable=e=>ch.push(e.data);
     rec.onstop=async()=>{clearTimeout(recT);hideW();st.getTracks().forEach(t=>t.stop());const blob=new Blob(ch,{type:rec.mimeType||"audio/mp4"});rec=null;recW=null;
-      const url=await toURL(blob);plain[w]=url;try{es.audio[w]=await NAJMA.encrypt(url)}catch(e){alert("تعذّر حفظ الصوت");delete plain[w]}drawRec();playWord(w)};
+      const url=await toURL(blob);plain[w]=url;try{es.audio[w]=await NAJMA.encrypt(url)}catch(e){alert("تعذّر حفظ الصوت");delete plain[w]}drawRec()};
     rec.start();recT=setTimeout(()=>{if(rec&&rec.state==="recording")rec.stop()},30000)}
   catch(e){rec=null;recW=null;drawRec();alert("اسمح للمايكروفون: Settings ← Safari ← Microphone")}}
 $("addSec").onclick=()=>editSec(null);
@@ -412,7 +412,7 @@ async function qEdit(){const n=+$("qpS").value,E=$("qpE");E.innerHTML="";if(!n)r
   let rec=null,tm=null;$("qpR").onclick=async()=>{if(rec){rec.stop();return}
     try{const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}}),ch=[];rec=new MediaRecorder(st,{audioBitsPerSecond:32000});$("qpR").textContent="⏹️ إيقاف";$("qpR").style.background="#ff5d73";const hideP=prompter($("qpX").value||"🎙️ اشرح السورة بكلماتك",()=>{if(rec&&rec.state==="recording")rec.stop()});
       rec.ondataavailable=e=>ch.push(e.data);rec.onstop=async()=>{clearTimeout(tm);hideP();st.getTracks().forEach(t=>t.stop());const bl=new Blob(ch,{type:rec.mimeType||"audio/mp4"});rec=null;
-        const u=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(bl)});try{Q.explA[n]=await NAJMA.encrypt(u);qPlain["a"+n]=u;new Audio(u).play();qSave(false)}catch(e){alert("أدخل كود العائلة في التطبيق أولًا")}};
+        const u=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(bl)});try{Q.explA[n]=await NAJMA.encrypt(u);qPlain["a"+n]=u;qSave(false)}catch(e){alert("أدخل كود العائلة في التطبيق أولًا")}};
       rec.start();tm=setTimeout(()=>{if(rec&&rec.state==="recording")rec.stop()},180000)}catch(e){alert("اسمح للمايكروفون: Settings ← Safari ← Microphone")}};
   $("qpSave").onclick=()=>qSave(true);
   if(isX)$("qpDel").onclick=()=>{if(!confirm("حذف سورة "+S.name+"؟"))return;delete Q.extra[n];["story","expl","explA","poster"].forEach(f=>delete Q[f][n]);
@@ -432,7 +432,7 @@ async function qRecord(btn,put,text){if(qRec){qRec.stop();return}
   try{const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}}),ch=[];qRec=new MediaRecorder(st,{audioBitsPerSecond:32000});btn.textContent="⏹️ إيقاف";btn.style.background="#ff5d73";btn.style.color="#fff";const hide=prompter(text,()=>{if(qRec&&qRec.state==="recording")qRec.stop()});
     qRec.ondataavailable=e=>ch.push(e.data);qRec.onstop=async()=>{clearTimeout(qTm);hide();st.getTracks().forEach(t=>t.stop());const bl=new Blob(ch,{type:qRec.mimeType||"audio/mp4"});qRec=null;
       const url=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(bl)});
-      try{qCollect();put({enc:await NAJMA.encrypt(url),url});new Audio(url).play();qSave(false)}catch(e){alert("أدخل كود العائلة في التطبيق أولًا")}};
+      try{qCollect();put({enc:await NAJMA.encrypt(url),url});qSave(false)}catch(e){alert("أدخل كود العائلة في التطبيق أولًا")}};
     qRec.start();qTm=setTimeout(()=>{if(qRec&&qRec.state==="recording")qRec.stop()},120000)}catch(e){alert("اسمح للمايكروفون: Settings ← Safari ← Microphone")}}
 function qCollect(){const n=+$("qpS").value;if(!n||!$("qpI"))return;const Q=qSec(),S=qSurah(n);
   const st=$("qpI").value.trim(),def=(QK[n]||{}).i||"";if(st===def)delete Q.story[n];else Q.story[n]=st;
