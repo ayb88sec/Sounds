@@ -32,6 +32,11 @@
   const DEFSEC=[{id:"spell1",title:"Spelling",icon:"🐝",lang:"en",words:["antiseptic","antibiotic","baby","bad","bear"]}];
   let sections;try{sections=JSON.parse(G.call(localStorage,"najma:sections")||"null")}catch(e){}
   if(!Array.isArray(sections))sections=DEFSEC;
+  /* shared content from other families comes first; this family's own settings and recordings win */
+  const isObj=o=>o&&typeof o==="object"&&!Array.isArray(o)&&!("ct" in o);
+  const deep=(a,b)=>{Object.keys(b||{}).forEach(k=>{if(isObj(a[k])&&isObj(b[k]))deep(a[k],b[k]);else a[k]=b[k]});return a};
+  {const Qs=sections.filter(s=>s&&s.type==="qimg");if(Qs.length>1){const m={};Qs.sort((x,y)=>(x.mine===false?0:1)-(y.mine===false?0:1)).forEach(q=>deep(m,JSON.parse(JSON.stringify(q))));
+    m.type="qimg";sections=sections.filter(s=>!s||s.type!=="qimg").concat([m])}}
   /* levels the parent can switch on per child; default: all on */
   const LEVELS={arabic:["ا – خ","د – ص","ض – ق","ك – ي","الكلمات البصرية"],sounds:["Set 1","Special friends"],wt:["1.1 · m a s d t","1.2 · i n p g o","1.3 · c k u b","1.4 · f e l h sh","1.5 · r j v y w","1.6 · th z ch qu x ng nk","1.7 · 4–5 sounds"],
     sent:["Level 1","Level 2","Level 3","Level 4"],shapes:["Level 1","Level 2","Level 3"],writeEn:["abc","ABC","123"],

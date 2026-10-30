@@ -106,7 +106,7 @@ textarea{min-height:160px;line-height:1.5}
   <div style="margin:12px 0 6px;color:#7a7090">أو</div><input class="in" id="fCode" dir="ltr" placeholder="رمز الدعوة" style="text-transform:uppercase;margin-bottom:8px"><button class="b" id="fJoin" style="width:100%">🔗 انضمام</button></div>
   <div id="aMsg" style="margin-top:10px;color:#c93a50;font-weight:700;min-height:1em"></div></div></div>
 <header><img src="icon.png" alt=""><h1>بوابة الوالدين</h1><a href="guide.html" style="margin-inline-end:6px">📘 الدليل</a><a href="home.html">🏠 التطبيق</a></header>
-<nav><button data-t="dash" class="on">📊 اللوحة</button><button data-t="kids">👧 الأطفال</button><button data-t="secs">📚 الأقسام</button><button data-t="quran">🕌 ديني</button><button data-t="base">🧩 الأساسية</button><button data-t="parents" id="navParents" style="display:none">👨‍👩‍👧 الوالدين</button><button data-t="cloud">☁️ الاتصال</button></nav>
+<nav><button data-t="dash" class="on">📊 اللوحة</button><button data-t="kids">👧 الأطفال</button><button data-t="secs">📚 الأقسام</button><button data-t="quran">🕌 ديني</button><button data-t="base">🧩 الأساسية</button><button data-t="parents" id="navParents" style="display:none">👨‍👩‍👧 الوالدين</button><button data-t="admin" id="navAdmin" style="display:none">🛡️ الإدارة</button><button data-t="cloud">☁️ الاتصال</button></nav>
 <main>
   <div class="panel on" id="dash">
     <div class="stats3" id="dStats"></div>
@@ -132,6 +132,11 @@ textarea{min-height:160px;line-height:1.5}
   <div class="panel" id="base">
     <div class="note">🧩 <b>التطبيقات الأساسية</b>: هنا تسجّل صوتك بالعربي لأي شيء في التطبيقات الجاهزة. اضغط ▶️ لتسمع الصوت الحالي، و🎤 لتسجّل صوتك مكانه، و↩️ للرجوع إلى الأصلي.</div>
     <div class="chips" id="bApp" style="justify-content:center;margin-bottom:8px"></div><div id="bVoice"></div><div class="chips" id="bGrp" style="margin-bottom:8px"></div><div id="bList"></div></div>
+  <div class="panel" id="admin">
+    <div class="note">🛡️ <b>الإدارة</b>: أنتِ فقط ترين هذه الصفحة. شاركي محتواك مع كل العائلات، وراجعي اقتراحاتهم، واحذفي أي عائلة أو شخص أو طفل.</div>
+    <div class="qbox"><b>🌍 ما تشاركينه مع كل العائلات</b><div id="adShare" style="margin-top:8px"></div></div>
+    <div class="qbox"><b>📥 اقتراحات من العائلات</b><div id="adProp" style="margin-top:8px"></div></div>
+    <div class="qbox"><b>👨‍👩‍👧 كل العائلات</b><div id="adFam" style="margin-top:8px"></div></div></div>
   <div class="panel" id="parents">
     <div class="note" id="pFam"></div><div id="pList"></div>
     <button class="b add" id="pInvite">✉️ دعوة شخص جديد</button>
@@ -180,7 +185,7 @@ textarea{min-height:160px;line-height:1.5}
   <label>اسم القسم</label><input class="in" id="sTitle" maxlength="24" dir="auto">
   <label>الأيقونة</label><div class="chips av" id="sIcon"></div>
   <label>اللغة</label><div class="chips" id="sLang"></div>
-  <div id="sVoice"></div><label>يظهر لـ</label><div class="chips" id="sKids"></div><div class="note" id="sKidsNote" style="margin:4px 0 0"></div>
+  <div id="sShare"></div><div id="sVoice"></div><label>يظهر لـ</label><div class="chips" id="sKids"></div><div class="note" id="sKidsNote" style="margin:4px 0 0"></div>
   <div id="sTxtBox"><label id="sTxtL">الكلمات (كلمة في كل سطر)</label><textarea id="sWords" dir="auto"></textarea></div>
   <div id="sPicBox" style="display:none"><label id="sPicL">🖼️ صورة لكل كلمة</label><div class="note" style="margin:0 0 6px">اكتب إيموجي (مثل 🍎) أو اضغط 📷 لصورة من الجوال.</div><div id="sPic"></div><input type="file" id="sFile" accept="image/*" style="display:none"></div>
   <div id="sQuizBox" style="display:none"><label>❓ الأسئلة</label><div class="note" style="margin:0 0 6px">اكتب السؤال والأجوبة، واضغط ✓ على الجواب الصحيح.</div><div id="sQuiz"></div><button class="b" id="sQAdd" style="width:100%">➕ سؤال</button></div>
@@ -196,13 +201,15 @@ const baseLink=p=>homeURL()+"?key="+encodeURIComponent(R.get("najma:key")||"")+"
 async function ipadLink(p){if(!DB)return baseLink(p);const {data,error}=await sb.rpc("create_device",{cid:p.id,dlabel:p.name});if(error)throw new Error(error.message);
   return homeURL()+"?dev="+data+"&key="+encodeURIComponent(R.get("najma:key")||"")+"&kid="+p.id}
 let profs=NAJMA.profiles.slice(),secs=JSON.parse(JSON.stringify(NAJMA.sections));const vis=()=>secs.filter(s=>s.type!=="qimg");
+/* sharing: sections from other families are read-only (except for the admin) */
+let IS_ADMIN=false;const isMine=x=>!x._fam||x._fam===FID;const ownQ=()=>secs.find(x=>x.type==="qimg"&&isMine(x));
 const AV=["🦁","🐼","🦊","🐰","🐯","🦄","🐬","🐻","🐸","🐨","🦋","🚀","⚽","🌸","👑","🦖"];
 const PC=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a","#ff7eb6","#2b2340"];
 const ICONS=["📿","💬","🖼️","❓","🎧","📖","🕌","🐝","📝","📚","✏️","🍎","🌟","🧠","🏫","🔤","🌍","🧪","🎵"];
 const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["cvc","Word Time"],["sent","Sentences"],["writeEn","Handwriting"],["numEn","Numbers"],["colorsAr","🎨 الألوان"],["colorsEn","🎨 Colours"],["shapes","2D Shapes"],["quran","📖 قصص القرآن"],["duas","📿 أدعية"]];
 const PROG=[["arDone","حروفي",38],["numDoneAr","الأرقام",20],["islamDone","الإسلام",5],["imanDone","الإيمان",6],["soundsDone","Sounds",32],["cvcDone","Word Time",111],["sentDone","Sentences",16],["writeEn","Writing",62],["numDoneEn","Numbers",20],["shapesDone","Shapes",10]];
 let saveP=()=>R.set("najma:profiles",JSON.stringify(profs));
-let saveS=()=>{try{R.set("najma:sections",JSON.stringify(secs))}catch(e){/* phone storage full: the database copy still saves */}};
+let saveS=()=>{try{R.set("najma:sections",JSON.stringify(secs.map(x=>isMine(x)?x:Object.assign({},x,{mine:false}))))}catch(e){/* phone storage full: the database copy still saves */}};
 const $=id=>document.getElementById(id);
 
 /* gate */
@@ -271,8 +278,9 @@ let delArm=0;function confirmDel(n){if(Date.now()-delArm<4000)return true;delArm
 /* sections */
 function drawSecs(){const L=$("secList");L.innerHTML="";
   vis().forEach(s=>{const d=document.createElement("div");d.className="row";
-    d.innerHTML=`<div class="av" style="background:#fff3c4">${s.icon}</div><div class="info"><b dir="auto">${s.title}</b><small dir="auto">${(STYPES.find(x=>x[0]===(s.type||"words"))||STYPES[0])[1]} · ${s.lang==="ar"?"عربي":"English"} · ${s.words.length}: ${s.words.slice(0,6).join("، ")}${s.words.length>6?"…":""}</small></div><button class="b">✏️ تعديل</button>`;
-    d.querySelector("button").onclick=()=>editSec(s);L.appendChild(d)})}
+    const mine=isMine(s),tag=s._shared?'<span style="background:#e3f8e7;color:#2a9442;border-radius:999px;padding:0 8px;font-size:13px;margin-inline-start:6px">🌍 مشترك</span>':s._proposed?'<span style="background:#fff3c4;border-radius:999px;padding:0 8px;font-size:13px;margin-inline-start:6px">📤 مقترح</span>':"";
+    d.innerHTML=`<div class="av" style="background:#fff3c4">${s.icon}</div><div class="info"><b dir="auto">${s.title}${tag}</b><small dir="auto">${(STYPES.find(x=>x[0]===(s.type||"words"))||STYPES[0])[1]} · ${s.lang==="ar"?"عربي":"English"} · ${s.words.length}: ${s.words.slice(0,6).join("، ")}${s.words.length>6?"…":""}</small></div><button class="b">✏️ تعديل</button>`;
+    if(!mine&&!IS_ADMIN){const b=d.querySelector("button");b.textContent="👀 من عائلة أخرى";b.disabled=true;b.style.opacity=.6}else d.querySelector("button").onclick=()=>editSec(s);L.appendChild(d)})}
 let es;
 const STYPES=[["words","📝 كلمات"],["sent","💬 جمل"],["pic","🖼️ صورة وكلمة"],["quiz","❓ اختبار"]];
 const TXTL={words:"الكلمات (كلمة في كل سطر)",sent:"الجمل (جملة في كل سطر)",pic:"الكلمات (كلمة في كل سطر)",listen:"الأسطر (سطر لكل دعاء أو بيت)"};
@@ -285,7 +293,7 @@ function editSec(s){es=s?JSON.parse(JSON.stringify(s)):{id:"s"+Date.now().toStri
   chips("sLang",["English","عربي"],(x,k)=>es.lang===(k?"ar":"en"),(x,k)=>{es.lang=k?"ar":"en";$("sWords").dir=k?"rtl":"ltr";drawRec()});
   $("sWords").dir=es.lang==="ar"?"rtl":"ltr";
 
-  vPick("sVoice","s:"+es.id,"mine");
+  vPick("sVoice","s:"+es.id,"mine");drawShare();
   sKids=new Set(s?profs.filter(p=>!p.apps||p.apps["s:"+es.id]!==false).map(p=>p.id):[]);drawSKids();
   es.audio=es.audio||{};setType(es.type);$("secSheet").classList.add("show")}
 let sKids=new Set();
@@ -352,7 +360,7 @@ $("sSave").onclick=()=>{if(rec)rec.stop();es.title=$("sTitle").value.trim()||"ق
 $("sDel").onclick=()=>{if(!confirmDel(es.title))return;secs=secs.filter(s=>s.id!==es.id);saveS();$("secSheet").classList.remove("show");drawSecs();drawKids()};
 
 /* Quran stories: everything the parent adds (story, explanation, pictures, simple meanings, extra surahs) lives in one hidden section, encrypted where private */
-function qSec(){let s=secs.find(x=>x.type==="qimg");if(!s){s={id:"qimg"+Date.now().toString(36),type:"qimg",title:"qimg",icon:"📖",lang:"ar",words:[]};secs.push(s)}
+function qSec(){let s=ownQ();if(!s){s={id:"qimg"+Date.now().toString(36),type:"qimg",title:"qimg",icon:"📖",lang:"ar",words:[]};secs.push(s)}
   ["img","poster","story","expl","explA","explV","secV","simp","extra"].forEach(k=>s[k]=s[k]||{});return s}
 const QAPI="https://api.alquran.cloud/v1",AD=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
 const qSurah=n=>(qSec().extra[n])||QK[n];
@@ -444,7 +452,7 @@ $("qpAdd").onclick=async()=>{const n=+$("qpN").value;if(!n)return;const m=$("qpM
     saveS();qList();$("qpS").value=n;qEdit();m.textContent="✅ أُضيفت السورة. اكتب قصتها وشرحك، وأضف الصور، ثم اضغط حفظ."}
   catch(e){m.textContent="⚠️ تعذّر الجلب. تأكد من الإنترنت وحاول مرة ثانية."}};
 /* duas: built-in list the parent can edit, record and illustrate */
-function duaList(){const Q=secs.find(x=>x.type==="qimg");return (Q&&Q.duas&&Q.duas.list)||(window.KID_DUAS||[]).map(d=>Object.assign({},d))}
+function duaList(){const Q=ownQ();return (Q&&Q.duas&&Q.duas.list)||(window.KID_DUAS||[]).map(d=>Object.assign({},d))}
 let dWork=null;
 function dDraw(){const Q=qSec();Q.duas=Q.duas||{};const rec=Q.duas.rec||{},img=Q.duas.img||{};if(!dWork)dWork=JSON.parse(JSON.stringify(duaList()));const L=$("dL");L.innerHTML="";
   dWork.forEach((d,i)=>{const r=document.createElement("div");r.className="qbox";
@@ -475,9 +483,43 @@ $("dImport").onclick=()=>{const Q=qSec();Q.duas=Q.duas||{};Q.duas.rec=Q.duas.rec
   (dWork||duaList()).forEach(d=>{if(Q.duas.rec[d.id])return;const o=O.find(x=>same(x.t,d.t));if(o){Q.duas.rec[d.id]=o.enc;n++}});
   if(!dWork)dWork=JSON.parse(JSON.stringify(duaList()));dSave(true);const m=$("dMsg");m.style.display="";m.textContent=n?`✅ استرجعت ${n} تسجيل من الأقسام القديمة.`:"لم أجد تسجيلات قديمة مطابقة لهذه الأدعية.";setTimeout(()=>m.style.display="none",6000)};
 document.querySelectorAll("#relTabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#relTabs button").forEach(x=>x.classList.toggle("on",x===b));$("rQ").style.display=b.dataset.r==="rQ"?"":"none";$("rD").style.display=b.dataset.r==="rD"?"":"none";if(b.dataset.r==="rD"){dWork=null;dDraw();vPick("dVoice","duas","mine")}else vPick("qVoice","quran","mine")});
+/* share a section: the admin publishes to every family; other parents can propose it to the admin */
+function drawShare(){const box=$("sShare");if(!box)return;if(!DB||!FID){box.innerHTML="";return}box.className="qbox";box.style.marginBottom="10px";
+  const opts=IS_ADMIN?[["🔒 لعائلتي فقط",0],["🌍 لكل العائلات",1]]:[["🔒 لعائلتي فقط",0],["📤 اقترح مشاركته مع الجميع",2]];
+  const cur=es._shared?1:es._proposed?2:0;
+  box.innerHTML='<b>🌍 المشاركة</b><div class="chips" id="sShareC" style="margin-top:6px"></div>'+(!IS_ADMIN&&es._shared?'<div class="note" style="margin:6px 0 0">🌍 هذا القسم منشور لكل العائلات.</div>':"");
+  chips("sShareC",opts.map(o=>o[0]),(x,k)=>opts[k][1]===cur||(cur===1&&!IS_ADMIN&&k===1),(x,k)=>{const v=opts[k][1];es._shared=IS_ADMIN?v===1:es._shared;es._proposed=v===2;if(v===1)es._proposed=false;drawShare()})}
+/* admin: share, review proposals, manage all families */
+async function adSet(id,patch){const {error}=await sb.from("sections").update(patch).eq("id",id);if(error){alert(error.message);return false}return true}
+async function drawAdmin(){if(!IS_ADMIN)return;
+  /* what I share */
+  const S=$("adShare");S.innerHTML="";const q=ownQ();
+  const row=(lab,on,fn)=>{const r=document.createElement("div");r.className="rrow";r.innerHTML=`<b style="flex:1;font-size:16px">${lab}</b><button class="b ${on?"go":""}">${on?"🌍 مشترك":"🔒 خاص"}</button>`;r.querySelector("button").onclick=fn;S.appendChild(r)};
+  row("📖 القرآن والأدعية والألوان وكل أصواتي (ديني والأساسية)",!!(q&&q._shared),async()=>{const Q=qSec();Q._shared=!Q._shared;saveS();await dbSaveS();drawAdmin()});
+  secs.filter(x=>x.type!=="qimg"&&isMine(x)).forEach(x=>row(`${x.icon||"📝"} ${esc(x.title)}`,!!x._shared,async()=>{x._shared=!x._shared;x._proposed=false;saveS();await dbSaveS();drawSecs();drawAdmin()}));
+  /* proposals */
+  const P=$("adProp");const {data:pr}=await sb.from("sections").select("id,data,family_id,families(name)").eq("proposed",true).eq("shared",false);
+  P.innerHTML=(pr&&pr.length)?"":'<div class="note" style="margin:0">لا توجد اقتراحات.</div>';
+  (pr||[]).forEach(x=>{const r=document.createElement("div");r.className="rrow";r.style.flexWrap="wrap";
+    r.innerHTML=`<b style="flex:1">${esc((x.data.icon||"📝")+" "+(x.data.title||x.data.type||""))}</b><small>${esc((x.families&&x.families.name)||"")}</small><button class="b go pub">🌍 انشر للجميع</button><button class="b del rej">✖</button>
+      <div style="flex-basis:100%;font-size:14px;color:#7a7090" dir="auto">${esc((x.data.words||[]).slice(0,8).join("، "))}</div>`;
+    r.querySelector(".pub").onclick=async()=>{if(await adSet(x.id,{shared:true,proposed:false})){await loadAll()}};
+    r.querySelector(".rej").onclick=async()=>{if(await adSet(x.id,{proposed:false}))drawAdmin()};P.appendChild(r)});
+  /* families */
+  const F=$("adFam");F.innerHTML="⏳";
+  const [fa,me,ch]=await Promise.all([sb.from("families").select("id,name,created_at").order("created_at"),sb.from("family_members").select("family_id,user_id,email,role"),sb.from("children").select("id,family_id,data")]);
+  F.innerHTML="";(fa.data||[]).forEach(f=>{const own=f.id===FID,box=document.createElement("div");box.className="qbox";box.style.background="#fff";
+    const M=(me.data||[]).filter(m=>m.family_id===f.id),C=(ch.data||[]).filter(c=>c.family_id===f.id);
+    box.innerHTML=`<div class="rrow" style="background:none;padding:0"><b style="flex:1;font-size:18px">👨‍👩‍👧 ${esc(f.name)}${own?" (عائلتي)":""}</b>${own?"":'<button class="b del df">🗑️ حذف العائلة</button>'}</div>`+
+      M.map(m=>`<div class="rrow"><span style="flex:1" dir="ltr">${m.role==="owner"?"👑":"🧑"} ${esc(m.email||m.user_id.slice(0,8))}</span>${m.user_id===ME.id?"":`<button class="b dm" data-u="${m.user_id}">🗑️</button>`}</div>`).join("")+
+      C.map(c=>`<div class="rrow"><span style="flex:1">${esc((c.data.avatar||"⭐")+" "+(c.data.name||""))}</span>${own?"":`<button class="b dc" data-c="${c.id}">🗑️</button>`}</div>`).join("");
+    const df=box.querySelector(".df");if(df)df.onclick=async()=>{if(!confirm(`حذف عائلة «${f.name}» بكل أطفالها وتقدّمهم؟ لا يمكن التراجع.`))return;const {error}=await sb.from("families").delete().eq("id",f.id);if(error)alert(error.message);drawAdmin()};
+    box.querySelectorAll(".dm").forEach(b=>b.onclick=async()=>{if(!confirm("إزالة هذا الشخص من العائلة؟"))return;const {error}=await sb.from("family_members").delete().eq("family_id",f.id).eq("user_id",b.dataset.u);if(error)alert(error.message);drawAdmin()});
+    box.querySelectorAll(".dc").forEach(b=>b.onclick=async()=>{if(!confirm("حذف هذا الطفل وتقدّمه؟"))return;const {error}=await sb.from("children").delete().eq("id",b.dataset.c);if(error)alert(error.message);drawAdmin()});
+    F.appendChild(box)})}
 /* voice choice for each part: my recordings, AI voice, or nothing */
 const VOPT=[["mine","🎙️ صوتي"],["ai","🤖 ذكاء اصطناعي"],["none","🔇 بدون صوت"]];
-function vGet(area,def){const Q=secs.find(x=>x.type==="qimg");return (Q&&Q.voice&&Q.voice[area])||def}
+function vGet(area,def){const Q=ownQ();return (Q&&Q.voice&&Q.voice[area])||def}
 function vPick(el,area,def){const box=$(el);if(!box)return;box.className="qbox";box.style.marginBottom="10px";
   box.innerHTML='<b>🔊 الصوت هنا</b><div class="chips" id="'+el+'C" style="margin-top:6px"></div>';
   chips(el+"C",VOPT.map(x=>x[1]),(x,k)=>vGet(area,def)===VOPT[k][0],(x,k)=>{const Q=qSec();Q.voice=Q.voice||{};Q.voice[area]=VOPT[k][0];saveS();vPick(el,area,def)})}
@@ -486,7 +528,7 @@ let bApp="clips",bG=0;const bDef={};
 async function bLoad(f){if(bDef[f])return bDef[f];try{bDef[f]=await NAJMA.decrypt(await (await fetch(`audio/${f}.enc`)).json())}catch(e){bDef[f]={}}return bDef[f]}
 async function bDefault(app){if(app==="colors")return {};return await bLoad(app)}
 function bStore(app){const Q=qSec();if(app==="colors"){Q.colorRec=Q.colorRec||{};return Q.colorRec}Q.ov=Q.ov||{};Q.ov[app]=Q.ov[app]||{};return Q.ov[app]}
-function bPeek(app){const Q=secs.find(x=>x.type==="qimg");return Q?(app==="colors"?Q.colorRec:(Q.ov||{})[app])||{}:{}}
+function bPeek(app){const Q=ownQ();return Q?(app==="colors"?Q.colorRec:(Q.ov||{})[app])||{}:{}}
 async function drawBase(){if(!window.BASE)return;const A=Object.keys(BASE);
   chips("bApp",A.map(k=>BASE[k].t),(x,k)=>A[k]===bApp,(x,k)=>{bApp=A[k];bG=0;drawBase()});
   vPick("bVoice",bApp==="colors"?"colors":bApp,bApp==="colors"?"ai":"mine");
@@ -584,30 +626,32 @@ $("aIn").onclick=async()=>{msg("");const {data,error}=await sb.auth.signInWithPa
   if(error)return msg(error.message==="Invalid login credentials"?"البريد أو كلمة المرور غير صحيحة":error.message);ME=data.user;afterLogin()};
 $("aUp").onclick=async()=>{msg("");const {data,error}=await sb.auth.signUp({email:$("aEmail").value.trim(),password:$("aPass").value});
   if(error)return msg(error.message);if(!data.session)return msg("📧 أرسلنا رسالة تأكيد إلى بريدك. افتحها ثم عد واضغط دخول.");ME=data.user;afterLogin()};
-async function afterLogin(){const {data:mem}=await sb.from("family_members").select("family_id,role");
+async function afterLogin(){const {data:mem}=await sb.from("family_members").select("family_id,role").eq("user_id",ME.id);
+  try{const {data}=await sb.rpc("is_admin");IS_ADMIN=data===true}catch(e){IS_ADMIN=false}$("navAdmin").style.display=IS_ADMIN?"":"none";
   if(!mem||!mem.length){$("auth").style.display="flex";$("aForm").style.display="none";$("aFam").style.display="";return}
   FID=mem[0].family_id;$("auth").style.display="none";await loadAll()}
 $("fNew").onclick=async()=>{const {error}=await sb.rpc("create_family",{fname:$("fName").value.trim()});if(error)return msg(error.message);afterLogin()};
 $("fJoin").onclick=async()=>{const {error}=await sb.rpc("join_family",{icode:$("fCode").value.trim()});if(error)return msg("الرمز غير صحيح أو منتهي");afterLogin()};
 async function loadAll(){
-  const [k,s,pr,fam,mem]=await Promise.all([sb.from("children").select("id,data"),sb.from("sections").select("id,data").order("updated_at"),sb.from("progress").select("child_id,app_key,data"),
+  const [k,s,pr,fam,mem]=await Promise.all([sb.from("children").select("id,data").eq("family_id",FID),sb.from("sections").select("id,data,family_id,shared,proposed").or(`family_id.eq.${FID},shared.eq.true`).order("updated_at"),
+    sb.from("progress").select("child_id,app_key,data,children!inner(family_id)").eq("children.family_id",FID),
     sb.from("families").select("name").eq("id",FID).single(),sb.from("family_members").select("email,role,user_id").eq("family_id",FID)]);
-  profs=(k.data||[]).map(r=>Object.assign({},r.data,{id:r.id}));secs=(s.data||[]).map(r=>Object.assign({},r.data,{id:r.id}));
+  profs=(k.data||[]).map(r=>Object.assign({},r.data,{id:r.id}));secs=(s.data||[]).map(r=>Object.assign({},r.data,{id:r.id,_fam:r.family_id,_shared:!!r.shared,_proposed:!!r.proposed}));
   if(!secs.length&&!profs.length){/* first time: bring over what this phone already has */const lp=NAJMA.profiles,ls=NAJMA.sections;profs=lp.slice();secs=ls.slice();if(profs.length||secs.length){await dbSaveP();await dbSaveS()}}
-  loadedK=new Set(profs.map(p=>p.id));loadedS=new Set(secs.map(x=>x.id));
-  try{const dv=await sb.from("devices").select("child_id,last_seen,created_at");devSeen={};(dv.data||[]).forEach(d=>{const t=d.last_seen||d.created_at;if(!devSeen[d.child_id]||t>devSeen[d.child_id+"_t"]){devSeen[d.child_id+"_t"]=t;devSeen[d.child_id]=d.last_seen?new Date(d.last_seen).toLocaleString("ar",{dateStyle:"short",timeStyle:"short"}):"لم يُفتح بعد"}})}catch(e){}
+  loadedK=new Set(profs.map(p=>p.id));loadedS=new Set(secs.filter(x=>isMine(x)||IS_ADMIN).map(x=>x.id));
+  try{const dv=await sb.from("devices").select("child_id,last_seen,created_at").eq("family_id",FID);devSeen={};(dv.data||[]).forEach(d=>{const t=d.last_seen||d.created_at;if(!devSeen[d.child_id]||t>devSeen[d.child_id+"_t"]){devSeen[d.child_id+"_t"]=t;devSeen[d.child_id]=d.last_seen?new Date(d.last_seen).toLocaleString("ar",{dateStyle:"short",timeStyle:"short"}):"لم يُفتح بعد"}})}catch(e){}
   PRG={};(pr.data||[]).forEach(r=>{(PRG[r.child_id]=PRG[r.child_id]||{})[r.app_key]=r.data});
   _saveP();_saveS();
   $("pFam").innerHTML=`👨‍👩‍👧 <b>${(fam.data&&fam.data.name)||""}</b> · ${ME.email}`;
   $("pList").innerHTML=(mem.data||[]).map(m=>`<div class="row"><div class="av" style="background:#ece8ff">${m.role==="owner"?"👑":"🧑"}</div><div class="info"><b dir="ltr" style="text-align:right">${m.email||""}</b><small>${m.role==="owner"?"المالك":"والد/والدة"}${m.user_id===ME.id?" · أنت":""}</small></div></div>`).join("");
-  drawKids();drawSecs();drawDev();drawCodes();status("✅ متصل بقاعدة البيانات. التعديلات تصل للأجهزة، والتقدّم الحقيقي يظهر في اللوحة.",true)}
-const strip=o=>{const c=Object.assign({},o);delete c.id;return c};
+  drawKids();drawSecs();drawDev();drawCodes();if(IS_ADMIN)drawAdmin();status("✅ متصل بقاعدة البيانات. التعديلات تصل للأجهزة، والتقدّم الحقيقي يظهر في اللوحة.",true)}
+const strip=o=>{const c=Object.assign({},o);["id","_fam","_shared","_proposed","mine","shared"].forEach(k=>delete c[k]);return c};
 async function dbSaveP(){const rows=profs.map(p=>({id:p.id,family_id:FID,data:strip(p),updated_at:new Date().toISOString()}));
   if(rows.length){const {error}=await sb.from("children").upsert(rows);if(error)return status("❌ "+error.message)}
   const gone=[...loadedK].filter(id=>!profs.some(p=>p.id===id));if(gone.length)await sb.from("children").delete().in("id",gone);loadedK=new Set(profs.map(p=>p.id));status("✅ تم الحفظ",true)}
-async function dbSaveS(){const rows=secs.map(x=>({id:x.id,family_id:FID,data:strip(x),updated_at:new Date().toISOString()}));
+async function dbSaveS(){const rows=secs.filter(x=>isMine(x)||IS_ADMIN).map(x=>({id:x.id,family_id:x._fam||FID,data:strip(x),shared:!!x._shared,proposed:!!x._proposed,updated_at:new Date().toISOString()}));
   if(rows.length){const {error}=await sb.from("sections").upsert(rows);if(error)return status("❌ "+error.message)}
-  const gone=[...loadedS].filter(id=>!secs.some(x=>x.id===id));if(gone.length)await sb.from("sections").delete().in("id",gone);loadedS=new Set(secs.map(x=>x.id));status("✅ تم الحفظ",true)}
+  const gone=[...loadedS].filter(id=>!secs.some(x=>x.id===id));if(gone.length)await sb.from("sections").delete().in("id",gone);loadedS=new Set(secs.filter(x=>isMine(x)||IS_ADMIN).map(x=>x.id));status("✅ تم الحفظ",true)}
 async function drawCodes(){const {data}=await sb.from("invites").select("code,expires_at,used_by").eq("family_id",FID).is("used_by",null).gt("expires_at",new Date().toISOString()).order("expires_at",{ascending:false});
   $("pCodes").innerHTML=(data||[]).length?`<label>رموز لم تُستخدم بعد</label>`+(data||[]).map(r=>`<div class="row"><div class="av" style="background:#e3f8e7">✉️</div><div class="info"><b dir="ltr" style="letter-spacing:3px;text-align:right">${r.code}</b><small>صالح حتى ${new Date(r.expires_at).toLocaleDateString("ar")}</small></div><button class="b" data-c="${r.code}">📋</button></div>`).join(""):"";
   $("pCodes").querySelectorAll("[data-c]").forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.c);b.textContent="✅"}catch(e){b.textContent="⚠️"}setTimeout(()=>b.textContent="📋",2000)})}
