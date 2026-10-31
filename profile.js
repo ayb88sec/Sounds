@@ -1,7 +1,9 @@
 /* Najma profiles: gives each child their own progress by namespacing storage, and exposes their settings.
    Must load before any page script. */
 (function(){
-  const S=Storage.prototype,G=S.getItem,SET=S.setItem,RM=S.removeItem;
+  const S=Storage.prototype,G=S.getItem,SET0=S.setItem,RM=S.removeItem;
+  /* storage full: the downloaded settings copy is the only big thing that can be thrown away (it comes back on the next sync) */
+  const SET=function(k,v){try{return SET0.call(this,k,v)}catch(e){if(k==="najma:sections")throw e;try{RM.call(localStorage,"najma:sections")}catch(x){}return SET0.call(this,k,v)}};
   const STANDALONE=navigator.standalone===true||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches);
   /* the child link can arrive as #dev=…&key=…&kid=… or as ?dev=…&key=…&kid=… (the Home Screen keeps the ? form reliably) */
   const QS=new URLSearchParams(location.search),HAS_Q=QS.get("kid")&&(QS.get("dev")||QS.get("key"));
@@ -120,6 +122,19 @@
   function aiToast(t){try{let d=document.getElementById("aiToast");if(!d){d=document.createElement("div");d.id="aiToast";d.style.cssText="position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#2b2340;color:#fff;padding:10px 18px;border-radius:999px;font:700 16px system-ui;z-index:99";document.body.appendChild(d)}
     d.textContent=t;d.style.display="";clearTimeout(d._t);d._t=setTimeout(()=>d.style.display="none",3500)}catch(e){}}
   window.NAJMA.aiStop=()=>{aiRun++;if(aiA){aiA.onended=null;aiA.onerror=null;aiA.pause()}};
+  /* the iPad's storage is small: if everything does not fit, drop the biggest extras step by step (pictures first), never the child or progress */
+  function saveSecs(Sx){const put=t=>{try{SET.call(localStorage,"najma:sections",t)}catch(e){return false}
+      /* leave room for stars and progress */try{SET0.call(localStorage,"najma:probe","x".repeat(150000));RM.call(localStorage,"najma:probe");return true}catch(e){try{RM.call(localStorage,"najma:probe")}catch(x){}return false}};if(put(Sx))return;
+    try{RM.call(localStorage,"najma:sections")}catch(e){}if(put(Sx))return;
+    let L;try{L=JSON.parse(Sx)}catch(e){return}
+    const steps=[
+      ()=>L.forEach(x=>{if(x.type==="qimg"){x.poster={};x.img={};if(x.duas)x.duas.img={}}else if(x.img)x.img={}}),
+      ()=>L.forEach(x=>{if(x.type==="qimg"&&x.mine===false)["explA","explV","secV","ov","colorRec","story","expl","extra"].forEach(k=>delete x[k])}),
+      ()=>L.forEach(x=>{if(x.type==="qimg")["explA","explV","secV"].forEach(k=>delete x[k])}),
+      ()=>L.forEach(x=>{if(x.type!=="qimg"&&x.mine===false){delete x.audio;delete x.qaudio}}),
+      ()=>L.forEach(x=>{if(x.type==="qimg"&&x.ov)Object.keys(x.ov).filter(k=>k!=="clips").forEach(k=>delete x.ov[k])}),
+      ()=>L.forEach(x=>{if(x.type!=="qimg"){delete x.audio;delete x.qaudio}})];
+    for(const st of steps){st();if(put(JSON.stringify(L))){try{SET.call(localStorage,"najma:slim","1")}catch(e){}return}}}
   if(SB&&DEV){const isProg=k=>typeof k==="string"&&!k.startsWith("najma:");
     const queue={};let qt=null;
     const flush=()=>{qt=null;const ks=Object.keys(queue);ks.forEach(k=>{const v=queue[k];delete queue[k];
@@ -132,7 +147,7 @@
     if(navigator.onLine!==false)rpc("kid_sync",{tok:DEV}).then(js=>{if(!js||!js.child)return;let changed=false;
       const kid=js.child,P=JSON.stringify([kid]),Sx=JSON.stringify(js.sections||[]);
       if(P!==G.call(localStorage,"najma:profiles")||Sx!==G.call(localStorage,"najma:sections"))changed=true;
-      SET.call(localStorage,"najma:profiles",P);SET.call(localStorage,"najma:sections",Sx);SET.call(localStorage,"najma:lock",kid.id);SET.call(localStorage,"najma:cur",kid.id);
+      SET.call(localStorage,"najma:lock",kid.id);SET.call(localStorage,"najma:cur",kid.id);SET.call(localStorage,"najma:profiles",P);saveSecs(Sx);try{SET.call(localStorage,"najma:syncAt",String(Date.now()));RM.call(localStorage,"najma:syncErr")}catch(e){}
       /* stars: keep the best of the iPad and the database, then send back anything the database is missing */
       const ns=k=>`najma:${kid.id}:${k}`;if(!me)changed=true;
       Object.entries(js.progress||{}).forEach(([k,srv])=>{let loc={};try{loc=JSON.parse(G.call(localStorage,ns(k))||"{}")}catch(e){}
