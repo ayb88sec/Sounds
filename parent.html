@@ -564,7 +564,12 @@ async function drawAdmin(){if(!IS_ADMIN)return;
     sb.from("progress").select("child_id,app_key,data"),sb.from("devices").select("child_id,last_seen,created_at"),sb.from("sections").select("id,family_id,data,shared")]);
   /* what each child has done and when their iPad was last used */
   const stars={},seen={},cnt=v=>{try{const o=typeof v==="string"?JSON.parse(v):v;return o&&typeof o==="object"?Object.keys(o).length:0}catch(e){return 0}};
-  (pg.data||[]).forEach(r=>{if(r.app_key==="ipadSpace")return;stars[r.child_id]=(stars[r.child_id]||0)+cnt(r.data)});
+  const PM={};(pg.data||[]).forEach(r=>{(PM[r.child_id]=PM[r.child_id]||{})[r.app_key]=r.data;if(r.app_key==="ipadSpace")return;stars[r.child_id]=(stars[r.child_id]||0)+cnt(r.data)});
+  /* the same progress bars as the dashboard, for any family's child */
+  const bars=(c,S)=>{const p=Object.assign({},c.data,{id:c.id}),apps=p.apps||{},max=p.numMax||20,k=key=>cnt((PM[c.id]||{})[key]);
+    return APPS_D.map(([id,name,key,lvk,sizes])=>{const on=apps[id]!==false;let total=id==="colorsAr"||id==="colorsEn"?11:id==="duas"?6:id==="numAr"||id==="numEn"?max:id==="islam"?5:id==="iman"?6:lvOf(p,lvk).reduce((s,i)=>s+sizes[i],0);
+      const n=Math.min(k(key),total),pct=total?Math.round(n/total*100):0;return `<div class="pr${on?"":" off"}"><span dir="auto">${name}${on?"":" (مطفأ)"}</span><span class="bar"><i style="width:${pct}%"></i></span><span>${n}/${total}</span></div>`}).join("")+
+      S.filter(s=>apps["s:"+s.id]!==false).map(s=>{const w=(s.data.words||[]).length,n=Math.min(k("sec_"+s.id),w),pct=w?Math.round(n/w*100):0;return `<div class="pr"><span dir="auto">${esc((s.data.icon||"📝")+" "+(s.data.title||""))}</span><span class="bar"><i style="width:${pct}%"></i></span><span>${n}/${w}</span></div>`}).join("")};
   (dv.data||[]).forEach(d=>{const t=d.last_seen||d.created_at;if(t&&(!seen[d.child_id]||t>seen[d.child_id]))seen[d.child_id]=t});
   const when=t=>t?new Date(t).toLocaleString("ar",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):"لم يُربط آيباد";
   F.innerHTML="";(fa.data||[]).forEach(f=>{const own=f.id===FID,box=document.createElement("div");box.className="qbox";box.style.background="#fff";
@@ -572,11 +577,13 @@ async function drawAdmin(){if(!IS_ADMIN)return;
     box.innerHTML=`<div class="rrow" style="background:none;padding:0"><b style="flex:1;font-size:18px">👨‍👩‍👧 ${esc(f.name)}${own?" (عائلتي)":""}</b>${own?"":'<button class="b del df">🗑️ حذف العائلة</button>'}</div>`+
       M.map(m=>`<div class="rrow"><span style="flex:1" dir="ltr">${m.role==="owner"?"👑":"🧑"} ${esc(m.email||m.user_id.slice(0,8))}</span>${m.user_id===ME.id?"":`<button class="b dm" data-u="${m.user_id}">🗑️</button>`}</div>`).join("")+
       C.map(c=>{const d=c.data||{},on=Object.values(d.apps||{}).filter(v=>v===false).length;return `<div class="rrow" style="flex-wrap:wrap"><span style="flex:1;font-weight:800">${esc((d.avatar||"⭐")+" "+(d.name||""))}</span>${own?"":`<button class="b dc" data-c="${c.id}">🗑️</button>`}
-        <div style="flex-basis:100%;font-size:14px;color:#7a7090">${d.grade?"🎓 "+esc(gName(d.grade))+" · ":""}⭐ ${stars[c.id]||0} · 📱 ${when(seen[c.id])}${on?` · 🙈 ${on} مخفي`:""}${d.net==="online"?" · 📶":""}</div></div>`}).join("")+
+        <div style="flex-basis:100%;font-size:14px;color:#7a7090">${d.grade?"🎓 "+esc(gName(d.grade))+" · ":""}⭐ ${stars[c.id]||0} · 📱 ${when(seen[c.id])}${on?` · 🚫 ${on} تطبيقات مطفأة`:""}${d.net==="online"?" · 📶":""}</div>
+        <button class="b kb" data-k="${c.id}" style="flex-basis:100%;margin-top:6px;padding:6px">📊 التقدّم بالتفصيل</button><div class="prow2" id="kb_${c.id}" style="display:none;flex-basis:100%"></div></div>`}).join("")+
       (()=>{const S=(sc.data||[]).filter(x=>x.family_id===f.id&&x.data&&x.data.type!=="qimg"&&x.data.type!=="flags");return S.length?`<div style="margin-top:6px;font-size:14px;color:#5a5070"><b>📚 أقسامهم:</b> ${S.map(x=>esc((x.data.icon||"📝")+" "+(x.data.title||""))+(x.data.hw?" 📌":"")+(x.shared?" 🌍":"")).join("، ")}</div>`:""})()+
       `<div style="font-size:13px;color:#9a90b0;margin-top:4px">${C.length} أطفال · ${M.length} والدين${f.created_at?" · منذ "+new Date(f.created_at).toLocaleDateString("ar",{day:"numeric",month:"short"}):""}</div>`;
     const df=box.querySelector(".df");if(df)df.onclick=async()=>{if(!confirm(`حذف عائلة «${f.name}» بكل أطفالها وتقدّمهم؟ لا يمكن التراجع.`))return;const {error}=await sb.from("families").delete().eq("id",f.id);if(error)alert(error.message);drawAdmin()};
     box.querySelectorAll(".dm").forEach(b=>b.onclick=async()=>{if(!confirm("إزالة هذا الشخص من العائلة؟"))return;const {error}=await sb.from("family_members").delete().eq("family_id",f.id).eq("user_id",b.dataset.u);if(error)alert(error.message);drawAdmin()});
+    box.querySelectorAll(".kb").forEach(b=>b.onclick=()=>{const el=$("kb_"+b.dataset.k);if(el.style.display==="none"){const c=C.find(x=>x.id===b.dataset.k);el.innerHTML=bars(c,(sc.data||[]).filter(x=>x.family_id===f.id&&x.data&&x.data.type!=="qimg"&&x.data.type!=="flags"));el.style.display=""}else el.style.display="none"});
     box.querySelectorAll(".dc").forEach(b=>b.onclick=async()=>{if(!confirm("حذف هذا الطفل وتقدّمه؟"))return;const {error}=await sb.from("children").delete().eq("id",b.dataset.c);if(error)alert(error.message);drawAdmin()});
     F.appendChild(box)})}
 /* voice choice for each part: my recordings, AI voice, or nothing */
@@ -672,7 +679,7 @@ function drawDash(){
     const rows=APPS_D.map(([id,name,key,lvk,sizes])=>{const on=apps[id]!==false;let total=id==="colorsAr"||id==="colorsEn"?11:id==="duas"?duaList().length:id==="numAr"||id==="numEn"?max:id==="islam"?5:id==="iman"?6:lvOf(p,lvk).reduce((s,i)=>s+sizes[i],0);
       const n=Math.min(count(p.id,key),total),pct=total?Math.round(n/total*100):0;
       const lt=lvk?lvText(p,lvk):"";const lv=lt?`<div class="lv">🎚️ ${lt}</div>`:(id.startsWith("num")&&max<20?`<div class="lv">🎚️ حتى ${max}</div>`:"");
-      return `<div class="pr${on?"":" off"}"><span dir="auto">${name}${on?"":" (مخفي)"}</span><span class="bar"><i style="width:${pct}%"></i></span><span>${n}/${total}</span>${lv}</div>`}).join("")+
+      return `<div class="pr${on?"":" off"}"><span dir="auto">${name}${on?"":" (مطفأ)"}</span><span class="bar"><i style="width:${pct}%"></i></span><span>${n}/${total}</span>${lv}</div>`}).join("")+
       vis().filter(s=>apps["s:"+s.id]!==false).map(s=>{const n=Math.min(count(p.id,"sec_"+s.id),s.words.length),pct=s.words.length?Math.round(n/s.words.length*100):0;
         return `<div class="pr"><span dir="auto">${s.icon} ${s.title}</span><span class="bar"><i style="width:${pct}%"></i></span><span>${n}/${s.words.length}</span></div>`}).join("");
     const d=document.createElement("div");d.className="dk";
