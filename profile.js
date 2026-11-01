@@ -167,7 +167,7 @@
     try{if(!window.BASE||!window.BASE.spell)await loadJS("data/base.js");if(!window.SPELL)await loadJS("data/spell.js")}catch(e){}
     const B=window.BASE||{},idx={},bare={},letter={},add=(m,t,h)=>{(m[t]=m[t]||[]).push(h)};
     Object.keys(B).forEach(app=>(B[app].groups||[]).forEach(g=>g[1].forEach(([k,lab,say])=>{const t=normT(say||lab);if(!t)return;add(idx,t,[app,k]);const b=t.replace(MARKS,"");if(b.length>1)add(bare,b,[app,k]);
-      if(app==="clips"&&/-s$/.test(k))add(letter,g[0],[app,k])})));
+      if(app==="clips"&&/-[s0]$/.test(k))add(letter,g[0],[app,k])/* the letter sound if recorded, otherwise the letter with fatha */})));
     if(window.SPELL)Object.entries(SPELL.keys).forEach(([t,k])=>{const n=normT(t),hit=k[0]==="l"?["clips",k]:["spell",k];add(idx,n,hit);const b=n.replace(MARKS,"");if(b.length>1)add(bare,b,hit)});
     /* every possible match, best first; the first one that has a recording wins */
     const want={};list.forEach(w=>{const n=normT(w),b=n.replace(MARKS,""),L=b.length===1?(letter[/[أإآ]/.test(b)?"ا":b]||[]):[];want[w]=[...(idx[n]||[]),...L,...(b.length>1?bare[b]||[]:[])]});
