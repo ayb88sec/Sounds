@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<script src="supa.js"></script>
+<script src="profile.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon.png"><link rel="icon" href="icon.png">
+<title>Maths + −</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;800&family=Andika:wght@700&display=swap">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0}
+body{font-family:"Andika","Baloo Bhaijaan 2",system-ui,sans-serif;color:#2b2340;min-height:100vh;background:linear-gradient(160deg,#4f8bff,#22c7b8 55%,#3fc35a);background-attachment:fixed}
+main{max-width:760px;margin:0 auto;padding:16px 12px 60px}
+h1{color:#fff;text-align:center;font-size:clamp(38px,9vw,56px);margin:8px 0 2px;text-shadow:0 4px 0 rgba(0,0,0,.18)}
+.sub{text-align:center;color:#fff;font-weight:700;font-size:18px;margin:0 0 14px}
+.lv{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.lv button{border:0;border-radius:26px;padding:18px 14px;font-family:inherit;font-size:22px;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 7px 0 rgba(0,0,0,.18);text-align:left;position:relative}
+.lv button small{display:block;font-size:15px;opacity:.9;margin-top:4px}
+.lv button .st{position:absolute;top:10px;right:14px;font-size:16px}
+.lv button:active{transform:translateY(5px)}
+.grp{color:#fff;font-weight:800;font-size:20px;margin:18px 4px 8px}
+.card{background:#fff;border-radius:34px;padding:20px 16px;box-shadow:0 8px 0 rgba(0,0,0,.12);text-align:center}
+.q{font-size:clamp(46px,13vw,78px);font-weight:700;margin:8px 0;letter-spacing:2px}
+.pic{font-size:clamp(28px,8vw,44px);line-height:1.3;margin:6px 0 10px;min-height:20px}
+.pic .x{opacity:.25;text-decoration:line-through}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.opts button{border:0;border-radius:24px;padding:16px 0;font-family:inherit;font-size:44px;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.15)}
+.opts button.wrong{animation:shake .4s;opacity:.35}.opts button.right{outline:7px solid #ffd23f}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.top{display:flex;align-items:center;justify-content:space-between;color:#fff;font-weight:700;font-size:20px;margin-bottom:10px}
+.top button{border:0;background:#fff;color:#4f8bff;border-radius:999px;padding:8px 16px;font-family:inherit;font-size:18px;font-weight:700;cursor:pointer}
+.dots{display:flex;gap:6px;justify-content:center;margin:4px 0 10px}.dots i{width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.12)}.dots i.ok{background:#3fc35a}.dots i.no{background:#ff5d73}
+.done{font-size:34px;font-weight:700;margin:20px 0}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+</style>
+</head>
+<body>
+<a href="home.html" aria-label="Home" style="position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;z-index:15;width:52px;height:52px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18)">🏠</a>
+<canvas id="fx"></canvas>
+<main><h1>➕ Maths ➖</h1><p class="sub">Adding and taking away</p><div id="app"></div></main>
+<script>
+const $=id=>document.getElementById(id);
+/* levels: KG2 uses pictures and small numbers, Grade 2 bigger numbers and missing numbers */
+const LV=[
+ {g:"KG2",t:"Add up to 5",s:"🍎 + 🍎",max:5,ops:["+"],pic:true,c:"#ff7eb6"},
+ {g:"KG2",t:"Take away up to 5",s:"🍎 − 🍎",max:5,ops:["-"],pic:true,c:"#ffb020"},
+ {g:"KG2",t:"+ and − up to 10",s:"⭐ up to 10",max:10,ops:["+","-"],pic:true,c:"#a66bff"},
+ {g:"Grade 2",t:"+ and − up to 20",s:"12 + 7",max:20,ops:["+","-"],c:"#4f8bff"},
+ {g:"Grade 2",t:"+ and − up to 100",s:"45 + 32 · 80 − 26",max:100,ops:["+","-"],c:"#22a37a"},
+ {g:"Grade 2",t:"Missing number",s:"? + 8 = 15",max:20,ops:["+","-"],miss:true,c:"#ff5d73"}];
+const N=10,EMO=["🍎","⭐","🐟","🌸","🍓","🚗","🎈","🐥","🍪","⚽"];
+/* which levels this child sees: the parent's choice, otherwise by school grade */
+let ON=NAJMA.lv("math");const me=NAJMA.me||{};
+if(!(me.levels&&Array.isArray(me.levels.math)&&me.levels.math.length)&&me.grade){if(/^KG/.test(me.grade))ON=[0,1,2];else if(me.grade==="G1")ON=[2,3];else if(/^G/.test(me.grade))ON=[3,4,5]}
+let done={};try{done=JSON.parse(localStorage.getItem("mathDone")||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem("mathDone",JSON.stringify(done))}catch(e){}};
+const rnd=n=>Math.floor(Math.random()*n),shuf=a=>[...a].sort(()=>Math.random()-.5);
+/* sounds + confetti */
+let ac;function tone(f,d,w=0,ty="triangle",v=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(v,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
+const yay=()=>{tone(660,.12);tone(990,.15,.08)},fan=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12)),buzz=()=>tone(160,.25,0,"sawtooth",.08);
+const COL=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
+const cv=$("fx"),cx=cv.getContext("2d");let parts=[],run=false;function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}size();addEventListener("resize",size);
+function burst(x,y,n=36){for(let i=0;i<n;i++){const a=Math.random()*6.28,v=3+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:4+Math.random()*7,c:COL[i%6],rot:0,vr:(Math.random()-.5)*.4,life:90})}if(!run){run=true;requestAnimationFrame(loop)}}
+function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.life-->0);for(const p of parts){p.vy+=.25;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);cx.fillStyle=p.c;cx.globalAlpha=Math.min(1,p.life/30);cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);cx.restore()}if(parts.length)requestAnimationFrame(loop);else run=false}
+let voice=null;function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
+function speak(t){if(NAJMA.vmode("math","mine")==="none")return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.8;speechSynthesis.speak(u)}catch(e){}}
+
+/* one question */
+/* no "+ 0" or "− 0", answers stay within the level */
+function make(L){const op=L.ops[rnd(L.ops.length)],lo=L.max<=10?2:L.max>20?20:6;let a,b,r;
+  if(op==="+"){r=lo+rnd(L.max-lo+1);a=1+rnd(r-1);b=r-a}
+  else{a=lo+rnd(L.max-lo+1);b=1+rnd(a-1);r=a-b}
+  const q={a,b,op,r};if(L.miss){q.hide=rnd(2);q.ans=q.hide?b:a}else q.ans=r;return q}
+function opts(ans,max){const s=new Set([ans]);let tries=0;while(s.size<4&&tries++<50){const d=ans+(rnd(2)?1:-1)*(1+rnd(max>20?10:3));if(d>=0&&d<=max)s.add(d)}let k=0;while(s.size<4)s.add(ans+(++k)+3);return shuf([...s])}
+function pic(q,L){if(!L.pic)return"";const e=EMO[rnd(EMO.length)];
+  if(q.op==="+")return e.repeat(q.a)+(q.a&&q.b?" ➕ ":"")+e.repeat(q.b);
+  return e.repeat(q.b===q.a?0:q.a-q.b)+`<span class="x">${e.repeat(q.b)}</span>`}
+
+function menu(){const A=$("app");A.innerHTML="";let lastG="";
+  ON.forEach(i=>{const L=LV[i];if(L.g!==lastG){lastG=L.g;A.insertAdjacentHTML("beforeend",`<div class="grp">${L.g==="KG2"?"🧸 KG2":"🎒 Grade 2"}</div><div class="lv" id="g_${L.g.replace(/\s/g,"")}"></div>`)}
+    const b=document.createElement("button");b.style.background=L.c;const st=Object.keys(done).filter(k=>k.startsWith("L"+i+"r")).length;
+    b.innerHTML=`<span class="st">${"⭐".repeat(Math.min(st,3))}</span>${L.t}<small>${L.s}</small>`;b.onclick=()=>play(i);$("g_"+L.g.replace(/\s/g,"")).appendChild(b)})}
+
+function play(i){const L=LV[i];let k=0,score=0;const res=[];
+  function next(){if(k>=N)return finish();const q=make(L),O=opts(q.ans,L.max);
+    const txt=L.miss?(q.hide?`${q.a} ${q.op==="-"?"−":"+"} ? = ${q.r}`:`? ${q.op==="-"?"−":"+"} ${q.b} = ${q.r}`):`${q.a} ${q.op==="-"?"−":"+"} ${q.b} = ?`;
+    $("app").innerHTML=`<div class="top"><button id="back">⬅ Levels</button><span>${k+1} / ${N}</span></div><div class="card"><div class="dots">${Array.from({length:N},(_,j)=>`<i class="${res[j]===1?"ok":res[j]===0?"no":""}"></i>`).join("")}</div>
+      <div class="pic">${pic(q,L)}</div><div class="q">${txt}</div><div class="opts">${O.map((o,j)=>`<button style="background:${COL[(j+i)%6]}" data-v="${o}">${o}</button>`).join("")}</div></div>`;
+    $("back").onclick=menu;speak(txt.replace("?","what").replace("−","minus").replace("+","plus").replace("=","equals"));let first=true;
+    document.querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(+b.dataset.v===q.ans){b.classList.add("right");yay();const r=b.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,24);
+        if(first)score++;res[k]=first?1:0;k++;setTimeout(next,800)}else{if(first){first=false}b.classList.add("wrong");buzz()}})}
+  function finish(){const stars=score>=9?3:score>=7?2:score>=5?1:0;if(stars){const n=Object.keys(done).filter(x=>x.startsWith("L"+i+"r")).length;if(n<3){done["L"+i+"r"+(n+1)]=stars;save()}}fan();for(let j=0;j<6;j++)setTimeout(()=>burst(Math.random()*innerWidth,innerHeight/3),j*150);
+    $("app").innerHTML=`<div class="card"><div class="done">${stars?"🎉 Well done!":"💪 Good try!"}</div><div style="font-size:60px">${stars?"⭐".repeat(stars):"🙂"}</div><div style="font-size:24px;margin:10px 0">${score} / ${N} right first time</div>
+      <div class="opts" style="grid-template-columns:1fr 1fr"><button style="background:#3fc35a;font-size:24px" id="again">🔁 Again</button><button style="background:#4f8bff;font-size:24px" id="lv">📚 Levels</button></div></div>`;
+    $("again").onclick=()=>play(i);$("lv").onclick=menu}
+  next()}
+const P=new URLSearchParams(location.search).get("l");if(P!=null&&LV[+P])play(+P);else menu();
+</script>
+</body>
+</html>

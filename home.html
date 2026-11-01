@@ -128,6 +128,7 @@ const ROWS=[
   {id:"sent",href:"sentences.html",glyph:"✍🏽",name:"Sentences",sub:"Build & write",bg:"linear-gradient(150deg,#ff7eb6,#ffb020)",key:"sentDone",total:16},
   {id:"writeEn",href:"writing.html",glyph:"Aa",name:"Handwriting",sub:"abc · ABC · 123",bg:"linear-gradient(150deg,#a66bff,#ff7eb6)",key:"writeEn",total:62}]},
  {t:"🔷 Maths",apps:[
+  {id:"math",href:"math.html",glyph:"➕➖",name:"Maths + −",sub:"KG2 · Grade 2",bg:"linear-gradient(150deg,#4f8bff,#22c7b8)",key:"mathDone",total:18},
   {id:"numEn",href:"numbers-en.html",glyph:"123",name:"Numbers",sub:"1 to 20",bg:"linear-gradient(150deg,#4f8bff,#3fc35a)",key:"numDoneEn",total:20},
   {id:"colorsEn",href:"colors.html?l=en",glyph:"🎨",name:"Colours",sub:"11 colours",bg:"linear-gradient(150deg,#4f8bff,#a66bff 50%,#ff7eb6)",key:"colorsEn",total:11},
   {id:"shapes",href:"shapes.html",glyph:"🔺",name:"2D Shapes",sub:"Sides & corners",bg:"linear-gradient(150deg,#3fc35a,#22c7b8)",key:"shapesDone",total:10}]},
@@ -149,7 +150,7 @@ if(HW.length)ROWS.unshift({t:"📌 الواجب",apps:HW})}
 const box=document.getElementById("apps");
 /* rings follow the levels switched on for this child */
 const sumLv=(app,sizes)=>NAJMA.lv(app).reduce((s,i)=>s+(sizes[i]||0),0);
-const LT={arabic:sumLv("arabic",[7,7,7,7,10]),sounds:sumLv("sounds",[25,7]),cvc:sumLv("wt",[7,20,17,18,16,18,15]),sent:sumLv("sent",[4,4,4,4]),shapes:sumLv("shapes",[4,4,2]),writeEn:sumLv("writeEn",[26,26,10]),quran:sumLv("quran",[7,43,68,132,321]),spell:sumLv("spell",[10,5,5,20,20])};
+const LT={arabic:sumLv("arabic",[7,7,7,7,10]),sounds:sumLv("sounds",[25,7]),cvc:sumLv("wt",[7,20,17,18,16,18,15]),sent:sumLv("sent",[4,4,4,4]),shapes:sumLv("shapes",[4,4,2]),writeEn:sumLv("writeEn",[26,26,10]),quran:sumLv("quran",[7,43,68,132,321]),spell:sumLv("spell",[10,5,5,20,20]),math:sumLv("math",[3,3,3,3,3,3])};
 ROWS.forEach(r=>r.apps.forEach(a=>{if(LT[a.id]!=null)a.total=LT[a.id];if(a.id==="numAr"||a.id==="numEn")a.total=NAJMA.settings.numMax||20}));
 const ROWS2=ROWS;let stars=0,full=0;const seen=new Set();let i=0;
 ROWS.forEach(row=>{if(!row.apps.some(a=>NAJMA.settings.apps[a.id]!==false))return;const hd=document.createElement("div");hd.className="rowt";hd.textContent=row.t;box.appendChild(hd);
