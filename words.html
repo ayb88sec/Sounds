@@ -103,7 +103,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
 <div class="modal" id="wordModal"><div class="card">
   <button class="x" data-close>✕</button>
   <div class="big" id="wBig"></div>
-  <div class="bar" style="margin-top:0" id="wSayBar"><button class="btn" id="wSay">🔊</button></div>
+  <div class="bar" style="margin-top:0" id="wSayBar"><button class="btn" id="wSay">🔊</button><button class="btn teal" id="wBlend" style="display:none"></button></div>
   <div class="lbl" id="lSpell"></div>
   <div class="spell" id="spell"></div>
   <div class="bar"><button class="btn teal" id="wWrite"></button></div>
@@ -145,7 +145,7 @@ function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]GB/i.te
 if(!AR&&"speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
 /* parent's recorded voice (encrypted) is used when there is one */
 const AUD=SEC.audio||{},MINE={};let mA=null;
-Promise.all(Object.keys(AUD).map(w=>NAJMA.decrypt(AUD[w]).then(u=>MINE[w]=u).catch(()=>{}))).then(()=>AR&&VM=="mine"?NAJMA.libVoice(WORDS.filter(w=>!MINE[w])).then(m=>Object.assign(MINE,m)).catch(()=>{}):0).then(()=>{if(AR&&cur!=null&&wm.classList.contains("show"))document.getElementById("wSayBar").style.display=MINE[WORDS[cur]]?"":"none"});
+Promise.all(Object.keys(AUD).map(w=>NAJMA.decrypt(AUD[w]).then(u=>MINE[w]=u).catch(()=>{}))).then(()=>AR&&VM=="mine"?NAJMA.libVoice(WORDS.filter(w=>!MINE[w])).then(m=>Object.assign(MINE,m)).catch(()=>{}):0).then(()=>{if(AR&&cur!=null&&wm.classList.contains("show"))document.getElementById("wSay").style.display=MINE[WORDS[cur]]?"":"none"});
 const VM=NAJMA.vmode("s:"+SEC.id,"mine");const hasV=w=>VM==="none"?false:AR?(VM==="ai"||!!MINE[w]):true;
 function sayW(w){if(VM==="none")return;if(AR&&VM==="ai"){NAJMA.aiSay(w);return}if(MINE[w]){try{speechSynthesis.cancel()}catch(e){}try{if(mA)mA.pause();mA=new Audio(MINE[w]);mA.play()}catch(e){}return}if(AR)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(w);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.75;speechSynthesis.speak(u)}catch(e){}}
 
@@ -185,17 +185,25 @@ draw();
 
 /* word card */
 const wm=document.getElementById("wordModal");let cur=0;
+/* each letter plays its own sound: English phonics (s… a… t…), Arabic from the parent's recordings */
+const segW=w=>AR?(w.match(/[^\s\u064B-\u065F\u0670\u06D6-\u06ED.,،؛؟?!:;"'«»()\[\]\-–—…][\u064B-\u065F\u0670\u06D6-\u06ED]*/g)||[]):(w.toLowerCase().match(/sh|ch|th|ng|ck|qu|[a-z]/g)||[]);
+const PH={},LS={};if(!AR)fetch("audio/phonics-uk.json").then(r=>r.json()).then(j=>Object.assign(PH,j.sounds)).catch(()=>{});
+let lA=null;function playU(u){return new Promise(res=>{try{speechSynthesis.cancel()}catch(e){}try{if(lA)lA.pause();lA=new Audio(u);lA.onended=lA.onerror=()=>res();lA.play().catch(()=>res());setTimeout(res,1500)}catch(e){res()}})}
+async function letterSnd(ch){if(VM==="none")return;if(!AR){let c=ch==="ck"?"k":ch==="qu"?"q":ch;if(PH[c])return playU(PH[c]);popSnd();return}
+  if(VM==="ai"){NAJMA.aiSay(ch);return}if(!(ch in LS)){try{LS[ch]=(await NAJMA.libVoice([ch]))[ch]||null}catch(e){LS[ch]=null}}if(LS[ch])return playU(LS[ch]);popSnd()}
+async function blendW(w){const tiles=[...document.getElementById("spell").children],segs=segW(w);for(let k=0;k<segs.length;k++){tiles.forEach((t,j)=>t.classList.toggle("lit",j<=k));await letterSnd(segs[k]);await new Promise(r=>setTimeout(r,250))}sayW(w)}
 function openW(i,el){cur=i;const w=WORDS[i];popSnd();if(el)burstAt(el);
+  {const bb=document.getElementById("wBlend");bb.style.display=VM==="none"?"none":"";bb.textContent=AR?"🔤 تهجّى":"🔤 Sound it out";bb.onclick=()=>blendW(w)}
   const big=document.getElementById("wBig");big.innerHTML=pretty(w);big.style.background=COLORS[i%6];big.onclick=()=>sayW(w);
   document.getElementById("wSay").onclick=()=>sayW(w);
   const sp=document.getElementById("spell");sp.innerHTML="";
   /* one tile per letter: vowel marks stay on their letter, punctuation and spaces are skipped */
-  (w.match(/[^\s\u064B-\u065F\u0670\u06D6-\u06ED.,،؛؟?!:;"'«»()\[\]\-–—…][\u064B-\u065F\u0670\u06D6-\u06ED]*/g)||[]).forEach(ch=>{const b=document.createElement("button");b.textContent=ch;b.onclick=()=>{b.classList.add("lit");popSnd();
+  const segs=segW(w);segs.forEach(ch=>{const b=document.createElement("button");b.textContent=ch;b.onclick=()=>{b.classList.add("lit");letterSnd(ch);
     if([...sp.children].every(x=>x.classList.contains("lit"))){setTimeout(()=>{sayW(w);fanfare();burstAt(sp);talk(rnd(T.praise))},250)}};sp.appendChild(b)});
   document.getElementById("wWrite").onclick=()=>openWrite(i);
   const a=document.getElementById("wPrev"),b=document.getElementById("wNext");a.textContent=T.prev;b.textContent=T.next;
   a.style.visibility=i>0?"visible":"hidden";b.style.visibility=i<WORDS.length-1?"visible":"hidden";a.onclick=()=>openW(i-1);b.onclick=()=>openW(i+1);
-  document.getElementById("wSayBar").style.display=hasV(w)?"":"none";
+  document.getElementById("wSayBar").style.display=VM==="none"?"none":"";document.getElementById("wSay").style.display=hasV(w)?"":"none";
   practiceUI(SEC.id+":"+w);wm.classList.add("show");setTimeout(()=>sayW(w),250)}
 
 function openWrite(i){WritePad.open({items:WORDS,index:i,lang:AR?"ar":"en",rtl:AR,font:AR?'"Baloo Bhaijaan 2"':'"Andika"',aspect:2.2,yShift:AR?.48:.45,
