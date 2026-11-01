@@ -169,6 +169,8 @@ const APPN=[["arabic","حروفي"],["numAr","الأرقام"],["islam","أرك�
 function saveProfs(){R.set("najma:profiles",JSON.stringify(profs))}
 function use(id){R.set("najma:cur",id);location.reload()}
 const kids=document.getElementById("kids");
+if(!NAJMA.lock){const b=document.createElement("button");b.className="kid"+(NAJMA.me&&NAJMA.me.preview?" on":"");
+  b.innerHTML=`<span class="av" style="background:#ffd23f">👀</span><span>تجربة</span>`;b.onclick=()=>{if(!(NAJMA.me&&NAJMA.me.preview))use("preview")};kids.appendChild(b)}
 profs.filter(p=>!NAJMA.lock||p.id===NAJMA.lock).forEach(p=>{const b=document.createElement("button");b.className="kid"+(NAJMA.me&&NAJMA.me.id===p.id?" on":"");
   b.innerHTML=`<span class="av" style="background:${p.color}">${p.avatar}</span><span dir="auto">${p.name}</span>`;b.onclick=()=>{if(!(NAJMA.me&&NAJMA.me.id===p.id))use(p.id)};kids.appendChild(b)});
 const add=document.createElement("button");add.className="kid add";add.innerHTML=`<span class="av">➕</span><span>إضافة</span>`;add.onclick=()=>location.href="parent.html";if(!NAJMA.lock)kids.appendChild(add);

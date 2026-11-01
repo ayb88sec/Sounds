@@ -33,7 +33,10 @@
   const LOCK=G.call(localStorage,"najma:lock");if(LOCK)SET.call(localStorage,"najma:cur",LOCK);
   let profiles=[];try{profiles=JSON.parse(G.call(localStorage,"najma:profiles")||"[]")}catch(e){}
   let cur=LOCK||G.call(localStorage,"najma:cur");
-  let me=profiles.find(p=>p.id===cur)||null;
+  /* parent's phone: a test view with every app and section, not tied to a child (progress kept apart, never sent) */
+  const PREV={id:"preview",name:"ماما",nameAr:"ماما",avatar:"👀",color:"#ffd23f",apps:{},preview:true};
+  if(!LOCK&&new URLSearchParams(location.search).get("preview")){cur="preview";SET.call(localStorage,"najma:cur","preview")}
+  let me=(!LOCK&&cur==="preview")?PREV:(profiles.find(p=>p.id===cur)||(!LOCK&&!G.call(localStorage,"najma:dev")?PREV:null));
   const key=k=>(typeof k==="string"&&!k.startsWith("najma:")&&!k.startsWith("sb-")&&me)?`najma:${me.id}:${k}`:k;
   S.getItem=function(k){return G.call(this,key(k))};
   S.setItem=function(k,v){return SET.call(this,key(k),v)};
