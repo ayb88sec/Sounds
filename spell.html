@@ -107,7 +107,7 @@ const M=$("m"),open=h=>{$("mb").innerHTML=h;M.classList.add("show")},close=()=>{
 M.addEventListener("click",e=>{if(e.target===M||e.target.hasAttribute("data-close"))close()});
 
 /* tabs: only the phases switched on for this child */
-let cur=+(localStorage.getItem("spellTab")||ON[0]);if(!ON.includes(cur))cur=ON[0];
+let cur=+(new URLSearchParams(location.search).get("p")??localStorage.getItem("spellTab")??ON[0]);if(!ON.includes(cur))cur=ON[0];
 function tabs(){$("tabs").innerHTML="";ON.forEach(i=>{const b=document.createElement("button");b.textContent="١٢٣٤٥"[i]+" · "+PH[i];if(i===cur)b.className="on";
   b.onclick=()=>{cur=i;try{localStorage.setItem("spellTab",i)}catch(e){}tabs();draw()};$("tabs").appendChild(b)})}
 const missing=()=>VM==="mine"&&Object.keys(SP).length===0;
