@@ -155,7 +155,7 @@ setTimeout(function(){var g=document.getElementById("gate");if(g&&getComputedSty
     <label>📱 هذا الجهاز</label><div class="chips" id="devLock"></div>
     <label>🔑 رمز العائلة</label>
     <input class="in" id="fam" dir="ltr" placeholder="XXXX-XXXX-XXXX" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px">
-    <div style="display:flex;gap:8px;margin-top:10px"><button class="b go" id="famSave">حفظ الرمز</button></div>
+    <div style="display:flex;gap:8px;margin-top:10px"><button class="b go" id="famSave">حفظ الرمز</button></div><div class="note" id="famState" style="margin-top:8px"></div>
     <label>مفتاح GitHub (يُحفظ على هذا الجهاز فقط)</label>
     <input class="in" id="tok" dir="ltr" placeholder="github_pat_..." autocomplete="off">
     <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="b go" id="tokSave">🔗 اتصال</button><button class="b del" id="tokDel">إزالة المفتاح</button></div>
@@ -629,8 +629,15 @@ async function connect(){$("fam").value=NAJMA.hasKey()?"✓ محفوظ":"";if(!N
     else{await ghPut()}}
   catch(e){status("❌ تعذّر الاتصال: "+why(e))}}
 $("tokSave").onclick=()=>{const v=$("tok").value.replace(/\s+/g,"");if(v&&!v.startsWith("••")){R.set(TK,v);connect()}};
-$("famSave").onclick=async()=>{const v=$("fam").value.trim().toUpperCase();if(!v||v.startsWith("✓"))return;status("⏳ جارٍ التحقق…");
-  if(await NAJMA.checkCode(v)){location.reload()}else status("❌ الرمز غير صحيح.")};
+/* the family code: always show whether this phone has it */
+function famState(msg){const ok=NAJMA.hasKey();$("famState").style.background=ok?"#e3f8e7":"#ffe1e1";$("famState").innerHTML=msg||(ok?"✅ رمز العائلة محفوظ على هذا الجهاز. الأصوات والصور تشتغل.":"🔑 رمز العائلة غير محفوظ بعد. اكتبيه فوق واضغطي «حفظ الرمز».");if(ok&&!$("fam").value)$("fam").value="✓ محفوظ"}
+$("fam").addEventListener("focus",()=>{if($("fam").value.startsWith("✓"))$("fam").value=""});
+$("famSave").onclick=async()=>{let v=$("fam").value.toUpperCase().replace(/[^A-Z0-9]/g,"");if(!v){famState();return}if(v.length===12)v=v.slice(0,4)+"-"+v.slice(4,8)+"-"+v.slice(8);
+  famState("⏳ جارٍ التحقق…");
+  if(await NAJMA.checkCode(v)){try{sessionStorage.setItem("najma:famOk","1")}catch(e){}location.reload()}else famState("❌ الرمز غير صحيح. تأكدي منه وجربي مرة ثانية (مثال: XXXX-XXXX-XXXX).")};
+/* the database version needs no GitHub key: hide it so parents are not confused */
+if(DB){try{const t=$("tok");t.style.display="none";if(t.previousElementSibling)t.previousElementSibling.style.display="none";[$("tokSave"),$("tokDel")].forEach(b=>{if(b&&b.parentNode)b.parentNode.style.display="none"})}catch(e){}}
+famState();try{if(sessionStorage.getItem("najma:famOk")){sessionStorage.removeItem("najma:famOk");famState("✅ تم حفظ رمز العائلة على هذا الجهاز. الأصوات تشتغل الحين.");setTimeout(()=>{const b=document.querySelector('nav [data-t="cloud"]');if(b)b.click()},300)}}catch(e){}
 $("tokDel").onclick=()=>{R.remove(TK);$("tok").value="";connect()};
 function drawDev(){const cur=R.get("najma:lock");chips("devLock",["👨‍👩‍👧 كل الأطفال (جهاز الوالدين)",...profs.map(p=>p.avatar+" "+p.name)],(x,k)=>k?profs[k-1].id===cur:!cur,
   (x,k)=>{if(k){R.set("najma:lock",profs[k-1].id);R.set("najma:cur",profs[k-1].id)}else{R.remove("najma:lock");R.remove("najma:dev");R.set("najma:profiles",JSON.stringify(profs))}})}
