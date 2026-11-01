@@ -86,7 +86,8 @@ const praise=["أحسنت!","رائع!","ممتاز!","شاطر!","برافو!"]
 const VM=NAJMA.vmode("spell","mine");window.CL={};window.SP={};
 NAJMA.loadAudio("clips","CL");NAJMA.loadAudio("spell","SP");
 let aud=null;
-function src(k){return k&&(k[0]==="l"?CL[k]:SP[k])}
+/* short sounds: this app's own recording first, otherwise the حروفي one */
+function src(k){return k&&(k[0]==="l"?(SP["s"+k.slice(1)]||CL[k]):SP[k])}
 function play(k){return new Promise(res=>{const u=src(k);if(!u){res();return}
   try{if(aud){aud.onended=null;aud.pause()}aud=new Audio(u);aud.onended=aud.onerror=()=>res();aud.play().catch(()=>res());setTimeout(res,2600)}catch(e){res()}})}
 const say=t=>play(S.keys[t]);

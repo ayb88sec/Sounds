@@ -152,6 +152,7 @@
       ()=>L.forEach(x=>{if(x.type==="qimg"&&x.ov)Object.keys(x.ov).filter(k=>k!=="clips").forEach(k=>delete x.ov[k])}),
       ()=>L.forEach(x=>{if(x.type!=="qimg"){delete x.audio;delete x.qaudio}})];
     for(const st of steps){st();if(put(JSON.stringify(L))){try{SET.call(localStorage,"najma:slim","1")}catch(e){}return}}}
+  window.NAJMA.saveSecs=saveSecs;
   if(SB&&DEV){const isProg=k=>typeof k==="string"&&!k.startsWith("najma:");
     const queue={};let qt=null;
     const flush=()=>{qt=null;const ks=Object.keys(queue);ks.forEach(k=>{const v=queue[k];delete queue[k];

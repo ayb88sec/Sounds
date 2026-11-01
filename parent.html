@@ -214,7 +214,7 @@ const ICONS=["📿","💬","🖼️","❓","🎧","📖","🕌","🐝","📝","�
 const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["spell","🧩 كلماتي الأولى"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["cvc","Word Time"],["sent","Sentences"],["writeEn","Handwriting"],["numEn","Numbers"],["colorsAr","🎨 الألوان"],["colorsEn","🎨 Colours"],["shapes","2D Shapes"],["quran","📖 قصص القرآن"],["duas","📿 أدعية"]];
 const PROG=[["arDone","حروفي",38],["spellDone","كلماتي الأولى",60],["numDoneAr","الأرقام",20],["islamDone","الإسلام",5],["imanDone","الإيمان",6],["soundsDone","Sounds",32],["cvcDone","Word Time",111],["sentDone","Sentences",16],["writeEn","Writing",62],["numDoneEn","Numbers",20],["shapesDone","Shapes",10]];
 let saveP=()=>R.set("najma:profiles",JSON.stringify(profs));
-let saveS=()=>{try{R.set("najma:sections",JSON.stringify(secs.map(x=>isMine(x)?x:Object.assign({},x,{mine:false}))))}catch(e){/* phone storage full: the database copy still saves */}};
+let saveS=()=>{const t=JSON.stringify(secs.map(x=>isMine(x)?x:Object.assign({},x,{mine:false})));try{R.set("najma:sections",t);R.remove("najma:slim")}catch(e){/* phone storage full: big recordings go to the phone database, so this phone still plays them */try{NAJMA.saveSecs(t)}catch(x){}}};
 const $=id=>document.getElementById(id);
 
 /* gate */
