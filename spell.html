@@ -153,7 +153,7 @@ function drawWords(P,WS){const g=document.createElement("div");g.className="cent
     WS.slice(p,p+5).forEach((w,i)=>{const c=["#f59e2a","#3aa39a","#9b7fd6","#e0607e","#4f9be0"][i],r=document.createElement("div");r.className="wr";r.style.borderColor=c;r.style.color=c;r.style.background=c+"14";
       r.innerHTML=`${done["W:"+w.k]?'<span class="st">⭐</span>':""}<div class="syl">${w.s.map(s=>`<button class="s">${s}</button>`).join("")}</div><span class="ar">←</span><button class="wd">${w.w}</button>`;
       const ss=[...r.querySelectorAll(".s")];ss.forEach((e,j)=>e.onclick=()=>{wordRun++;say(w.s[j]);e.classList.add("lit");setTimeout(()=>e.classList.remove("lit"),500)});
-      r.querySelector(".wd").onclick=e=>{burstAt(e.target);sayWord(w,ss);if(!done["W:"+w.k]){mark("W:"+w.k);r.insertAdjacentHTML("afterbegin",'<span class="st">⭐</span>')}};b.appendChild(r)});P.appendChild(b)}
+      r.querySelector(".wd").onclick=e=>{burstAt(e.target);wordRun++;play(w.k);if(!done["W:"+w.k]){mark("W:"+w.k);r.insertAdjacentHTML("afterbegin",'<span class="st">⭐</span>')}};b.appendChild(r)});P.appendChild(b)}
   $("go").onclick=()=>gameBuild(WS)}
 function gameBuild(WS){let right=0,order=shuf(WS);
   function round(){const w=order[right%order.length],extra=rnd(WS.flatMap(x=>x.s).filter(s=>!w.s.includes(s))),pool=shuf([...w.s,extra]);let at=0;
