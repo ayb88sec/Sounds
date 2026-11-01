@@ -153,6 +153,13 @@
       ()=>L.forEach(x=>{if(x.type!=="qimg"){delete x.audio;delete x.qaudio}})];
     for(const st of steps){st();if(put(JSON.stringify(L))){try{SET.call(localStorage,"najma:slim","1")}catch(e){}return}}}
   window.NAJMA.saveSecs=saveSecs;
+  /* every kids' page: pull down to update */
+  addEventListener("DOMContentLoaded",()=>{/* pull down to update */
+(function(){if(/parent\.html/.test(location.pathname))return;let y0=null,dy=0;const tip=document.createElement("div");
+  tip.style.cssText="position:fixed;top:0;left:50%;transform:translate(-50%,-60px);background:#fff;color:#5b3fd6;font:800 17px system-ui;padding:10px 20px;border-radius:0 0 18px 18px;box-shadow:0 4px 0 rgba(0,0,0,.15);z-index:99;transition:transform .2s";document.body.appendChild(tip);
+  addEventListener("touchstart",e=>{y0=scrollY<=0?e.touches[0].clientY:null;dy=0},{passive:true});
+  addEventListener("touchmove",e=>{if(y0==null)return;dy=e.touches[0].clientY-y0;if(dy>10){tip.textContent=dy>90?"⬆️ اترك للتحديث":"⬇️ اسحب للتحديث";tip.style.transition="none";tip.style.transform=`translate(-50%,${Math.min(dy,120)-60}px)`}},{passive:true});
+  addEventListener("touchend",()=>{tip.style.transition="";if(y0!=null&&dy>90){tip.textContent="🔄 جاري التحديث…";tip.style.transform="translate(-50%,0)";try{sessionStorage.removeItem("najma:reloaded")}catch(e){}setTimeout(()=>location.reload(),400)}else tip.style.transform="translate(-50%,-60px)";y0=null;dy=0})})();});
   if(SB&&DEV){const isProg=k=>typeof k==="string"&&!k.startsWith("najma:");
     const queue={};let qt=null;
     const flush=()=>{qt=null;const ks=Object.keys(queue);ks.forEach(k=>{const v=queue[k];delete queue[k];
