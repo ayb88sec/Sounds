@@ -560,12 +560,21 @@ async function drawAdmin(){if(!IS_ADMIN)return;
     r.querySelector(".rej").onclick=async()=>{if(await adSet(x.id,{proposed:false}))drawAdmin()};P.appendChild(r)});
   /* families */
   const F=$("adFam");F.innerHTML="⏳";
-  const [fa,me,ch]=await Promise.all([sb.from("families").select("id,name,created_at").order("created_at"),sb.from("family_members").select("family_id,user_id,email,role"),sb.from("children").select("id,family_id,data")]);
+  const [fa,me,ch,pg,dv,sc]=await Promise.all([sb.from("families").select("id,name,created_at").order("created_at"),sb.from("family_members").select("family_id,user_id,email,role"),sb.from("children").select("id,family_id,data"),
+    sb.from("progress").select("child_id,app_key,data"),sb.from("devices").select("child_id,last_seen,created_at"),sb.from("sections").select("id,family_id,data,shared")]);
+  /* what each child has done and when their iPad was last used */
+  const stars={},seen={},cnt=v=>{try{const o=typeof v==="string"?JSON.parse(v):v;return o&&typeof o==="object"?Object.keys(o).length:0}catch(e){return 0}};
+  (pg.data||[]).forEach(r=>{if(r.app_key==="ipadSpace")return;stars[r.child_id]=(stars[r.child_id]||0)+cnt(r.data)});
+  (dv.data||[]).forEach(d=>{const t=d.last_seen||d.created_at;if(t&&(!seen[d.child_id]||t>seen[d.child_id]))seen[d.child_id]=t});
+  const when=t=>t?new Date(t).toLocaleString("ar",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):"لم يُربط آيباد";
   F.innerHTML="";(fa.data||[]).forEach(f=>{const own=f.id===FID,box=document.createElement("div");box.className="qbox";box.style.background="#fff";
     const M=(me.data||[]).filter(m=>m.family_id===f.id),C=(ch.data||[]).filter(c=>c.family_id===f.id);
     box.innerHTML=`<div class="rrow" style="background:none;padding:0"><b style="flex:1;font-size:18px">👨‍👩‍👧 ${esc(f.name)}${own?" (عائلتي)":""}</b>${own?"":'<button class="b del df">🗑️ حذف العائلة</button>'}</div>`+
       M.map(m=>`<div class="rrow"><span style="flex:1" dir="ltr">${m.role==="owner"?"👑":"🧑"} ${esc(m.email||m.user_id.slice(0,8))}</span>${m.user_id===ME.id?"":`<button class="b dm" data-u="${m.user_id}">🗑️</button>`}</div>`).join("")+
-      C.map(c=>`<div class="rrow"><span style="flex:1">${esc((c.data.avatar||"⭐")+" "+(c.data.name||""))}</span>${own?"":`<button class="b dc" data-c="${c.id}">🗑️</button>`}</div>`).join("");
+      C.map(c=>{const d=c.data||{},on=Object.values(d.apps||{}).filter(v=>v===false).length;return `<div class="rrow" style="flex-wrap:wrap"><span style="flex:1;font-weight:800">${esc((d.avatar||"⭐")+" "+(d.name||""))}</span>${own?"":`<button class="b dc" data-c="${c.id}">🗑️</button>`}
+        <div style="flex-basis:100%;font-size:14px;color:#7a7090">${d.grade?"🎓 "+esc(gName(d.grade))+" · ":""}⭐ ${stars[c.id]||0} · 📱 ${when(seen[c.id])}${on?` · 🙈 ${on} مخفي`:""}${d.net==="online"?" · 📶":""}</div></div>`}).join("")+
+      (()=>{const S=(sc.data||[]).filter(x=>x.family_id===f.id&&x.data&&x.data.type!=="qimg"&&x.data.type!=="flags");return S.length?`<div style="margin-top:6px;font-size:14px;color:#5a5070"><b>📚 أقسامهم:</b> ${S.map(x=>esc((x.data.icon||"📝")+" "+(x.data.title||""))+(x.data.hw?" 📌":"")+(x.shared?" 🌍":"")).join("، ")}</div>`:""})()+
+      `<div style="font-size:13px;color:#9a90b0;margin-top:4px">${C.length} أطفال · ${M.length} والدين${f.created_at?" · منذ "+new Date(f.created_at).toLocaleDateString("ar",{day:"numeric",month:"short"}):""}</div>`;
     const df=box.querySelector(".df");if(df)df.onclick=async()=>{if(!confirm(`حذف عائلة «${f.name}» بكل أطفالها وتقدّمهم؟ لا يمكن التراجع.`))return;const {error}=await sb.from("families").delete().eq("id",f.id);if(error)alert(error.message);drawAdmin()};
     box.querySelectorAll(".dm").forEach(b=>b.onclick=async()=>{if(!confirm("إزالة هذا الشخص من العائلة؟"))return;const {error}=await sb.from("family_members").delete().eq("family_id",f.id).eq("user_id",b.dataset.u);if(error)alert(error.message);drawAdmin()});
     box.querySelectorAll(".dc").forEach(b=>b.onclick=async()=>{if(!confirm("حذف هذا الطفل وتقدّمه؟"))return;const {error}=await sb.from("children").delete().eq("id",b.dataset.c);if(error)alert(error.message);drawAdmin()});
