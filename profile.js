@@ -160,6 +160,8 @@
       ()=>L.forEach(x=>{if(x.type!=="qimg"){delete x.audio;delete x.qaudio}})];
     for(const st of steps){st();if(put(JSON.stringify(L))){try{SET.call(localStorage,"najma:slim","1")}catch(e){}return}}}
   window.NAJMA.saveSecs=saveSecs;
+  /* version of the app this device runs (shown to the parent, so old iPads are easy to spot) */
+  window.NAJMA.V="2026-11-01b";
   /* a word with no recording of its own: reuse the same letter, syllable or word already recorded elsewhere (حروفي, كلماتي الأولى, ...) */
   const loadJS=src=>new Promise(r=>{const s=document.createElement("script");s.src=src;s.onload=s.onerror=r;document.head.appendChild(s)});
   const MARKS=/[\u064B-\u065F\u0670]/g,normT=t=>noEmoji(t).replace(/^حرف\s*/,"").replace(/[.,،؛؟?!:«»"]/g,"").replace(/\s+/g," ").trim();
@@ -201,7 +203,7 @@
         const ms=JSON.stringify(m);if(ms!==G.call(localStorage,ns(k))){SET.call(localStorage,ns(k),ms);changed=true}if(ms!==JSON.stringify(srv))push(k,ms)});
       for(let i=0;i<localStorage.length;i++){const full=localStorage.key(i);if(full&&full.startsWith(`najma:${kid.id}:`)){const k=full.slice(kid.id.length+8);if(!(k in (js.progress||{})))push(k,G.call(localStorage,full))}}
       /* tell the portal how much space this iPad uses */
-      try{if(navigator.storage&&navigator.storage.estimate)navigator.storage.estimate().then(e=>{const mb=Math.round((e.usage||0)/1e5)/10;try{SET.call(localStorage,"najma:spaceMB",String(mb))}catch(x){}push("ipadSpace",JSON.stringify({mb,net:me&&me.net==="online"?"online":"offline",at:Date.now()}))}).catch(()=>{})}catch(e){}
+      try{if(navigator.storage&&navigator.storage.estimate)navigator.storage.estimate().then(e=>{const mb=Math.round((e.usage||0)/1e5)/10;try{SET.call(localStorage,"najma:spaceMB",String(mb))}catch(x){}push("ipadSpace",JSON.stringify({mb,net:me&&me.net==="online"?"online":"offline",at:Date.now(),v:window.NAJMA.V,host:location.hostname}))}).catch(()=>{})}catch(e){}
       if(changed&&/home\.html$/.test(location.pathname)&&!sessionStorage.getItem("najma:reloaded")){sessionStorage.setItem("najma:reloaded","1");location.reload()}else if(!changed)sessionStorage.removeItem("najma:reloaded")})}).catch(e=>{try{SET.call(localStorage,"najma:syncErr",String(e&&e.message||e))}catch(x){}})}
   /* offline: cache everything once it has been opened online */
   const ONLINE=!!(me&&me.net==="online");window.NAJMA.online=ONLINE;

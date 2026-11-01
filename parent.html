@@ -245,7 +245,7 @@ function drawKids(){const L=$("kidList");L.innerHTML="";
       .map(([k,n,t])=>`<span>${n} ${Math.min(count(p.id,k),t)}/${t}</span>`).join("")+
       vis().filter(s=>!p.apps||p.apps["s:"+s.id]!==false).map(s=>`<span>${s.icon} ${s.title} ${count(p.id,"sec_"+s.id)}/${s.words.length}</span>`).join("");
     d.innerHTML=`<div class="av" style="background:${p.color}">${p.avatar}</div><div class="info"><b dir="auto">${p.name}</b>
-      <small dir="auto">${[p.nameAr,p.nameEn].filter(Boolean).join(" · ")}${(()=>{const sp=(typeof PRG!=="undefined"&&PRG[p.id]||{}).ipadSpace;return sp&&sp.mb!=null?` · ${sp.net==="online"?"📶":"💾"} الآيباد: ${sp.mb} MB`:""})()}</small><div class="bars">${prog}</div></div><button class="b">✏️ تعديل</button>`;
+      <small dir="auto">${[p.nameAr,p.nameEn].filter(Boolean).join(" · ")}${(()=>{let sp=(typeof PRG!=="undefined"&&PRG[p.id]||{}).ipadSpace;try{if(typeof sp==="string")sp=JSON.parse(sp)}catch(e){sp=null}return sp&&sp.mb!=null?` · ${sp.net==="online"?"📶":"💾"} الآيباد: ${sp.mb} MB · ${verTag(sp)}`:` · ${verTag(null)}`})()}</small><div class="bars">${prog}</div></div><button class="b">✏️ تعديل</button>`;
     d.querySelector("button").onclick=()=>editKid(p);L.appendChild(d)})}
 let ed;
 function editKid(p){
@@ -334,6 +334,8 @@ function editSec(s){es=s?JSON.parse(JSON.stringify(s)):{id:"s"+Date.now().toStri
   vPick("sVoice","s:"+es.id,"mine");drawHw();drawShare();
   sKids=new Set(s?profs.filter(p=>!p.apps||p.apps["s:"+es.id]!==false).map(p=>p.id):[]);drawSKids();
   es.audio=es.audio||{};setType(es.type);$("secSheet").classList.add("show")}
+/* is this child's iPad on the newest version? */
+const NEWV="2026-11-01b",verTag=sp=>!sp?"⚪ ما تحدّث بعد":(sp.v===NEWV&&sp.host==="ayb88sec.github.io")?"✅ آخر نسخة":"⚠️ نسخة قديمة";
 const GRADES=[["KG1","KG1"],["KG2","KG2"],["G1","Grade 1"],["G2","Grade 2"],["G3","Grade 3"],["G4","Grade 4"],["G5","Grade 5"],["G6","Grade 6"]],gName=g=>(GRADES.find(x=>x[0]===g)||[0,g])[1];
 let sKids=new Set();
 const today=()=>new Date().toISOString().slice(0,10),inDays=n=>new Date(Date.now()+n*864e5).toISOString().slice(0,10);
@@ -577,7 +579,7 @@ async function drawAdmin(){if(!IS_ADMIN)return;
     box.innerHTML=`<div class="rrow" style="background:none;padding:0"><b style="flex:1;font-size:18px">👨‍👩‍👧 ${esc(f.name)}${own?" (عائلتي)":""}</b>${own?"":'<button class="b del df">🗑️ حذف العائلة</button>'}</div>`+
       M.map(m=>`<div class="rrow"><span style="flex:1" dir="ltr">${m.role==="owner"?"👑":"🧑"} ${esc(m.email||m.user_id.slice(0,8))}</span>${m.user_id===ME.id?"":`<button class="b dm" data-u="${m.user_id}">🗑️</button>`}</div>`).join("")+
       C.map(c=>{const d=c.data||{},on=Object.values(d.apps||{}).filter(v=>v===false).length;return `<div class="rrow" style="flex-wrap:wrap"><span style="flex:1;font-weight:800">${esc((d.avatar||"⭐")+" "+(d.name||""))}</span>${own?"":`<button class="b dc" data-c="${c.id}">🗑️</button>`}
-        <div style="flex-basis:100%;font-size:14px;color:#7a7090">${d.grade?"🎓 "+esc(gName(d.grade))+" · ":""}⭐ ${stars[c.id]||0} · 📱 ${when(seen[c.id])}${on?` · 🚫 ${on} تطبيقات مطفأة`:""}${d.net==="online"?" · 📶":""}</div>
+        <div style="flex-basis:100%;font-size:14px;color:#7a7090">${d.grade?"🎓 "+esc(gName(d.grade))+" · ":""}⭐ ${stars[c.id]||0} · 📱 ${when(seen[c.id])} · ${verTag((()=>{try{const v=(PM[c.id]||{}).ipadSpace;return typeof v==="string"?JSON.parse(v):v}catch(e){return null}})())}${on?` · 🚫 ${on} تطبيقات مطفأة`:""}${d.net==="online"?" · 📶":""}</div>
         <button class="b kb" data-k="${c.id}" style="flex-basis:100%;margin-top:6px;padding:6px">📊 التقدّم بالتفصيل</button><div class="prow2" id="kb_${c.id}" style="display:none;flex-basis:100%"></div></div>`}).join("")+
       (()=>{const S=(sc.data||[]).filter(x=>x.family_id===f.id&&x.data&&x.data.type!=="qimg"&&x.data.type!=="flags");return S.length?`<div style="margin-top:6px;font-size:14px;color:#5a5070"><b>📚 أقسامهم:</b> ${S.map(x=>esc((x.data.icon||"📝")+" "+(x.data.title||""))+(x.data.hw?" 📌":"")+(x.shared?" 🌍":"")).join("، ")}</div>`:""})()+
       `<div style="font-size:13px;color:#9a90b0;margin-top:4px">${C.length} أطفال · ${M.length} والدين${f.created_at?" · منذ "+new Date(f.created_at).toLocaleDateString("ar",{day:"numeric",month:"short"}):""}</div>`;
