@@ -286,6 +286,7 @@ function openL(i){const s=ITEMS[i],k=SEC.id+":"+s;popSnd();
 /* start: decrypt the parent's voice and photos first */
 const jobs=[];Object.keys(SEC.audio||{}).forEach(t=>jobs.push(NAJMA.decrypt(SEC.audio[t]).then(u=>MINE[t]=u).catch(()=>{})));
 Object.keys(SEC.img||{}).forEach(w=>{const v=SEC.img[w];if(v&&v.ct)jobs.push(NAJMA.decrypt(v).then(u=>IMG[w]=u).catch(()=>{}))});
+Promise.all(jobs).then(()=>AR&&VM==="mine"&&SID!=="duas"?NAJMA.libVoice((SEC.words||[]).filter(t=>!MINE[t])).then(m=>Object.assign(MINE,m)):0).catch(()=>{});
 ({sent:sentence,pic:picture,quiz:quiz,listen:listen}[TYPE]||sentence)();
 Promise.all(jobs).then(()=>{window._redraw&&window._redraw();if(TYPE==="listen"&&!ITEMS.some(hasV)){}});
 window.NAJMA_PROGRESS=()=>{const all=TYPE==="quiz"?QZ.map(q=>q.q):ITEMS;return {done:all.filter(x=>done[x]).length,total:all.length}};

@@ -160,6 +160,20 @@
       ()=>L.forEach(x=>{if(x.type!=="qimg"){delete x.audio;delete x.qaudio}})];
     for(const st of steps){st();if(put(JSON.stringify(L))){try{SET.call(localStorage,"najma:slim","1")}catch(e){}return}}}
   window.NAJMA.saveSecs=saveSecs;
+  /* a word with no recording of its own: reuse the same letter, syllable or word already recorded elsewhere (حروفي, كلماتي الأولى, ...) */
+  const loadJS=src=>new Promise(r=>{const s=document.createElement("script");s.src=src;s.onload=s.onerror=r;document.head.appendChild(s)});
+  const MARKS=/[\u064B-\u065F\u0670]/g,normT=t=>noEmoji(t).replace(/^حرف\s*/,"").replace(/[.,،؛؟?!:«»"]/g,"").replace(/\s+/g," ").trim();
+  window.NAJMA.libVoice=async function(list){const out={};list=(list||[]).filter(Boolean);if(!list.length)return out;
+    try{if(!window.BASE||!window.BASE.spell)await loadJS("data/base.js");if(!window.SPELL)await loadJS("data/spell.js")}catch(e){}
+    const B=window.BASE||{},idx={},bare={},letter={},add=(m,t,h)=>{(m[t]=m[t]||[]).push(h)};
+    Object.keys(B).forEach(app=>(B[app].groups||[]).forEach(g=>g[1].forEach(([k,lab,say])=>{const t=normT(say||lab);if(!t)return;add(idx,t,[app,k]);const b=t.replace(MARKS,"");if(b.length>1)add(bare,b,[app,k]);
+      if(app==="clips"&&/-n$/.test(k))add(letter,g[0],[app,k])})));
+    if(window.SPELL)Object.entries(SPELL.keys).forEach(([t,k])=>{const n=normT(t),hit=k[0]==="l"?["clips",k]:["spell",k];add(idx,n,hit);const b=n.replace(MARKS,"");if(b.length>1)add(bare,b,hit)});
+    /* every possible match, best first; the first one that has a recording wins */
+    const want={};list.forEach(w=>{const n=normT(w),b=n.replace(MARKS,""),L=b.length===1?(letter[/[أإآ]/.test(b)?"ا":b]||[]):[];want[w]=[...(idx[n]||[]),...L,...(b.length>1?bare[b]||[]:[])]});
+    const apps=[...new Set(Object.values(want).flat().map(h=>h[0]))],lib={};
+    await Promise.all(apps.map(a=>loadAudio(a,"__lib_"+a).then(o=>{lib[a]=o||{}}).catch(()=>{lib[a]={}})));
+    Object.entries(want).forEach(([w,hits])=>{for(const [a,k] of hits){const u=lib[a]&&lib[a][k];if(u){out[w]=u;break}}});return out};
   /* every kids' page: pull down to update */
   addEventListener("DOMContentLoaded",()=>{/* pull down to update */
 (function(){if(/parent\.html/.test(location.pathname))return;let y0=null,dy=0;const tip=document.createElement("div");
