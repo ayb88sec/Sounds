@@ -569,7 +569,9 @@ const VOPT=[["mine","🎙️ صوتي"],["ai","🤖 ذكاء اصطناعي"],["
 function vGet(area,def){const Q=ownQ();return (Q&&Q.voice&&Q.voice[area])||def}
 function vPick(el,area,def){const box=$(el);if(!box)return;box.className="qbox";box.style.marginBottom="10px";
   box.innerHTML='<b>🔊 الصوت هنا</b><div class="chips" id="'+el+'C" style="margin-top:6px"></div>';
-  chips(el+"C",VOPT.map(x=>x[1]),(x,k)=>vGet(area,def)===VOPT[k][0],(x,k)=>{const Q=qSec();Q.voice=Q.voice||{};Q.voice[area]=VOPT[k][0];saveS();vPick(el,area,def)})}
+  /* other families can also choose Amna's shared voice instead of their own */
+  const O=(!IS_ADMIN&&secs.some(x=>x.type==="qimg"&&!isMine(x)))?[VOPT[0],["shared","👩 صوت آمنة"],...VOPT.slice(1)]:VOPT;
+  chips(el+"C",O.map(x=>x[1]),(x,k)=>vGet(area,def)===O[k][0],(x,k)=>{const Q=qSec();Q.voice=Q.voice||{};Q.voice[area]=O[k][0];saveS();vPick(el,area,def);if(typeof drawBase==="function"&&$("base").classList.contains("on"))drawBase()})}
 /* built-in apps: re-record any Arabic sound */
 let bApp="clips",bG=0;const bDef={};
 async function bLoad(f){if(bDef[f])return bDef[f];try{bDef[f]=await NAJMA.decrypt(await (await fetch(`audio/${f}.enc`)).json())}catch(e){bDef[f]={}}return bDef[f]}

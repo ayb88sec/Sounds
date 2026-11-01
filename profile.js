@@ -50,7 +50,11 @@
   /* shared content from other families comes first; this family's own settings and recordings win */
   const isObj=o=>o&&typeof o==="object"&&!Array.isArray(o)&&!("ct" in o);
   const deep=(a,b)=>{Object.keys(b||{}).forEach(k=>{if(isObj(a[k])&&isObj(b[k]))deep(a[k],b[k]);else a[k]=b[k]});return a};
-  {const Qs=sections.filter(s=>s&&s.type==="qimg");if(Qs.length>1){const m={};Qs.sort((x,y)=>(x.mine===false?0:1)-(y.mine===false?0:1)).forEach(q=>{const c=JSON.parse(JSON.stringify(q));if(q.mine===false)delete c.hide;deep(m,c)});
+  {const Qs=sections.filter(s=>s&&s.type==="qimg");if(Qs.length>1){const m={};Qs.sort((x,y)=>(x.mine===false?0:1)-(y.mine===false?0:1)).forEach(q=>{const c=JSON.parse(JSON.stringify(q));if(q.mine===false)delete c.hide;
+      /* a family that chose "👩 صوت آمنة" for a part keeps Amna's recordings there, not its own */
+      else{const V=c.voice||{},sh=a=>V[a]==="shared";if(sh("quran"))["explA","explV","secV"].forEach(k=>delete c[k]);if(sh("duas")&&c.duas)delete c.duas.rec;if(sh("colors"))delete c.colorRec;
+        if(c.ov)Object.keys(c.ov).forEach(a=>{if(sh(a))delete c.ov[a]})}
+      deep(m,c)});
     m.type="qimg";sections=sections.filter(s=>!s||s.type!=="qimg").concat([m])}}
   /* levels the parent can switch on per child; default: all on */
   const LEVELS={arabic:["ا – خ","د – ص","ض – ق","ك – ي","الكلمات البصرية"],sounds:["Set 1","Special friends"],wt:["1.1 · m a s d t","1.2 · i n p g o","1.3 · c k u b","1.4 · f e l h sh","1.5 · r j v y w","1.6 · th z ch qu x ng nk","1.7 · 4–5 sounds"],
@@ -80,7 +84,7 @@
   async function encrypt(obj){const k=await cryptoKey();const iv=crypto.getRandomValues(new Uint8Array(12));
     const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv},k,new TextEncoder().encode(JSON.stringify(obj)));return {v:1,iv:bu(iv),ct:bu(new Uint8Array(ct))}}
   /* voice choice per part of the app, set by the parent: "mine" (recordings), "ai", or "none" */
-  function vmode(area,def){try{const Q=(sections||[]).find(s=>s.type==="qimg");return (Q&&Q.voice&&Q.voice[area])||def||"mine"}catch(e){return def||"mine"}}
+  function vmode(area,def){try{const Q=(sections||[]).find(s=>s.type==="qimg");const v=(Q&&Q.voice&&Q.voice[area])||def||"mine";return v==="shared"?"mine":v}catch(e){return def||"mine"}}
   const aiURL=(q,lang)=>`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang||"ar"}&q=${encodeURIComponent(q)}&total=1&idx=0&textlen=${q.length}`;
   const noEmoji=t=>String(t||"").replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\uFE0F\u200D•]/gu," ").replace(/\s+/g," ").trim();
   async function loadAudio(name,v){window[v]=window[v]||{};const mode=vmode(name,"mine");if(mode==="none")return window[v];
