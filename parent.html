@@ -102,7 +102,7 @@ setTimeout(function(){var g=document.getElementById("gate");if(g&&getComputedSty
 
 <div class="gate" id="auth" style="display:none"><div class="box" style="width:330px">
   <div style="font-size:44px">👨‍👩‍👧</div><h2 style="margin:0 0 6px">بوابة الوالدين</h2>
-  <div id="aForm"><input class="in" id="aEmail" type="email" dir="ltr" placeholder="email@example.com" autocomplete="username" style="margin-bottom:8px">
+  <div id="aForm"><input class="in" id="aEmail" type="email" dir="ltr" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="email@example.com" autocomplete="username" style="margin-bottom:8px">
   <input class="in" id="aPass" type="password" dir="ltr" placeholder="كلمة المرور (8 أحرف على الأقل)" autocomplete="current-password">
   <div style="display:flex;gap:8px;margin-top:12px"><button class="b go" id="aIn" style="flex:1">دخول</button><button class="b" id="aUp" style="flex:1">حساب جديد</button></div></div>
   <div id="aFam" style="display:none"><p style="margin:6px 0">مرحبًا! أنشئ عائلتك، أو انضم لعائلة برمز دعوة.</p>
@@ -632,9 +632,11 @@ async function dbStart(){
   ["fam","famSave","devLock"].forEach(id=>{const e=$(id);if(e){e.style.display="";let pr=e.previousElementSibling;if(pr&&pr.tagName==="LABEL")pr.style.display=""}});
   $("famSave").parentElement.style.display="";
   diag("session");const {data:{session}}=await sb.auth.getSession();diag(session?"signed-in":"signed-out");if(session){ME=session.user;await afterLogin()}else $("auth").style.display="flex"}
-$("aIn").onclick=async()=>{msg("");const {data,error}=await sb.auth.signInWithPassword({email:$("aEmail").value.trim(),password:$("aPass").value});
+/* phones sometimes add hidden direction marks or spaces to an email */
+const cleanEmail=()=>{const v=$("aEmail").value.replace(/[\s\u200b-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g,"").toLowerCase();$("aEmail").value=v;return v};
+$("aIn").onclick=async()=>{msg("");const {data,error}=await sb.auth.signInWithPassword({email:cleanEmail(),password:$("aPass").value});
   if(error)return msg(error.message==="Invalid login credentials"?"البريد أو كلمة المرور غير صحيحة":error.message);ME=data.user;afterLogin()};
-$("aUp").onclick=async()=>{msg("");const {data,error}=await sb.auth.signUp({email:$("aEmail").value.trim(),password:$("aPass").value});
+$("aUp").onclick=async()=>{msg("");const {data,error}=await sb.auth.signUp({email:cleanEmail(),password:$("aPass").value});
   if(error)return msg(error.message);if(!data.session)return msg("📧 أرسلنا رسالة تأكيد إلى بريدك. افتحها ثم عد واضغط دخول.");ME=data.user;afterLogin()};
 async function afterLogin(){const {data:mem}=await sb.from("family_members").select("family_id,role").eq("user_id",ME.id);
   try{const {data}=await sb.rpc("is_admin");IS_ADMIN=data===true}catch(e){IS_ADMIN=false}$("navAdmin").style.display=IS_ADMIN?"":"none";
