@@ -177,6 +177,7 @@ setTimeout(function(){var g=document.getElementById("gate");if(g&&getComputedSty
   <label>اللون</label><div class="chips" id="kCol"></div>
   <label>التطبيقات الظاهرة</label><div class="chips" id="kApps"></div>
   <label>المستويات المفعّلة</label><div class="note" style="margin:0 0 8px">اضغط على أي مستوى لتشغيله أو إيقافه. المستوى المفعّل لونه بنفسجي وعليه ✓.</div><div id="kLevels"></div>
+  <label>🎓 الصف في المدرسة</label><div class="chips" id="kGrade"></div>
   <label>الأرقام حتى</label><div class="chips" id="kNum"></div>
   <label>📲 على الآيباد</label><div class="chips" id="kNet"></div><div class="note" id="kNetNote" style="margin:6px 0 0"></div>
   <div id="kLinkBox" style="margin-top:14px"><label>📲 رابط آيباد هذا الطفل</label>
@@ -259,6 +260,7 @@ function editKid(p){
       try{await navigator.clipboard.writeText(u);$("kCopy").textContent="✅ تم النسخ"}catch(e){$("kCopy").textContent="⚠️ انسخ يدويًا"}setTimeout(()=>$("kCopy").textContent="📋 نسخ الرابط",2500)}}
   const NETS=[["offline","💾 أوفلاين"],["online","📶 أونلاين"]],netNote=()=>{$("kNetNote").textContent=ed.net==="online"?"أقل مساحة على الآيباد، لكنه يحتاج إنترنت دائمًا. تسجيلات صوتك تبقى محفوظة.":"يعمل بدون إنترنت. يحفظ التطبيقات على الآيباد (حوالي ٢٠ إلى ٣٠ ميغابايت)."};
   chips("kNet",NETS.map(x=>x[1]),(x,k)=>(ed.net||"offline")===NETS[k][0],(x,k)=>{ed.net=NETS[k][0];netNote()});netNote();
+  chips("kGrade",GRADES.map(g=>g[1]),(x,k)=>ed.grade===GRADES[k][0],(x,k)=>{ed.grade=ed.grade===GRADES[k][0]?"":GRADES[k][0]});
   chips("kAv",AV,a=>a===ed.avatar,a=>ed.avatar=a,"av");
   chips("kCol",PC,c=>c===ed.color,c=>ed.color=c);
   const apps=[...BUILT,...vis().map(s=>["s:"+s.id,`${s.icon} ${s.title}`])];
@@ -295,12 +297,12 @@ function drawPack(){const B=$("hwPack");if(!B)return;if(!PACK||!feat("homework")
   const id=i=>"hw-"+PACK.id+"-"+i,left=PACK.items.map((it,i)=>[it,i]).filter(([,i])=>!secs.some(x=>x.id===id(i)));
   if(!left.length){B.innerHTML="";return}const pick=new Set(left.map(([,i])=>i));
   B.className="qbox";B.style.marginBottom="10px";
-  const kidsOf=it=>profs.filter(p=>it.kids.some(n=>[p.name,p.nameAr,p.nameEn].some(v=>v&&String(v).split(/\s+/).some(w=>normN(w)===normN(n)))));
+  const kidsOf=it=>it.grade&&!it.kids?profs.filter(p=>p.grade===it.grade):profs.filter(p=>(it.kids||[]).some(n=>[p.name,p.nameAr,p.nameEn].some(v=>v&&String(v).split(/\s+/).some(w=>normN(w)===normN(n)))));
   const draw=()=>{B.innerHTML=`<b>📥 ${esc(PACK.title)}</b><div class="note" style="margin:6px 0">جاهز من تحديث المدرسة. اختاري اللي تبينه، وتقدرين تعدلين أي واحد بعدين.</div>`+
-    left.map(([it,i])=>`<div class="rrow" data-i="${i}" style="cursor:pointer;opacity:${pick.has(i)?1:.45}"><b style="font-size:22px">${pick.has(i)?"☑️":"⬜"}</b><div style="flex:1"><b dir="auto">${it.icon||"📌"} ${esc(it.title)}</b><div style="font-size:14px;color:#7a7090">${kidsOf(it).map(p=>p.avatar+" "+esc(p.name)).join("، ")||"⚠️ ما لقيت الطفل"} · حتى ${new Date(it.due).toLocaleDateString("ar",{day:"numeric",month:"short"})}</div></div></div>`).join("")+
+    left.map(([it,i])=>`<div class="rrow" data-i="${i}" style="cursor:pointer;opacity:${pick.has(i)?1:.45}"><b style="font-size:22px">${pick.has(i)?"☑️":"⬜"}</b><div style="flex:1"><b dir="auto">${it.icon||"📌"} ${esc(it.title)}</b><div style="font-size:14px;color:#7a7090">${it.grade?"🎓 "+gName(it.grade)+": ":""}${kidsOf(it).map(p=>p.avatar+" "+esc(p.name)).join("، ")||(it.grade?"⚠️ حددي الصف للأطفال (✏️ تعديل ← 🎓 الصف)":"⚠️ ما لقيت الطفل")} · حتى ${new Date(it.due).toLocaleDateString("ar",{day:"numeric",month:"short"})}</div></div></div>`).join("")+
     `<button class="b go" id="packAdd" style="width:100%;margin-top:8px">📌 أضيفي ${pick.size} للواجب</button>`;
     B.querySelectorAll("[data-i]").forEach(r=>r.onclick=()=>{const i=+r.dataset.i;pick.has(i)?pick.delete(i):pick.add(i);draw()});
-    $("packAdd").onclick=()=>{left.filter(([,i])=>pick.has(i)).forEach(([it,i])=>{const s={id:id(i),title:it.title,icon:it.icon||"📌",lang:it.lang||"ar",type:it.type||"words",words:it.words||[],hw:{due:it.due}};if(it.app)s.app=it.app;secs.push(s);
+    $("packAdd").onclick=()=>{if(PACK.replaces){const pre="hw-"+PACK.replaces+"-";secs=secs.filter(x=>!String(x.id).startsWith(pre))}left.filter(([,i])=>pick.has(i)).forEach(([it,i])=>{const s={id:id(i),title:it.title,icon:it.icon||"📌",lang:it.lang||"ar",type:it.type||"words",words:it.words||[],hw:{due:it.due}};if(it.app)s.app=it.app;secs.push(s);
         const ks=kidsOf(it);profs.forEach(p=>{p.apps=Object.assign({},p.apps||{});p.apps["s:"+s.id]=ks.includes(p)})});saveP();saveS();drawSecs();drawKids()}};
   draw()}
 function drawSecs(){const L=$("secList");L.innerHTML="";$("addHw").style.display=feat("homework")?"":"none";if(DB&&FID)loadPack();
@@ -332,6 +334,7 @@ function editSec(s){es=s?JSON.parse(JSON.stringify(s)):{id:"s"+Date.now().toStri
   vPick("sVoice","s:"+es.id,"mine");drawHw();drawShare();
   sKids=new Set(s?profs.filter(p=>!p.apps||p.apps["s:"+es.id]!==false).map(p=>p.id):[]);drawSKids();
   es.audio=es.audio||{};setType(es.type);$("secSheet").classList.add("show")}
+const GRADES=[["KG1","KG1"],["KG2","KG2"],["G1","Grade 1"],["G2","Grade 2"],["G3","Grade 3"],["G4","Grade 4"],["G5","Grade 5"],["G6","Grade 6"]],gName=g=>(GRADES.find(x=>x[0]===g)||[0,g])[1];
 let sKids=new Set();
 const today=()=>new Date().toISOString().slice(0,10),inDays=n=>new Date(Date.now()+n*864e5).toISOString().slice(0,10);
 function drawHw(){const box=$("sHw");if(!feat("homework")){box.innerHTML="";return}box.className="qbox";box.style.marginBottom="10px";
@@ -339,6 +342,9 @@ function drawHw(){const box=$("sHw");if(!feat("homework")){box.innerHTML="";retu
   chips("sHwC",["لا","📌 نعم، واجب"],(x,k)=>!!es.hw===!!k,(x,k)=>{if(k&&!es.hw){es.hw={due:inDays(7)};es._shared=false;es._proposed=false}else if(!k){delete es.hw;if(es.type==="task"||es.type==="app")es.type="words"}drawHw();drawShare();setType(es.type)});
   if(es.hw){$("sDue").value=es.hw.due||inDays(7);$("sDue").onchange=()=>{es.hw.due=$("sDue").value}}}
 function drawSKids(){chips("sKids",profs.map(p=>p.id),id=>sKids.has(id),id=>{sKids.has(id)?sKids.delete(id):sKids.add(id);drawSKids()});
+  {const gs=[...new Set(profs.map(p=>p.grade).filter(Boolean))];let gb=$("sKidsG");if(!gb){gb=document.createElement("div");gb.id="sKidsG";gb.className="chips";gb.style.marginBottom="6px";$("sKids").before(gb)}
+    gb.innerHTML="";gs.forEach(g=>{const ids=profs.filter(p=>p.grade===g).map(p=>p.id),on=ids.every(i=>sKids.has(i)),b=document.createElement("button");b.textContent="🎓 كل "+gName(g);if(on)b.classList.add("on");
+      b.onclick=()=>{ids.forEach(i=>on?sKids.delete(i):sKids.add(i));drawSKids()};gb.appendChild(b)})}
   [...$("sKids").children].forEach((b,k)=>b.textContent=`${profs[k].avatar||"⭐"} ${profs[k].name}`);
   $("sKidsNote").textContent=sKids.size?"":"اختر طفلًا واحدًا على الأقل ليظهر القسم عنده."}
 /* parent's own voice for Arabic words, encrypted with the family code */

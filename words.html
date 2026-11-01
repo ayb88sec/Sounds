@@ -189,7 +189,8 @@ function openW(i,el){cur=i;const w=WORDS[i];popSnd();if(el)burstAt(el);
   const big=document.getElementById("wBig");big.innerHTML=pretty(w);big.style.background=COLORS[i%6];big.onclick=()=>sayW(w);
   document.getElementById("wSay").onclick=()=>sayW(w);
   const sp=document.getElementById("spell");sp.innerHTML="";
-  [...w].forEach(ch=>{if(ch===" ")return;const b=document.createElement("button");b.textContent=ch;b.onclick=()=>{b.classList.add("lit");popSnd();
+  /* one tile per letter: vowel marks stay on their letter, punctuation and spaces are skipped */
+  (w.match(/[^\s\u064B-\u065F\u0670\u06D6-\u06ED.,،؛؟?!:;"'«»()\[\]\-–—…][\u064B-\u065F\u0670\u06D6-\u06ED]*/g)||[]).forEach(ch=>{const b=document.createElement("button");b.textContent=ch;b.onclick=()=>{b.classList.add("lit");popSnd();
     if([...sp.children].every(x=>x.classList.contains("lit"))){setTimeout(()=>{sayW(w);fanfare();burstAt(sp);talk(rnd(T.praise))},250)}};sp.appendChild(b)});
   document.getElementById("wWrite").onclick=()=>openWrite(i);
   const a=document.getElementById("wPrev"),b=document.getElementById("wNext");a.textContent=T.prev;b.textContent=T.next;

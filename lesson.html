@@ -196,7 +196,7 @@ function openS(i){const s=ITEMS[i];popSnd();
   nav(i,ITEMS.length,openS);setTimeout(()=>play(s),250)}
 function nav(i,n,f){const a=$("pv"),b=$("nx");a.textContent=T.prev;b.textContent=T.next;a.style.visibility=i>0?"visible":"hidden";b.style.visibility=i<n-1?"visible":"hidden";a.onclick=()=>f(i-1);b.onclick=()=>f(i+1)}
 function buildRun(list,k){if(k>=list.length){fanfare();rain();talk(T.done);closeM();return}
-  const s=list[k],ws=s.split(/\s+/);let pos=0,miss=0;
+  const s=list[k],ws=s.split(/\s+/).map(w=>w.replace(/[.,،؛؟?!:;«»"]+/g,"")).filter(Boolean);let pos=0,miss=0;
   openM(`<div class="q">${T.build}</div><div class="built" id="bt"></div><div class="chipw" id="cw"></div><div class="score">${k+1} / ${list.length}</div>`);
   if(hasV(s))play(s);
   shuf(ws.map((w,n)=>[w,n])).forEach(([w,n],c)=>{const b=document.createElement("button");b.textContent=w;b.style.background=COLORS[c%6];
