@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<script src="supa.js"></script>
+<script src="profile.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon.png"><link rel="icon" href="icon.png">
+<title>📌 الواجب</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;800&display=swap">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0}
+body{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif;color:#2b2340;min-height:100vh;background:linear-gradient(160deg,#ff6f91,#ffb020);background-attachment:fixed}
+main{max-width:680px;margin:0 auto;padding:16px 14px 60px}
+h1{color:#fff;text-align:center;font-size:clamp(34px,9vw,50px);margin:10px 0 0;text-shadow:0 4px 0 rgba(0,0,0,.15)}
+.sub{text-align:center;color:#fff;font-weight:800;font-size:18px;margin:0 0 16px}
+.t{display:flex;align-items:center;gap:14px;width:100%;border:0;border-radius:24px;background:#fff;padding:16px;margin-bottom:12px;font-family:inherit;font-size:24px;font-weight:800;color:#2b2340;text-align:right;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.12)}
+.t:active{transform:translateY(4px)}
+.t .bx{flex:none;width:46px;height:46px;border-radius:14px;border:4px solid #ffb020;display:flex;align-items:center;justify-content:center;font-size:30px}
+.t.ok{background:#eafbe9}.t.ok .bx{border-color:#3fc35a;background:#3fc35a;color:#fff}.t.ok span:last-child{text-decoration:line-through;opacity:.6}
+.all{text-align:center;color:#fff;font-size:30px;font-weight:800;display:none;margin-top:10px}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+</style>
+</head>
+<body>
+<a href="home.html" aria-label="Home" style="position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;z-index:15;width:52px;height:52px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18)">🏠</a>
+<canvas id="fx"></canvas>
+<main><h1 id="ttl"></h1><p class="sub" id="due"></p><div id="list"></div><div class="all" id="all">🎉 أحسنت! خلصت كل الواجب</div></main>
+<script>
+const $=id=>document.getElementById(id),SID=new URLSearchParams(location.search).get("s");
+const SEC=NAJMA.sections.find(s=>s.id===SID)||{title:"📌 الواجب",words:[]};
+$("ttl").textContent=(SEC.icon||"📌")+" "+SEC.title;
+if(SEC.hw&&SEC.hw.due)$("due").textContent="📅 حتى "+new Date(SEC.hw.due).toLocaleDateString("ar",{weekday:"long",day:"numeric",month:"long"});
+const KEY="sec_"+SID;let done={};try{done=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}};
+let ac;function tone(f,d,w=0){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type="triangle";o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(.15,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
+const cv=$("fx"),cx=cv.getContext("2d");let parts=[],run=false;function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}size();addEventListener("resize",size);
+const COL=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
+function burst(x,y,n=40){for(let i=0;i<n;i++){const a=Math.random()*6.28,v=3+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:4+Math.random()*7,c:COL[i%6],rot:0,vr:(Math.random()-.5)*.4,life:90})}if(!run){run=true;requestAnimationFrame(loop)}}
+function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.life-->0);for(const p of parts){p.vy+=.25;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);cx.fillStyle=p.c;cx.globalAlpha=Math.min(1,p.life/30);cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);cx.restore()}if(parts.length)requestAnimationFrame(loop);else run=false}
+function draw(){const L=$("list");L.innerHTML="";SEC.words.forEach(w=>{const b=document.createElement("button");b.className="t"+(done[w]?" ok":"");b.innerHTML=`<span class="bx">${done[w]?"✓":""}</span><span dir="auto"></span>`;b.lastChild.textContent=w;
+  b.onclick=()=>{if(done[w])delete done[w];else{done[w]=1;tone(660,.12);tone(990,.15,.08);const r=b.getBoundingClientRect();burst(r.left+40,r.top+r.height/2,24)}save();draw();
+    if(SEC.words.length&&SEC.words.every(x=>done[x])){[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12));for(let i=0;i<5;i++)setTimeout(()=>burst(Math.random()*innerWidth,innerHeight/3),i*150)}};L.appendChild(b)});
+  $("all").style.display=SEC.words.length&&SEC.words.every(x=>done[x])?"block":"none"}
+draw();
+</script>
+</body>
+</html>

@@ -137,8 +137,15 @@ for(let i=0;i<14;i++){const s=document.createElement("span"),z=20+Math.random()*
   s.style.cssText=`left:${Math.random()*100}%;width:${z}px;height:${z}px;animation-duration:${10+Math.random()*14}s;animation-delay:${-Math.random()*20}s`;bb.appendChild(s)}
 function count(k){try{return Object.keys(JSON.parse(localStorage.getItem(k)||"{}")).length}catch(e){return 0}}
 ROWS.push({t:"✏️ اسمي · My name",apps:[{id:"name",href:"name.html",glyph:NAJMA.me?(NAJMA.me.avatar||"✏️"):"✏️",name:"اسمي",sub:"My name",bg:"linear-gradient(150deg,#3fc35a,#22c7b8)",key:"_none",total:0}]});
-NAJMA.sections.filter(s=>s.type!=="qimg"&&!(((NAJMA.sections.find(q=>q.type==="qimg")||{}).hide||{})[s.id])).forEach((s,k)=>{const row=ROWS[s.lang==="ar"?0:2];row.apps.push({id:"s:"+s.id,href:((s.type||"words")==="words"?"words.html":"lesson.html")+"?s="+encodeURIComponent(s.id),glyph:s.icon||"📝",name:s.title,
-  sub:s.words.length+(s.lang==="ar"?" كلمات":" words"),bg:["linear-gradient(150deg,#ffcf3c,#ff6f91)","linear-gradient(150deg,#4f8bff,#a66bff)","linear-gradient(150deg,#22c7b8,#3fc35a)"][k%3],key:"sec_"+s.id,total:s.words.length})});
+{const HW=[],today=new Date().toISOString().slice(0,10);
+NAJMA.sections.filter(s=>s.type!=="qimg"&&s.type!=="flags"&&!(((NAJMA.sections.find(q=>q.type==="qimg")||{}).hide||{})[s.id])&&!(s.hw&&s.hw.due&&s.hw.due<today)).forEach((s,k)=>{
+  const t=s.type||"words",href=t==="app"?((s.app&&s.app.href)||"home.html"):t==="task"?"task.html?s="+encodeURIComponent(s.id):(t==="words"?"words.html":"lesson.html")+"?s="+encodeURIComponent(s.id);
+  const due=s.hw&&s.hw.due?new Date(s.hw.due).toLocaleDateString("ar",{day:"numeric",month:"short"}):"";
+  const a={id:"s:"+s.id,href,glyph:s.icon||"📝",name:s.title,sub:s.hw?("📌 "+(due?"حتى "+due:"واجب")):s.words.length+(s.lang==="ar"?" كلمات":" words"),
+    bg:s.hw?"linear-gradient(150deg,#ff6f91,#ffb020)":["linear-gradient(150deg,#ffcf3c,#ff6f91)","linear-gradient(150deg,#4f8bff,#a66bff)","linear-gradient(150deg,#22c7b8,#3fc35a)"][k%3],key:"sec_"+s.id,total:t==="app"?0:s.words.length};
+  if(s.hw)HW.push(a);else ROWS[s.lang==="ar"?0:2].apps.push(a)});
+/* homework from school comes first */
+if(HW.length)ROWS.unshift({t:"📌 الواجب",apps:HW})}
 const box=document.getElementById("apps");
 /* rings follow the levels switched on for this child */
 const sumLv=(app,sizes)=>NAJMA.lv(app).reduce((s,i)=>s+(sizes[i]||0),0);
