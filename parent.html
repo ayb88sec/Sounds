@@ -573,7 +573,12 @@ function vPick(el,area,def){const box=$(el);if(!box)return;box.className="qbox";
 /* built-in apps: re-record any Arabic sound */
 let bApp="clips",bG=0;const bDef={};
 async function bLoad(f){if(bDef[f])return bDef[f];try{bDef[f]=await NAJMA.decrypt(await (await fetch(`audio/${f}.enc`)).json())}catch(e){bDef[f]={}}return bDef[f]}
-async function bDefault(app){if(app==="colors")return {};return await bLoad(app)}
+/* what the children hear now when this parent has not recorded: the built-in voice, or Amna's shared recordings on top */
+const bShared={};
+async function bDefault(app){const base=app==="colors"?{}:await bLoad(app);if(bShared[app])return bShared[app];
+  const out=Object.assign({},base);const sh=secs.filter(x=>x.type==="qimg"&&!isMine(x));
+  for(const q of sh){const O=app==="colors"?q.colorRec:(q.ov||{})[app];if(!O)continue;await Promise.all(Object.keys(O).map(k=>NAJMA.decrypt(O[k]).then(u=>{out[k]=u}).catch(()=>{})))}
+  return bShared[app]=out}
 function bStore(app){const Q=qSec();if(app==="colors"){Q.colorRec=Q.colorRec||{};return Q.colorRec}Q.ov=Q.ov||{};Q.ov[app]=Q.ov[app]||{};return Q.ov[app]}
 function bPeek(app){const Q=ownQ();return Q?(app==="colors"?Q.colorRec:(Q.ov||{})[app])||{}:{}}
 async function drawBase(){if(!window.BASE)return;const A=Object.keys(BASE);
@@ -581,6 +586,7 @@ async function drawBase(){if(!window.BASE)return;const A=Object.keys(BASE);
   vPick("bVoice",bApp==="colors"?"colors":bApp,bApp==="colors"?"ai":"mine");
   const G=BASE[bApp].groups;$("bGrp").style.display=G.length>1?"":"none";if(G.length>1)chips("bGrp",G.map(g=>g[0]),(x,k)=>k===bG,(x,k)=>{bG=k;drawBase()});
   const L=$("bList");L.innerHTML="";const mine=bPeek(bApp),def=await bDefault(bApp);
+  if(!NAJMA.hasKey()||(bApp!=="colors"&&bApp!=="spell"&&!Object.keys(await bLoad(bApp)).length)){L.innerHTML='<div class="note" style="background:#ffe1e1">🔑 لازم تكتبين <b>رمز العائلة</b> عشان تسمعين الأصوات وتشتغل عند العيال. روحي لتبويب <b>☁️ الاتصال</b> واكتبي الرمز (اطلبيه من آمنة) واضغطي <b>حفظ الرمز</b>.</div>';return}
   G[bG][1].forEach(([key,lab,say])=>{const v=mine[key],r=document.createElement("div");r.className="rrow";if(say&&say!==lab)r.style.flexWrap="wrap";
     r.innerHTML=`<b dir="rtl" style="font-size:20px">${esc(lab)}</b>${v?'<span class="ok">🎤 صوتك</span>':""}${v||def[key]?'<button class="b pl">▶️</button>':""}<button class="b vr">${v?"🔁":"🎤"}</button>${v?'<button class="b rs">↩️</button>':""}`;
     const pl=r.querySelector(".pl");if(pl)pl.onclick=async()=>{const u=v?await qDec("b"+bApp+key,v):def[key];if(u)new Audio(u).play()};
