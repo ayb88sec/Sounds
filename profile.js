@@ -59,7 +59,7 @@
   /* levels the parent can switch on per child; default: all on */
   const LEVELS={arabic:["ا – خ","د – ص","ض – ق","ك – ي","الكلمات البصرية"],sounds:["Set 1","Special friends"],wt:["1.1 · m a s d t","1.2 · i n p g o","1.3 · c k u b","1.4 · f e l h sh","1.5 · r j v y w","1.6 · th z ch qu x ng nk","1.7 · 4–5 sounds"],
     sent:["Level 1","Level 2","Level 3","Level 4"],shapes:["Level 1","Level 2","Level 3"],writeEn:["abc","ABC","123"],
-    math:["KG2 + up to 5","KG2 − up to 5","KG2 + − up to 10","G2 + − up to 20","G2 + − up to 100","G2 missing number"],
+    math:["KG2 + up to 10","KG2 − up to 10","KG2 + − up to 10","G2 + − up to 20","G2 + − up to 100","G2 missing number"],
     spell:["الطويل والقصير","أ ب د س م","ل ن ف ق ر","المقاطع ١","المقاطع ٢"],
     quran:["الفاتحة","الناس – قريش","الفيل – القدر","العلق – الفجر","الغاشية – النبأ"]};
   const lv=app=>{const L=me&&me.levels&&me.levels[app];return Array.isArray(L)&&L.length?L:LEVELS[app].map((_,i)=>i)};

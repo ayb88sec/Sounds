@@ -44,8 +44,8 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
 const $=id=>document.getElementById(id);
 /* levels: KG2 uses pictures and small numbers, Grade 2 bigger numbers and missing numbers */
 const LV=[
- {g:"KG2",t:"Add up to 5",s:"🍎 + 🍎",max:5,ops:["+"],pic:true,c:"#ff7eb6"},
- {g:"KG2",t:"Take away up to 5",s:"🍎 − 🍎",max:5,ops:["-"],pic:true,c:"#ffb020"},
+ {g:"KG2",t:"Add up to 10",s:"🍎 + 🍎",max:10,ops:["+"],pic:true,c:"#ff7eb6"},
+ {g:"KG2",t:"Take away up to 10",s:"🍎 − 🍎",max:10,ops:["-"],pic:true,c:"#ffb020"},
  {g:"KG2",t:"+ and − up to 10",s:"⭐ up to 10",max:10,ops:["+","-"],pic:true,c:"#a66bff"},
  {g:"Grade 2",t:"+ and − up to 20",s:"12 + 7",max:20,ops:["+","-"],c:"#4f8bff"},
  {g:"Grade 2",t:"+ and − up to 100",s:"45 + 32 · 80 − 26",max:100,ops:["+","-"],c:"#22a37a"},
@@ -83,8 +83,11 @@ function menu(){const A=$("app");A.innerHTML="";let lastG="";
     const b=document.createElement("button");b.style.background=L.c;const st=Object.keys(done).filter(k=>k.startsWith("L"+i+"r")).length;
     b.innerHTML=`<span class="st">${"⭐".repeat(Math.min(st,3))}</span>${L.t}<small>${L.s}</small>`;b.onclick=()=>play(i);$("g_"+L.g.replace(/\s/g,"")).appendChild(b)})}
 
-function play(i){const L=LV[i];let k=0,score=0;const res=[];
-  function next(){if(k>=N)return finish();const q=make(L),O=opts(q.ans,L.max);
+/* never the same sum twice in a round, and not the ones from the last rounds either */
+let recent=[];try{recent=JSON.parse(sessionStorage.getItem("mathRecent")||"[]")}catch(e){}
+function fresh(L,used){let q,key;for(let t=0;t<80;t++){q=make(L);key=q.a+q.op+q.b+(L.miss?"m"+q.hide:"");if(!used.has(key)&&(t>40||!recent.includes(key)))break}used.add(key);recent=[...recent.filter(x=>x!==key),key].slice(-40);try{sessionStorage.setItem("mathRecent",JSON.stringify(recent))}catch(e){}return q}
+function play(i){const L=LV[i];let k=0,score=0;const res=[],used=new Set();
+  function next(){if(k>=N)return finish();const q=fresh(L,used),O=opts(q.ans,L.max);
     const txt=L.miss?(q.hide?`${q.a} ${q.op==="-"?"−":"+"} ? = ${q.r}`:`? ${q.op==="-"?"−":"+"} ${q.b} = ${q.r}`):`${q.a} ${q.op==="-"?"−":"+"} ${q.b} = ?`;
     $("app").innerHTML=`<div class="top"><button id="back">⬅ Levels</button><span>${k+1} / ${N}</span></div><div class="card"><div class="dots">${Array.from({length:N},(_,j)=>`<i class="${res[j]===1?"ok":res[j]===0?"no":""}"></i>`).join("")}</div>
       <div class="pic">${pic(q,L)}</div><div class="q">${txt}</div><div class="opts">${O.map((o,j)=>`<button style="background:${COL[(j+i)%6]}" data-v="${o}">${o}</button>`).join("")}</div></div>`;
