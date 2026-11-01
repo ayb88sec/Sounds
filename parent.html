@@ -686,5 +686,14 @@ if(DB){
   dbStart();
 }else{drawKids();drawSecs();connect();drawDev();}
 </script>
+<script>
+/* pull down to update */
+(function(){let y0=null,dy=0;const tip=document.createElement("div");
+  tip.style.cssText="position:fixed;top:0;left:50%;transform:translate(-50%,-60px);background:#5b3fd6;color:#fff;font:800 17px system-ui;padding:10px 20px;border-radius:0 0 18px 18px;box-shadow:0 4px 0 rgba(0,0,0,.15);z-index:999;transition:transform .2s";document.body.appendChild(tip);
+  const open=()=>!!document.querySelector(".sheet.show,.modal.show");
+  addEventListener("touchstart",e=>{y0=scrollY<=0&&!open()?e.touches[0].clientY:null;dy=0},{passive:true});
+  addEventListener("touchmove",e=>{if(y0==null)return;dy=e.touches[0].clientY-y0;if(dy>10){tip.textContent=dy>90?"⬆️ اترك للتحديث":"⬇️ اسحب للتحديث";tip.style.transition="none";tip.style.transform=`translate(-50%,${Math.min(dy,120)-60}px)`}},{passive:true});
+  addEventListener("touchend",()=>{tip.style.transition="";if(y0!=null&&dy>90){tip.textContent="🔄 جاري التحديث…";tip.style.transform="translate(-50%,0)";setTimeout(()=>location.reload(),400)}else tip.style.transform="translate(-50%,-60px)";y0=null;dy=0})})();
+</script>
 </body>
 </html>
