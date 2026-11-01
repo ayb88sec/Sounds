@@ -1,6 +1,14 @@
 /* Najma profiles: gives each child their own progress by namespacing storage, and exposes their settings.
    Must load before any page script. */
 (function(){
+  /* moving home: from raw.githack.com to GitHub Pages. Only moves once the new address answers; the child's link travels with it, stars come back from the cloud */
+  try{if(location.hostname==="raw.githack.com"){const m=location.pathname.match(/^\/ayb88sec\/Sounds\/[^\/]+\/(.*)$/i);
+    if(m)fetch("https://ayb88sec.github.io/Sounds/moved.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(!j||!j.ok)return;
+      const g=k=>Storage.prototype.getItem.call(localStorage,k),q=new URLSearchParams(location.search);
+      if(g("najma:dev")&&g("najma:lock")&&!q.get("dev")){q.set("dev",g("najma:dev"));q.set("key",g("najma:key")||"");q.set("kid",g("najma:lock")||"")}
+      const qs=q.toString();location.replace("https://ayb88sec.github.io/Sounds/"+(m[1]||"home.html")+(qs?"?"+qs:"")+location.hash)}).catch(()=>{})}}catch(e){}
+})();
+(function(){
   const S=Storage.prototype,G=S.getItem,SET0=S.setItem,RM=S.removeItem;
   /* storage full: the downloaded settings copy is the only big thing that can be thrown away (it comes back on the next sync) */
   const SET=function(k,v){try{return SET0.call(this,k,v)}catch(e){if(k==="najma:sections")throw e;try{RM.call(localStorage,"najma:sections")}catch(x){}return SET0.call(this,k,v)}};
