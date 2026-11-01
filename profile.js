@@ -10,7 +10,8 @@
   if(location.hash.startsWith("#key=")||location.hash.startsWith("#dev=")||HAS_Q){const hp=HAS_Q?QS:new URLSearchParams(location.hash.slice(1));
     let parentPhone=false;for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith("sb-"))parentPhone=true}
     /* a parent opening a child's link by mistake: ask before turning this phone into the child's device */
-    const ok=!parentPhone||!hp.get("kid")||confirm("هذا الرابط يحوّل هذا الجهاز إلى جهاز الطفل فقط.\nهل هذا جهاز الطفل؟\n(اضغط «إلغاء» إذا كان هذا جوالك)");
+    /* asked only once: a device already set up as a child's iPad never asks again */
+    const ok=!parentPhone||!hp.get("kid")||G.call(localStorage,"najma:lock")||G.call(localStorage,"najma:dev")===hp.get("dev")||confirm("هذا الرابط يحوّل هذا الجهاز إلى جهاز الطفل فقط.\nهل هذا جهاز الطفل؟\n(اضغط «إلغاء» إذا كان هذا جوالك)");
     if(hp.get("key"))SET.call(localStorage,"najma:key",(hp.get("key")||"").trim().toUpperCase());
     if(ok&&hp.get("kid")){SET.call(localStorage,"najma:lock",hp.get("kid"));SET.call(localStorage,"najma:cur",hp.get("kid"))}
     if(ok&&hp.get("dev")){SET.call(localStorage,"najma:dev",hp.get("dev"));if(hp.get("kid"))SET.call(localStorage,"najma:lock",hp.get("kid"))}
@@ -29,6 +30,7 @@
   S.getItem=function(k){return G.call(this,key(k))};
   S.setItem=function(k,v){return SET.call(this,key(k),v)};
   S.removeItem=function(k){return RM.call(this,key(k))};
+  const IDBO=window.indexedDB?indexedDB.open.bind(indexedDB):null;
   if(window.indexedDB&&me){const open=indexedDB.open.bind(indexedDB);indexedDB.open=(n,v)=>open(`${n}__${me.id}`,v)}
   const DEF={apps:{arabic:true,numAr:true,islam:true,iman:true,sounds:true,cvc:true,sent:true,writeEn:true,numEn:true,shapes:true,name:true,quran:true,duas:true,colorsAr:true,colorsEn:true,spell:true},numMax:20,sightGroups:[0,1,2,3,4,5,6,7,8]};
   const DEFSEC=[{id:"spell1",title:"Spelling",icon:"🐝",lang:"en",words:["antiseptic","antibiotic","baby","bad","bear"]}];
@@ -59,7 +61,11 @@
   async function cryptoKey(){if(ckey)return ckey;const code=G.call(localStorage,"najma:key");if(!code||!crypto.subtle)throw new Error("nokey");
     const base=await crypto.subtle.importKey("raw",new TextEncoder().encode(code),"PBKDF2",false,["deriveKey"]);
     ckey=await crypto.subtle.deriveKey({name:"PBKDF2",salt:new TextEncoder().encode("najma-family-v1"),iterations:150000,hash:"SHA-256"},base,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);return ckey}
-  async function decrypt(o){const k=await cryptoKey();const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:ub(o.iv)},k,ub(o.ct));return JSON.parse(new TextDecoder().decode(pt))}
+  /* big recordings and pictures live in the iPad's database (much bigger than the settings storage); the settings keep a small pointer */
+  function blobDB(){return new Promise((res,rej)=>{if(!IDBO)return rej(new Error("no db"));const r=IDBO("najma-blobs",1);r.onupgradeneeded=()=>r.result.createObjectStore("b");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+  async function blobGet(id){const db=await blobDB();return new Promise((res,rej)=>{const q=db.transaction("b").objectStore("b").get(id);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
+  async function blobPutAll(map){const db=await blobDB();return new Promise((res,rej)=>{const tx=db.transaction("b","readwrite"),st=tx.objectStore("b");st.clear();Object.keys(map).forEach(k=>st.put(map[k],k));tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);tx.onabort=()=>rej(tx.error)})}
+  async function decrypt(o){if(o&&o.idb){const real=await blobGet(o.idb);if(!real)throw new Error("missing");o=real}const k=await cryptoKey();const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:ub(o.iv)},k,ub(o.ct));return JSON.parse(new TextDecoder().decode(pt))}
   async function encrypt(obj){const k=await cryptoKey();const iv=crypto.getRandomValues(new Uint8Array(12));
     const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv},k,new TextEncoder().encode(JSON.stringify(obj)));return {v:1,iv:bu(iv),ct:bu(new Uint8Array(ct))}}
   /* voice choice per part of the app, set by the parent: "mine" (recordings), "ai", or "none" */
@@ -123,10 +129,13 @@
     d.textContent=t;d.style.display="";clearTimeout(d._t);d._t=setTimeout(()=>d.style.display="none",3500)}catch(e){}}
   window.NAJMA.aiStop=()=>{aiRun++;if(aiA){aiA.onended=null;aiA.onerror=null;aiA.pause()}};
   /* the iPad's storage is small: if everything does not fit, drop the biggest extras step by step (pictures first), never the child or progress */
-  function saveSecs(Sx){const put=t=>{try{SET.call(localStorage,"najma:sections",t)}catch(e){return false}
+  async function saveSecs(Sx){const put=t=>{try{SET.call(localStorage,"najma:sections",t)}catch(e){return false}
       /* leave room for stars and progress */try{SET0.call(localStorage,"najma:probe","x".repeat(150000));RM.call(localStorage,"najma:probe");return true}catch(e){try{RM.call(localStorage,"najma:probe")}catch(x){}return false}};if(put(Sx))return;
     try{RM.call(localStorage,"najma:sections")}catch(e){}if(put(Sx))return;
     let L;try{L=JSON.parse(Sx)}catch(e){return}
+    try{const map={};const walk=o=>{if(!o||typeof o!=="object")return;Object.keys(o).forEach(k=>{const v=o[k];
+        if(v&&typeof v==="object"&&typeof v.ct==="string"&&v.iv&&v.ct.length>1500){const id=v.ct.length+":"+v.ct.slice(0,24)+v.ct.slice(-24);map[id]=v;o[k]={ct:"",idb:id}}else walk(v)})};
+      walk(L);await blobPutAll(map);if(put(JSON.stringify(L))){try{SET.call(localStorage,"najma:slim","db")}catch(e){}return}}catch(e){L=JSON.parse(Sx)}
     const steps=[
       ()=>L.forEach(x=>{if(x.type==="qimg"){x.poster={};x.img={};if(x.duas)x.duas.img={}}else if(x.img)x.img={}}),
       ()=>L.forEach(x=>{if(x.type==="qimg"&&x.mine===false)["explA","explV","secV","ov","colorRec","story","expl","extra"].forEach(k=>delete x[k])}),
@@ -146,15 +155,15 @@
     addEventListener("online",flush);
     if(navigator.onLine!==false)rpc("kid_sync",{tok:DEV}).then(js=>{if(!js||!js.child)return;let changed=false;
       const kid=js.child,P=JSON.stringify([kid]),Sx=JSON.stringify(js.sections||[]);
-      if(P!==G.call(localStorage,"najma:profiles")||Sx!==G.call(localStorage,"najma:sections"))changed=true;
-      SET.call(localStorage,"najma:lock",kid.id);SET.call(localStorage,"najma:cur",kid.id);SET.call(localStorage,"najma:profiles",P);saveSecs(Sx);try{SET.call(localStorage,"najma:syncAt",String(Date.now()));RM.call(localStorage,"najma:syncErr")}catch(e){}
+      let hh=7;for(let i=0;i<Sx.length;i+=3)hh=(hh*31+Sx.charCodeAt(i))|0;const hx=Sx.length+":"+hh;if(P!==G.call(localStorage,"najma:profiles")||hx!==G.call(localStorage,"najma:secHash"))changed=true;try{SET.call(localStorage,"najma:secHash",hx)}catch(e){}
+      SET.call(localStorage,"najma:lock",kid.id);SET.call(localStorage,"najma:cur",kid.id);SET.call(localStorage,"najma:profiles",P);return saveSecs(Sx).then(()=>{try{SET.call(localStorage,"najma:syncAt",String(Date.now()));RM.call(localStorage,"najma:syncErr")}catch(e){}
       /* stars: keep the best of the iPad and the database, then send back anything the database is missing */
       const ns=k=>`najma:${kid.id}:${k}`;if(!me)changed=true;
       Object.entries(js.progress||{}).forEach(([k,srv])=>{let loc={};try{loc=JSON.parse(G.call(localStorage,ns(k))||"{}")}catch(e){}
         const m=Object.assign({},srv);Object.entries(loc).forEach(([x,v])=>{m[x]=typeof v==="number"&&typeof srv[x]==="number"?Math.max(v,srv[x]):v});
         const ms=JSON.stringify(m);if(ms!==G.call(localStorage,ns(k))){SET.call(localStorage,ns(k),ms);changed=true}if(ms!==JSON.stringify(srv))push(k,ms)});
       for(let i=0;i<localStorage.length;i++){const full=localStorage.key(i);if(full&&full.startsWith(`najma:${kid.id}:`)){const k=full.slice(kid.id.length+8);if(!(k in (js.progress||{})))push(k,G.call(localStorage,full))}}
-      if(changed&&/home\.html$/.test(location.pathname)&&!sessionStorage.getItem("najma:reloaded")){sessionStorage.setItem("najma:reloaded","1");location.reload()}else if(!changed)sessionStorage.removeItem("najma:reloaded")}).catch(e=>{try{SET.call(localStorage,"najma:syncErr",String(e&&e.message||e))}catch(x){}})}
+      if(changed&&/home\.html$/.test(location.pathname)&&!sessionStorage.getItem("najma:reloaded")){sessionStorage.setItem("najma:reloaded","1");location.reload()}else if(!changed)sessionStorage.removeItem("najma:reloaded")})}).catch(e=>{try{SET.call(localStorage,"najma:syncErr",String(e&&e.message||e))}catch(x){}})}
   /* offline: cache everything once it has been opened online */
   if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}
 })();
