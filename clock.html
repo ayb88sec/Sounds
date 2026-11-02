@@ -78,38 +78,51 @@ function drawClock(h,m){let t="";for(let i=1;i<=12;i++){const a=i*Math.PI/6;t+=`
     <g class="hand" id="hH" style="transform:rotate(${(h%12)*30+m/2}deg)"><line x1="150" y1="150" x2="150" y2="86" stroke="#2b2340" stroke-width="13" stroke-linecap="round"/></g>
     <g class="hand" id="hM" style="transform:rotate(${m*6}deg)"><line x1="150" y1="150" x2="150" y2="40" stroke="#ff4f87" stroke-width="8" stroke-linecap="round"/></g>
     <circle cx="150" cy="150" r="12" fill="#ffd23f" stroke="#2b2340" stroke-width="3"/></svg>`}
-let H=3,M=0,turns=0;
-function hands(){const a=$("hH"),b=$("hM");a.style.transform=`rotate(${(H%12)*30+M/2+turns*360}deg)`;b.style.transform=`rotate(${M*6+turns*360}deg)`}
-function step(){M+=LV[L].step;if(M>=60){M-=60;H=H%12+1;turns++}tick();hands()}
-function lvRow(){$("lv").innerHTML="";if(ON.length<2)return;ON.forEach(i=>{const b=document.createElement("button");b.textContent=AR?LV[i].ar:LV[i].en;if(i===L)b.className="on";b.onclick=()=>{L=i;M=0;learn()};$("lv").appendChild(b)})}
+/* the time is kept as minutes since 12:00 (can go forwards or backwards), so the hands always turn the right way */
+let T=180;const gH=()=>Math.floor(((T%720)+720)%720/60)||12,gM=()=>((T%60)+60)%60;
+function hands(){const a=$("hH"),b=$("hM");if(!a)return;a.style.transform=`rotate(${T/2}deg)`;b.style.transform=`rotate(${T*6}deg)`}
+function step(d){T+=d*LV[L].step;tick();hands()}
+/* drag either hand with a finger: the long hand moves the minutes, the short hand the hours */
+function draggable(onMove){const svg=$("ck").querySelector("svg");let which=null;
+  const ang=e=>{const r=svg.getBoundingClientRect(),x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2);return (Math.atan2(x,-y)*180/Math.PI+360)%360};
+  const near=(a,b)=>{const d=Math.abs(((a-b)%360+540)%360-180);return d};
+  const move=e=>{const a=ang(e),st=LV[L].step;
+    if(which==="m"){let m=Math.round(a/6/st)*st%60,d=m-gM();if(d>30)d-=60;if(d<-30)d+=60;if(d){T+=d;tick()}}
+    else{const h=Math.round((a-gM()/2)/30),cur=Math.floor(((T%720)+720)%720/60);let d=((h-cur)%12+12)%12;if(d>6)d-=12;if(d){T+=d*60;tick()}}
+    hands();onMove&&onMove()};
+  svg.style.touchAction="none";
+  svg.addEventListener("pointerdown",e=>{const a=ang(e);which=near(a,(gM()*6)%360)<=near(a,((T/2)%360+360)%360)?"m":"h";svg.querySelectorAll(".hand").forEach(x=>x.style.transition="none");svg.setPointerCapture(e.pointerId);move(e)});
+  svg.addEventListener("pointermove",e=>{if(which)move(e)});
+  const up=()=>{if(!which)return;which=null;svg.querySelectorAll(".hand").forEach(x=>x.style.transition="");onMove&&onMove(true)};svg.addEventListener("pointerup",up);svg.addEventListener("pointercancel",up)}
+function lvRow(){$("lv").innerHTML="";if(ON.length<2)return;ON.forEach(i=>{const b=document.createElement("button");b.textContent=AR?LV[i].ar:LV[i].en;if(i===L)b.className="on";b.onclick=()=>{L=i;T=gH()%12*60;learn()};$("lv").appendChild(b)})}
 
 /* learn: one button moves the time, tap the clock to hear it */
 function learn(){document.documentElement.lang=AR?"ar":"en";document.documentElement.dir=AR?"rtl":"ltr";document.body.classList.toggle("ar",AR);$("lang").textContent=AR?"English":"عربي";
-  $("ttl").textContent=AR?"⏰ الساعة":"⏰ The Clock";lvRow();turns=0;drawClock(H,M);$("st").textContent="";
-  const show=()=>{$("say").innerHTML=`${dig(H,M)}<small>${words(H,M)}</small>`};show();
-  $("ck").firstChild.classList.add("tap");$("ck").onclick=()=>speak(words(H,M));
-  $("ctl").innerHTML=`<button class="big pink" id="go">⏩ ${AR?"حرّك الساعة":"Move the time"}</button><br><button class="big" id="play">🎮 ${AR?"يلا نلعب":"Let's play"}</button>`;
-  $("go").onclick=()=>{step();show();speak(words(H,M))};$("play").onclick=play}
+  $("ttl").textContent=AR?"⏰ الساعة":"⏰ The Clock";lvRow();T=((T%720)+720)%720;drawClock(gH(),gM());$("st").textContent="";
+  const show=()=>{$("say").innerHTML=`${dig(gH(),gM())}<small>${words(gH(),gM())}</small>`};show();
+  draggable(end=>{show();if(end===true)speak(words(gH(),gM()))});
+  $("ctl").innerHTML=`<button class="big pink" id="bk">⏪</button><button class="big pink" id="go">⏩</button><br><button class="big" id="play">🎮 ${AR?"يلا نلعب":"Let's play"}</button>`;
+  $("bk").onclick=()=>{step(-1);show();speak(words(gH(),gM()))};$("go").onclick=()=>{step(1);show();speak(words(gH(),gM()))};$("play").onclick=play}
 
 /* play: "what time is it?" with 3 big answers; older levels also "make this time" with the clock */
 function play(){const N=8;let k=0,score=0;const used=new Set();$("lv").innerHTML="";$("ck").onclick=null;
   const pick=()=>{let h,m;for(let t=0;t<40;t++){h=1+rnd(12);m=rnd(60/LV[L].step)*LV[L].step;if(!used.has(h+":"+m))break}used.add(h+":"+m);return [h,m]};
   function next(){if(k>=N)return end();$("st").textContent="⭐".repeat(score);const [h,m]=pick();
     if(L<2||k%2===0){/* read the clock */
-      turns=0;drawClock(h,m);$("say").textContent=AR?"كم الساعة؟":"What time is it?";speak($("say").textContent);
+      T=(h%12)*60+m;drawClock(h,m);$("say").textContent=AR?"كم الساعة؟":"What time is it?";speak($("say").textContent);
       const alts=new Set([h+":"+m]);while(alts.size<3){const a=1+rnd(12),b=rnd(60/LV[L].step)*LV[L].step;alts.add(a+":"+b)}
       $("ctl").innerHTML=`<div class="opts">${shuf([...alts]).map((s,j)=>`<button style="background:${COL[(j*2+k)%6]}" data-v="${s}">${dig(...s.split(":").map(Number))}</button>`).join("")}</div>`;let first=true;
       document.querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(b.dataset.v===h+":"+m){b.classList.add("right");yay();at(b);$("say").innerHTML=`${dig(h,m)}<small>${words(h,m)}</small>`;speak(words(h,m));if(first)score++;k++;setTimeout(next,1600)}else{first=false;b.classList.add("wrong");buzz()}})}
     else{/* make the time: tap ⏩ until the clock shows it */
-      H=12;M=0;turns=0;drawClock(H,M);$("say").innerHTML=`${AR?"اجعل الساعة":"Make it"}<small>${words(h,m)}</small>`;speak((AR?"اجعل الساعة ":"Make it ")+words(h,m));let tries=0;
-      $("ctl").innerHTML=`<button class="big pink" id="ph">🕐 ${AR?"الساعات":"hour"}</button><button class="big" id="pm">⏩ ${AR?"الدقائق":"minutes"}</button><br><button class="big green" id="ok">✅ ${AR?"تم":"Done"}</button>`;
-      $("ph").onclick=()=>{H=H%12+1;tick();hands()};$("pm").onclick=()=>{M+=LV[L].step;if(M>=60){M=0;turns++}tick();hands()};
-      $("ok").onclick=e=>{if(H===h&&M===m){yay();at(e.target);speak(words(h,m));if(!tries)score++;k++;setTimeout(next,1400)}else{tries++;buzz();e.target.animate([{transform:"translateX(-8px)"},{transform:"translateX(8px)"},{transform:"none"}],{duration:300})}}}}
+      T=0;drawClock(12,0);$("say").innerHTML=`${AR?"اجعل الساعة":"Make it"}<small>${words(h,m)}</small>`;speak((AR?"اجعل الساعة ":"Make it ")+words(h,m));let tries=0;
+      $("ctl").innerHTML=`<div style="color:#fff;font-weight:700;font-size:18px;margin-top:8px">${AR?"حرّك العقارب بإصبعك":"Move the hands with your finger"} 👆</div><button class="big pink" id="bk">⏪</button><button class="big pink" id="go">⏩</button><br><button class="big green" id="ok">✅ ${AR?"تم":"Done"}</button>`;
+      draggable();$("bk").onclick=()=>step(-1);$("go").onclick=()=>step(1);
+      $("ok").onclick=e=>{if(gH()===h&&gM()===m){yay();at(e.target);speak(words(h,m));if(!tries)score++;k++;setTimeout(next,1400)}else{tries++;buzz();e.target.animate([{transform:"translateX(-8px)"},{transform:"translateX(8px)"},{transform:"none"}],{duration:300})}}}}
   next()
   function end(){const stars=score>=7?3:score>=5?2:score>=3?1:0;if(stars){const key="L"+L+"r",n=Object.keys(done).filter(x=>x.startsWith(key)).length;if(n<3){done[key+(n+1)]=stars;try{localStorage.setItem("clockDone",JSON.stringify(done))}catch(e){}}}
     fan();for(let j=0;j<6;j++)setTimeout(()=>burst(Math.random()*innerWidth,innerHeight/3),j*150);
     $("say").textContent=(AR?"🎉 أحسنت! ":"🎉 Well done! ")+"⭐".repeat(Math.max(stars,1));$("st").textContent="";
-    $("ctl").innerHTML=`<button class="big pink" id="ag">🔁 ${AR?"مرة ثانية":"Play again"}</button><button class="big" id="bk">⏰ ${AR?"الساعة":"Clock"}</button>`;$("ag").onclick=play;$("bk").onclick=()=>{H=3;M=0;learn()}}}
+    $("ctl").innerHTML=`<button class="big pink" id="ag">🔁 ${AR?"مرة ثانية":"Play again"}</button><button class="big" id="bk">⏰ ${AR?"الساعة":"Clock"}</button>`;$("ag").onclick=play;$("bk").onclick=()=>{T=180;learn()}}}
 $("lang").onclick=()=>{AR=!AR;learn()};
 const P=new URLSearchParams(location.search).get("v");if(P!=null&&LV[+P])L=+P;learn();
 </script>
