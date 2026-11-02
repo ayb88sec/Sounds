@@ -67,13 +67,13 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
 </head>
 <body>
 <a href="home.html" aria-label="Home" style="position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;z-index:15;width:52px;height:52px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18)">🏠</a>
-<button class="lang" id="lang"></button>
+
 <div class="dunes"></div><div class="camel">🐪</div>
 <canvas id="fx"></canvas>
 <main><h1 id="ttl"></h1><p class="sub" id="sub"></p><div id="app"></div></main>
 <script>
 const $=id=>document.getElementById(id);
-let EN=new URLSearchParams(location.search).get("l")==="en";
+const EN=false;
 const t=(ar,en)=>EN?en:ar;
 /* ---------- content (kept simple for young children) ---------- */
 const EMS=[
@@ -140,9 +140,9 @@ const mark=k=>{if(done[k])return;done[k]=1;try{localStorage.setItem("uaeDone",JS
 const rnd=n=>Math.floor(Math.random()*n),shuf=a=>[...a].sort(()=>Math.random()-.5);
 const head=()=>`<div class="top"><button id="back">${t("⬅ رجوع","⬅ Back")}</button></div>`;
 const backTo=f=>{$("back").onclick=f};
-function setLang(){document.documentElement.lang=EN?"en":"ar";document.documentElement.dir=EN?"ltr":"rtl";document.body.classList.toggle("en",EN);$("lang").textContent=EN?"عربي":"English";
+function setLang(){document.documentElement.lang=EN?"en":"ar";document.documentElement.dir=EN?"ltr":"rtl";document.body.classList.toggle("en",EN);
   $("ttl").textContent=t("🇦🇪 بلادي الإمارات","🇦🇪 My UAE");$("sub").textContent=t("تعرّف على بلادك الجميلة","Discover our beautiful country")}
-$("lang").onclick=()=>{EN=!EN;setLang();hub()};
+
 /* next special day, counted from today */
 function nextDay(){const now=new Date();now.setHours(0,0,0,0);return DAYS.map(d=>{let dt=new Date(now.getFullYear(),d[3]-1,d[4]);if(dt<now)dt=new Date(now.getFullYear()+1,d[3]-1,d[4]);return [d,Math.round((dt-now)/864e5)]}).sort((a,b)=>a[1]-b[1])[0]}
 
