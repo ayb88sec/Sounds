@@ -22,7 +22,7 @@ h1{color:#fff;text-align:center;font-size:clamp(38px,9.5vw,58px);margin:10px 0 0
 .hub{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
 .tile{border:0;border-radius:30px;padding:16px;min-height:150px;color:#fff;font-family:inherit;font-weight:800;font-size:26px;cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative}
 .tile .e{font-size:60px;line-height:1}.tile .ic{width:120px;height:120px;filter:drop-shadow(0 6px 6px rgba(0,0,0,.25))}
-.pic{width:min(78vw,320px);aspect-ratio:1;display:block;margin:6px auto 10px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.2));animation:pop2 .5s}.sym .si{width:110px;height:110px;display:block;margin:0 auto 4px}.zimg{width:min(70vw,300px);aspect-ratio:1;display:block;margin:12px auto 8px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.2));animation:pop2 .5s}.tile small{font-size:15px;opacity:.92}.tile .ok{position:absolute;top:10px;inset-inline-end:14px;font-size:20px}
+.pic{width:min(78vw,320px);aspect-ratio:1;display:block;margin:6px auto 10px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.2));animation:pop2 .5s}.sym .si{width:110px;height:110px;display:block;margin:0 auto 4px}.zface{width:120px;height:120px;border-radius:50%;object-fit:cover;border:6px solid #e0a100;display:block;margin:10px auto 0;box-shadow:0 6px 0 rgba(0,0,0,.12)}.zimg{width:min(70vw,300px);aspect-ratio:1;display:block;margin:12px auto 8px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.2));animation:pop2 .5s}.tile small{font-size:15px;opacity:.92}.tile .ok{position:absolute;top:10px;inset-inline-end:14px;font-size:20px}
 .tile:active{transform:translateY(6px)}
 .card{background:#fff;border-radius:34px;padding:18px 14px;box-shadow:0 8px 0 rgba(0,0,0,.12);text-align:center;margin-bottom:14px}
 .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -229,9 +229,10 @@ function mapGame(){const order=shuf([0,1,2,3,4,5,6]);let k=0,score=0;$("info").i
 
 /* ---------- 3. Baba Zayed: a story in chapters ---------- */
 const ZC=["#e0a100","#00843d","#c8102e","#2f7bff","#3fc35a","#a66bff","#ff6f91","#c8102e"];
-function zayed(){let p=0;const draw=()=>{const [pic,title,txt]=ZAYED[p];window.scrollTo(0,0);
+function zayed(){let p=0,face="";const Q=(NAJMA.sections||[]).find(x=>x.type==="qimg")||{},ZI=(Q.uaeimg||{}).zayed;if(ZI)NAJMA.decrypt(ZI).then(u=>{face=u;const z=$("zf");if(z){z.src=u;z.style.display="block"}}).catch(()=>{});
+  const draw=()=>{const [pic,title,txt]=ZAYED[p];window.scrollTo(0,0);
     $("app").innerHTML=head()+`<div class="card zs"><div class="zch" style="background:${ZC[p]}">${"الفصل "+"١٢٣٤٥٦٧٨"[p]+" من ٨"}</div>
-      <img class="zimg" src="${IMG("zayed_"+(p+1))}" alt=""><div class="zt" style="color:${ZC[p]}">${title}</div><div class="ztx">${txt}</div>
+      <img class="zface" id="zf" src="${face}" alt="" style="display:${face?"block":"none"}"><img class="zimg" src="${IMG("zayed_"+(p+1))}" alt=""><div class="zt" style="color:${ZC[p]}">${title}</div><div class="ztx">${txt}</div>
       <div class="dots">${ZAYED.map((_,i)=>`<i class="${i<=p?"on":""}"></i>`).join("")}</div>
       <div class="znav"><button class="zb" id="pv" ${p?"":"disabled"}>➡️<small>السابق</small></button><button class="zb lis" id="rd">🔊<small>اسمع</small></button><button class="zb nx" id="nx">${p<ZAYED.length-1?"⬅️<small>التالي</small>":"🎉<small>النهاية</small>"}</button></div></div>`;
     backTo(hub);speak(title+". "+txt);$("rd").onclick=()=>speak(title+". "+txt);

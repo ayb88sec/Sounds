@@ -612,17 +612,17 @@ async function bDefault(app){const base=app==="colors"?{}:await bLoad(app);if(bS
 function bStore(app){const Q=qSec();if(app==="colors"){Q.colorRec=Q.colorRec||{};return Q.colorRec}Q.ov=Q.ov||{};Q.ov[app]=Q.ov[app]||{};return Q.ov[app]}
 function bPeek(app){const Q=ownQ();return Q?(app==="colors"?Q.colorRec:(Q.ov||{})[app])||{}:{}}
 /* 🇦🇪 بلادي: the parent adds the leaders' photos from her phone (shared with the families with the rest of her content) */
-const UAE_R=[["ad","الشيخ محمد بن زايد آل نهيان","رئيس الدولة وحاكم أبوظبي"],["du","الشيخ محمد بن راشد آل مكتوم","حاكم دبي"],["sh","الشيخ الدكتور سلطان بن محمد القاسمي","حاكم الشارقة"],["aj","الشيخ حميد بن راشد النعيمي","حاكم عجمان"],["uq","الشيخ سعود بن راشد المعلا","حاكم أم القيوين"],["rk","الشيخ سعود بن صقر القاسمي","حاكم رأس الخيمة"],["fu","الشيخ حمد بن محمد الشرقي","حاكم الفجيرة"]];
+const UAE_R=[["zayed","المغفور له الشيخ زايد بن سلطان آل نهيان","مؤسس دولة الإمارات (تظهر في قصة بابا زايد)"],["ad","الشيخ محمد بن زايد آل نهيان","رئيس الدولة وحاكم أبوظبي"],["du","الشيخ محمد بن راشد آل مكتوم","حاكم دبي"],["sh","الشيخ الدكتور سلطان بن محمد القاسمي","حاكم الشارقة"],["aj","الشيخ حميد بن راشد النعيمي","حاكم عجمان"],["uq","الشيخ سعود بن راشد المعلا","حاكم أم القيوين"],["rk","الشيخ سعود بن صقر القاسمي","حاكم رأس الخيمة"],["fu","الشيخ حمد بن محمد الشرقي","حاكم الفجيرة"]];
 let uaeFor=null;
 async function drawUaePics(){const L=$("bList");$("bVoice").innerHTML="";$("bGrp").style.display="none";const Q=ownQ()||{},IM=Q.uaeimg||{};
-  L.innerHTML='<div class="note">📷 أضيفي صورة لكل حاكم من جوالك. تظهر في تطبيق «🇦🇪 بلادي الإمارات» ← «👑 حكّامنا».</div>';
+  L.innerHTML='<div class="note">📷 أضيفي صورة الشيخ زايد وصورة كل حاكم من جوالك. تظهر في تطبيق «🇦🇪 بلادي الإمارات».</div>';
   for(const [k,n,r] of UAE_R){const row=document.createElement("div");row.className="rrow";
     row.innerHTML=`<span class="th" style="width:60px;height:60px;border-radius:50%;overflow:hidden;background:#f3f0fa;display:flex;align-items:center;justify-content:center;font-size:28px;flex:none">👑</span><div style="flex:1"><b>${n}</b><div style="font-size:14px;color:#7a7090">${r}</div></div><button class="b cam">📷</button>${IM[k]?'<button class="b rs">🗑️</button>':""}`;
     row.querySelector(".cam").onclick=()=>{uaeFor=k;$("uaeFile").value="";$("uaeFile").click()};
     if(IM[k]){NAJMA.decrypt(IM[k]).then(u=>row.querySelector(".th").innerHTML=`<img src="${u}" style="width:100%;height:100%;object-fit:cover">`).catch(()=>{});
       row.querySelector(".rs").onclick=()=>{const Q=qSec();delete Q.uaeimg[k];saveS();drawUaePics()}}
     L.appendChild(row)}}
-async function drawBase(){if(!window.BASE)return;if(!BASE.uaepics)BASE.uaepics={t:"🇦🇪 بلادي: صور الحكّام",groups:[]};const A=Object.keys(BASE);
+async function drawBase(){if(!window.BASE)return;if(!BASE.uaepics)BASE.uaepics={t:"🇦🇪 بلادي: صورة زايد والحكّام",groups:[]};const A=Object.keys(BASE);
   chips("bApp",A.map(k=>BASE[k].t),(x,k)=>A[k]===bApp,(x,k)=>{bApp=A[k];bG=0;drawBase()});
   if(bApp==="uaepics")return drawUaePics();
   vPick("bVoice",bApp==="colors"?"colors":bApp,bApp==="colors"?"ai":"mine");
