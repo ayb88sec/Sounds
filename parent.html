@@ -135,7 +135,7 @@ setTimeout(function(){var g=document.getElementById("gate");if(g&&getComputedSty
     <div id="qpE"></div><input type="file" id="qpF" accept="image/*" style="display:none"></div></div>
   <div class="panel" id="base">
     <div class="note">🧩 <b>التطبيقات الأساسية</b>: هنا تسجّل صوتك بالعربي لأي شيء في التطبيقات الجاهزة. اضغط ▶️ لتسمع الصوت الحالي، و🎤 لتسجّل صوتك مكانه، و↩️ للرجوع إلى الأصلي.</div>
-    <div class="chips" id="bApp" style="justify-content:center;margin-bottom:8px"></div><div id="bVoice"></div><div class="chips" id="bGrp" style="margin-bottom:8px"></div><div id="bList"></div></div>
+    <div class="chips" id="bApp" style="justify-content:center;margin-bottom:8px"></div><input type="file" id="uaeFile" accept="image/*" style="display:none"><div id="bVoice"></div><div class="chips" id="bGrp" style="margin-bottom:8px"></div><div id="bList"></div></div>
   <div class="panel" id="admin">
     <div class="note">🛡️ <b>الإدارة</b>: أنتِ فقط ترين هذه الصفحة. شاركي محتواك مع كل العائلات، وراجعي اقتراحاتهم، واحذفي أي عائلة أو شخص أو طفل.</div>
     <div class="qbox"><b>🧪 الميزات الجديدة</b><div class="note" style="margin:6px 0">الميزة الجديدة تظهر لكِ أولًا. اختاري متى تظهر لباقي العائلات.</div><div id="adFeat"></div></div>
@@ -490,6 +490,10 @@ function qCollect(){const n=+$("qpS").value;if(!n||!$("qpI"))return;const Q=qSec
   document.querySelectorAll("#qpA .simp").forEach(t=>{const v=t.value.trim(),k=t.dataset.k;if(v===t.dataset.def)delete Q.simp[k];else Q.simp[k]=v})}
 function qSave(msg){qCollect();saveS();qEdit();if(msg){const m=$("qpMsg");m.style.display="";m.textContent="✅ تم الحفظ. يصل إلى أجهزة الأطفال عند فتح التطبيق.";setTimeout(()=>m.style.display="none",4000)}}
 $("qpS").onchange=qEdit;
+$("uaeFile").onchange=e=>{const f=e.target.files[0];if(!f||!uaeFor)return;const k=uaeFor,url=URL.createObjectURL(f),im=new Image();
+  im.onload=async()=>{const M=400,sc=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);
+    c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);const d=c.toDataURL("image/jpeg",.75);
+    try{const Q=qSec();Q.uaeimg=Q.uaeimg||{};Q.uaeimg[k]=await NAJMA.encrypt(d);saveS();drawUaePics()}catch(err){alert("أدخلي رمز العائلة أولًا")}};im.src=url};
 $("qpF").onchange=e=>{const f=e.target.files[0];if(!f||!qPicFor)return;const n=+$("qpS").value,key=qPicFor,big=key==="poster",url=URL.createObjectURL(f),im=new Image();
   im.onload=async()=>{const M=big?1000:520,s=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
     c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);const d=c.toDataURL("image/jpeg",big?.7:.72);
@@ -607,8 +611,20 @@ async function bDefault(app){const base=app==="colors"?{}:await bLoad(app);if(bS
   return bShared[app]=out}
 function bStore(app){const Q=qSec();if(app==="colors"){Q.colorRec=Q.colorRec||{};return Q.colorRec}Q.ov=Q.ov||{};Q.ov[app]=Q.ov[app]||{};return Q.ov[app]}
 function bPeek(app){const Q=ownQ();return Q?(app==="colors"?Q.colorRec:(Q.ov||{})[app])||{}:{}}
-async function drawBase(){if(!window.BASE)return;const A=Object.keys(BASE);
+/* 🇦🇪 بلادي: the parent adds the leaders' photos from her phone (shared with the families with the rest of her content) */
+const UAE_R=[["ad","الشيخ محمد بن زايد آل نهيان","رئيس الدولة وحاكم أبوظبي"],["du","الشيخ محمد بن راشد آل مكتوم","حاكم دبي"],["sh","الشيخ الدكتور سلطان بن محمد القاسمي","حاكم الشارقة"],["aj","الشيخ حميد بن راشد النعيمي","حاكم عجمان"],["uq","الشيخ سعود بن راشد المعلا","حاكم أم القيوين"],["rk","الشيخ سعود بن صقر القاسمي","حاكم رأس الخيمة"],["fu","الشيخ حمد بن محمد الشرقي","حاكم الفجيرة"]];
+let uaeFor=null;
+async function drawUaePics(){const L=$("bList");$("bVoice").innerHTML="";$("bGrp").style.display="none";const Q=ownQ()||{},IM=Q.uaeimg||{};
+  L.innerHTML='<div class="note">📷 أضيفي صورة لكل حاكم من جوالك. تظهر في تطبيق «🇦🇪 بلادي الإمارات» ← «👑 حكّامنا».</div>';
+  for(const [k,n,r] of UAE_R){const row=document.createElement("div");row.className="rrow";
+    row.innerHTML=`<span class="th" style="width:60px;height:60px;border-radius:50%;overflow:hidden;background:#f3f0fa;display:flex;align-items:center;justify-content:center;font-size:28px;flex:none">👑</span><div style="flex:1"><b>${n}</b><div style="font-size:14px;color:#7a7090">${r}</div></div><button class="b cam">📷</button>${IM[k]?'<button class="b rs">🗑️</button>':""}`;
+    row.querySelector(".cam").onclick=()=>{uaeFor=k;$("uaeFile").value="";$("uaeFile").click()};
+    if(IM[k]){NAJMA.decrypt(IM[k]).then(u=>row.querySelector(".th").innerHTML=`<img src="${u}" style="width:100%;height:100%;object-fit:cover">`).catch(()=>{});
+      row.querySelector(".rs").onclick=()=>{const Q=qSec();delete Q.uaeimg[k];saveS();drawUaePics()}}
+    L.appendChild(row)}}
+async function drawBase(){if(!window.BASE)return;if(!BASE.uaepics)BASE.uaepics={t:"🇦🇪 بلادي: صور الحكّام",groups:[]};const A=Object.keys(BASE);
   chips("bApp",A.map(k=>BASE[k].t),(x,k)=>A[k]===bApp,(x,k)=>{bApp=A[k];bG=0;drawBase()});
+  if(bApp==="uaepics")return drawUaePics();
   vPick("bVoice",bApp==="colors"?"colors":bApp,bApp==="colors"?"ai":"mine");
   const G=BASE[bApp].groups;$("bGrp").style.display=G.length>1?"":"none";if(G.length>1)chips("bGrp",G.map(g=>g[0]),(x,k)=>k===bG,(x,k)=>{bG=k;drawBase()});
   const L=$("bList");L.innerHTML="";const mine=bPeek(bApp),def=await bDefault(bApp);

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <script src="supa.js"></script>
 <script src="profile.js"></script>
+<script src="data/uaemap.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="icon.png"><link rel="icon" href="icon.png">
@@ -62,6 +63,21 @@ h1{color:#fff;text-align:center;font-size:clamp(38px,9.5vw,58px);margin:10px 0 0
 .opts button.wrong{animation:shake .4s;opacity:.35}.opts button.right{outline:7px solid #ffd23f}
 @keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 .count{font-size:46px;font-weight:800;color:#c8102e}
+.umap{width:100%;display:block;background:linear-gradient(180deg,#bfe6ff,#9fd6ff);border-radius:24px}
+.umap path{stroke:#fff;stroke-width:3;cursor:pointer;transition:filter .2s,transform .3s}.umap path:active{filter:brightness(1.2)}
+.umap .lbl{cursor:pointer}.umap .lbl rect{fill:#fff;stroke-width:4}/*story*/.umap .lbl text{font:800 40px "Baloo Bhaijaan 2",sans-serif;fill:#2b2340}
+.umap .seen rect{fill:#fff8d6}.umap path.hit{filter:brightness(1.25) drop-shadow(0 0 10px #ffd23f)}
+.photo{width:100%;max-height:260px;object-fit:cover;border-radius:20px;display:block;margin:6px 0;background:#eee}
+.credit{font-size:11px;color:#9a90b0;margin-top:2px}.credit a{color:#9a90b0}
+.zs{padding:16px 14px 20px}.zch{display:inline-block;color:#fff;border-radius:999px;padding:4px 16px;font-size:16px;font-weight:800}
+.zpic{width:min(62vw,240px);height:min(62vw,240px);margin:14px auto 8px;border-radius:50%;border:8px solid;display:flex;align-items:center;justify-content:center;font-size:clamp(54px,15vw,84px);animation:pop2 .5s}
+.zt{font-size:clamp(28px,7vw,36px);font-weight:800;margin:4px 0}.ztx{font-size:clamp(22px,5.6vw,28px);font-weight:700;line-height:1.8;margin:4px 6px 10px}
+.znav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px}
+.zb{border:0;border-radius:22px;background:#f3f0fa;padding:8px 14px;font-family:inherit;font-size:30px;cursor:pointer;display:flex;flex-direction:column;align-items:center;min-width:86px;box-shadow:0 5px 0 rgba(0,0,0,.1)}
+.zb small{font-size:15px;font-weight:800;color:#5a5070}.zb.nx{background:#3fc35a}.zb.nx small{color:#fff}.zb.lis{background:#fff3c4}.zb:disabled{opacity:.3}
+.ruler{display:flex;align-items:center;gap:12px;border:5px solid;text-align:start;padding:12px}.ruler.pres{border-width:7px;background:#fffdf3}
+.rpic{flex:none;width:86px;height:86px;border-radius:50%;border:5px solid;display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden;cursor:pointer}.rpic img{width:100%;height:100%;object-fit:cover}
+.pres .rpic{width:104px;height:104px}.rn{font-size:20px;font-weight:800;line-height:1.5}.rr{font-size:16px;font-weight:800}.re{font-size:14px;color:#7a7090;font-weight:700}
 canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
 </style>
 </head>
@@ -77,34 +93,43 @@ const EN=false;
 const t=(ar,en)=>EN?en:ar;
 /* ---------- content (kept simple for young children) ---------- */
 const EMS=[
- {ar:"أبوظبي",en:"Abu Dhabi",e:"🕌",c:"#c8102e",x:24,y:72,s:1.35,f:[["العاصمة، وأكبر إمارة","The capital, and the biggest emirate"],["فيها جامع الشيخ زايد الكبير 🕌","Home of Sheikh Zayed Grand Mosque 🕌"],["ومدينة العين، المدينة الخضراء 🌴","And Al Ain, the green garden city 🌴"]]},
- {ar:"دبي",en:"Dubai",e:"🏙️",c:"#00843d",x:48,y:52,s:1.05,f:[["فيها برج خليفة، أطول مبنى في العالم 🏙️","Home of Burj Khalifa, the tallest building in the world 🏙️"],["ومتحف المستقبل 🔭","And the Museum of the Future 🔭"]]},
- {ar:"الشارقة",en:"Sharjah",e:"📚",c:"#2b2b2b",x:60,y:38,s:1,f:[["مدينة الثقافة والكتب 📚","The city of culture and books 📚"],["فيها متاحف كثيرة 🏛️","It has lots of museums 🏛️"]]},
- {ar:"عجمان",en:"Ajman",e:"⛵",c:"#2f7bff",x:68,y:25,s:0.8,f:[["أصغر إمارة 🤏","The smallest emirate 🤏"],["فيها شواطئ جميلة وسفن خشبية (الدهو) ⛵","Lovely beaches and wooden dhow boats ⛵"]]},
- {ar:"أم القيوين",en:"Umm Al Quwain",e:"🌿",c:"#a66bff",x:80,y:15,s:0.85,f:[["فيها بحيرات هادئة وأشجار القرم 🌿","Calm lagoons and mangrove trees 🌿"],["ومشهورة بصيد السمك 🐟","Famous for fishing 🐟"]]},
- {ar:"رأس الخيمة",en:"Ras Al Khaimah",e:"⛰️",c:"#e0a100",x:90,y:5,s:0.95,f:[["فيها جبل جيس، أعلى جبل في الإمارات ⛰️","Jebel Jais, the highest mountain in the UAE ⛰️"],["وفيها حبل انزلاق طويل جدًا 🪂","And a very long zipline 🪂"]]},
- {ar:"الفجيرة",en:"Fujairah",e:"🌊",c:"#ff6f91",x:88,y:50,s:0.95,f:[["على الساحل الشرقي، على خليج عُمان 🌊","On the east coast, by the Gulf of Oman 🌊"],["فيها مسجد البدية، أقدم مسجد في الإمارات 🕌","Al Bidya Mosque, the oldest mosque in the UAE 🕌"]]}];
+ {k:"ad",ar:"أبوظبي",en:"Abu Dhabi",e:"🕌",c:"#c8102e",x:24,y:72,s:1.35,f:[["العاصِمَةُ، وَأَكْبَرُ إِمارَة","The capital, and the biggest emirate"],["فيها جامِعُ الشَّيْخِ زايِدٍ الكَبير 🕌","Home of Sheikh Zayed Grand Mosque 🕌"],["وَمَدينَةُ العَيْن، المَدينَةُ الخَضْراء 🌴","And Al Ain, the green garden city 🌴"]]},
+ {k:"du",ar:"دبي",en:"Dubai",e:"🏙️",c:"#00843d",x:48,y:52,s:1.05,f:[["فيها بُرْجُ خَليفَة، أَطْوَلُ مَبْنًى في العالَم 🏙️","Home of Burj Khalifa, the tallest building in the world 🏙️"],["وَمَتْحَفُ المُسْتَقْبَل 🔭","And the Museum of the Future 🔭"]]},
+ {k:"sh",ar:"الشارقة",en:"Sharjah",e:"📚",c:"#2b2b2b",x:60,y:38,s:1,f:[["مَدينَةُ الثَّقافَةِ وَالكُتُب 📚","The city of culture and books 📚"],["فيها مَتاحِفُ كَثيرَة 🏛️","It has lots of museums 🏛️"]]},
+ {k:"aj",ar:"عجمان",en:"Ajman",e:"⛵",c:"#2f7bff",x:68,y:25,s:0.8,f:[["أَصْغَرُ إِمارَة 🤏","The smallest emirate 🤏"],["فيها شَواطِئُ جَميلَة، وَسُفُنٌ خَشَبِيَّة ⛵","Lovely beaches and wooden dhow boats ⛵"]]},
+ {k:"uq",ar:"أم القيوين",en:"Umm Al Quwain",e:"🌿",c:"#a66bff",x:80,y:15,s:0.85,f:[["فيها بُحَيْراتٌ هادِئَة، وَأَشْجارُ القُرْم 🌿","Calm lagoons and mangrove trees 🌿"],["وَمَشْهورَةٌ بِصَيْدِ السَّمَك 🐟","Famous for fishing 🐟"]]},
+ {k:"rk",ar:"رأس الخيمة",en:"Ras Al Khaimah",e:"⛰️",c:"#e0a100",x:90,y:5,s:0.95,f:[["فيها جَبَلُ جَيْس، أَعْلى جَبَلٍ في الإمارات ⛰️","Jebel Jais, the highest mountain in the UAE ⛰️"],["وَفيها حَبْلُ انْزِلاقٍ طَويلٌ جِدًّا 🪂","And a very long zipline 🪂"]]},
+ {k:"fu",ar:"الفجيرة",en:"Fujairah",e:"🌊",c:"#ff6f91",x:88,y:50,s:0.95,f:[["عَلى السّاحِلِ الشَّرْقِيّ، عَلى خَليجِ عُمان 🌊","On the east coast, by the Gulf of Oman 🌊"],["فيها مَسْجِدُ البِدْيَة، أَقْدَمُ مَسْجِدٍ في الإمارات 🕌","Al Bidya Mosque, the oldest mosque in the UAE 🕌"]]}];
+/* the story of Sheikh Zayed in short chapters: [picture, chapter title, text] */
 const ZAYED=[
- ["🌴🏜️","هذه قصة الشيخ زايد بن سلطان آل نهيان، رحمه الله. نسميه «بابا زايد» ❤️","This is the story of Sheikh Zayed bin Sultan Al Nahyan. We call him “Baba Zayed” ❤️"],
- ["🏡🌴","كبر زايد في مدينة العين، وكان يحب الصحراء والنخيل والناس","Zayed grew up in Al Ain. He loved the desert, the palm trees and the people"],
- ["🦅🐪","كان يحب الصقور والإبل، وتعلّم الصبر والشجاعة","He loved falcons and camels, and he learned patience and courage"],
- ["🤝⭐","في ٢ ديسمبر ١٩٧١ اتحدت الإمارات، وأصبح زايد أول رئيس لدولة الإمارات","On 2 December 1971 the emirates joined together, and Zayed became the first President of the UAE"],
- ["7️⃣🇦🇪","وبعدها انضمت رأس الخيمة، فصارت الإمارات سبعًا، يدًا واحدة","Soon Ras Al Khaimah joined too, making seven emirates, one big family"],
- ["🌳🌳🌳","زرع الشيخ زايد ملايين الأشجار، فصارت الصحراء خضراء 🌱","Sheikh Zayed planted millions of trees and turned the desert green 🌱"],
- ["🏫🏥","وبنى المدارس والمستشفيات والبيوت للناس","He built schools, hospitals and homes for people"],
- ["💝🌍","وكان كريمًا يساعد الناس في الإمارات وفي كل العالم","He was generous and helped people in the UAE and all over the world"],
- ["❤️🇦🇪","نحن نحب بابا زايد، ونحافظ على بلادنا مثل ما علّمنا","We love Baba Zayed, and we take care of our country just as he taught us"]];
+ ["🌴🏜️🐪","طُفولَةُ زايِد","كَبُرَ الشَّيْخُ زايِدُ بْنُ سُلْطان آلُ نَهْيان في مَدينَةِ العَيْن، بَيْنَ النَّخيلِ وَالصَّحْراء."],
+ ["🦅🐎","يُحِبُّ الطَّبيعَة","كانَ زايِدٌ يُحِبُّ الصُّقورَ وَالخَيْلَ وَالإِبِل، وَتَعَلَّمَ الصَّبْرَ وَالشَّجاعَة."],
+ ["🤝🇦🇪","الاتِّحاد","في الثّاني مِنْ دِيسَمْبَر، سَنَةَ أَلْفٍ وَتِسْعِمِئَةٍ وَواحِدٍ وَسَبْعين، اتَّحَدَتِ الإِماراتُ، وَأَصْبَحَ زايِدٌ أَوَّلَ رَئيسٍ لِلدَّوْلَة."],
+ ["7️⃣⭐","سَبْعُ إِمارات","ثُمَّ انْضَمَّتْ رَأْسُ الخَيْمَة، فَصارَتِ الإِماراتُ سَبْعًا، يَدًا واحِدَة."],
+ ["🌳🌱🌳","الأَرْضُ الخَضْراء","زَرَعَ الشَّيْخُ زايِدٌ مَلايينَ الأَشْجار، فَصارَتِ الصَّحْراءُ خَضْراء."],
+ ["🏫🏥🏠","بَنى البِلاد","بَنى المَدارِسَ وَالمُسْتَشْفَياتِ وَالبُيوتَ لِلنّاس."],
+ ["💝🌍","قَلْبٌ كَريم","كانَ كَريمًا، يُساعِدُ النّاسَ في الإِماراتِ وَفي كُلِّ العالَم."],
+ ["❤️🇦🇪","نُحِبُّ بابا زايِد","نُحِبُّ بابا زايِد، وَنُحافِظُ عَلى بِلادِنا كَما عَلَّمَنا."]];
+/* the President and the rulers of the seven emirates (photos are added by the parent in the portal) */
+const RULERS=[
+ ["ad","الشَّيْخُ مُحَمَّدُ بْنُ زايِد آلُ نَهْيان","رَئيسُ دَوْلَةِ الإِمارات، وَحاكِمُ أَبوظَبي","#c8102e",true],
+ ["du","الشَّيْخُ مُحَمَّدُ بْنُ راشِد آلُ مَكْتوم","نائِبُ رَئيسِ الدَّوْلَة، وَحاكِمُ دُبَي","#00843d"],
+ ["sh","الشَّيْخُ الدُّكْتورُ سُلْطانُ بْنُ مُحَمَّد القاسِمي","حاكِمُ الشّارِقَة","#2b2b2b"],
+ ["aj","الشَّيْخُ حُمَيْدُ بْنُ راشِد النُّعَيْمي","حاكِمُ عَجْمان","#2f7bff"],
+ ["uq","الشَّيْخُ سُعودُ بْنُ راشِد المُعَلّا","حاكِمُ أُمِّ القَيْوَيْن","#a66bff"],
+ ["rk","الشَّيْخُ سُعودُ بْنُ صَقْر القاسِمي","حاكِمُ رَأْسِ الخَيْمَة","#e0a100"],
+ ["fu","الشَّيْخُ حَمَدُ بْنُ مُحَمَّد الشَّرْقي","حاكِمُ الفُجَيْرَة","#ff6f91"]];
 const SYMS=[
- ["🦅","الصقر","The falcon","الطائر الوطني للإمارات","The national bird of the UAE"],
- ["🌳","شجرة الغاف","The Ghaf tree","الشجرة الوطنية، تعيش في الصحراء","The national tree, it lives in the desert"],
- ["🐪","الجمل","The camel","سفينة الصحراء","The ship of the desert"],
- ["🌴","النخلة والتمر","Palm tree & dates","نأكل التمر ونرحّب به بالضيوف","We share dates with our guests"],
- ["💰","الدرهم","The dirham","عملة الإمارات","The money of the UAE"],
- ["🗣️","اللغة العربية","Arabic","لغة الإمارات","The language of the UAE"],
- ["👘","الكندورة والعباية","Kandura & abaya","اللبس الإماراتي الجميل","Beautiful Emirati clothes"],
- ["🍯","اللقيمات","Luqaimat","حلوى إماراتية لذيذة بالدبس","Yummy Emirati sweets with date syrup"],
- ["🪐","مسبار الأمل","The Hope Probe","وصل إلى المريخ سنة ٢٠٢١ 🔴","It reached planet Mars in 2021 🔴"],
- ["👨‍🚀","رواد الفضاء","Astronauts","هزاع المنصوري أول إماراتي في الفضاء، وسلطان النيادي مشى في الفضاء 🚀","Hazza AlMansoori was the first Emirati in space, and Sultan AlNeyadi walked in space 🚀"]];
+ ["🦅","الصَّقْر","The falcon","الطّائِرُ الوَطَنِيُّ لِلإِمارات","The national bird of the UAE"],
+ ["🌳","شَجَرَةُ الغاف","The Ghaf tree","الشَّجَرَةُ الوَطَنِيَّة، تَعيشُ في الصَّحْراء","The national tree, it lives in the desert"],
+ ["🐪","الجَمَل","The camel","سَفينَةُ الصَّحْراء","The ship of the desert"],
+ ["🌴","النَّخْلَةُ وَالتَّمْر","Palm tree & dates","نُقَدِّمُ التَّمْرَ لِلضُّيوف","We share dates with our guests"],
+ ["💰","الدِّرْهَم","The dirham","عُمْلَةُ الإِمارات","The money of the UAE"],
+ ["🗣️","اللُّغَةُ العَرَبِيَّة","Arabic","لُغَةُ الإِمارات","The language of the UAE"],
+ ["👘","الكَنْدورَةُ وَالعَباءَة","Kandura & abaya","اللِّباسُ الإِماراتِيُّ الجَميل","Beautiful Emirati clothes"],
+ ["🍯","اللُّقَيْمات","Luqaimat","حَلْوى إِماراتِيَّةٌ لَذيذَة، بِالدِّبْس","Yummy Emirati sweets with date syrup"],
+ ["🪐","مِسْبارُ الأَمَل","The Hope Probe","وَصَلَ إِلى كَوْكَبِ المِرّيخ 🔴","It reached planet Mars in 2021 🔴"],
+ ["👨‍🚀","رُوّادُ الفَضاء","Astronauts","هَزّاعُ المَنْصوري أَوَّلُ إِماراتِيٍّ في الفَضاء، وَسُلْطانُ النِّيادي مَشى في الفَضاء 🚀","Hazza AlMansoori was the first Emirati in space, and Sultan AlNeyadi walked in space 🚀"]];
 const DAYS=[["🇦🇪","يوم العلم","Flag Day",11,3,"نرفع العلم معًا كل سنة","We raise the flag together every year"],
  ["🕯️","يوم الشهيد","Commemoration Day",11,30,"نتذكر أبطالنا ونشكرهم","We remember our heroes and thank them"],
  ["🎉","عيد الاتحاد","Eid Al Etihad (National Day)",12,2,"عيد ميلاد دولة الإمارات، من سنة ١٩٧١","The UAE's birthday, since 1971"]];
@@ -114,19 +139,17 @@ const QUIZ=[
  ["أين برج خليفة؟","Where is Burj Khalifa?",["دبي","عجمان","الشارقة"],["Dubai","Ajman","Sharjah"]],
  ["من أول رئيس للإمارات؟","Who was the first President of the UAE?",["الشيخ زايد","الصقر","جبل جيس"],["Sheikh Zayed","The falcon","Jebel Jais"]],
  ["ما ألوان علم الإمارات؟","What colours is the UAE flag?",["أحمر وأخضر وأبيض وأسود","أزرق وأصفر","وردي وبنفسجي"],["Red, green, white and black","Blue and yellow","Pink and purple"]],
- ["متى عيد الاتحاد؟","When is Eid Al Etihad?",["٢ ديسمبر","١ يناير","٣ مارس"],["2 December","1 January","3 March"]],
  ["ما الطائر الوطني؟","What is the national bird?",["الصقر","البطريق","الببغاء"],["The falcon","The penguin","The parrot"]],
  ["أصغر إمارة هي…","The smallest emirate is…",["عجمان","أبوظبي","دبي"],["Ajman","Abu Dhabi","Dubai"]],
  ["أعلى جبل في الإمارات…","The highest mountain in the UAE is…",["جبل جيس","جبل إفرست","جبل أحد"],["Jebel Jais","Mount Everest","Mount Uhud"]],
  ["ماذا زرع الشيخ زايد؟","What did Sheikh Zayed plant?",["الأشجار","السيارات","الجبال"],["Trees","Cars","Mountains"]],
- ["متى يوم العلم؟","When is Flag Day?",["٣ نوفمبر","٢٥ ديسمبر","١ مايو"],["3 November","25 December","1 May"]],
  ["ما اسم عملة الإمارات؟","What is the UAE's money called?",["الدرهم","الدولار","اليورو"],["The dirham","The dollar","The euro"]],
  ["أين مسجد البدية، أقدم مسجد؟","Where is Al Bidya, the oldest mosque?",["الفجيرة","أبوظبي","عجمان"],["Fujairah","Abu Dhabi","Ajman"]],
  ["ما اسم المسبار الذي وصل المريخ؟","What is the probe that reached Mars?",["مسبار الأمل","برج العرب","القمر"],["The Hope Probe","Burj Al Arab","The Moon"]]];
 /* ---------- helpers ---------- */
 let voice=null;function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
 const VM=NAJMA.vmode("uae","ai");
-function speak(s){s=String(s).replace(/<[^>]+>/g," ").replace(/[\u{1F000}-\u{1FAFF}☀-➿️⃣]/gu," ");if(VM==="none")return;if(!EN){NAJMA.aiSay(s);return}try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(s);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
+function speak(s){s=String(s).replace(/<[^>]+>/g," ").replace(/[\u{1F000}-\u{1FAFF}☀-➿️⃣]/gu," ");if(VM==="none")return;if(!EN){NAJMA.aiSay(s,"ar",.85);return}try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(s);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
 let ac;function tone(f,d,w=0,ty="triangle",v=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(v,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
 const yay=()=>{tone(660,.12);tone(990,.15,.08)},fan=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12)),buzz=()=>tone(160,.25,0,"sawtooth",.08),pop=()=>{tone(520,.1);tone(880,.12,.06)},
   drum=()=>{for(let i=0;i<8;i++)tone(i%2?180:120,.12,i*.25,"square",.06)};
@@ -147,15 +170,15 @@ function setLang(){document.documentElement.lang=EN?"en":"ar";document.documentE
 function nextDay(){const now=new Date();now.setHours(0,0,0,0);return DAYS.map(d=>{let dt=new Date(now.getFullYear(),d[3]-1,d[4]);if(dt<now)dt=new Date(now.getFullYear()+1,d[3]-1,d[4]);return [d,Math.round((dt-now)/864e5)]}).sort((a,b)=>a[1]-b[1])[0]}
 
 /* ---------- hub ---------- */
-function hub(){window.scrollTo(0,0);const [d,n]=nextDay();
+function hub(){window.scrollTo(0,0);
   const T=[["flag","🇦🇪",t("العلم","The flag"),t("لوّن وارفع العلم","Paint and raise the flag"),"#c8102e",done.flag],
    ["map","🗺️",t("الإمارات السبع","The 7 Emirates"),t("اكتشف كل إمارة","Explore each emirate"),"#00843d",EMS.every((_,i)=>done["em"+i])],
-   ["zayed","🌴",t("بابا زايد","Baba Zayed"),t("قصة مؤسس الإمارات","The story of our founder"),"#e0a100",done.zayed],
+   ["zayed","🌴","بابا زايد","قصة مؤسس الإمارات","#e0a100",done.zayed],
    ["syms","🦅",t("رموزنا","Our symbols"),t("الصقر والغاف والمزيد","Falcon, Ghaf and more"),"#2f7bff",done.syms],
-   ["days","🎉",t("أيامنا الوطنية","Our special days"),n===0?t("اليوم! 🎉","Today! 🎉"):t(`${d[1]} بعد ${n} يوم`,`${d[2]} in ${n} days`),"#a66bff",done.days],
+   ["rulers","👑","حُكّامُنا","الرئيس وحكّام الإمارات","#a66bff",done.rulers],
    ["quiz","🏆",t("مسابقة","Quiz"),t("كم تعرف عن بلادك؟","How much do you know?"),"#2b2b2b",done.q1]];
   $("app").innerHTML=`<div class="hub">${T.map(x=>`<button class="tile" data-k="${x[0]}" style="background:${x[4]}"><span class="ok">${x[5]?"⭐":""}</span><span class="e">${x[1]}</span>${x[2]}<small>${x[3]}</small></button>`).join("")}</div>`;
-  document.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{pop();({flag,map,zayed,syms,days,quiz})[b.dataset.k]()})}
+  document.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{pop();({flag,map,zayed,syms,rulers,quiz})[b.dataset.k]()})}
 
 /* ---------- 1. paint the flag, then raise it ---------- */
 function flag(){const C={red:"#c8102e",green:"#00843d",white:"#ffffff",black:"#2b2b2b"},want={r:"red",g:"green",w:"white",b:"black"};let brush="red";const got={};
@@ -175,38 +198,55 @@ function raise(){$("app").innerHTML=head()+`<div class="card"><div class="say" i
   <button class="btn green" id="up">⬆️ ${t("ارفع","Raise it")}</button><div class="say"><small>${t("يوم العلم ٣ نوفمبر: نرفع العلم معًا كل سنة","Flag Day is 3 November: we raise the flag together every year")}</small></div></div>`;
   backTo(flag);$("up").onclick=()=>{$("up").remove();drum();$("rf").style.bottom="214px";setTimeout(()=>{fan();rain();$("rs").textContent=t("عاش العلم! عاشت الإمارات! 🇦🇪","Hooray for our flag! Hooray for the UAE! 🇦🇪");speak($("rs").textContent)},4000)}}
 
-/* ---------- 2. the map of the 7 emirates ---------- */
-function map(){$("app").innerHTML=head()+`<div class="card"><div class="say" id="ms">${t("الإمارات السبع! اضغط على كل إمارة 🗺️","The 7 Emirates! Tap each one 🗺️")}</div>
-  <div class="map" id="mp"><span class="sea">🌊 ${t("الخليج العربي","Arabian Gulf")}</span></div><button class="btn green" id="mg">🎮 ${t("وين هذا؟","Where is it?")}</button></div><div id="info"></div>`;
-  backTo(hub);speak($("ms").textContent);const W=Math.min($("mp").clientWidth,620);
-  EMS.forEach((m,i)=>{const b=document.createElement("button");b.className="em"+(done["em"+i]?" seen":"");const s=Math.round(W*.17*m.s);b.style.cssText=`left:${m.x}%;top:${m.y+10}%;width:${s}px;height:${s}px;background:${m.c};font-size:${Math.max(11,s/6.2)}px;animation-delay:${i*.08}s`;
-    b.innerHTML=`<span class="e">${m.e}</span>${t(m.ar,m.en)}`;b.onclick=()=>{pop();at(b);mark("em"+i);b.classList.add("seen");showEm(i)};$("mp").appendChild(b)});
+/* ---------- 2. the real map of the 7 emirates ---------- */
+/* label boxes sit in the sea with a line to their emirate, so even the small ones are easy to tap */
+const LBL={ad:[300,640],du:[470,200],sh:[620,120],aj:[400,90],uq:[560,40],rk:[780,-20],fu:[900,400]};
+function mapSVG(){const M=window.UAEMAP;if(!M)return "";let p="",l="";
+  EMS.forEach((m,i)=>{const e=M.e[m.k];if(!e)return;p+=`<path data-i="${i}" d="${e.d}" fill="${m.c}"/>`;
+    const [lx,ly]=LBL[m.k],[cx,cy]=e.c,w=t(m.ar,m.en).length*24+90;
+    l+=`<g class="lbl${done["em"+i]?" seen":""}" data-i="${i}"><line x1="${cx}" y1="${cy}" x2="${lx}" y2="${ly+32}" stroke="${m.c}" stroke-width="4" stroke-dasharray="8 6"/><circle cx="${cx}" cy="${cy}" r="9" fill="#fff" stroke="${m.c}" stroke-width="5"/>
+      <rect x="${lx-w/2}" y="${ly}" rx="30" width="${w}" height="64" stroke="${m.c}"/><text x="${lx}" y="${ly+46}" text-anchor="middle">${m.e} ${t(m.ar,m.en)}</text></g>`});
+  if(M.e.nz)p+=`<path d="${M.e.nz.d}" fill="#ccc" style="pointer-events:none"/>`;
+  return `<svg class="umap" viewBox="-40 -40 ${M.w+140} ${M.h+60}"><text x="60" y="300" style="direction:ltr;unicode-bidi:plaintext" font-size="34" font-weight="800" fill="#2f7bff" opacity=".7" font-family="Baloo Bhaijaan 2,sans-serif">🌊 ${t("الخليج العربي","Arabian Gulf")}</text>${p}${l}</svg>`}
+function map(){$("app").innerHTML=head()+`<div class="card"><div class="say" id="ms">${t("خريطة الإمارات! اضغط على كل إمارة 🗺️","Map of the UAE! Tap each emirate 🗺️")}</div>
+  <div id="mp">${mapSVG()}</div><button class="btn green" id="mg">🎮 ${t("وين هذا؟","Where is it?")}</button></div><div id="info"></div>`;
+  backTo(hub);speak($("ms").textContent);
+  $("mp").querySelectorAll("[data-i]").forEach(el=>el.onclick=()=>{const i=+el.dataset.i;pop();mark("em"+i);const g=$("mp").querySelector(`.lbl[data-i="${i}"]`);if(g)g.classList.add("seen");flash(i);showEm(i)});
   $("mg").onclick=mapGame}
-function showEm(i){const m=EMS[i];$("info").innerHTML=`<div class="card" style="border:6px solid ${m.c}"><div style="font-size:70px">${m.e}</div><div class="say">${t(m.ar,m.en)}</div>${m.f.map(f=>`<div class="say"><small>${t(f[0],f[1])}</small></div>`).join("")}</div>`;
+function flash(i){const p=$("mp").querySelector(`path[data-i="${i}"]`);if(!p)return;p.classList.add("hit");setTimeout(()=>p.classList.remove("hit"),900);const r=p.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,24)}
+function photo(k){const P=(window.UAEPICS||{})[k];if(!P)return"";return `<img class="photo" src="${P.src}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='none'"><div class="credit">📷 ${P.by} · <a href="${P.page}" target="_blank" rel="noopener">Wikimedia Commons</a></div>`}
+function showEm(i){const m=EMS[i];$("info").innerHTML=`<div class="card" style="border:6px solid ${m.c}">${photo(m.k)}<div class="say">${m.e} ${t(m.ar,m.en)}</div>${m.f.map(f=>`<div class="say"><small>${t(f[0],f[1])}</small></div>`).join("")}</div>`;
   $("info").scrollIntoView({behavior:"smooth",block:"nearest"});speak(t(m.ar,m.en)+". "+m.f.map(f=>t(f[0],f[1])).join(". "))}
 function mapGame(){const order=shuf([0,1,2,3,4,5,6]);let k=0,score=0;$("info").innerHTML="";
-  const ask=()=>{if(k>=order.length){fan();rain();mark("mapgame");$("ms").textContent=t(`أحسنت! ${score} من ٧ ⭐`,`Brilliant! ${score} out of 7 ⭐`);speak($("ms").textContent);return}
-    const m=EMS[order[k]];$("ms").innerHTML=t(`وين <b>${m.f[0][0].replace(/[\u{1F000}-\u{1FAFF}☀-➿️]/gu,"")}</b>؟`,`Where is <b>${m.f[0][1].replace(/[\u{1F000}-\u{1FAFF}☀-➿️]/gu,"")}</b>?`);speak($("ms").textContent);let first=true;
-    document.querySelectorAll(".em").forEach((b,i)=>b.onclick=()=>{if(i===order[k]){yay();at(b);speak(t(m.ar,m.en));if(first)score++;k++;setTimeout(ask,1300)}else{first=false;buzz();b.animate([{transform:"translate(-50%,-50%) rotate(-8deg)"},{transform:"translate(-50%,-50%) rotate(8deg)"},{transform:"translate(-50%,-50%)"}],{duration:300})}})};
+  const ask=()=>{if(k>=order.length){fan();rain();mark("mapgame");$("ms").textContent=t(`أحسنت! ${score} من ٧ ⭐`,`Brilliant! ${score} out of 7 ⭐`);speak($("ms").textContent);
+      $("mp").querySelectorAll("[data-i]").forEach(el=>el.onclick=()=>{const i=+el.dataset.i;pop();flash(i);showEm(i)});return}
+    const m=EMS[order[k]];$("ms").innerHTML=t(`وين <b>${m.f[0][0].replace(/[\u{1F000}-\u{1FAFF}\u2600-\u27BF\uFE0F]/gu,"")}</b>؟`,`Where is <b>${m.f[0][1].replace(/[\u{1F000}-\u{1FAFF}\u2600-\u27BF\uFE0F]/gu,"")}</b>?`);speak($("ms").textContent);let first=true;
+    $("mp").querySelectorAll("[data-i]").forEach(el=>el.onclick=()=>{const i=+el.dataset.i;if(i===order[k]){yay();flash(i);speak(t(m.ar,m.en));if(first)score++;k++;setTimeout(ask,1300)}else{first=false;buzz()}})};
   ask()}
 
-/* ---------- 3. Baba Zayed: a picture story ---------- */
-function zayed(){let p=0;const draw=()=>{const s=ZAYED[p];$("app").innerHTML=head()+`<div class="card story"><div class="pic">${s[0]}</div><div class="say" style="margin-top:14px">${t(s[1],s[2])}</div>
-    <div class="dots">${ZAYED.map((_,i)=>`<i class="${i===p?"on":""}"></i>`).join("")}</div>
-    <div><button class="btn gold" id="pv" ${p?"":"style='visibility:hidden'"}>${t("➡️ السابق","⬅️ Back")}</button><button class="btn green" id="nx">${p<ZAYED.length-1?t("التالي ⬅️","Next ➡️"):t("🎉 النهاية","🎉 The end")}</button></div><button class="btn blue" id="rd">🔊 ${t("اسمع","Listen")}</button></div>`;
-    backTo(hub);speak(t(s[1],s[2]));$("rd").onclick=()=>speak(t(s[1],s[2]));
-    $("pv").onclick=()=>{p--;pop();draw()};$("nx").onclick=()=>{if(p<ZAYED.length-1){p++;pop();draw()}else{mark("zayed");fan();rain();setTimeout(hub,1600)}}};draw()}
+/* ---------- 3. Baba Zayed: a story in chapters ---------- */
+const ZC=["#e0a100","#00843d","#c8102e","#2f7bff","#3fc35a","#a66bff","#ff6f91","#c8102e"];
+function zayed(){let p=0;const draw=()=>{const [pic,title,txt]=ZAYED[p];window.scrollTo(0,0);
+    $("app").innerHTML=head()+`<div class="card zs"><div class="zch" style="background:${ZC[p]}">${"الفصل "+"١٢٣٤٥٦٧٨"[p]+" من ٨"}</div>
+      <div class="zpic" style="background:${ZC[p]}22;border-color:${ZC[p]}">${pic}</div><div class="zt" style="color:${ZC[p]}">${title}</div><div class="ztx">${txt}</div>
+      <div class="dots">${ZAYED.map((_,i)=>`<i class="${i<=p?"on":""}"></i>`).join("")}</div>
+      <div class="znav"><button class="zb" id="pv" ${p?"":"disabled"}>➡️<small>السابق</small></button><button class="zb lis" id="rd">🔊<small>اسمع</small></button><button class="zb nx" id="nx">${p<ZAYED.length-1?"⬅️<small>التالي</small>":"🎉<small>النهاية</small>"}</button></div></div>`;
+    backTo(hub);speak(title+". "+txt);$("rd").onclick=()=>speak(title+". "+txt);
+    $("pv").onclick=()=>{if(p){p--;pop();draw()}};$("nx").onclick=()=>{if(p<ZAYED.length-1){p++;pop();draw()}else{mark("zayed");fan();rain();setTimeout(hub,1800)}}};draw()}
+
+/* ---------- 5. our leaders ---------- */
+function rulers(){const Q=(NAJMA.sections||[]).find(x=>x.type==="qimg")||{},IM=Q.uaeimg||{};mark("rulers");
+  $("app").innerHTML=head()+`<div class="card"><div class="say">👑 حُكّامُنا<small>رئيس الدولة وحكّام الإمارات السبع</small></div></div><div id="rl"></div>`;backTo(hub);
+  RULERS.forEach(([k,name,role,c,pres])=>{const em=EMS.find(m=>m.k===k),d=document.createElement("div");d.className="card ruler"+(pres?" pres":"");d.style.borderColor=c;
+    d.innerHTML=`<div class="rpic" id="rp_${k}" style="border-color:${c};background:${c}18">${pres?"🇦🇪":"👑"}</div><div style="flex:1;text-align:start"><div class="rn">${name}</div><div class="rr" style="color:${c}">${role}</div><div class="re">${em?em.e+" "+em.ar:""}</div></div><button class="zb lis" style="flex:none;min-width:0;font-size:24px;padding:8px 10px">🔊</button>`;
+    d.querySelector("button").onclick=()=>speak(name+"، "+role);d.querySelector(".rpic").onclick=()=>speak(name+"، "+role);$("rl").appendChild(d);
+    if(IM[k])NAJMA.decrypt(IM[k]).then(u=>{const el=$("rp_"+k);if(el)el.innerHTML=`<img src="${u}" alt="">`}).catch(()=>{})});
+  speak("حُكّامُنا")}
 
 /* ---------- 4. our symbols: flip cards ---------- */
 function syms(){const seen=new Set();$("app").innerHTML=head()+`<div class="card"><div class="say">${t("رموز بلادنا: اضغط على كل بطاقة","Our country's symbols: tap each card")}</div></div><div class="syms" id="sy"></div>`;
   backTo(hub);SYMS.forEach((s,i)=>{const b=document.createElement("button");b.className="sym";b.innerHTML=`<span class="e">${s[0]}</span>${t(s[1],s[2])}`;
-    b.onclick=()=>{pop();at(b);b.classList.add("open");b.innerHTML=`<span class="e">${s[0]}</span>${t(s[1],s[2])}<p>${t(s[3],s[4])}</p>`;speak(t(s[1],s[2])+". "+t(s[3],s[4]));seen.add(i);if(seen.size===SYMS.length){mark("syms");setTimeout(()=>{fan();rain()},800)}};$("sy").appendChild(b)})}
-
-/* ---------- 5. our special days, with a countdown ---------- */
-function days(){const now=new Date();now.setHours(0,0,0,0);
-  $("app").innerHTML=head()+DAYS.map(d=>{let dt=new Date(now.getFullYear(),d[3]-1,d[4]);if(dt<now)dt=new Date(now.getFullYear()+1,d[3]-1,d[4]);const n=Math.round((dt-now)/864e5);
-    return `<div class="card"><div style="font-size:64px">${d[0]}</div><div class="say">${t(d[1],d[2])}<small>${dt.toLocaleDateString(EN?"en-GB":"ar",{day:"numeric",month:"long"})}</small></div><div class="count">${n===0?t("اليوم! 🎉","Today! 🎉"):n===1?t("بكرة! 🥳","Tomorrow! 🥳"):`⏳ ${n} ${t("يوم","days")}`}</div><div class="say"><small>${t(d[5],d[6])}</small></div></div>`}).join("");
-  backTo(hub);mark("days");const [d,n]=nextDay();speak(n===0?t(d[1]+" اليوم","It's "+d[2]+" today"):t(`${d[1]} بعد ${n} يوم`,`${d[2]} is in ${n} days`));if(n<=1){fan();rain()}}
+    b.onclick=()=>{pop();at(b);b.classList.add("open");b.innerHTML=(s[0]==="🌳"?photo("ghaf"):`<span class="e">${s[0]}</span>`)+`${t(s[1],s[2])}<p>${t(s[3],s[4])}</p>`;speak(t(s[1],s[2])+". "+t(s[3],s[4]));seen.add(i);if(seen.size===SYMS.length){mark("syms");setTimeout(()=>{fan();rain()},800)}};$("sy").appendChild(b)})}
 
 /* ---------- 6. quiz ---------- */
 function quiz(){const Q=shuf(QUIZ).slice(0,8);let k=0,score=0;
@@ -218,7 +258,7 @@ function quiz(){const Q=shuf(QUIZ).slice(0,8);let k=0,score=0;
     document.querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(b.dataset.v==="0"){b.classList.add("right");yay();at(b);speak(b.textContent);if(first)score++;k++;setTimeout(ask,1300)}else{first=false;b.classList.add("wrong");buzz()}})};
   ask()}
 
-setLang();const V=new URLSearchParams(location.search).get("v");({flag,map,zayed,syms,days,quiz})[V]?({flag,map,zayed,syms,days,quiz})[V]():hub();
+setLang();const V=new URLSearchParams(location.search).get("v");({flag,map,zayed,syms,rulers,quiz})[V]?({flag,map,zayed,syms,rulers,quiz})[V]():hub();
 </script>
 </body>
 </html>

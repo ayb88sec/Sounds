@@ -132,13 +132,13 @@
   try{const m=document.createElement("meta");m.name="referrer";m.content="no-referrer";document.head.appendChild(m)}catch(e){}
   /* stop at the end of each word (no added "u"/"un" ending): put a sukun on the last letter when it has no vowel mark */
   const pause=t=>String(t).trim().split(/\s+/).length>2?String(t):String(t).replace(/([\u0621\u0623-\u0626\u0628-\u064A])(?=[\s،,.؛!؟?]|$)/g,"$1\u0652");
-  window.NAJMA.aiSay=function(text,lang){const id=++aiRun;if(aiA){aiA.onended=null;aiA.onerror=null;aiA.pause()}if(!lang||lang==="ar")text=pause(String(text||"").replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\uFE0F\u200D•]/gu," ").replace(/ﷺ/g,"صلى الله عليه وسلم"));
+  window.NAJMA.aiSay=function(text,lang,rate){const id=++aiRun;if(aiA){aiA.onended=null;aiA.onerror=null;aiA.pause()}if(!lang||lang==="ar")text=pause(String(text||"").replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\uFE0F\u200D•]/gu," ").replace(/ﷺ/g,"صلى الله عليه وسلم"));
     const parts=[];let cur="";String(text).replace(/\s+/g," ").trim().split(/(?<=[،,.؛!؟?])\s*/).forEach(s=>{
       while(s.length>180){let i=s.lastIndexOf(" ",180);if(i<40)i=180;if(cur){parts.push(cur);cur=""}parts.push(s.slice(0,i));s=s.slice(i).trim()}
       if((cur+" "+s).trim().length>180){parts.push(cur);cur=s}else cur=(cur+" "+s).trim()});if(cur)parts.push(cur);
     /* one audio element, reused, so iPad keeps permission after the first tap; two Google voice addresses as fallback */
     if(!aiA){aiA=new Audio();aiA.setAttribute("referrerpolicy","no-referrer");aiA.preload="auto"}
-    const url=(q,c)=>`https://translate.google.com/translate_tts?ie=UTF-8&client=${c}&tl=${lang||"ar"}&q=${encodeURIComponent(q)}&total=1&idx=0&textlen=${q.length}`;
+    const url=(q,c)=>`https://translate.google.com/translate_tts?ie=UTF-8&client=${c}&tl=${lang||"ar"}&q=${encodeURIComponent(q)}&total=1&idx=0&textlen=${q.length}${rate?"&ttsspeed="+rate:""}`;
     return new Promise(res=>{let k=0;const next=(ci=0)=>{if(id!==aiRun||k>=parts.length)return res();const q=parts[k],c=["tw-ob","gtx"][ci];
       aiA.onended=()=>{k++;next()};aiA.onerror=()=>{if(ci<1)next(ci+1);else{aiToast("⚠️ تعذّر تشغيل الصوت");res()}};
       aiA.src=url(q,c);const p=aiA.play();if(p&&p.catch)p.catch(err=>{if(err&&err.name==="NotAllowedError"){aiToast("👆 اضغط 🔊 مرة ثانية");res()}})};next()})};
