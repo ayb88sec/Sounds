@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<script src="supa.js"></script>
+<script src="profile.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon.png"><link rel="icon" href="icon.png">
+<title>Clock</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;800&family=Andika:wght@700&display=swap">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0}
+body{font-family:"Andika","Baloo Bhaijaan 2",system-ui,sans-serif;color:#2b2340;min-height:100vh;background:radial-gradient(circle at 50% 30%,#ffe9a8,#ffb86b 60%,#ff8a7a);background-attachment:fixed}
+body.ar{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif}
+main{max-width:640px;margin:0 auto;padding:18px 12px 40px;text-align:center}
+h1{color:#fff;font-size:clamp(40px,10vw,58px);margin:10px 0 4px;text-shadow:0 4px 0 rgba(0,0,0,.18)}
+.lv{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0 4px}
+.lv button{border:0;border-radius:999px;padding:8px 14px;font-family:inherit;font-size:17px;font-weight:700;background:rgba(255,255,255,.55);color:#2b2340;cursor:pointer}
+.lv button.on{background:#fff;box-shadow:0 4px 0 rgba(0,0,0,.15);color:#e8590c}
+.face{position:relative;width:min(80vw,340px);margin:10px auto 0}
+.clock{width:100%;display:block;filter:drop-shadow(0 10px 0 rgba(0,0,0,.15))}
+.clock .hand{transition:transform .7s cubic-bezier(.3,1.4,.5,1);transform-origin:150px 150px}
+.clock.tap{cursor:pointer}
+.ears{position:absolute;top:-34px;left:0;right:0;display:flex;justify-content:space-between;padding:0 14%;font-size:48px;pointer-events:none}
+.say{background:#fff;border-radius:26px;padding:10px 16px;margin:14px auto 0;max-width:460px;font-size:clamp(24px,6.5vw,34px);font-weight:700;box-shadow:0 6px 0 rgba(0,0,0,.12);min-height:60px}
+.say small{display:block;font-size:.6em;color:#e8590c}
+.big{display:inline-block;margin:16px 6px 0;border:0;border-radius:999px;padding:16px 30px;font-family:inherit;font-size:clamp(22px,6vw,28px);font-weight:700;color:#fff;background:#7c4dff;box-shadow:0 8px 0 #5a33c9;cursor:pointer}
+.big:active{transform:translateY(6px);box-shadow:0 2px 0 #5a33c9}
+.big.pink{background:#ff4f87;box-shadow:0 8px 0 #c9306a}.big.green{background:#3fc35a;box-shadow:0 8px 0 #2a9442}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.opts button{border:0;border-radius:22px;padding:16px 4px;font-family:inherit;font-size:clamp(26px,7vw,36px);font-weight:700;color:#fff;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.15)}
+.opts button.wrong{animation:shake .4s;opacity:.35}.opts button.right{outline:7px solid #fff}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.stars{font-size:30px;min-height:40px;margin-top:6px}
+.lang{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:15;border:0;border-radius:18px;background:#fff;height:52px;padding:0 14px;font-family:inherit;font-size:18px;font-weight:700;color:#e8590c;box-shadow:0 5px 0 rgba(0,0,0,.18);cursor:pointer}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+</style>
+</head>
+<body>
+<a href="home.html" aria-label="Home" style="position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;z-index:15;width:52px;height:52px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18)">🏠</a>
+<button class="lang" id="lang"></button>
+<canvas id="fx"></canvas>
+<main><h1 id="ttl"></h1><div class="lv" id="lv"></div><div class="face"><div id="ck"></div></div><div class="say" id="say"></div><div class="stars" id="st"></div><div id="ctl"></div></main>
+<script>
+const $=id=>document.getElementById(id);
+let AR=new URLSearchParams(location.search).get("l")==="ar";
+const HR_AR=["الثانية عشرة","الواحدة","الثانية","الثالثة","الرابعة","الخامسة","السادسة","السابعة","الثامنة","التاسعة","العاشرة","الحادية عشرة","الثانية عشرة"];
+const NUM_EN=["twelve","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve"];
+function words(h,m){const nh=h%12+1;
+  if(AR){const M={0:"",5:" وخمس دقائق",10:" وعشر دقائق",15:" والربع",20:" والثلث",25:" والنصف إلا خمس دقائق",30:" والنصف",35:" والنصف وخمس دقائق"};
+    if(m in M)return "الساعة "+HR_AR[h]+M[m];return "الساعة "+HR_AR[nh]+({40:" إلا ثلثًا",45:" إلا ربعًا",50:" إلا عشر دقائق",55:" إلا خمس دقائق"}[m])}
+  const n=x=>({5:"five",10:"ten",15:"quarter",20:"twenty",25:"twenty-five",30:"half"}[x]);
+  if(m===0)return NUM_EN[h]+" o'clock";if(m<=30)return n(m)+" past "+NUM_EN[h];return n(60-m)+" to "+NUM_EN[nh]}
+const dig=(h,m)=>h+":"+String(m).padStart(2,"0");
+/* levels: o'clock and half past for KG, quarters and 5 minutes for older children */
+const LV=[{en:"🕒 o'clock",ar:"🕒 تمامًا",step:60},{en:"🕞 half past",ar:"🕞 والنصف",step:30},{en:"🕒 quarters",ar:"🕒 الربع",step:15},{en:"⏱️ 5 minutes",ar:"⏱️ ٥ دقائق",step:5}];
+let ON=NAJMA.lv("clock");const me=NAJMA.me||{};
+if(!(me.levels&&Array.isArray(me.levels.clock)&&me.levels.clock.length)&&me.grade&&/^KG/.test(me.grade))ON=[0,1];
+let L=ON[0];
+let voice=null;function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
+const VM=NAJMA.vmode("clock","ai");
+function speak(t){if(VM==="none")return;if(AR){NAJMA.aiSay(t);return}try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.8;speechSynthesis.speak(u)}catch(e){}}
+let ac;function tone(f,d,w=0,ty="triangle",v=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(v,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
+const yay=()=>{tone(660,.12);tone(990,.15,.08)},fan=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12)),buzz=()=>tone(160,.25,0,"sawtooth",.08),tick=()=>{tone(1400,.03,0,"square",.05);tone(1000,.03,.12,"square",.05)};
+const COL=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
+const cv=$("fx"),cx=cv.getContext("2d");let parts=[],run=false;function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}size();addEventListener("resize",size);
+function burst(x,y,n=36){for(let i=0;i<n;i++){const a=Math.random()*6.28,v=3+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:4+Math.random()*7,c:COL[i%6],rot:0,vr:(Math.random()-.5)*.4,life:90})}if(!run){run=true;requestAnimationFrame(loop)}}
+function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.life-->0);for(const p of parts){p.vy+=.25;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);cx.fillStyle=p.c;cx.globalAlpha=Math.min(1,p.life/30);cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);cx.restore()}if(parts.length)requestAnimationFrame(loop);else run=false}
+const at=el=>{const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,30)};
+let done={};try{done=JSON.parse(localStorage.getItem("clockDone")||"{}")}catch(e){}
+const rnd=n=>Math.floor(Math.random()*n),shuf=a=>[...a].sort(()=>Math.random()-.5);
+/* the clock: a smiling face, short hand for hours, long red hand for minutes */
+function drawClock(h,m){let t="";for(let i=1;i<=12;i++){const a=i*Math.PI/6;t+=`<text x="${150+Math.sin(a)*110}" y="${150-Math.cos(a)*110+11}" text-anchor="middle" font-size="32" font-weight="800" fill="${COL[i%6]}" font-family="Andika,sans-serif">${i}</text>`}
+  for(let i=0;i<60;i++)if(i%5){const a=i*Math.PI/30;t+=`<circle cx="${150+Math.sin(a)*136}" cy="${150-Math.cos(a)*136}" r="2" fill="#e0c9a6"/>`}
+  $("ck").innerHTML=`<svg class="clock" viewBox="0 0 300 300"><circle cx="150" cy="150" r="146" fill="#fff" stroke="#e8590c" stroke-width="10"/>${t}
+    <circle cx="118" cy="190" r="10" fill="#ffb3c7" opacity=".7"/><circle cx="182" cy="190" r="10" fill="#ffb3c7" opacity=".7"/>
+    <g class="hand" id="hH" style="transform:rotate(${(h%12)*30+m/2}deg)"><line x1="150" y1="150" x2="150" y2="86" stroke="#2b2340" stroke-width="13" stroke-linecap="round"/></g>
+    <g class="hand" id="hM" style="transform:rotate(${m*6}deg)"><line x1="150" y1="150" x2="150" y2="40" stroke="#ff4f87" stroke-width="8" stroke-linecap="round"/></g>
+    <circle cx="150" cy="150" r="12" fill="#ffd23f" stroke="#2b2340" stroke-width="3"/></svg>`}
+let H=3,M=0,turns=0;
+function hands(){const a=$("hH"),b=$("hM");a.style.transform=`rotate(${(H%12)*30+M/2+turns*360}deg)`;b.style.transform=`rotate(${M*6+turns*360}deg)`}
+function step(){M+=LV[L].step;if(M>=60){M-=60;H=H%12+1;turns++}tick();hands()}
+function lvRow(){$("lv").innerHTML="";if(ON.length<2)return;ON.forEach(i=>{const b=document.createElement("button");b.textContent=AR?LV[i].ar:LV[i].en;if(i===L)b.className="on";b.onclick=()=>{L=i;M=0;learn()};$("lv").appendChild(b)})}
+
+/* learn: one button moves the time, tap the clock to hear it */
+function learn(){document.documentElement.lang=AR?"ar":"en";document.documentElement.dir=AR?"rtl":"ltr";document.body.classList.toggle("ar",AR);$("lang").textContent=AR?"English":"عربي";
+  $("ttl").textContent=AR?"⏰ الساعة":"⏰ The Clock";lvRow();turns=0;drawClock(H,M);$("st").textContent="";
+  const show=()=>{$("say").innerHTML=`${dig(H,M)}<small>${words(H,M)}</small>`};show();
+  $("ck").firstChild.classList.add("tap");$("ck").onclick=()=>speak(words(H,M));
+  $("ctl").innerHTML=`<button class="big pink" id="go">⏩ ${AR?"حرّك الساعة":"Move the time"}</button><br><button class="big" id="play">🎮 ${AR?"يلا نلعب":"Let's play"}</button>`;
+  $("go").onclick=()=>{step();show();speak(words(H,M))};$("play").onclick=play}
+
+/* play: "what time is it?" with 3 big answers; older levels also "make this time" with the clock */
+function play(){const N=8;let k=0,score=0;const used=new Set();$("lv").innerHTML="";$("ck").onclick=null;
+  const pick=()=>{let h,m;for(let t=0;t<40;t++){h=1+rnd(12);m=rnd(60/LV[L].step)*LV[L].step;if(!used.has(h+":"+m))break}used.add(h+":"+m);return [h,m]};
+  function next(){if(k>=N)return end();$("st").textContent="⭐".repeat(score);const [h,m]=pick();
+    if(L<2||k%2===0){/* read the clock */
+      turns=0;drawClock(h,m);$("say").textContent=AR?"كم الساعة؟":"What time is it?";speak($("say").textContent);
+      const alts=new Set([h+":"+m]);while(alts.size<3){const a=1+rnd(12),b=rnd(60/LV[L].step)*LV[L].step;alts.add(a+":"+b)}
+      $("ctl").innerHTML=`<div class="opts">${shuf([...alts]).map((s,j)=>`<button style="background:${COL[(j*2+k)%6]}" data-v="${s}">${dig(...s.split(":").map(Number))}</button>`).join("")}</div>`;let first=true;
+      document.querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(b.dataset.v===h+":"+m){b.classList.add("right");yay();at(b);$("say").innerHTML=`${dig(h,m)}<small>${words(h,m)}</small>`;speak(words(h,m));if(first)score++;k++;setTimeout(next,1600)}else{first=false;b.classList.add("wrong");buzz()}})}
+    else{/* make the time: tap ⏩ until the clock shows it */
+      H=12;M=0;turns=0;drawClock(H,M);$("say").innerHTML=`${AR?"اجعل الساعة":"Make it"}<small>${words(h,m)}</small>`;speak((AR?"اجعل الساعة ":"Make it ")+words(h,m));let tries=0;
+      $("ctl").innerHTML=`<button class="big pink" id="ph">🕐 ${AR?"الساعات":"hour"}</button><button class="big" id="pm">⏩ ${AR?"الدقائق":"minutes"}</button><br><button class="big green" id="ok">✅ ${AR?"تم":"Done"}</button>`;
+      $("ph").onclick=()=>{H=H%12+1;tick();hands()};$("pm").onclick=()=>{M+=LV[L].step;if(M>=60){M=0;turns++}tick();hands()};
+      $("ok").onclick=e=>{if(H===h&&M===m){yay();at(e.target);speak(words(h,m));if(!tries)score++;k++;setTimeout(next,1400)}else{tries++;buzz();e.target.animate([{transform:"translateX(-8px)"},{transform:"translateX(8px)"},{transform:"none"}],{duration:300})}}}}
+  next()
+  function end(){const stars=score>=7?3:score>=5?2:score>=3?1:0;if(stars){const key="L"+L+"r",n=Object.keys(done).filter(x=>x.startsWith(key)).length;if(n<3){done[key+(n+1)]=stars;try{localStorage.setItem("clockDone",JSON.stringify(done))}catch(e){}}}
+    fan();for(let j=0;j<6;j++)setTimeout(()=>burst(Math.random()*innerWidth,innerHeight/3),j*150);
+    $("say").textContent=(AR?"🎉 أحسنت! ":"🎉 Well done! ")+"⭐".repeat(Math.max(stars,1));$("st").textContent="";
+    $("ctl").innerHTML=`<button class="big pink" id="ag">🔁 ${AR?"مرة ثانية":"Play again"}</button><button class="big" id="bk">⏰ ${AR?"الساعة":"Clock"}</button>`;$("ag").onclick=play;$("bk").onclick=()=>{H=3;M=0;learn()}}}
+$("lang").onclick=()=>{AR=!AR;learn()};
+const P=new URLSearchParams(location.search).get("v");if(P!=null&&LV[+P])L=+P;learn();
+</script>
+</body>
+</html>
