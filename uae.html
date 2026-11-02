@@ -22,7 +22,7 @@ h1{color:#fff;text-align:center;font-size:clamp(38px,9.5vw,58px);margin:10px 0 0
 .hub{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
 .tile{border:0;border-radius:30px;padding:16px;min-height:150px;color:#fff;font-family:inherit;font-weight:800;font-size:26px;cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative}
 .tile .e{font-size:60px;line-height:1}.tile .ic{width:120px;height:120px;filter:drop-shadow(0 6px 6px rgba(0,0,0,.25))}
-.pic{width:min(78vw,320px);aspect-ratio:1;display:block;margin:6px auto 10px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.2));animation:pop2 .5s}.sym .si{width:110px;height:110px;display:block;margin:0 auto 4px}.zface{width:120px;height:120px;border-radius:50%;object-fit:cover;border:6px solid #e0a100;display:block;margin:10px auto 0;box-shadow:0 6px 0 rgba(0,0,0,.12)}.zimg{width:min(70vw,300px);aspect-ratio:1;display:block;margin:12px auto 8px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.2));animation:pop2 .5s}.tile small{font-size:15px;opacity:.92}.tile .ok{position:absolute;top:10px;inset-inline-end:14px;font-size:20px}
+.pic{width:min(78vw,320px);aspect-ratio:1;display:block;margin:6px auto 10px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.2));animation:pop2 .5s}.sym .si{width:110px;height:110px;display:block;margin:0 auto 4px}.sq{width:130px;height:130px;display:block;margin:-6px auto 0;animation:pop2 .5s}.sqh{width:110px;height:110px;display:block;margin:0 auto -6px}.zface{width:120px;height:120px;border-radius:50%;object-fit:cover;border:6px solid #e0a100;display:block;margin:10px auto 0;box-shadow:0 6px 0 rgba(0,0,0,.12)}.zimg{width:min(70vw,300px);aspect-ratio:1;display:block;margin:12px auto 8px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.2));animation:pop2 .5s}.tile small{font-size:15px;opacity:.92}.tile .ok{position:absolute;top:10px;inset-inline-end:14px;font-size:20px}
 .tile:active{transform:translateY(6px)}
 .card{background:#fff;border-radius:34px;padding:18px 14px;box-shadow:0 8px 0 rgba(0,0,0,.12);text-align:center;margin-bottom:14px}
 .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -178,7 +178,7 @@ function hub(){window.scrollTo(0,0);
    ["syms","🦅",t("رموزنا","Our symbols"),t("الصقر والغاف والمزيد","Falcon, Ghaf and more"),"#2f7bff",done.syms],
    ["rulers","👑","حُكّامُنا","الرئيس وحكّام الإمارات","#a66bff",done.rulers],
    ["quiz","🏆",t("مسابقة","Quiz"),t("كم تعرف عن بلادك؟","How much do you know?"),"#2b2b2b",done.q1]];
-  $("app").innerHTML=`<div class="hub">${T.map(x=>`<button class="tile" data-k="${x[0]}" style="background:${x[4]}"><span class="ok">${x[5]?"⭐":""}</span><img class="ic" src="${IMG("icon_"+x[0])}" alt="">${x[2]}<small>${x[3]}</small></button>`).join("")}</div>`;
+  $("app").innerHTML=`<img class="sqh" src="${IMG("saqoor_wave")}" alt=""><div class="hub">${T.map(x=>`<button class="tile" data-k="${x[0]}" style="background:${x[4]}"><span class="ok">${x[5]?"⭐":""}</span><img class="ic" src="${IMG("icon_"+x[0])}" alt="">${x[2]}<small>${x[3]}</small></button>`).join("")}</div>`;
   document.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{pop();({flag,map,zayed,syms,rulers,quiz})[b.dataset.k]()})}
 
 /* ---------- 1. paint the flag, then raise it ---------- */
@@ -209,13 +209,16 @@ function mapSVG(){const M=window.UAEMAP;if(!M)return "";let p="",l="";
       <rect x="${lx-w/2}" y="${ly}" rx="30" width="${w}" height="64" stroke="${m.c}"/><text x="${lx}" y="${ly+46}" text-anchor="middle">${m.e} ${t(m.ar,m.en)}</text></g>`});
   if(M.e.nz)p+=`<path d="${M.e.nz.d}" fill="#ccc" style="pointer-events:none"/>`;
   return `<svg class="umap" viewBox="-40 -40 ${M.w+140} ${M.h+60}"><text x="60" y="300" style="direction:ltr;unicode-bidi:plaintext" font-size="34" font-weight="800" fill="#2f7bff" opacity=".7" font-family="Baloo Bhaijaan 2,sans-serif">🌊 ${t("الخليج العربي","Arabian Gulf")}</text>${p}${l}</svg>`}
-function map(){$("app").innerHTML=head()+`<div class="card"><div class="say" id="ms">${t("خريطة الإمارات! اضغط على كل إمارة 🗺️","Map of the UAE! Tap each emirate 🗺️")}</div>
+function map(){$("app").innerHTML=head()+`<div class="card"><img class="sq" src="${IMG("saqoor_point")}" alt=""><div class="say" id="ms">${t("خريطة الإمارات! اضغط على كل إمارة 🗺️","Map of the UAE! Tap each emirate 🗺️")}</div>
   <div id="mp">${mapSVG()}</div><button class="btn green" id="mg">🎮 ${t("وين هذا؟","Where is it?")}</button></div><div id="info"></div>`;
   backTo(hub);speak($("ms").textContent);
   $("mp").querySelectorAll("[data-i]").forEach(el=>el.onclick=()=>{const i=+el.dataset.i;pop();mark("em"+i);const g=$("mp").querySelector(`.lbl[data-i="${i}"]`);if(g)g.classList.add("seen");flash(i);showEm(i)});
   $("mg").onclick=mapGame}
 function flash(i){const p=$("mp").querySelector(`path[data-i="${i}"]`);if(!p)return;p.classList.add("hit");setTimeout(()=>p.classList.remove("hit"),900);const r=p.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,24)}
 const IMG=n=>"img/uae/"+n+".webp";
+/* faces of Sheikh Zayed and the rulers: encrypted with the family code, plus any photo the parent adds in the portal (that one wins) */
+let PPL=null;function people(){if(PPL)return PPL;PPL=(async()=>{const out={};try{const r=await fetch("img/uae/people.enc");if(r.ok)Object.assign(out,await NAJMA.decrypt(await r.json()))}catch(e){}
+  try{const Q=(NAJMA.sections||[]).find(x=>x.type==="qimg")||{},IM=Q.uaeimg||{};await Promise.all(Object.keys(IM).map(k=>NAJMA.decrypt(IM[k]).then(u=>{out[k]=u}).catch(()=>{})))}catch(e){}return out})();return PPL}
 const SYMI=["falcon","ghaf","camel","palm","dirham","arabic","kandura","luqaimat","probe","astro"];
 function photo(k){const P=(window.UAEPICS||{})[k];if(!P)return"";return `<img class="photo" src="${P.src}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='none'"><div class="credit">📷 ${P.by} · <a href="${P.page}" target="_blank" rel="noopener">Wikimedia Commons</a></div>`}
 function showEm(i){const m=EMS[i];$("info").innerHTML=`<div class="card" style="border:6px solid ${m.c}"><img class="pic" src="${IMG("em_"+m.k)}" alt=""><div class="say">${m.e} ${t(m.ar,m.en)}</div>${m.f.map(f=>`<div class="say"><small>${t(f[0],f[1])}</small></div>`).join("")}</div>`;
@@ -229,7 +232,7 @@ function mapGame(){const order=shuf([0,1,2,3,4,5,6]);let k=0,score=0;$("info").i
 
 /* ---------- 3. Baba Zayed: a story in chapters ---------- */
 const ZC=["#e0a100","#00843d","#c8102e","#2f7bff","#3fc35a","#a66bff","#ff6f91","#c8102e"];
-function zayed(){let p=0,face="";const Q=(NAJMA.sections||[]).find(x=>x.type==="qimg")||{},ZI=(Q.uaeimg||{}).zayed;if(ZI)NAJMA.decrypt(ZI).then(u=>{face=u;const z=$("zf");if(z){z.src=u;z.style.display="block"}}).catch(()=>{});
+function zayed(){let p=0,face="";people().then(P=>{if(P.zayed){face=P.zayed;const z=$("zf");if(z){z.src=face;z.style.display="block"}}});
   const draw=()=>{const [pic,title,txt]=ZAYED[p];window.scrollTo(0,0);
     $("app").innerHTML=head()+`<div class="card zs"><div class="zch" style="background:${ZC[p]}">${"الفصل "+"١٢٣٤٥٦٧٨"[p]+" من ٨"}</div>
       <img class="zface" id="zf" src="${face}" alt="" style="display:${face?"block":"none"}"><img class="zimg" src="${IMG("zayed_"+(p+1))}" alt=""><div class="zt" style="color:${ZC[p]}">${title}</div><div class="ztx">${txt}</div>
@@ -244,7 +247,7 @@ function rulers(){const Q=(NAJMA.sections||[]).find(x=>x.type==="qimg")||{},IM=Q
   RULERS.forEach(([k,name,role,c,pres])=>{const em=EMS.find(m=>m.k===k),d=document.createElement("div");d.className="card ruler"+(pres?" pres":"");d.style.borderColor=c;
     d.innerHTML=`<div class="rpic" id="rp_${k}" style="border-color:${c};background:${c}18">${pres?"🇦🇪":"👑"}</div><div style="flex:1;text-align:start"><div class="rn">${name}</div><div class="rr" style="color:${c}">${role}</div><div class="re">${em?em.e+" "+em.ar:""}</div></div><button class="zb lis" style="flex:none;min-width:0;font-size:24px;padding:8px 10px">🔊</button>`;
     d.querySelector("button").onclick=()=>speak(name+"، "+role);d.querySelector(".rpic").onclick=()=>speak(name+"، "+role);$("rl").appendChild(d);
-    if(IM[k])NAJMA.decrypt(IM[k]).then(u=>{const el=$("rp_"+k);if(el)el.innerHTML=`<img src="${u}" alt="">`}).catch(()=>{})});
+    people().then(P=>{if(P[k]){const el=$("rp_"+k);if(el)el.innerHTML=`<img src="${P[k]}" alt="">`}})});
   speak("حُكّامُنا")}
 
 /* ---------- 4. our symbols: flip cards ---------- */
@@ -255,11 +258,11 @@ function syms(){const seen=new Set();$("app").innerHTML=head()+`<div class="card
 /* ---------- 6. quiz ---------- */
 function quiz(){const Q=shuf(QUIZ).slice(0,8);let k=0,score=0;
   const ask=()=>{if(k>=Q.length){const st=score>=7?3:score>=5?2:1;const n=["q1","q2","q3"].filter(x=>done[x]).length;if(n<3)mark("q"+(n+1));fan();rain();
-      $("app").innerHTML=head()+`<div class="card"><div style="font-size:70px">🏆</div><div class="say">${t("أحسنت يا بطل!","Well done, champion!")}<small>${score} / ${Q.length}</small></div><div style="font-size:44px">${"⭐".repeat(st)}</div><button class="btn red" id="ag">🔁 ${t("مرة ثانية","Again")}</button></div>`;backTo(hub);$("ag").onclick=quiz;return}
+      $("app").innerHTML=head()+`<div class="card"><img class="sq" src="${IMG("saqoor_cheer")}" alt=""><div class="say">${t("أحسنت يا بطل!","Well done, champion!")}<small>${score} / ${Q.length}</small></div><div style="font-size:44px">${"⭐".repeat(st)}</div><button class="btn red" id="ag">🔁 ${t("مرة ثانية","Again")}</button></div>`;backTo(hub);$("ag").onclick=quiz;return}
     const q=Q[k],O=shuf([0,1,2]);
-    $("app").innerHTML=head()+`<div class="card"><div class="dots">${Q.map((_,i)=>`<i class="${i<k?"on":""}"></i>`).join("")}</div><div class="say">${t(q[0],q[1])}</div><div class="opts">${O.map((o,j)=>`<button style="background:${["#c8102e","#00843d","#2b2b2b"][j]}" data-v="${o}">${(EN?q[3]:q[2])[o]}</button>`).join("")}</div></div>`;
+    $("app").innerHTML=head()+`<div class="card"><img class="sq" id="qm" src="${IMG("saqoor_think")}" alt=""><div class="dots">${Q.map((_,i)=>`<i class="${i<k?"on":""}"></i>`).join("")}</div><div class="say">${t(q[0],q[1])}</div><div class="opts">${O.map((o,j)=>`<button style="background:${["#c8102e","#00843d","#2b2b2b"][j]}" data-v="${o}">${(EN?q[3]:q[2])[o]}</button>`).join("")}</div></div>`;
     backTo(hub);speak(t(q[0],q[1]));let first=true;
-    document.querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(b.dataset.v==="0"){b.classList.add("right");yay();at(b);speak(b.textContent);if(first)score++;k++;setTimeout(ask,1300)}else{first=false;b.classList.add("wrong");buzz()}})};
+    document.querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(b.dataset.v==="0"){b.classList.add("right");$("qm").src=IMG("saqoor_cheer");yay();at(b);speak(b.textContent);if(first)score++;k++;setTimeout(ask,1300)}else{first=false;b.classList.add("wrong");buzz()}})};
   ask()}
 
 setLang();const V=new URLSearchParams(location.search).get("v");({flag,map,zayed,syms,rulers,quiz})[V]?({flag,map,zayed,syms,rulers,quiz})[V]():hub();
