@@ -163,7 +163,7 @@
     for(const st of steps){st();if(put(JSON.stringify(L))){try{SET.call(localStorage,"najma:slim","1")}catch(e){}return}}}
   window.NAJMA.saveSecs=saveSecs;
   /* version of the app this device runs (shown to the parent, so old iPads are easy to spot) */
-  window.NAJMA.V="2026-11-01b";
+  window.NAJMA.V="2026-11-02a";
   /* a word with no recording of its own: reuse the same letter, syllable or word already recorded elsewhere (حروفي, كلماتي الأولى, ...) */
   const loadJS=src=>new Promise(r=>{const s=document.createElement("script");s.src=src;s.onload=s.onerror=r;document.head.appendChild(s)});
   const MARKS=/[\u064B-\u065F\u0670]/g,normT=t=>noEmoji(t).replace(/^حرف\s*/,"").replace(/[.,،؛؟?!:«»"]/g,"").replace(/\s+/g," ").trim();
