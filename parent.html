@@ -216,8 +216,8 @@ var IS_ADMIN=false;const isMine=x=>!x._fam||x._fam===FID;const ownQ=()=>secs.fin
 const AV=["🦁","🐼","🦊","🐰","🐯","🦄","🐬","🐻","🐸","🐨","🦋","🚀","⚽","🌸","👑","🦖"];
 const PC=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a","#ff7eb6","#2b2340"];
 const ICONS=["📿","💬","🖼️","❓","🎧","📖","🕌","🐝","📝","📚","✏️","🍎","🌟","🧠","🏫","🔤","🌍","🧪","🎵"];
-const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["spell","🧩 كلماتي الأولى"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["cvc","Word Time"],["sent","Sentences"],["writeEn","Handwriting"],["math","➕➖ Maths + −"],["numEn","Numbers"],["colorsAr","🎨 الألوان"],["colorsEn","🎨 Colours"],["shapes","2D Shapes"],["quran","📖 قصص القرآن"],["duas","📿 أدعية"]];
-const PROG=[["arDone","حروفي",38],["spellDone","كلماتي الأولى",60],["numDoneAr","الأرقام",20],["islamDone","الإسلام",5],["imanDone","الإيمان",6],["soundsDone","Sounds",32],["cvcDone","Word Time",111],["sentDone","Sentences",16],["writeEn","Writing",62],["mathDone","Maths + −",18],["numDoneEn","Numbers",20],["shapesDone","Shapes",10]];
+const BUILT=[["name","✏️ اسمي"],["arabic","حروفي"],["spell","🧩 كلماتي الأولى"],["numAr","الأرقام"],["islam","أركان الإسلام"],["iman","أركان الإيمان"],["sounds","Sounds"],["cvc","Word Time"],["sent","Sentences"],["writeEn","Handwriting"],["math","➕➖ Maths + −"],["time","⏰ Days & Time"],["timeAr","⏰ الأيام والساعة"],["numEn","Numbers"],["colorsAr","🎨 الألوان"],["colorsEn","🎨 Colours"],["shapes","2D Shapes"],["quran","📖 قصص القرآن"],["duas","📿 أدعية"]];
+const PROG=[["arDone","حروفي",38],["spellDone","كلماتي الأولى",60],["numDoneAr","الأرقام",20],["islamDone","الإسلام",5],["imanDone","الإيمان",6],["soundsDone","Sounds",32],["cvcDone","Word Time",111],["sentDone","Sentences",16],["writeEn","Writing",62],["mathDone","Maths + −",18],["timeDone","⏰ Days & Time",18],["numDoneEn","Numbers",20],["shapesDone","Shapes",10]];
 let saveP=()=>R.set("najma:profiles",JSON.stringify(profs));
 let saveS=()=>{const t=JSON.stringify(secs.map(x=>isMine(x)?x:Object.assign({},x,{mine:false})));try{R.set("najma:sections",t);R.remove("najma:slim")}catch(e){/* phone storage full: big recordings go to the phone database, so this phone still plays them */try{NAJMA.saveSecs(t)}catch(x){}}};
 const $=id=>document.getElementById(id);
@@ -241,7 +241,7 @@ function chips(id,list,isOn,onTap,cls){const box=$(id);box.innerHTML="";box.clas
 function drawKids(){const L=$("kidList");L.innerHTML="";
   if(!profs.length)L.innerHTML='<div class="note">لا يوجد أطفال بعد. اضغط ➕ لإضافة أول طفل.</div>';
   profs.forEach(p=>{const d=document.createElement("div");d.className="row";
-    const prog=PROG.filter(([k])=>p.apps?p.apps[{arDone:"arabic",spellDone:"spell",numDoneAr:"numAr",islamDone:"islam",imanDone:"iman",soundsDone:"sounds",cvcDone:"cvc",sentDone:"sent",writeEn:"writeEn",numDoneEn:"numEn",mathDone:"math",shapesDone:"shapes"}[k]]!==false:true)
+    const prog=PROG.filter(([k])=>p.apps?p.apps[{arDone:"arabic",spellDone:"spell",numDoneAr:"numAr",islamDone:"islam",imanDone:"iman",soundsDone:"sounds",cvcDone:"cvc",sentDone:"sent",writeEn:"writeEn",numDoneEn:"numEn",mathDone:"math",timeDone:"time",shapesDone:"shapes"}[k]]!==false:true)
       .map(([k,n,t])=>`<span>${n} ${Math.min(count(p.id,k),t)}/${t}</span>`).join("")+
       vis().filter(s=>!p.apps||p.apps["s:"+s.id]!==false).map(s=>`<span>${s.icon} ${s.title} ${count(p.id,"sec_"+s.id)}/${s.words.length}</span>`).join("");
     d.innerHTML=`<div class="av" style="background:${p.color}">${p.avatar}</div><div class="info"><b dir="auto">${p.name}</b>
@@ -265,7 +265,7 @@ function editKid(p){
   chips("kCol",PC,c=>c===ed.color,c=>ed.color=c);
   const apps=[...BUILT,...vis().map(s=>["s:"+s.id,`${s.icon} ${s.title}`])];
   chips("kApps",apps.map(a=>a[1]),(x,k)=>ed.apps[apps[k][0]]!==false,(x,k)=>{const id=apps[k][0];ed.apps[id]=ed.apps[id]===false});
-  ed.levels=ed.levels||{};const LV=NAJMA.LEVELS,LN={arabic:"حروفي",spell:"🧩 كلماتي الأولى (مراحل الكتيب)",sounds:"Sounds",wt:"Word Time (RWI)",sent:"Sentences",shapes:"2D Shapes",writeEn:"Handwriting",quran:"📖 قصص القرآن",math:"➕➖ Maths + −"};
+  ed.levels=ed.levels||{};const LV=NAJMA.LEVELS,LN={arabic:"حروفي",spell:"🧩 كلماتي الأولى (مراحل الكتيب)",sounds:"Sounds",wt:"Word Time (RWI)",sent:"Sentences",shapes:"2D Shapes",writeEn:"Handwriting",quran:"📖 قصص القرآن",math:"➕➖ Maths + −",time:"⏰ Days & Time"};
   const lb=$("kLevels");lb.innerHTML="";
   Object.keys(LV).forEach(app=>{if(!Array.isArray(ed.levels[app])||!ed.levels[app].length)ed.levels[app]=LV[app].map((_,i)=>i);
     const row=document.createElement("div");row.style.cssText="background:#f8f6fd;border-radius:14px;padding:8px 10px;margin-bottom:8px";
@@ -318,7 +318,7 @@ let es;
 const STYPES=[["words","📝 كلمات"],["sent","💬 جمل"],["pic","🖼️ صورة وكلمة"],["quiz","❓ اختبار"]];
 const TXTL={words:"الكلمات (كلمة في كل سطر)",sent:"الجمل (جملة في كل سطر)",pic:"الكلمات (كلمة في كل سطر)",listen:"الأسطر (سطر لكل دعاء أو بيت)"};
 const HWT=[["task","☑️ مهمة"],["app","📱 من الموجود"]];TXTL.task="المهام (مهمة في كل سطر)";
-const APPL=[["arabic.html","حروفي"],["spell.html","🧩 كلماتي الأولى"],["numbers-ar.html","الأرقام"],["colors.html","🎨 الألوان"],["quran.html","📖 قصص القرآن"],["duas.html","📿 أدعية"],["islam.html","أركان الإسلام"],["iman.html","أركان الإيمان"],["index.html","Sounds"],["cvc.html","Word Time (RWI)"],["sentences.html","Sentences"],["sight.html","Sight Words"],["writing.html","Handwriting"],["numbers-en.html","Numbers"],["math.html","➕➖ Maths + −"],["math.html?l=0","➕ KG2 add up to 10"],["math.html?l=1","➖ KG2 take away up to 10"],["math.html?l=2","➕➖ KG2 up to 10"],["math.html?l=3","➕➖ Grade 2 up to 20"],["math.html?l=4","➕➖ Grade 2 up to 100"],["math.html?l=5","❓ Grade 2 missing number"],["shapes.html","2D Shapes"]];
+const APPL=[["arabic.html","حروفي"],["spell.html","🧩 كلماتي الأولى"],["numbers-ar.html","الأرقام"],["colors.html","🎨 الألوان"],["quran.html","📖 قصص القرآن"],["duas.html","📿 أدعية"],["islam.html","أركان الإسلام"],["iman.html","أركان الإيمان"],["index.html","Sounds"],["cvc.html","Word Time (RWI)"],["sentences.html","Sentences"],["sight.html","Sight Words"],["writing.html","Handwriting"],["numbers-en.html","Numbers"],["math.html","➕➖ Maths + −"],["time.html","⏰ Days & Time"],["time.html?l=ar","⏰ الأيام والساعة"],["time.html?v=0","📅 Days of the week"],["time.html?v=2","⏰ O'clock"],["time.html?v=3","⏰ Half past"],["time.html?v=4","⏰ Quarter past & to"],["time.html?v=5","⏰ Every 5 minutes"],["math.html?l=0","➕ KG2 add up to 10"],["math.html?l=1","➖ KG2 take away up to 10"],["math.html?l=2","➕➖ KG2 up to 10"],["math.html?l=3","➕➖ Grade 2 up to 20"],["math.html?l=4","➕➖ Grade 2 up to 100"],["math.html?l=5","❓ Grade 2 missing number"],["shapes.html","2D Shapes"]];
 function drawApp(){const L=APPL.concat([["spell.html?p=0","🧩 كلماتي: الطويل والقصير"],["spell.html?p=1","🧩 كلماتي: أ ب د س م"],["spell.html?p=2","🧩 كلماتي: ل ن ف ق ر"],["spell.html?p=3","🧩 كلماتي: المقاطع ١"],["spell.html?p=4","🧩 كلماتي: المقاطع ٢"]],
     vis().filter(x=>!x.hw&&x.id!==es.id).map(x=>[((x.type||"words")==="words"?"words.html":"lesson.html")+"?s="+encodeURIComponent(x.id),`${x.icon||"📝"} ${x.title}`]));
   chips("sApp",L.map(a=>a[1]),(x,k)=>es.app&&es.app.href===L[k][0],(x,k)=>{es.app={href:L[k][0],name:L[k][1]};$("sTitle").value=L[k][1]})}
@@ -670,7 +670,7 @@ function drawDev(){const cur=R.get("najma:lock");chips("devLock",["👨‍👩�
 /* dashboard */
 const APPS_D=[["arabic","حروفي","arDone","arabic",[7,7,7,7,10]],["spell","كلماتي الأولى","spellDone","spell",[10,5,5,20,20]],["numAr","الأرقام","numDoneAr",null,null],["islam","أركان الإسلام","islamDone",null,null],["iman","أركان الإيمان","imanDone",null,null],
   ["sounds","Sounds","soundsDone","sounds",[25,7]],["cvc","Word Time","cvcDone","wt",[7,20,17,18,16,18,15]],["sent","Sentences","sentDone","sent",[4,4,4,4]],
-  ["writeEn","Handwriting","writeEn","writeEn",[26,26,10]],["math","Maths + −","mathDone","math",[3,3,3,3,3,3]],["numEn","Numbers","numDoneEn",null,null],["colorsAr","الألوان","colorsAr",null,null],["colorsEn","Colours","colorsEn",null,null],["shapes","2D Shapes","shapesDone","shapes",[4,4,2]],["quran","قصص القرآن","qkDone","quran",[7,43,68,132,321]],["duas","أدعية","sec_duas",null,null]];
+  ["writeEn","Handwriting","writeEn","writeEn",[26,26,10]],["math","Maths + −","mathDone","math",[3,3,3,3,3,3]],["time","⏰ Days & Time","timeDone","time",[3,3,3,3,3,3]],["numEn","Numbers","numDoneEn",null,null],["colorsAr","الألوان","colorsAr",null,null],["colorsEn","Colours","colorsEn",null,null],["shapes","2D Shapes","shapesDone","shapes",[4,4,2]],["quran","قصص القرآن","qkDone","quran",[7,43,68,132,321]],["duas","أدعية","sec_duas",null,null]];
 function lvOf(p,app){const L=p.levels&&p.levels[app];return Array.isArray(L)&&L.length?L:NAJMA.LEVELS[app].map((_,i)=>i)}
 function lvText(p,app){const all=NAJMA.LEVELS[app],on=lvOf(p,app);if(on.length===all.length)return "";return on.map(i=>all[i].split(" · ")[0]).join("، ")}
 function drawDash(){
