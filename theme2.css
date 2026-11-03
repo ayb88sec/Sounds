@@ -1,11 +1,11 @@
 /* ===== Najma new look for every app page (test only until approved) ===== */
 html{background:#efcb84}
 body{background:transparent!important;color:#16204a}
-body::before{content:"";position:fixed;inset:0;z-index:-2;background:#efcb84 url(img/home3/bg_ipad.webp) center top/cover no-repeat}
-@media (max-width:600px){body::before{background-image:url(img/home3/bg_phone.webp)}}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:#efcb84 url(img/home3/calm_ipad.webp) center top/cover no-repeat}
+@media (max-width:600px){body::before{background-image:url(img/home3/calm_phone.webp)}}
 .bubbles{display:none!important}
-main{position:relative;z-index:1;padding-top:calc(24vw + env(safe-area-inset-top))!important;padding-bottom:calc(150px + env(safe-area-inset-bottom))!important}
-@media (max-width:600px){main{padding-top:calc(36vw + env(safe-area-inset-top))!important}}
+main{position:relative;z-index:1;padding-top:calc(78px + env(safe-area-inset-top))!important;padding-bottom:calc(150px + env(safe-area-inset-bottom))!important}
+
 /* wooden title sign */
 main h1{display:table!important;margin:0 auto 14px!important;position:relative;padding:clamp(8px,1.6vw,14px) clamp(40px,8vw,74px)!important;
   border-radius:46% 46% 40% 40%/60% 60% 40% 40%;font-size:clamp(34px,7vw,58px)!important;line-height:1.1!important;color:#fff!important;
