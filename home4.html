@@ -211,6 +211,14 @@ main{padding-bottom:calc(clamp(58px,8.5vw,92px) + env(safe-area-inset-bottom))}
 body{background:#efcb84}
 /* the flying falcon belongs to the home screen only (the backgrounds already have one) */
 body:not(.athome) .fly{display:none}
+
+/* header and back button stay still; only the cards scroll */
+.sec.on{position:fixed;inset:0;display:flex;flex-direction:column;overflow:hidden;z-index:1}
+.sec .ctop{flex:none}
+.sec .back{position:fixed;top:calc(14px + env(safe-area-inset-top));inset-inline-start:clamp(14px,4vw,48px);z-index:6}
+.scr{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;margin:0 calc(-1*clamp(14px,4vw,48px));padding:14px clamp(14px,4vw,48px) calc(clamp(78px,12vw,118px) + 30px + env(safe-area-inset-bottom));
+  -webkit-mask-image:linear-gradient(transparent 0,#000 18px);mask-image:linear-gradient(transparent 0,#000 18px)}
+.sec{padding-bottom:0!important}
 </style>
 </head>
 <body>
@@ -232,8 +240,8 @@ body:not(.athome) .fly{display:none}
     
     </div></div>
   <div class="sec" id="pg"><div class="ctop"><div class="wood"><img src="img/home2/nav_prog.webp" alt=""><div><b>تقدّمي</b><small>My Progress</small></div></div><img class="sq2" src="img/uae/saqoor_cheer.webp" alt=""></div>
-  <div class="ach" id="ach"></div><div class="pgrid" id="progL"></div></div>
-  <div class="sec" id="sec"><div class="ctop"><button class="back" id="bk">➡️ رجوع</button><div class="wood"><img id="secI" alt=""><div><b id="secT"></b><small id="secE"></small></div></div></div><div class="mine" id="mine"></div><div class="apps" id="apps"></div></div>
+  <div class="scr"><div class="ach" id="ach"></div><div class="pgrid" id="progL"></div></div></div>
+  <div class="sec" id="sec"><div class="ctop"><button class="back" id="bk">➡️ رجوع</button><div class="wood"><img id="secI" alt=""><div><b id="secT"></b><small id="secE"></small></div></div></div><div class="scr"><div class="mine" id="mine"></div><div class="apps" id="apps"></div></div></div>
   <img id="star" src="icon.png" alt="" style="display:none"><img class="fly" id="fly" src="img/home3/falcon.webp" alt="">
 </main>
 <nav class="bar" id="bar" dir="ltr"><button data-b="home"><span class="ic"><img src="img/home2/nav_home.webp" alt=""></span><b>الرئيسية</b><small>Home</small></button><button data-b="hw" id="bHw"><span class="ic"><img src="img/home2/nav_hw.webp" alt=""></span><b>الواجب</b><small>Homework</small><i class="nb" id="nb"></i></button><button data-b="prog"><span class="ic"><img src="img/home2/nav_prog.webp" alt=""></span><b>تقدّمي</b><small>My Progress</small></button></nav>
@@ -323,7 +331,7 @@ function cat(k){document.body.classList.remove("athome");const c=CATS[k];if(!c)r
   {const M=document.getElementById("mine");let n=0,t=0;L.forEach(a=>{if(a.total){t+=a.total;n+=Math.min(count(a.key),a.total)}});
   const P=n/t,MSG=P>=1?"بطل! أكملت كل شيء 🏆":P>=.6?"رائع! اقتربت من النهاية 🌟":P>=.25?"أحسنت! استمر 💪":n?"بداية جميلة! 👏":"هيا نجمع النجوم! ✨";M.innerHTML=t?`<img src="${I}nav_star.webp" alt=""><div class="t"><b>${MSG}</b><br><span style="font-weight:800;color:#16204a">نجومي</span> <span class="num">${n} / ${t}</span><div class="pbar"><i data-w="${Math.round(n/t*100)}"></i></div></div>`:"";}
   document.getElementById("sec").classList.add("on");setNav(k==="hw"?"hw":"");document.getElementById("bk").style.display=k==="hw"?"none":"";
-  window.scrollTo(0,0);setTimeout(()=>{document.querySelectorAll(".fg").forEach(c=>c.style.strokeDashoffset=c.dataset.off);document.querySelectorAll("#mine .pbar i").forEach(x=>x.style.width=x.dataset.w+"%")},300)}
+  document.querySelector("#sec .scr").scrollTop=0;window.scrollTo(0,0);setTimeout(()=>{document.querySelectorAll(".fg").forEach(c=>c.style.strokeDashoffset=c.dataset.off);document.querySelectorAll("#mine .pbar i").forEach(x=>x.style.width=x.dataset.w+"%")},300)}
 function setNav(k){document.querySelectorAll(".bar button").forEach(b=>b.classList.toggle("on",b.dataset.b===k))}
 function route(){document.getElementById("pg").classList.remove("on");const m=location.hash.match(/c=(\w+)/);if(m&&m[1]==="prog"){progress();return}if(m)cat(m[1]);else home()}
 addEventListener("hashchange",route);addEventListener("resize",()=>{if(!location.hash)home()});route();
