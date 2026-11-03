@@ -5,7 +5,7 @@
 <script src="supa.js"></script>
 <script src="profile.js"></script><script src="data/kidq.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes"><link rel="manifest" href="manifest.webmanifest">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="نجمة">
@@ -127,7 +127,11 @@ main{padding-bottom:calc(140px + env(safe-area-inset-bottom))}
 /* the picture keeps its exact proportions, cropped just above the drawn bar */
 .scene .inner{position:relative;width:100%}
 .scene .inner img.bg{width:100%;height:auto;display:block}
-#scIpad{aspect-ratio:1087/1255}#scPhone{aspect-ratio:852/1572}
+/* fill the screen down to the bar: grow the picture (up to 10% wider, sides trimmed) so no empty strip is left */
+.scene{max-width:none!important;overflow:hidden}
+#scIpad{--iw:min(1180px,clamp(100vw,calc((100dvh - clamp(92px,13.5vw,132px) - env(safe-area-inset-bottom))*1087/1255),110vw));height:calc(var(--iw)*1255/1087)}
+#scPhone{--iw:clamp(100vw,calc((100dvh - clamp(92px,13.5vw,132px) - env(safe-area-inset-bottom))*852/1572),110vw);height:calc(var(--iw)*1572/852)}
+.scene .inner{width:var(--iw)!important;margin-left:calc((100vw - var(--iw))/2)}
 main{padding-bottom:calc(clamp(58px,8.5vw,92px) + env(safe-area-inset-bottom))}
 .prow2{display:flex;align-items:center;gap:10px;background:#f8f6fd;border-radius:16px;padding:8px 12px;margin-bottom:6px;text-align:start}
 .prow2 .g{width:44px;text-align:center;font-size:26px}.prow2 .g img{width:40px;height:40px}.prow2 .t{flex:1;font-weight:800}.prow2 .bb{height:10px;border-radius:9px;background:#eee8fb;overflow:hidden;margin-top:4px}.prow2 .bb i{display:block;height:100%;background:#ffc83d;border-radius:9px}
