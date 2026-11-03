@@ -82,7 +82,8 @@ let vw=0;
 document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{pop();document.querySelectorAll("#tabs button,.pane").forEach(x=>x.classList.remove("on"));b.classList.add("on");document.getElementById(b.dataset.p).classList.add("on")});
 function vowels(id,draw){const box=document.getElementById(id);box.innerHTML="";LEV.forEach((l,k)=>{const b=document.createElement("button");b.className="lvb"+(k===vw?" on":"");
   b.innerHTML=`<b>${l.name}</b><small>${l.sounds}</small>`;b.onclick=()=>{vw=k;pop();vowels("vw",drawLearn);vowels("vw2",drawWrite);drawLearn();drawWrite()};box.appendChild(b)})}
-function tile(w,e,i,on){e=e||"🔤";const b=document.createElement("button");b.className="tile"+(prog.d[w]?" done":"");b.dataset.w=w;b.style.background=COLORS[i%6];b.style.animationDelay=(i*.03)+"s";
+const EX={at:"📍",am:"🙋",mat:"🧘",sat:"🪑",sit:"🪑",top:"🔝",got:"🎁",not:"🚫",in:"📥",on:"💡",it:"👉",mug:"☕",cot:"🛏️",up:"⬆️",jam:"🍓",vet:"🐶",wig:"💇",rug:"🟫",jug:"🫗",rob:"🦹",chin:"🙂",thin:"🥢",desk:"🗄️",belt:"👖",stamp:"📮"};
+function tile(w,e,i,on){e=e||EX[w]||"";const b=document.createElement("button");b.className="tile"+(prog.d[w]?" done":"");b.dataset.w=w;b.style.background=COLORS[i%6];b.style.animationDelay=(i*.03)+"s";
   b.innerHTML=`<span class="e">${e}</span>${w}`;b.onclick=()=>on(b);return b}
 function drawLearn(){const g=document.getElementById("grid");g.innerHTML="";(LEV[vw]||{words:[]}).words.forEach(([w,s,e],i)=>g.appendChild(tile(w,e,i,b=>openWord(w,s,e,b))))}
 function drawWrite(){const g=document.getElementById("wgrid");g.innerHTML="";const L=(LEV[vw]||{words:[]}).words;L.forEach(([w,s,e],i)=>g.appendChild(tile(w,e,i,()=>writeW(L.map(x=>x[0]),i))))}
@@ -92,7 +93,7 @@ vowels("vw",drawLearn);vowels("vw2",drawWrite);drawLearn();drawWrite();
 function sndRow(id,snds,hidden){const box=document.getElementById(id);box.innerHTML="";
   snds.forEach((c,i)=>{const b=document.createElement("button");b.textContent=hidden?"?":c;b.style.background=COLORS[(i*2+1)%6];b.onclick=()=>{sound(c);lit(id,i)};box.appendChild(b)})}
 function lit(id,i){const bs=[...document.getElementById(id).children];bs.forEach((b,k)=>b.classList.toggle("lit",k===i||i===-1));if(i===-1)setTimeout(()=>bs.forEach(b=>b.classList.remove("lit")),800)}
-function openWord(w,snds,e,el){pop();if(el)burstAt(el);document.getElementById("wPic").textContent=e||"🔤";document.getElementById("wPic").onclick=()=>say(w);
+function openWord(w,snds,e,el){pop();if(el)burstAt(el);document.getElementById("wPic").textContent=e||EX[w]||"⭐";document.getElementById("wPic").onclick=()=>say(w);
   sndRow("wSnd",snds);document.getElementById("wBlend").onclick=()=>blend(w,i=>lit("wSnd",i),snds);
   document.getElementById("wWrite").onclick=()=>writeW([w],0);
   document.getElementById("wordM").classList.add("show");setTimeout(()=>blend(w,i=>lit("wSnd",i),snds),300);mark(w);talk(`${w}! ${rnd(PRAISE)}`)}
