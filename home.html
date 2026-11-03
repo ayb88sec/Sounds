@@ -313,6 +313,9 @@ NAJMA.sections.filter(s=>s.type!=="qimg"&&s.type!=="flags"&&!(((NAJMA.sections.f
   const due=s.hw&&s.hw.due?new Date(s.hw.due).toLocaleDateString("ar",{day:"numeric",month:"short"}):"";
   const a={id:"s:"+s.id,href,glyph:s.icon||"📝",name:s.title,sub:s.hw?("📌 "+(due?"حتى "+due:"واجب")):s.words.length+(s.lang==="ar"?" كلمات":" words"),
     bg:s.hw?"linear-gradient(150deg,#ff6f91,#ffb020)":["linear-gradient(150deg,#ffcf3c,#ff6f91)","linear-gradient(150deg,#4f8bff,#a66bff)","linear-gradient(150deg,#22c7b8,#3fc35a)"][k%3],key:"sec_"+s.id,total:t==="app"?0:s.words.length};
+  /* homework for a grade or for named children: the child's grade decides, so it works even if the parent set the grade later */
+  if(s.hw&&(s.hwGrade||s.hwKids)&&NAJMA.me&&!NAJMA.me.preview){const me=NAJMA.me,nz=v=>String(v||"").replace(/[\u064B-\u0652]/g,"").replace(/[إأآ]/g,"ا").replace(/ة/g,"ه").trim();
+    const ok=s.hwKids?s.hwKids.some(n=>[me.name,me.nameAr,me.nameEn].some(v=>v&&String(v).split(/\s+/).some(w=>nz(w)===nz(n)))):me.grade===s.hwGrade;NAJMA.settings.apps[a.id]=ok}
   if(s.hw)HW.push(a);else ROWS[s.lang==="ar"?0:2].apps.push(a)});
 /* homework from school comes first */
 if(HW.length)ROWS.unshift({t:"📌 الواجب",apps:HW})}

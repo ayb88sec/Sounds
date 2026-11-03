@@ -308,9 +308,9 @@ async function loadPack(){if(packTried)return drawPack();packTried=true;try{cons
 function drawPack(){const B=$("hwPack");if(!B)return;if(!PACK||!feat("homework")){B.innerHTML="";return}
   const id=i=>"hw-"+PACK.id+"-"+i,left=PACK.items.map((it,i)=>[it,i]).filter(([,i])=>!secs.some(x=>x.id===id(i)));
   /* homework already added: make sure every child in that grade (or named) can see it, also when the grade was set later */
-  {const kO=it=>it.grade&&!it.kids?profs.filter(p=>p.grade===it.grade):profs.filter(p=>(it.kids||[]).some(n=>[p.name,p.nameAr,p.nameEn].some(v=>v&&String(v).split(/\s+/).some(w=>normN(w)===normN(n)))));let ch=false;
-   PACK.items.forEach((it,i)=>{if(!secs.some(x=>x.id===id(i)))return;kO(it).forEach(p=>{p.apps=Object.assign({},p.apps||{});if(p.apps["s:"+id(i)]!==true){p.apps["s:"+id(i)]=true;ch=true}})});
-   if(ch){saveP();drawKids()}}
+  {const kO=it=>it.grade&&!it.kids?profs.filter(p=>p.grade===it.grade):profs.filter(p=>(it.kids||[]).some(n=>[p.name,p.nameAr,p.nameEn].some(v=>v&&String(v).split(/\s+/).some(w=>normN(w)===normN(n)))));let ch=false,chS=false;
+   PACK.items.forEach((it,i)=>{const sx=secs.find(x=>x.id===id(i));if(!sx)return;if(it.grade&&!it.kids&&sx.hwGrade!==it.grade){sx.hwGrade=it.grade;chS=true}if(it.kids&&!sx.hwKids){sx.hwKids=it.kids;chS=true}kO(it).forEach(p=>{p.apps=Object.assign({},p.apps||{});if(p.apps["s:"+id(i)]!==true){p.apps["s:"+id(i)]=true;ch=true}})});
+   if(ch){saveP();drawKids()}if(chS)saveS()}
   if(!left.length){B.innerHTML="";return}const pick=new Set(left.map(([,i])=>i));
   B.className="qbox";B.style.marginBottom="10px";
   const kidsOf=it=>it.grade&&!it.kids?profs.filter(p=>p.grade===it.grade):profs.filter(p=>(it.kids||[]).some(n=>[p.name,p.nameAr,p.nameEn].some(v=>v&&String(v).split(/\s+/).some(w=>normN(w)===normN(n)))));
@@ -318,15 +318,16 @@ function drawPack(){const B=$("hwPack");if(!B)return;if(!PACK||!feat("homework")
     left.map(([it,i])=>`<div class="rrow" data-i="${i}" style="cursor:pointer;opacity:${pick.has(i)?1:.45}"><b style="font-size:22px">${pick.has(i)?"☑️":"⬜"}</b><div style="flex:1"><b dir="auto">${it.icon||"📌"} ${esc(it.title)}</b><div style="font-size:14px;color:#7a7090">${it.grade?"🎓 "+gName(it.grade)+": ":""}${kidsOf(it).map(p=>avT(p.avatar)+" "+esc(p.name)).join("، ")||(it.grade?"⚠️ حددي الصف للأطفال (✏️ تعديل ← 🎓 الصف)":"⚠️ ما لقيت الطفل")} · حتى ${new Date(it.due).toLocaleDateString("ar",{day:"numeric",month:"short"})}</div></div></div>`).join("")+
     `<button class="b go" id="packAdd" style="width:100%;margin-top:8px">📌 أضيفي ${pick.size} للواجب</button>`;
     B.querySelectorAll("[data-i]").forEach(r=>r.onclick=()=>{const i=+r.dataset.i;pick.has(i)?pick.delete(i):pick.add(i);draw()});
-    $("packAdd").onclick=()=>{if(PACK.replaces){const pre="hw-"+PACK.replaces+"-";secs=secs.filter(x=>!String(x.id).startsWith(pre))}left.filter(([,i])=>pick.has(i)).forEach(([it,i])=>{const s={id:id(i),title:it.title,icon:it.icon||"📌",lang:it.lang||"ar",type:it.type||"words",words:it.words||[],hw:{due:it.due}};if(it.app)s.app=it.app;secs.push(s);
+    $("packAdd").onclick=()=>{if(PACK.replaces){const pre="hw-"+PACK.replaces+"-";secs=secs.filter(x=>!String(x.id).startsWith(pre))}left.filter(([,i])=>pick.has(i)).forEach(([it,i])=>{const s={id:id(i),title:it.title,icon:it.icon||"📌",lang:it.lang||"ar",type:it.type||"words",words:it.words||[],hw:{due:it.due}};if(it.grade&&!it.kids)s.hwGrade=it.grade;if(it.kids)s.hwKids=it.kids;if(it.app)s.app=it.app;secs.push(s);
         const ks=kidsOf(it);profs.forEach(p=>{p.apps=Object.assign({},p.apps||{});p.apps["s:"+s.id]=ks.includes(p)})});saveP();saveS();drawSecs();drawKids()}};
   draw();
   /* the homework sent by the app owner is added by itself, once per week's pack */
   const ak="najma:packAuto:"+PACK.id;if(!R.get(ak)){R.set(ak,"1");$("packAdd").click();status&&status("✅ تمت إضافة واجب الأسبوع",true)}}
 function drawSecs(){const L=$("secList"),HL=$("hwList");L.innerHTML="";HL.innerHTML="";drawHub();$("addHw").style.display=feat("homework")?"":"none";if(DB&&FID)loadPack();
   vis().forEach(s=>{const d=document.createElement("div");d.className="row";
+    const who=s.hw?profs.filter(p=>(p.apps||{})["s:"+s.id]!==false&&(!s.hwGrade||p.grade===s.hwGrade)):[];
     const mine=isMine(s),tag=s.hw?`<span style="background:${s.hw.due<today()?"#eee":"#ffe1ea"};color:#c2185b;border-radius:999px;padding:0 8px;font-size:13px;margin-inline-start:6px">📌 ${s.hw.due<today()?"انتهى":"حتى "+new Date(s.hw.due).toLocaleDateString("ar",{day:"numeric",month:"short"})}</span>`:s._shared?'<span style="background:#e3f8e7;color:#2a9442;border-radius:999px;padding:0 8px;font-size:13px;margin-inline-start:6px">🌍 مشترك</span>':s._proposed?'<span style="background:#fff3c4;border-radius:999px;padding:0 8px;font-size:13px;margin-inline-start:6px">📤 مقترح</span>':"";
-    d.innerHTML=`<div class="av" style="background:#fff3c4">${s.icon}</div><div class="info"><b dir="auto">${s.title}${tag}</b><small dir="auto">${(STYPES.concat(HWT).find(x=>x[0]===(s.type||"words"))||STYPES[0])[1]} · ${s.lang==="ar"?"عربي":"English"} · ${s.words.length}: ${s.words.slice(0,6).join("، ")}${s.words.length>6?"…":""}</small></div><button class="b hd">${isHid(s)?"👁️ إظهار":"🙈 إخفاء"}</button><button class="b">✏️ تعديل</button>`;
+    d.innerHTML=`<div class="av" style="background:#fff3c4">${s.icon}</div><div class="info"><b dir="auto">${s.title}${tag}</b>${s.hw?`<small style="display:block;font-weight:800;color:${who.length?"#2a9442":"#c93a50"}">${who.length?"👀 يظهر لـ: "+who.map(p=>esc(p.name)).join("، "):"⚠️ لا يظهر لأي طفل: حددي الصف في 👧 الأطفال"}</small>`:""}<small dir="auto">${(STYPES.concat(HWT).find(x=>x[0]===(s.type||"words"))||STYPES[0])[1]} · ${s.lang==="ar"?"عربي":"English"} · ${s.words.length}: ${s.words.slice(0,6).join("، ")}${s.words.length>6?"…":""}</small></div><button class="b hd">${isHid(s)?"👁️ إظهار":"🙈 إخفاء"}</button><button class="b">✏️ تعديل</button>`;
     d.style.flexWrap="wrap";d.querySelector(".info").style.flexBasis="calc(100% - 70px)";d.querySelector(".hd").style.marginInlineStart="auto";
     if(isHid(s)){d.style.opacity=.5;d.querySelector(".info small").textContent="🙈 مخفي عن كل الأطفال"}
     d.querySelector(".hd").onclick=()=>{const Q=qSec();Q.hide=Q.hide||{};if(Q.hide[s.id])delete Q.hide[s.id];else Q.hide[s.id]=1;saveS();drawSecs()};
