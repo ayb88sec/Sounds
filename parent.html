@@ -293,7 +293,7 @@ $("kSave").onclick=()=>{ed.nameAr=$("kAr").value.trim();ed.nameEn=$("kEn").value
   const first=!profs.length,i=profs.findIndex(p=>p.id===ed.id);if(i>=0)profs[i]=ed;else profs.push(ed);saveP();
   if(first){for(let k=0;k<localStorage.length;k++){const key=localStorage.key(k);if(key&&!key.startsWith("najma:"))R.set(`najma:${ed.id}:${key}`,R.get(key))}}
   if(!R.get("najma:cur")||first)R.set("najma:cur",ed.id);
-  $("kidSheet").classList.remove("show");drawKids()};
+  $("kidSheet").classList.remove("show");drawKids();if(PACK)drawPack()};
 $("kDel").onclick=()=>{if(!confirmDel(ed.name))return;profs=profs.filter(p=>p.id!==ed.id);saveP();
   for(let k=localStorage.length-1;k>=0;k--){const key=localStorage.key(k);if(key&&key.startsWith(`najma:${ed.id}:`))R.remove(key)}
   if(R.get("najma:cur")===ed.id){if(profs.length)R.set("najma:cur",profs[0].id);else R.remove("najma:cur")}
@@ -307,6 +307,10 @@ let PACK=null,packTried=false;const normN=s=>String(s||"").replace(/ة/g,"ه").r
 async function loadPack(){if(packTried)return drawPack();packTried=true;try{const r=await fetch("hw/pack.enc?t="+Date.now(),{cache:"no-store"});if(r.ok)PACK=await NAJMA.decrypt(await r.json())}catch(e){PACK=null}drawPack()}
 function drawPack(){const B=$("hwPack");if(!B)return;if(!PACK||!feat("homework")){B.innerHTML="";return}
   const id=i=>"hw-"+PACK.id+"-"+i,left=PACK.items.map((it,i)=>[it,i]).filter(([,i])=>!secs.some(x=>x.id===id(i)));
+  /* homework already added: make sure every child in that grade (or named) can see it, also when the grade was set later */
+  {const kO=it=>it.grade&&!it.kids?profs.filter(p=>p.grade===it.grade):profs.filter(p=>(it.kids||[]).some(n=>[p.name,p.nameAr,p.nameEn].some(v=>v&&String(v).split(/\s+/).some(w=>normN(w)===normN(n)))));let ch=false;
+   PACK.items.forEach((it,i)=>{if(!secs.some(x=>x.id===id(i)))return;kO(it).forEach(p=>{p.apps=Object.assign({},p.apps||{});if(p.apps["s:"+id(i)]!==true){p.apps["s:"+id(i)]=true;ch=true}})});
+   if(ch){saveP();drawKids()}}
   if(!left.length){B.innerHTML="";return}const pick=new Set(left.map(([,i])=>i));
   B.className="qbox";B.style.marginBottom="10px";
   const kidsOf=it=>it.grade&&!it.kids?profs.filter(p=>p.grade===it.grade):profs.filter(p=>(it.kids||[]).some(n=>[p.name,p.nameAr,p.nameEn].some(v=>v&&String(v).split(/\s+/).some(w=>normN(w)===normN(n)))));
