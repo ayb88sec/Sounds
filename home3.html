@@ -219,6 +219,7 @@ body:not(.athome) .fly{display:none}
 .scr{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;margin:0 calc(-1*clamp(14px,4vw,48px));padding:14px clamp(14px,4vw,48px) calc(clamp(78px,12vw,118px) + 30px + env(safe-area-inset-bottom));
   -webkit-mask-image:linear-gradient(transparent 0,#000 18px);mask-image:linear-gradient(transparent 0,#000 18px)}
 .sec{padding-bottom:0!important}
+html.lock,html.lock body{overflow:hidden;height:100%;overscroll-behavior:none}
 </style>
 </head>
 <body>
@@ -322,9 +323,9 @@ let ti=0;function tile(a){ti++;const n=a.total?Math.min(count(a.key),a.total):0,
      ${a.total?`<div class="ringwrap"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="21"/><circle class="fg" cx="28" cy="28" r="21" stroke-dasharray="${C}" stroke-dashoffset="${C}" data-off="${C*(1-pct)}"/><text x="28" y="29">${pct>=1?"🏆":n}</text></svg></div>`:""}</div>
      <div class="name" dir="auto">${a.name}</div><div class="sub" dir="auto">${a.sub}</div>`;return el}
 const phone=()=>matchMedia("(max-width:600px)").matches;
-function home(){document.body.classList.add("athome");document.getElementById("sec").classList.remove("on");setNav("home");
+function home(){document.body.classList.add("athome");document.documentElement.classList.remove("lock");document.getElementById("sec").classList.remove("on");setNav("home");
   document.getElementById("scIpad").classList.toggle("on",!phone());document.getElementById("scPhone").classList.toggle("on",phone());document.querySelector(".corner.tl").style.display="";document.querySelector(".corner.tr").style.display="";window.scrollTo(0,0)}
-function cat(k){document.body.classList.remove("athome");const c=CATS[k];if(!c)return home();const L=c.apps.filter(visA);
+function cat(k){document.body.classList.remove("athome");document.documentElement.classList.add("lock");const c=CATS[k];if(!c)return home();const L=c.apps.filter(visA);
   document.querySelectorAll(".scene").forEach(s=>s.classList.remove("on"));document.querySelector(".corner.tl").style.display="none";document.querySelector(".corner.tr").style.display="none";
   document.getElementById("secT").textContent=c.t;document.getElementById("secE").textContent=c.e||"";document.getElementById("secI").src=I+c.ic+".webp";const A=document.getElementById("apps");A.innerHTML="";ti=0;
   if(!L.length)A.innerHTML='<div class="tip" style="grid-column:1/-1;text-align:center">'+(k==="hw"?"لا يوجد واجب اليوم 🎉":"لا يوجد شيء هنا بعد")+'</div>';L.forEach(a=>A.appendChild(tile(a)));
@@ -341,7 +342,7 @@ document.getElementById("apps").addEventListener("click",e=>{const a=e.target.cl
 document.getElementById("bk").onclick=()=>{location.hash=""};
 document.querySelectorAll(".bar button").forEach(b=>b.onclick=()=>{const k=b.dataset.b;if(k==="home")location.hash="";else location.hash="c="+k});
 const PCOL=["linear-gradient(160deg,#fff6c4,#ffdf6e)","linear-gradient(160deg,#dff1ff,#a8d8ff)","linear-gradient(160deg,#dcf8e8,#9fe3c0)","linear-gradient(160deg,#ffe6d6,#ffbe9c)","linear-gradient(160deg,#efe6ff,#c9b5ff)"];
-function progress(){if(location.hash!=="#c=prog"){location.hash="c=prog";return}document.body.classList.remove("athome");const L=document.getElementById("progL");L.innerHTML="";const seen=new Set();let i=0,done=0,tot=0;
+function progress(){if(location.hash!=="#c=prog"){location.hash="c=prog";return}document.body.classList.remove("athome");document.documentElement.classList.add("lock");const L=document.getElementById("progL");L.innerHTML="";const seen=new Set();let i=0,done=0,tot=0;
   ROWS.forEach(r=>r.apps.filter(a=>visA(a)&&a.total).forEach(a=>{if(seen.has(a.key))return;seen.add(a.key);const n=Math.min(count(a.key),a.total);tot++;if(n>=a.total)done++;
     const d=document.createElement("div");d.className="pcard";d.style.background=PCOL[i%5];d.style.animationDelay=(i*.05)+"s";i++;
     d.innerHTML=`${icoOf(a)?`<img src="${icoOf(a)}" alt="">`:`<span class="g2">${a.glyph.length<=3?a.glyph:"⭐"}</span>`}<div class="t"><div class="nm" dir="auto">${a.name} ${n>=a.total?"🏆":""}</div><span class="num">${n} / ${a.total}</span><div class="pbar"><i data-w="${Math.round(n/a.total*100)}"></i></div></div>`;L.appendChild(d)}));
