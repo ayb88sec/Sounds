@@ -73,6 +73,12 @@
     c.style.cssText=`position:fixed;top:calc(10px + env(safe-area-inset-top));left:70px;z-index:15;height:52px;border-radius:18px;background:${me.color||"#fff"};color:#fff;
       display:flex;align-items:center;gap:6px;padding:0 14px 0 8px;font:800 20px "Baloo Bhaijaan 2","Baloo 2",system-ui,sans-serif;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18);text-shadow:0 2px 0 rgba(0,0,0,.15)`;
     c.innerHTML=`<span style="font-size:30px;width:40px;height:40px;display:inline-flex;overflow:hidden;border-radius:50%">${window.NAJMA_AV?NAJMA_AV(me.avatar):(me.avatar||"⭐")}</span><span dir="auto">${me.name}</span>`;document.body.appendChild(c);const st=document.createElement("style");st.textContent="main{padding-top:74px !important}";document.head.appendChild(st)})}
+  /* soft "pop" when a child taps anything (not in the parent portal) */
+  try{if(!/(parent|families|guide)\.html$/.test(location.pathname)){let ac=null,last=0;
+    const pop=()=>{const t=Date.now();if(t-last<60)return;last=t;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume();
+      const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime;o.type="sine";o.frequency.setValueAtTime(880,n);o.frequency.exponentialRampToValueAtTime(420,n+.09);
+      g.gain.setValueAtTime(.0001,n);g.gain.exponentialRampToValueAtTime(.12,n+.008);g.gain.exponentialRampToValueAtTime(.0001,n+.11);o.connect(g).connect(ac.destination);o.start(n);o.stop(n+.12)}catch(e){}};
+    document.addEventListener("pointerdown",e=>{if(e.target.closest&&e.target.closest("button,a,.z,.tile,.app,.cat,.sym,[role=button],[onclick]"))pop()},{capture:true,passive:true})}}catch(e){}
   /* a child's picture: an emoji, or one of the character pictures ("img:k1") */
   window.NAJMA_AV=v=>/^img:k\d$/.test(v||"")?`<img src="img/kids/${v.slice(4)}.webp" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block">`:(v||"⭐");
   /* new look (test only): switched on by the test home page, never on the kids' iPads until published */
