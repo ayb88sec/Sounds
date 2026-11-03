@@ -47,6 +47,7 @@
   const DEFSEC=[{id:"spell1",title:"Spelling",icon:"🐝",lang:"en",words:["antiseptic","antibiotic","baby","bad","bear"]}];
   let sections;try{sections=JSON.parse(G.call(localStorage,"najma:sections")||"null")}catch(e){}
   if(!Array.isArray(sections))sections=DEFSEC;
+  sections=sections.filter(x=>!x||x.type!=="feedback");
   /* shared content from other families comes first; this family's own settings and recordings win */
   const isObj=o=>o&&typeof o==="object"&&!Array.isArray(o)&&!("ct" in o);
   const deep=(a,b)=>{Object.keys(b||{}).forEach(k=>{if(isObj(a[k])&&isObj(b[k]))deep(a[k],b[k]);else a[k]=b[k]});return a};
@@ -71,7 +72,9 @@
     const c=document.createElement("a");c.href="home.html";
     c.style.cssText=`position:fixed;top:calc(10px + env(safe-area-inset-top));left:70px;z-index:15;height:52px;border-radius:18px;background:${me.color||"#fff"};color:#fff;
       display:flex;align-items:center;gap:6px;padding:0 14px 0 8px;font:800 20px "Baloo Bhaijaan 2","Baloo 2",system-ui,sans-serif;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18);text-shadow:0 2px 0 rgba(0,0,0,.15)`;
-    c.innerHTML=`<span style="font-size:30px">${me.avatar||"⭐"}</span><span dir="auto">${me.name}</span>`;document.body.appendChild(c);const st=document.createElement("style");st.textContent="main{padding-top:74px !important}";document.head.appendChild(st)})}
+    c.innerHTML=`<span style="font-size:30px;width:40px;height:40px;display:inline-flex;overflow:hidden;border-radius:50%">${window.NAJMA_AV?NAJMA_AV(me.avatar):(me.avatar||"⭐")}</span><span dir="auto">${me.name}</span>`;document.body.appendChild(c);const st=document.createElement("style");st.textContent="main{padding-top:74px !important}";document.head.appendChild(st)})}
+  /* a child's picture: an emoji, or one of the character pictures ("img:k1") */
+  window.NAJMA_AV=v=>/^img:k\d$/.test(v||"")?`<img src="img/kids/${v.slice(4)}.webp" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block">`:(v||"⭐");
   /* new look (test only): switched on by the test home page, never on the kids' iPads until published */
   try{if(G.call(localStorage,"najma:look2")==="1"&&!/(home\d*|parent|families|guide)\.html$/.test(location.pathname)){
     const l=document.createElement("link");l.rel="stylesheet";l.href="theme2.css?v=2";document.head.appendChild(l);

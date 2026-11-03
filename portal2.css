@@ -1,0 +1,23 @@
+/* ===== parent portal: new look (test only) ===== */
+html{background:#efcb84}
+body{background:transparent!important;color:#16204a}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:#efcb84 url(img/home3/calm_ipad.webp) center top/cover no-repeat}
+@media (max-width:600px){body::before{background-image:url(img/home3/calm_phone.webp)}}
+header{background:none!important;justify-content:center;flex-wrap:wrap;padding-bottom:6px!important}
+header img{width:58px!important;height:58px!important;border-radius:16px!important;box-shadow:0 6px 14px rgba(0,0,0,.2)}
+header h1{flex:none!important;color:#fff;font-size:clamp(26px,6vw,40px)!important;padding:6px 34px;border-radius:46% 46% 40% 40%/60% 60% 40% 40%;
+  background:repeating-linear-gradient(8deg,rgba(0,0,0,.05) 0 3px,transparent 3px 14px),linear-gradient(#c9803d,#a35f24 60%,#8a4b18);box-shadow:0 8px 0 #6a3610,0 12px 18px rgba(90,45,10,.35);border:3px solid #7a4214;text-shadow:0 3px 0 #5e300a}
+header a{background:rgba(255,255,255,.92)!important;color:#16204a!important;box-shadow:0 5px 12px rgba(120,80,20,.2)}
+nav{gap:8px!important;padding-top:14px!important}
+nav button{border-radius:999px!important;background:rgba(255,255,255,.75)!important;color:#16204a!important;border:3px solid rgba(255,255,255,.9)!important;box-shadow:0 5px 12px rgba(120,80,20,.18)}
+nav button.on{background:radial-gradient(circle at 50% 35%,#fff4a8,#ffd23f 75%)!important;box-shadow:0 8px 14px rgba(200,140,0,.3)!important}
+.panel{background:rgba(255,253,245,.94)!important;border-radius:30px!important;margin-top:12px;border:4px solid #fff;box-shadow:0 12px 24px rgba(120,80,20,.22)}
+.row,.qbox,.rrow,.stats3 div{background:linear-gradient(160deg,#ffffff,#f3f8ff)!important;border:3px solid #fff;box-shadow:0 6px 12px rgba(120,80,20,.12)}
+.stats3 div:nth-child(1){background:linear-gradient(160deg,#fff6c4,#ffe27a)!important}.stats3 div:nth-child(2){background:linear-gradient(160deg,#dcf8e8,#a8ecc8)!important}.stats3 div:nth-child(3){background:linear-gradient(160deg,#dff1ff,#b4dcff)!important}
+.stats3 b{color:#16204a!important}
+.note{background:linear-gradient(160deg,#fffbea,#fff1c2)!important;border:3px solid #fff}
+.b{box-shadow:0 5px 0 rgba(120,80,20,.18)}
+.b.go{background:linear-gradient(#5fd77b,#2fae4e)!important;box-shadow:0 5px 0 #23893d!important}
+.b.add{background:linear-gradient(#ffe27a,#ffc21a)!important;color:#16204a!important;box-shadow:0 6px 0 #d49a00!important}
+.sheet .in-s{background:linear-gradient(#fffdf6,#fff7e2)!important}
+.av{box-shadow:0 0 0 3px #fff,0 4px 8px rgba(0,0,0,.15)}

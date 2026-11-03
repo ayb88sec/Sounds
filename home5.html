@@ -10,8 +10,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="نجمة">
 <meta name="theme-color" content="#6a5cff">
-<link rel="apple-touch-icon" href="icon.png">
-<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon2-180.png">
+<link rel="icon" href="icon2.png">
 <title>نجمة ⭐ Najma</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&display=swap">
 <style>
@@ -315,7 +315,7 @@ const HWL=rowBy("📌 الواجب");
 const CATS={hw:{t:"الواجب",e:"Homework",ic:"nav_hw",apps:HWL},uae:{t:"بلادي الإمارات",e:"My UAE",ic:"ap_uae",apps:rowBy("🔤 العربية").filter(a=>a.id==="uae")},ar:{t:"العربية",e:"Arabic",ic:"cat_ar",apps:rowBy("🔤 العربية").filter(a=>a.id!=="uae")},deen:{t:"ديني",e:"Islam",ic:"cat_deen",apps:rowBy("🕌 ديني")},en:{t:"English",e:"اللغة الإنجليزية",ic:"cat_en",apps:rowBy("🇬🇧 English")},math:{t:"Maths",e:"Maths",ic:"cat_num",apps:rowBy("🔷 Maths")},name:{t:"اسمي",e:"My Name",ic:"ap_name",apps:rowBy("✏️ اسمي · My name")}};
 let stars=0,full=0;{const seen=new Set();ROWS.forEach(r=>r.apps.filter(visA).forEach(a=>{const n=a.total?Math.min(count(a.key),a.total):0;if(a.total&&!seen.has(a.key)){seen.add(a.key);stars+=n;if(n>=a.total)full++}}))}
 document.getElementById("sTotal").textContent=stars;document.getElementById("sDone").textContent=full;
-const meAv=document.getElementById("meAv");if(NAJMA.me){meAv.textContent=NAJMA.me.avatar||"⭐";meAv.style.background=NAJMA.me.color||"#ffd23f"}
+const meAv=document.getElementById("meAv");if(NAJMA.me){meAv.innerHTML=NAJMA_AV(NAJMA.me.avatar);meAv.style.overflow="hidden";meAv.style.background=NAJMA.me.color||"#ffd23f"}
 const hwN=HWL.filter(visA).length;{const e=document.getElementById("nb");if(hwN){e.textContent=hwN;e.style.display="block"}}
 let ti=0;function tile(a){ti++;const n=a.total?Math.min(count(a.key),a.total):0,pct=a.total?n/a.total:0,C=2*Math.PI*21;
   const el=document.createElement("a");el.className="app";el.href=a.href;el.style.animationDelay=(ti*.06)+"s";
@@ -365,7 +365,7 @@ const kids=document.getElementById("kids");
 if(!NAJMA.lock){const b=document.createElement("button");b.className="kid"+(NAJMA.me&&NAJMA.me.preview?" on":"");
   b.innerHTML=`<span class="av" style="background:#ffd23f">👀</span><span>تجربة</span>`;b.onclick=()=>{if(!(NAJMA.me&&NAJMA.me.preview))use("preview")};kids.appendChild(b)}
 profs.filter(p=>!NAJMA.lock||p.id===NAJMA.lock).forEach(p=>{const b=document.createElement("button");b.className="kid"+(NAJMA.me&&NAJMA.me.id===p.id?" on":"");
-  b.innerHTML=`<span class="av" style="background:${p.color}">${p.avatar}</span><span dir="auto">${p.name}</span>`;b.onclick=()=>{if(!(NAJMA.me&&NAJMA.me.id===p.id))use(p.id)};kids.appendChild(b)});
+  b.innerHTML=`<span class="av" style="background:${p.color};overflow:hidden">${NAJMA_AV(p.avatar)}</span><span dir="auto">${p.name}</span>`;b.onclick=()=>{if(!(NAJMA.me&&NAJMA.me.id===p.id))use(p.id)};kids.appendChild(b)});
 const add=document.createElement("button");add.className="kid add";add.innerHTML=`<span class="av">➕</span><span>إضافة</span>`;add.onclick=()=>location.href="parent.html";if(!NAJMA.lock)kids.appendChild(add);
 document.getElementById("gear").onclick=()=>location.href="parent.html";if(NAJMA.lock)document.getElementById("gear").style.display="none";
 const show=id=>document.getElementById(id).classList.add("show"),hide=id=>document.getElementById(id).classList.remove("show");

@@ -208,7 +208,7 @@ const HWL=rowBy("📌 الواجب");
 const CATS={hw:{t:"📌 الواجب",apps:HWL},uae:{t:"بلادي الإمارات",apps:rowBy("🔤 العربية").filter(a=>a.id==="uae")},ar:{t:"العربية",apps:rowBy("🔤 العربية").filter(a=>a.id!=="uae")},deen:{t:"ديني",apps:rowBy("🕌 ديني")},en:{t:"English",apps:rowBy("🇬🇧 English")},math:{t:"Maths",apps:rowBy("🔷 Maths")},name:{t:"اسمي",apps:rowBy("✏️ اسمي · My name")}};
 let stars=0,full=0;{const seen=new Set();ROWS.forEach(r=>r.apps.filter(visA).forEach(a=>{const n=a.total?Math.min(count(a.key),a.total):0;if(a.total&&!seen.has(a.key)){seen.add(a.key);stars+=n;if(n>=a.total)full++}}))}
 document.getElementById("sTotal").textContent=stars;document.getElementById("sDone").textContent=full;
-const meAv=document.getElementById("meAv");if(NAJMA.me){meAv.textContent=NAJMA.me.avatar||"⭐";meAv.style.background=NAJMA.me.color||"#ffd23f"}
+const meAv=document.getElementById("meAv");if(NAJMA.me){meAv.innerHTML=NAJMA_AV(NAJMA.me.avatar);meAv.style.overflow="hidden";meAv.style.background=NAJMA.me.color||"#ffd23f"}
 const hwN=HWL.filter(visA).length;document.querySelectorAll(".hwn").forEach(e=>{if(hwN){e.textContent=hwN;e.style.display="block"}});
 let ti=0;function tile(a){ti++;const n=a.total?Math.min(count(a.key),a.total):0,pct=a.total?n/a.total:0,C=2*Math.PI*21;
   const el=document.createElement("a");el.className="app";el.href=a.href;el.style.animationDelay=(ti*.06)+"s";
@@ -248,7 +248,7 @@ const kids=document.getElementById("kids");
 if(!NAJMA.lock){const b=document.createElement("button");b.className="kid"+(NAJMA.me&&NAJMA.me.preview?" on":"");
   b.innerHTML=`<span class="av" style="background:#ffd23f">👀</span><span>تجربة</span>`;b.onclick=()=>{if(!(NAJMA.me&&NAJMA.me.preview))use("preview")};kids.appendChild(b)}
 profs.filter(p=>!NAJMA.lock||p.id===NAJMA.lock).forEach(p=>{const b=document.createElement("button");b.className="kid"+(NAJMA.me&&NAJMA.me.id===p.id?" on":"");
-  b.innerHTML=`<span class="av" style="background:${p.color}">${p.avatar}</span><span dir="auto">${p.name}</span>`;b.onclick=()=>{if(!(NAJMA.me&&NAJMA.me.id===p.id))use(p.id)};kids.appendChild(b)});
+  b.innerHTML=`<span class="av" style="background:${p.color};overflow:hidden">${NAJMA_AV(p.avatar)}</span><span dir="auto">${p.name}</span>`;b.onclick=()=>{if(!(NAJMA.me&&NAJMA.me.id===p.id))use(p.id)};kids.appendChild(b)});
 const add=document.createElement("button");add.className="kid add";add.innerHTML=`<span class="av">➕</span><span>إضافة</span>`;add.onclick=()=>location.href="parent.html";if(!NAJMA.lock)kids.appendChild(add);
 document.getElementById("gear").onclick=()=>location.href="parent.html";if(NAJMA.lock)document.getElementById("gear").style.display="none";
 const show=id=>document.getElementById(id).classList.add("show"),hide=id=>document.getElementById(id).classList.remove("show");
