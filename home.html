@@ -225,7 +225,7 @@ function cat(k){const c=CATS[k];if(!c)return home();const L=c.apps.filter(visA);
   window.scrollTo(0,0);setTimeout(()=>document.querySelectorAll(".fg").forEach(c=>c.style.strokeDashoffset=c.dataset.off),300)}
 function route(){const m=location.hash.match(/c=(\w+)/);if(m&&m[1]==="prog"){progress();return}if(m)cat(m[1]);else home()}
 addEventListener("hashchange",route);addEventListener("resize",()=>{if(!location.hash)home()});route();
-document.querySelectorAll(".z").forEach(b=>b.onclick=()=>{if(b.dataset.c==="prog")progress();else location.hash="c="+b.dataset.c});
+document.querySelectorAll(".z").forEach(b=>b.onclick=()=>{const k=b.dataset.c;if(k==="prog")return progress();const c=CATS[k],L=c?c.apps.filter(visA):[];if(k!=="hw"&&L.length===1){location.href=L[0].href;return}location.hash="c="+k});
 document.getElementById("bk").onclick=()=>{location.hash=""};
 document.querySelectorAll(".bar button").forEach(b=>b.onclick=()=>{const k=b.dataset.b;if(k==="home")location.hash="";else if(k==="prog")progress();else location.hash="c="+k});
 function progress(){const L=document.getElementById("progL");L.innerHTML="";const seen=new Set();
