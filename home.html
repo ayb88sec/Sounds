@@ -78,25 +78,72 @@ h2{color:#fff;font-size:22px;margin:22px 4px 10px;opacity:.95}
 .gear{background:rgba(255,255,255,.25);border:0;border-radius:16px;width:48px;height:48px;font-size:24px;cursor:pointer;margin-inline-start:auto}
 .tip{margin-top:26px;background:rgba(255,255,255,.92);border-radius:24px;padding:14px 16px;font-size:17px;line-height:1.6}
 .tip b{color:#6a5cff}
+
+/* ===== picture-based home ===== */
+body{background:#e9bf79;padding:0}
+.bubbles{display:none}
+main{max-width:none;padding:0;margin:0}
+.scene{position:relative;width:100%;max-width:1100px;margin:0 auto;display:none}
+.scene img.bg{width:100%;display:block}
+.scene.on{display:block}
+.z{position:absolute;border:0;background:transparent;cursor:pointer;border-radius:40px;-webkit-tap-highlight-color:transparent}
+.z:active{background:rgba(255,255,255,.25)}
+.corner{position:absolute;z-index:5;display:flex;align-items:center;gap:8px}
+.corner.tl{top:calc(2.2% + env(safe-area-inset-top));left:3%}
+.corner.tr{top:calc(2.2% + env(safe-area-inset-top));right:3%}
+.me{display:flex;flex-direction:column;align-items:center;cursor:pointer;border:0;background:none;padding:0;font-family:inherit}
+.me .av{width:clamp(56px,9vw,96px);height:clamp(56px,9vw,96px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:clamp(32px,5.4vw,56px);border:4px solid #fff;box-shadow:0 0 0 3px #ffd23f,0 8px 16px rgba(0,0,0,.25)}
+.me b{margin-top:-10px;background:#fff;border-radius:999px;padding:0 12px;font-size:clamp(17px,2.8vw,26px);color:#2b2340;box-shadow:0 5px 12px rgba(0,0,0,.2);white-space:nowrap}
+.rb{width:clamp(48px,7.4vw,78px);height:clamp(48px,7.4vw,78px);border-radius:50%;border:0;background:rgba(255,255,255,.92);box-shadow:0 8px 18px rgba(0,0,0,.22),inset 0 -4px 0 rgba(0,0,0,.06);font-size:clamp(24px,3.8vw,40px);cursor:pointer;position:relative;font-family:inherit;display:flex;align-items:center;justify-content:center}
+.rb i{position:absolute;bottom:-4px;right:-4px;background:#ff6f91;color:#fff;font-style:normal;font-size:13px;font-weight:800;border-radius:999px;padding:0 7px}
+.hwn{position:absolute;background:#ff3b5c;color:#fff;font-weight:800;border-radius:999px;padding:0 9px;font-size:clamp(14px,2.4vw,22px);box-shadow:0 3px 0 rgba(0,0,0,.2);pointer-events:none;display:none}
+.kids{display:none;position:absolute;z-index:7;left:3%;right:3%;top:calc(14% + env(safe-area-inset-top));background:rgba(255,255,255,.96);border-radius:24px;padding:10px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.kids.show{display:flex}.kid{color:#2b2340}
+/* section view */
+.sec{display:none;min-height:100vh;background:url(img/home3/bg_ipad.webp) center top/cover no-repeat fixed;padding:calc(14px + env(safe-area-inset-top)) clamp(14px,4vw,48px) 150px}
+.sec.on{display:block}
+@media (max-width:600px){.sec{background-image:url(img/home3/bg_phone.webp)}}
+.ctop{display:flex;align-items:center;justify-content:center;gap:16px;margin:8px 0 22px;position:relative}
+.ctop h2{margin:0;color:#16204a;font-size:clamp(34px,7vw,60px);text-shadow:0 3px 0 rgba(255,255,255,.85)}
+.back{position:absolute;inset-inline-start:0;border:0;background:rgba(255,255,255,.95);border-radius:999px;padding:8px 18px;font-family:inherit;font-size:clamp(17px,3vw,24px);font-weight:800;color:#16204a;box-shadow:0 6px 14px rgba(120,80,20,.25);cursor:pointer}
+.apps{max-width:900px;grid-template-columns:repeat(auto-fill,minmax(clamp(140px,28vw,220px),1fr));gap:clamp(14px,3vw,28px)}
+.apps .icon{background:rgba(255,255,255,.9)!important;border:4px solid #fff;box-shadow:0 10px 20px rgba(120,80,20,.25),inset 0 -6px 0 rgba(0,0,0,.05)}
+.apps .icon::before{display:none}
+.icon .pic{position:relative;width:82%;height:82%;object-fit:contain;filter:drop-shadow(0 6px 6px rgba(0,0,0,.2))}
+.apps .name{font-size:clamp(18px,3.4vw,26px);color:#16204a;text-shadow:0 2px 0 rgba(255,255,255,.7)}
+.apps .sub{color:#5a4a2a;opacity:1;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+.bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));z-index:20;display:none;gap:clamp(4px,2vw,22px);background:rgba(255,250,240,.96);border-radius:46px;padding:8px 18px;box-shadow:0 12px 28px rgba(100,60,10,.3)}
+.bar.on{display:flex}
+.bar button{border:0;background:none;border-radius:40px;padding:6px 8px;font-family:inherit;font-size:clamp(15px,2.6vw,22px);font-weight:800;color:#16204a;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.1;min-width:clamp(78px,15vw,130px)}
+.bar button img{width:clamp(40px,7vw,62px);height:clamp(40px,7vw,62px)}
+.bar button.on{background:radial-gradient(circle at 50% 35%,#fff4a8,#ffd23f 70%);box-shadow:0 8px 16px rgba(200,140,0,.35);transform:translateY(-14px) scale(1.12);border-radius:50%;width:clamp(96px,17vw,150px);height:clamp(96px,17vw,150px);justify-content:center}
+.prow2{display:flex;align-items:center;gap:10px;background:#f8f6fd;border-radius:16px;padding:8px 12px;margin-bottom:6px;text-align:start}
+.prow2 .g{width:44px;text-align:center;font-size:26px}.prow2 .g img{width:40px;height:40px}.prow2 .t{flex:1;font-weight:800}.prow2 .bb{height:10px;border-radius:9px;background:#eee8fb;overflow:hidden;margin-top:4px}.prow2 .bb i{display:block;height:100%;background:#ffc83d;border-radius:9px}
 </style>
 </head>
 <body>
 <div class="bubbles" id="bubbles"></div>
 <main>
-  <div class="top">
-    <img src="icon.png" alt="" id="star">
-    <div style="flex:1"><h1 id="hello">أهلاً يا أبطال!</h1><p>ماذا نتعلم اليوم؟ · <bdi dir="ltr">Hello heroes!</bdi></p></div>
-    <button class="gear" id="gear" aria-label="Settings">⚙️</button>
-  </div>
-
+  <div class="corner tl"><button class="me" id="me"><span class="av" id="meAv">⭐</span><b>⭐ <span id="sTotal">0</span></b></button></div>
+  <div class="corner tr"><button class="rb" id="trophy" aria-label="Progress">🏆<i id="sDone">0</i></button><button class="rb" id="gear" aria-label="Settings">⚙️</button></div>
   <div class="kids" id="kids"></div>
-  <div class="stats">
-    <div class="stat"><b id="sTotal">0</b><span>⭐ نجوم</span></div>
-    <div class="stat"><b id="sDone">0</b><span>🏆 أكملت</span></div>
-  </div>
-
-    <div class="apps" id="apps"></div>
+  <div class="scene" id="scIpad"><img class="bg" src="img/home3/home_ipad.webp" alt="">
+    <button class="z" data-c="uae" style="left:5.7%;top:33%;width:42%;height:15.4%"></button><button class="z" data-c="ar" style="left:50.4%;top:33%;width:42.6%;height:15.4%"></button>
+    <button class="z" data-c="deen" style="left:5.7%;top:49.6%;width:42%;height:16.7%"></button><button class="z" data-c="en" style="left:50.4%;top:49.6%;width:42.6%;height:16.7%"></button>
+    <button class="z" data-c="math" style="left:5.7%;top:67.6%;width:42%;height:17.4%"></button><button class="z" data-c="name" style="left:50.4%;top:67.6%;width:42.6%;height:17.4%"></button>
+    <button class="z" data-c="hw" style="left:38.6%;top:87.2%;width:20.3%;height:10.9%"></button><button class="z" data-c="prog" style="left:62.6%;top:87.2%;width:20.3%;height:10.9%"></button>
+    <span class="hwn" style="left:56%;top:87.5%"></span></div>
+  <div class="scene" id="scPhone"><img class="bg" src="img/home3/home_phone.webp" alt="">
+    <button class="z" data-c="uae" style="left:3.5%;top:33.9%;width:44.6%;height:15.2%"></button><button class="z" data-c="ar" style="left:51.6%;top:33.9%;width:45.2%;height:15.2%"></button>
+    <button class="z" data-c="deen" style="left:3.5%;top:50.1%;width:44.6%;height:15.2%"></button><button class="z" data-c="en" style="left:51.6%;top:50.1%;width:45.2%;height:15.2%"></button>
+    <button class="z" data-c="math" style="left:3.5%;top:66.4%;width:44.6%;height:15.2%"></button><button class="z" data-c="name" style="left:51.6%;top:66.4%;width:45.2%;height:15.2%"></button>
+    <button class="z" data-c="hw" style="left:39.9%;top:86.1%;width:21.1%;height:9.8%"></button><button class="z" data-c="prog" style="left:65.7%;top:86.1%;width:23.5%;height:9.8%"></button>
+    <span class="hwn" style="left:58%;top:86.5%"></span></div>
+  <div class="sec" id="sec"><div class="ctop"><button class="back" id="bk">➡️ رجوع</button><h2 id="secT"></h2></div><div class="apps" id="apps"></div></div>
+  <img id="star" src="icon.png" alt="" style="display:none">
 </main>
+<nav class="bar" id="bar"><button data-b="home"><img src="img/home2/nav_home.webp" alt="">الرئيسية</button><button data-b="hw" id="bHw"><img src="img/home2/nav_hw.webp" alt="">الواجب</button><button data-b="prog"><img src="img/home2/nav_prog.webp" alt="">تقدّمي</button></nav>
+<div class="pm" id="prog"><div class="pc"><h3><img src="img/home2/nav_prog.webp" alt="" style="width:44px;vertical-align:middle"> تقدّمي</h3><div id="progL"></div><div class="prow"><button class="pb go" data-x>تمام</button></div></div></div>
 <div class="pm" id="gate"><div class="pc">
   <h3>👨‍👩‍👧 للوالدين فقط</h3><p id="gQ" style="font-size:30px;font-weight:800;margin:6px 0" dir="ltr"></p>
   <input id="gA" inputmode="numeric" class="in" style="text-align:center;font-size:28px">
@@ -152,27 +199,42 @@ NAJMA.sections.filter(s=>s.type!=="qimg"&&s.type!=="flags"&&!(((NAJMA.sections.f
   if(s.hw)HW.push(a);else ROWS[s.lang==="ar"?0:2].apps.push(a)});
 /* homework from school comes first */
 if(HW.length)ROWS.unshift({t:"📌 الواجب",apps:HW})}
-const box=document.getElementById("apps");
-/* rings follow the levels switched on for this child */
-const sumLv=(app,sizes)=>NAJMA.lv(app).reduce((s,i)=>s+(sizes[i]||0),0);
-const LT={arabic:sumLv("arabic",[7,7,7,7,10]),sounds:sumLv("sounds",[25,7]),cvc:sumLv("wt",[7,20,17,18,16,18,15]),sent:sumLv("sent",[4,4,4,4]),shapes:sumLv("shapes",[4,4,2]),writeEn:sumLv("writeEn",[26,26,10]),quran:sumLv("quran",[7,43,68,132,321]),spell:sumLv("spell",[10,5,5,20,20]),math:sumLv("math",[3,3,3,3,3,3]),clock:sumLv("clock",[3,3,3,3]),clockAr:sumLv("clock",[3,3,3,3])};
-ROWS.forEach(r=>r.apps.forEach(a=>{if(LT[a.id]!=null)a.total=LT[a.id];if(a.id==="numAr"||a.id==="numEn")a.total=NAJMA.settings.numMax||20}));
-const ROWS2=ROWS;let stars=0,full=0;const seen=new Set();let i=0;
-ROWS.forEach(row=>{if(!row.apps.some(a=>NAJMA.settings.apps[a.id]!==false))return;const hd=document.createElement("div");hd.className="rowt";hd.textContent=row.t;box.appendChild(hd);
-row.apps.filter(a=>NAJMA.settings.apps[a.id]!==false).forEach(a=>{i++;
-  const n=a.total?Math.min(count(a.key),a.total):0,pct=a.total?n/a.total:0,C=2*Math.PI*21;
-  if(a.total&&!seen.has(a.key)){seen.add(a.key);stars+=n;if(n>=a.total)full++}
-  const el=document.createElement("a");el.className="app";el.href=a.href;el.style.animationDelay=(i*.08)+"s";
-  el.innerHTML=`<div class="icon" style="background:${a.bg}"><span class="glyph">${a.glyph}</span>
-     ${a.total?`<div class="ringwrap"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="21"/><circle class="fg" cx="28" cy="28" r="21"
-       stroke-dasharray="${C}" stroke-dashoffset="${C}" data-off="${C*(1-pct)}"/><text x="28" y="29">${pct>=1?"🏆":n}</text></svg></div>`:""}</div>
-     <div class="name" dir="auto">${a.name}</div><div class="sub" dir="auto">${a.sub}</div>`;
-  box.appendChild(el)})});
-setTimeout(()=>document.querySelectorAll(".fg").forEach(c=>c.style.strokeDashoffset=c.dataset.off),300);
+/* ===== rendering: the picture is the home screen ===== */
+const I="img/home2/";const AI={arabic:"arabic",name:"name",spell:"spell",numAr:"numAr",daysAr:"days",days:"days",clockAr:"clock",clock:"clock",colorsAr:"colors",colorsEn:"colorsEn",islam:"islam",iman:"iman",quran:"quran",duas:"duas",sounds:"sounds",cvc:"cvc",sent:"sent",writeEn:"writeEn",math:"math",numEn:"numEn",shapes:"shapes",uae:"uae"};
+const visA=a=>a&&NAJMA.settings.apps[a.id]!==false;
+const rowBy=t=>(ROWS.find(r=>r.t===t)||{apps:[]}).apps;
+const HWL=rowBy("📌 الواجب");
+const CATS={hw:{t:"📌 الواجب",apps:HWL},uae:{t:"بلادي الإمارات",apps:rowBy("🔤 العربية").filter(a=>a.id==="uae")},ar:{t:"العربية",apps:rowBy("🔤 العربية").filter(a=>a.id!=="uae")},deen:{t:"ديني",apps:rowBy("🕌 ديني")},en:{t:"English",apps:rowBy("🇬🇧 English")},math:{t:"Maths",apps:rowBy("🔷 Maths")},name:{t:"اسمي",apps:rowBy("✏️ اسمي · My name")}};
+let stars=0,full=0;{const seen=new Set();ROWS.forEach(r=>r.apps.filter(visA).forEach(a=>{const n=a.total?Math.min(count(a.key),a.total):0;if(a.total&&!seen.has(a.key)){seen.add(a.key);stars+=n;if(n>=a.total)full++}}))}
 document.getElementById("sTotal").textContent=stars;document.getElementById("sDone").textContent=full;
-const h=new Date().getHours(),nm=NAJMA.me?NAJMA.me.name:"أبطال";document.getElementById("hello").textContent=(h<12?"صباح الخير يا ":"مساء الخير يا ")+nm+"!";
+const meAv=document.getElementById("meAv");if(NAJMA.me){meAv.textContent=NAJMA.me.avatar||"⭐";meAv.style.background=NAJMA.me.color||"#ffd23f"}
+const hwN=HWL.filter(visA).length;document.querySelectorAll(".hwn").forEach(e=>{if(hwN){e.textContent=hwN;e.style.display="block"}});
+let ti=0;function tile(a){ti++;const n=a.total?Math.min(count(a.key),a.total):0,pct=a.total?n/a.total:0,C=2*Math.PI*21;
+  const el=document.createElement("a");el.className="app";el.href=a.href;el.style.animationDelay=(ti*.06)+"s";
+  el.innerHTML=`<div class="icon"${AI[a.id]?"":` style="background:${a.bg}"`}>${AI[a.id]?`<img class="pic" src="${I}ap_${AI[a.id]}.webp" alt="">`:`<span class="glyph">${a.glyph}</span>`}
+     ${a.total?`<div class="ringwrap"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="21"/><circle class="fg" cx="28" cy="28" r="21" stroke-dasharray="${C}" stroke-dashoffset="${C}" data-off="${C*(1-pct)}"/><text x="28" y="29">${pct>=1?"🏆":n}</text></svg></div>`:""}</div>
+     <div class="name" dir="auto">${a.name}</div><div class="sub" dir="auto">${a.sub}</div>`;return el}
+const phone=()=>matchMedia("(max-width:600px)").matches;
+function home(){document.getElementById("sec").classList.remove("on");document.getElementById("bar").classList.remove("on");
+  document.getElementById("scIpad").classList.toggle("on",!phone());document.getElementById("scPhone").classList.toggle("on",phone());document.querySelector(".corner.tl").style.display="";document.querySelector(".corner.tr").style.display="";window.scrollTo(0,0)}
+function cat(k){const c=CATS[k];if(!c)return home();const L=c.apps.filter(visA);
+  document.querySelectorAll(".scene").forEach(s=>s.classList.remove("on"));document.querySelector(".corner.tl").style.display="none";document.querySelector(".corner.tr").style.display="none";
+  document.getElementById("secT").textContent=c.t;const A=document.getElementById("apps");A.innerHTML="";ti=0;
+  if(!L.length)A.innerHTML='<div class="tip" style="grid-column:1/-1;text-align:center">'+(k==="hw"?"لا يوجد واجب اليوم 🎉":"لا يوجد شيء هنا بعد")+'</div>';L.forEach(a=>A.appendChild(tile(a)));
+  document.getElementById("sec").classList.add("on");const B=document.getElementById("bar");B.classList.add("on");B.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.b===k));
+  window.scrollTo(0,0);setTimeout(()=>document.querySelectorAll(".fg").forEach(c=>c.style.strokeDashoffset=c.dataset.off),300)}
+function route(){const m=location.hash.match(/c=(\w+)/);if(m&&m[1]==="prog"){progress();return}if(m)cat(m[1]);else home()}
+addEventListener("hashchange",route);addEventListener("resize",()=>{if(!location.hash)home()});route();
+document.querySelectorAll(".z").forEach(b=>b.onclick=()=>{if(b.dataset.c==="prog")progress();else location.hash="c="+b.dataset.c});
+document.getElementById("bk").onclick=()=>{location.hash=""};
+document.querySelectorAll(".bar button").forEach(b=>b.onclick=()=>{const k=b.dataset.b;if(k==="home")location.hash="";else if(k==="prog")progress();else location.hash="c="+k});
+function progress(){const L=document.getElementById("progL");L.innerHTML="";const seen=new Set();
+  ROWS.forEach(r=>r.apps.filter(a=>visA(a)&&a.total).forEach(a=>{if(seen.has(a.key))return;seen.add(a.key);const n=Math.min(count(a.key),a.total);
+    const d=document.createElement("div");d.className="prow2";d.innerHTML=`<span class="g">${AI[a.id]?`<img src="${I}ap_${AI[a.id]}.webp" alt="">`:a.glyph.length<=3?a.glyph:"⭐"}</span><div class="t"><span dir="auto">${a.name}</span> <small style="color:#7a7090">${n} / ${a.total}</small><div class="bb"><i style="width:${Math.round(n/a.total*100)}%"></i></div></div>`;L.appendChild(d)}));
+  document.getElementById("prog").classList.add("show")}
+document.getElementById("trophy").onclick=progress;
+document.getElementById("me").onclick=()=>document.getElementById("kids").classList.toggle("show");
 
-document.getElementById("star").onclick=e=>{e.target.style.animation="none";void e.target.offsetWidth;e.target.style.animation=""};
 
 /* ---------- profiles ---------- */
 const R=NAJMA.raw;let profs=NAJMA.profiles.slice();
@@ -189,7 +251,7 @@ profs.filter(p=>!NAJMA.lock||p.id===NAJMA.lock).forEach(p=>{const b=document.cre
 const add=document.createElement("button");add.className="kid add";add.innerHTML=`<span class="av">➕</span><span>إضافة</span>`;add.onclick=()=>location.href="parent.html";if(!NAJMA.lock)kids.appendChild(add);
 document.getElementById("gear").onclick=()=>location.href="parent.html";if(NAJMA.lock)document.getElementById("gear").style.display="none";
 const show=id=>document.getElementById(id).classList.add("show"),hide=id=>document.getElementById(id).classList.remove("show");
-document.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>{hide("gate");hide("edit")});
+document.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>{hide("gate");hide("edit");hide("prog")});
 let gateCb,gAns;
 function gate(cb){gateCb=cb;const a=3+Math.floor(Math.random()*7),b=4+Math.floor(Math.random()*6);gAns=a+b;
   document.getElementById("gQ").textContent=`${a} + ${b} = ?`;const i=document.getElementById("gA");i.value="";show("gate");setTimeout(()=>i.focus(),100)}
@@ -221,7 +283,7 @@ document.getElementById("eSave").onclick=()=>{ed.name=document.getElementById("e
 document.getElementById("eDel").onclick=()=>{if(!NAJMA.me)return;const id=NAJMA.me.id;profs=profs.filter(p=>p.id!==id);saveProfs();
   for(let k=localStorage.length-1;k>=0;k--){const key=localStorage.key(k);if(key&&key.startsWith(`najma:${id}:`))R.remove(key)}
   if(profs.length)use(profs[0].id);else{R.remove("najma:cur");location.reload()}};
-if(!profs.length)setTimeout(()=>{document.getElementById("hello").textContent="أهلاً! اضغط ➕ لإضافة طفل"},50);
+
 
 /* family code needed once per device */
 if(!NAJMA.hasKey()){const o=document.createElement("div");o.className="pm show";o.style.zIndex=50;
