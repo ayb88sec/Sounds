@@ -116,15 +116,56 @@ html{background:#e6b462}
 .prow2 .g{font-size:26px;width:40px;text-align:center}.prow2 .t{flex:1;font-weight:800}.prow2 .bb{height:10px;border-radius:9px;background:#eee8fb;overflow:hidden;margin-top:4px}.prow2 .bb i{display:block;height:100%;background:#ffc83d;border-radius:9px}
 .tip{margin-top:26px;background:rgba(255,255,255,.92);border-radius:24px;padding:14px 16px;font-size:17px;line-height:1.6}
 .tip b{color:#6a5cff}
+
+/* ===== v2: one scene, like the design ===== */
+body{background:linear-gradient(180deg,#8fd3ff 0,#8fd3ff 20%,#f6dca0 34%,#efc985 60%,#e4b36a 100%);background-attachment:fixed}
+html{background:#e4b36a}
+.bubbles{display:none}
+main{max-width:none;padding:0 0 130px}
+.hdr{position:absolute;top:calc(12px + env(safe-area-inset-top));left:16px;right:16px;z-index:6;align-items:flex-start}
+.me{flex-direction:column;background:none;box-shadow:none;padding:0;gap:0;cursor:pointer}
+.me .av{width:clamp(70px,13vw,104px);height:clamp(70px,13vw,104px);font-size:clamp(40px,8vw,62px);border:5px solid #fff;box-shadow:0 0 0 4px #ffd23f,0 8px 16px rgba(0,0,0,.2)}
+.me b{margin-top:-12px;background:#fff;border-radius:999px;padding:2px 14px;font-size:clamp(20px,3.6vw,28px);display:flex;align-items:center;gap:4px;box-shadow:0 5px 12px rgba(0,0,0,.15)}
+.me b img{width:clamp(22px,4vw,32px);height:auto}
+.pill,.gear{width:clamp(56px,10vw,82px);height:clamp(56px,10vw,82px);border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 8px 18px rgba(0,0,0,.18),inset 0 -4px 0 rgba(0,0,0,.06);font-size:clamp(28px,5vw,42px);margin-inline-start:10px;color:#3d4fb5}
+.pill img{width:72%;height:72%}.pill i{bottom:-4px;inset-inline-start:auto;inset-inline-end:-4px;left:auto}
+.kids{display:none;position:absolute;top:calc(140px + env(safe-area-inset-top));left:12px;right:12px;z-index:7;background:rgba(255,255,255,.95);border-radius:24px;padding:10px}
+.kids.show{display:flex}.kid{color:#2b2340}
+.hero{position:relative;margin:0;max-width:none}
+.hero img{width:100%;height:clamp(300px,52vw,560px);object-fit:cover;object-position:50% 80%;display:block;border-radius:0;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)}
+.sign{top:auto;bottom:12%;width:auto;transform:translateX(-50%)}
+.sign b{font-size:clamp(30px,7vw,64px);color:#fff;text-shadow:0 2px 0 #8a4a12,0 -2px 0 #8a4a12,2px 0 0 #8a4a12,-2px 0 0 #8a4a12,0 5px 0 #5e300a,0 8px 10px rgba(0,0,0,.25)}
+.sign span{font-size:clamp(18px,3.8vw,34px);color:#fff;text-shadow:0 2px 0 #8a4a12,0 -1px 0 #8a4a12,1px 0 0 #8a4a12,-1px 0 0 #8a4a12,0 4px 0 #5e300a}
+@media (max-width:600px){.hero img{height:auto;aspect-ratio:632/559}.sign{bottom:14%}}
+.cats{position:relative;max-width:980px;padding:0 clamp(14px,4vw,48px);margin:-20px auto 0;gap:clamp(14px,3vw,30px)}
+.cat{border-radius:52px 46px 56px 44px/44px 52px 46px 56px;padding:clamp(14px,2.6vw,26px) 12px 8px;border:5px solid rgba(255,255,255,.75);
+  box-shadow:0 14px 26px rgba(120,80,20,.28),inset 0 0 0 2px rgba(255,255,255,.4),inset 0 12px 24px rgba(255,255,255,.6),inset 0 -14px 20px rgba(0,0,0,.06)}
+.cat h3{font-size:clamp(30px,6.4vw,58px);color:#16204a;line-height:1.05}
+.cat small{font-size:clamp(15px,3vw,26px);color:#16204a;opacity:.85;margin-top:2px}
+.cat img{height:clamp(130px,26vw,260px);-webkit-mask-image:none;mask-image:none;filter:drop-shadow(0 10px 10px rgba(0,0,0,.18));margin-top:4px}
+.hwcard{border-radius:46px;border:5px solid rgba(255,255,255,.75);box-shadow:0 14px 26px rgba(150,40,80,.25),inset 0 12px 24px rgba(255,255,255,.5)}
+.hwcard h3{display:flex;align-items:center;gap:8px;font-size:clamp(26px,5vw,40px)}
+.bar{bottom:calc(14px + env(safe-area-inset-bottom));padding:8px 18px;gap:clamp(4px,2vw,22px);background:rgba(255,250,240,.96);border-radius:46px;box-shadow:0 12px 28px rgba(100,60,10,.3)}
+.bar button{min-width:clamp(78px,15vw,130px);font-size:clamp(15px,2.6vw,22px);color:#16204a;padding:6px 8px;border-radius:40px}
+.bar button img{width:clamp(40px,7vw,62px);height:clamp(40px,7vw,62px);filter:drop-shadow(0 4px 4px rgba(0,0,0,.15))}
+.bar button.on{background:radial-gradient(circle at 50% 35%,#fff4a8,#ffd23f 70%);box-shadow:0 8px 16px rgba(200,140,0,.35),inset 0 -5px 0 rgba(0,0,0,.08);transform:translateY(-14px) scale(1.12);border-radius:50%;width:clamp(96px,17vw,150px);height:clamp(96px,17vw,150px);justify-content:center}
+.ctop{padding:calc(130px + env(safe-area-inset-top)) clamp(14px,4vw,48px) 0;justify-content:center;gap:16px}
+.ctop h2{color:#16204a;font-size:clamp(34px,7vw,60px);text-shadow:0 3px 0 rgba(255,255,255,.8)}
+#apps{padding:0 clamp(14px,4vw,48px);margin:10px auto}
+.apps{grid-template-columns:repeat(auto-fill,minmax(clamp(140px,28vw,230px),1fr));gap:clamp(14px,3vw,28px)}
+.apps .icon{background:rgba(255,255,255,.88)!important;border:4px solid #fff;box-shadow:0 10px 20px rgba(120,80,20,.22),inset 0 -6px 0 rgba(0,0,0,.05)}
+.apps .icon::before{display:none}
+.apps .name{font-size:clamp(18px,3.4vw,26px);color:#16204a}
+.apps .sub{color:#5a4a2a}
 </style>
 </head>
 <body>
 <div class="bubbles" id="bubbles"></div>
 <main>
-  <div class="hdr">
-    <div class="me" id="me"><span class="av" id="meAv">⭐</span><b><img src="img/home2/nav_star.webp" alt="" style="width:30px;height:30px;vertical-align:-6px"> <span id="sTotal">0</span></b></div>
+  <div class="hdr" dir="ltr">
+    <div class="me" id="me"><span class="av" id="meAv">⭐</span><b><img src="img/home2/nav_star.webp" alt=""><span id="sTotal">0</span></b></div>
     <span style="flex:1"></span>
-    <button class="pill" id="trophy" aria-label="Progress"><img src="img/home2/cat_prog.webp" alt="" style="width:46px;height:46px"><i id="sDone">0</i></button>
+    <button class="pill" id="trophy" aria-label="Progress"><img src="img/home2/cat_prog.webp" alt=""><i id="sDone">0</i></button>
     <button class="pill gear" id="gear" aria-label="Settings">⚙️</button>
   </div>
   <div class="kids" id="kids"></div>
@@ -203,7 +244,7 @@ const I0="img/home2/";const CATS=[
 CATS[0].ids=["arabic","name"];
 let stars=0,full=0;{const seen=new Set();Object.values(ALL).filter(visA).forEach(a=>{const n=a.total?Math.min(count(a.key),a.total):0;if(a.total&&!seen.has(a.key)){seen.add(a.key);stars+=n;if(n>=a.total)full++}})}
 document.getElementById("sTotal").textContent=stars;document.getElementById("sDone").textContent=full;
-const meAv=document.getElementById("meAv");if(NAJMA.me){meAv.textContent=NAJMA.me.avatar||"⭐";meAv.style.background=NAJMA.me.color||"#ffd23f"}
+document.getElementById("me").onclick=()=>document.getElementById("kids").classList.toggle("show");const meAv=document.getElementById("meAv");if(NAJMA.me){meAv.textContent=NAJMA.me.avatar||"⭐";meAv.style.background=NAJMA.me.color||"#ffd23f"}
 let ti=0;
 function tile(a){ti++;const n=a.total?Math.min(count(a.key),a.total):0,pct=a.total?n/a.total:0,C=2*Math.PI*21;
   const el=document.createElement("a");el.className="app";el.href=a.href;el.style.animationDelay=(ti*.06)+"s";
@@ -215,12 +256,12 @@ const rings=()=>setTimeout(()=>document.querySelectorAll(".fg").forEach(c=>c.sty
 const I="img/home2/";const AI={arabic:"arabic",name:"name",spell:"spell",numAr:"numAr",daysAr:"days",days:"days",clockAr:"clock",clock:"clock",colorsAr:"colors",colorsEn:"colorsEn",islam:"islam",iman:"iman",quran:"quran",duas:"duas",sounds:"sounds",cvc:"cvc",sent:"sent",writeEn:"writeEn",math:"math",numEn:"numEn",shapes:"shapes",uae:"uae"};
 const V=document.getElementById("view");const h=new Date().getHours(),nm=NAJMA.me&&!NAJMA.me.preview?NAJMA.me.name:"يا أبطال";
 const hwVis=HWL.filter(visA);document.getElementById("bHw").style.display=hwVis.length?"":"none";
-function home(){ti=0;V.innerHTML=`<div class="hero"><picture><source media="(max-width:600px)" srcset="${I}hero_phone.webp"><img src="${I}hero_ipad.webp" alt=""></picture><div class="sign"><b>هَيّا نَتَعَلَّم!</b><span>${(h<12?"صباح الخير ":"مساء الخير ")+nm}</span></div></div><div class="cats" id="cats"></div>`;
+function home(){ti=0;V.innerHTML=`<div class="hero"><picture><source media="(max-width:600px)" srcset="${I}hero_phone.webp"><img src="${I}hero_ipad.webp" alt=""></picture><div class="sign"><b>هَيّا نَتَعَلَّم!</b><span dir="ltr">Let's Learn!</span></div></div><div class="cats" id="cats"></div>`;
   const G=document.getElementById("cats");
   if(hwVis.length){const c=document.createElement("div");c.className="hwcard";c.id="hwc";c.innerHTML=`<h3><img src="${I}cat_hw.webp" alt="" style="width:64px;height:64px;vertical-align:middle;margin-inline-end:6px">واجب اليوم</h3><div class="apps"></div>`;hwVis.forEach(a=>c.querySelector(".apps").appendChild(tile(a)));G.appendChild(c)}
   CATS.forEach((c,i)=>{const L=[...new Set(c.ids)].map(id=>ALL[id]).filter(visA);if(!L.length)return;
     const b=document.createElement("button");b.className="cat";b.style.background=c.bg;b.style.animationDelay=(i*.08)+"s";
-    b.innerHTML=`<h3>${c.t}</h3><small dir="auto">${c.en}</small><img src="${c.art}" alt=""><span class="cnt">${L.length}</span>`;b.onclick=()=>{location.hash="c="+c.k};G.appendChild(b)});rings()}
+    b.innerHTML=`<h3>${c.t}</h3><small dir="auto">${c.en}</small><img src="${c.art}" alt="">`;b.onclick=()=>{location.hash="c="+c.k};G.appendChild(b)});rings()}
 function cat(k){const c=CATS.find(x=>x.k===k);if(!c)return home();ti=0;const L=[...new Set(c.ids)].map(id=>ALL[id]).filter(visA);
   V.innerHTML=`<div class="ctop"><button class="back" id="bk">➡️ رجوع</button><h2>${c.t}</h2></div><div class="apps" id="apps"></div>`;
   document.getElementById("bk").onclick=()=>{location.hash=""};const A=document.getElementById("apps");L.forEach(a=>A.appendChild(tile(a)));window.scrollTo(0,0);rings()}
@@ -284,7 +325,7 @@ document.getElementById("eSave").onclick=()=>{ed.name=document.getElementById("e
 document.getElementById("eDel").onclick=()=>{if(!NAJMA.me)return;const id=NAJMA.me.id;profs=profs.filter(p=>p.id!==id);saveProfs();
   for(let k=localStorage.length-1;k>=0;k--){const key=localStorage.key(k);if(key&&key.startsWith(`najma:${id}:`))R.remove(key)}
   if(profs.length)use(profs[0].id);else{R.remove("najma:cur");location.reload()}};
-if(!profs.length)setTimeout(()=>{const e=document.querySelector(".sign span");if(e)e.textContent="أهلاً! اضغط ➕ لإضافة طفل"},50);
+
 
 /* family code needed once per device */
 if(!NAJMA.hasKey()){const o=document.createElement("div");o.className="pm show";o.style.zIndex=50;
