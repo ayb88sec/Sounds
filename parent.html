@@ -220,7 +220,7 @@ async function ipadLink(p){if(!DB)return baseLink(p);const {data,error}=await sb
   return homeURL()+"?dev="+data+"&key="+encodeURIComponent(R.get("najma:key")||"")+"&kid="+p.id}
 let profs=NAJMA.profiles.slice(),secs=JSON.parse(JSON.stringify(NAJMA.sections));const vis=()=>secs.filter(s=>s.type!=="qimg"&&s.type!=="flags");
 /* new features reach other families only when the admin turns them on */
-const feat=n=>IS_ADMIN||n==="kidpics"||n==="feedback"||!!(((secs.find(x=>x.type==="flags")||{}).features||{})[n]);
+const FDEF={kidpics:true,feedback:true};const feat=n=>{if(IS_ADMIN)return true;const v=((secs.find(x=>x.type==="flags")||{}).features||{})[n];return v===undefined?!!FDEF[n]:!!v};
 /* sharing: sections from other families are read-only (except for the admin) */
 var IS_ADMIN=false;const isMine=x=>!x._fam||x._fam===FID;const ownQ=()=>secs.find(x=>x.type==="qimg"&&isMine(x));
 const avT=v=>/^img:/.test(v||"")?"🧒":(v||"⭐");const AVH=v=>NAJMA_AV(v);const AVK=["img:k1","img:k2","img:k3","img:k4","img:k5","img:k6","img:k7","img:k8"];
@@ -599,10 +599,12 @@ function drawFb(L){const B=$("adFb");if(!B)return;L.sort((a,b)=>(b.updated_at||"
     r.querySelector(".ok").onclick=async()=>{let {error}=await sb.from("sections").delete().eq("id",x.id);if(error)({error}=await sb.from("sections").update({proposed:false}).eq("id",x.id));if(error){alert(error.message);return}r.remove()};B.appendChild(r)})}
 async function drawAdmin(){if(!IS_ADMIN)return;
   /* new features: me first, then everyone when I decide */
-  {const F=$("adFeat");F.innerHTML="";const fl=secs.find(x=>x.type==="flags"&&isMine(x)),on=n=>!!(fl&&fl.features&&fl.features[n]);
+  {const F=$("adFeat");F.innerHTML="";const fl=secs.find(x=>x.type==="flags"&&isMine(x)),on=n=>{const v=fl&&fl.features?fl.features[n]:undefined;return v===undefined?!!FDEF[n]:!!v};
     [["homework","📌 الواجب المدرسي"],["kidpics","🧒 صور الأطفال الجديدة"],["feedback","💬 الملاحظات والاقتراحات"]].forEach(([n,lab])=>{const r=document.createElement("div");r.className="rrow";r.innerHTML=`<b style="flex:1;font-size:16px">${lab}</b><button class="b ${on(n)?"go":""}">${on(n)?"🌍 لكل العائلات":"🔒 لي فقط"}</button>`;
-      r.querySelector("button").onclick=async()=>{let f=secs.find(x=>x.type==="flags"&&isMine(x));if(!f){f={id:"najma-flags",type:"flags",title:"flags",icon:"🧪",lang:"ar",words:[],features:{},_shared:true};secs.push(f)}
-        f.features=Object.assign({},f.features,{[n]:!on(n)});f._shared=true;saveS();await dbSaveS();drawAdmin()};F.appendChild(r)})}
+      const btn=r.querySelector("button");btn.onclick=async()=>{let f=secs.find(x=>x.type==="flags"&&isMine(x));if(!f){f={id:"najma-flags",type:"flags",title:"flags",icon:"🧪",lang:"ar",words:[],features:{},_shared:true};secs.push(f)}
+        const cur=(f.features||{})[n],was=cur===undefined?!!FDEF[n]:!!cur,now=!was;f.features=Object.assign({},f.features,{[n]:now});f._shared=true;
+        btn.className="b "+(now?"go":"");btn.textContent=now?"🌍 لكل العائلات":"🔒 لي فقط";btn.disabled=true;
+        try{saveS();if(DB)await dbSaveS()}catch(e){alert("لم يتم الحفظ: "+e.message)}btn.disabled=false};F.appendChild(r)})}
   /* what I share */
   const S=$("adShare");S.innerHTML="";const q=ownQ();
   const row=(lab,on,fn)=>{const r=document.createElement("div");r.className="rrow";r.innerHTML=`<b style="flex:1;font-size:16px">${lab}</b><button class="b ${on?"go":""}">${on?"🌍 مشترك":"🔒 خاص"}</button>`;r.querySelector("button").onclick=fn;S.appendChild(r)};
