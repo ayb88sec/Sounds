@@ -128,7 +128,7 @@ main{padding-bottom:calc(140px + env(safe-area-inset-bottom))}
 .scene .inner{position:relative;width:100%}
 .scene .inner img.bg{width:100%;height:auto;display:block}
 /* fill the screen down to the bar: grow the picture (up to 10% wider, sides trimmed) so no empty strip is left */
-.scene{max-width:none!important;overflow:hidden}
+.scene{max-width:none!important;overflow:hidden;direction:ltr}
 #scIpad{--iw:min(1180px,clamp(100vw,calc((100dvh - clamp(92px,13.5vw,132px) - env(safe-area-inset-bottom))*1087/1255),110vw));height:calc(var(--iw)*1255/1087)}
 #scPhone{--iw:clamp(100vw,calc((100dvh - clamp(92px,13.5vw,132px) - env(safe-area-inset-bottom))*852/1572),110vw);height:calc(var(--iw)*1572/852)}
 .scene .inner{width:var(--iw)!important;margin-left:calc((100vw - var(--iw))/2)}
