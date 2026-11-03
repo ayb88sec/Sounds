@@ -220,6 +220,16 @@ body:not(.athome) .fly{display:none}
   -webkit-mask-image:linear-gradient(transparent 0,#000 18px);mask-image:linear-gradient(transparent 0,#000 18px)}
 .sec{padding-bottom:0!important}
 html.lock,html.lock body{overflow:hidden;height:100%;overscroll-behavior:none}
+
+/* header higher, smaller stars card: more room for the icons */
+.sec{padding-top:calc(26vw + env(safe-area-inset-top))!important}
+@media (max-width:600px){.sec{padding-top:calc(40vw + env(safe-area-inset-top))!important}}
+.sec .ctop{margin-bottom:6px!important}
+.mine{padding:6px 14px!important;margin-bottom:12px!important;border-radius:26px!important}
+.mine img{width:clamp(36px,7vw,52px)!important}
+.mine b{font-size:clamp(17px,3.4vw,24px)!important}
+.mine br{display:none}.mine .t>span{font-size:clamp(14px,2.8vw,20px)}
+.mine .pbar{height:10px;margin-top:4px}
 </style>
 </head>
 <body>
