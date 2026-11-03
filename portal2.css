@@ -21,3 +21,12 @@ nav button.on{background:radial-gradient(circle at 50% 35%,#fff4a8,#ffd23f 75%)!
 .b.add{background:linear-gradient(#ffe27a,#ffc21a)!important;color:#16204a!important;box-shadow:0 6px 0 #d49a00!important}
 .sheet .in-s{background:linear-gradient(#fffdf6,#fff7e2)!important}
 .av{box-shadow:0 0 0 3px #fff,0 4px 8px rgba(0,0,0,.15)}
+/* login and gate screens */
+.gate{background:#efcb84 url(img/home3/calm_ipad.webp) center top/cover no-repeat!important}
+@media (max-width:600px){.gate{background-image:url(img/home3/calm_phone.webp)!important}}
+.gate .box{background:linear-gradient(#fffdf6,#fff4d6)!important;border:5px solid #fff;border-radius:34px!important;box-shadow:0 14px 0 #e8c46a,0 22px 34px rgba(120,80,20,.28)!important;width:min(92vw,360px)!important}
+.gate .box>div:first-child{font-size:0!important;width:96px;height:96px;margin:0 auto 6px;border-radius:24px;background:url(icon.png) center/cover;box-shadow:0 8px 16px rgba(0,0,0,.2)}
+.gate h2{font-size:28px!important;color:#16204a}
+.gate .in{background:#fff!important;border:3px solid #f1d58a!important;border-radius:18px!important}
+.gate .b{border-radius:999px!important}
+.gate .b:not(.go){background:linear-gradient(#ffffff,#eef6ff)!important;color:#16204a!important;box-shadow:0 5px 0 #d6c48f!important}

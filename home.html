@@ -59,9 +59,9 @@ h2{color:#fff;font-size:22px;margin:22px 4px 10px;opacity:.95}
 .kid .av{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;border:4px solid rgba(255,255,255,.6);box-shadow:0 4px 0 rgba(0,0,0,.15)}
 .kid.on{opacity:1}.kid.on .av{border-color:#fff;transform:scale(1.1);box-shadow:0 0 0 4px #ffe066,0 6px 0 rgba(0,0,0,.15)}
 .kid.add .av{background:rgba(255,255,255,.25);font-size:30px}
-.pm{position:fixed;inset:0;background:rgba(30,15,70,.6);display:none;align-items:center;justify-content:center;z-index:30;padding:14px}
+.pm{position:fixed;inset:0;background:rgba(70,45,10,.45);display:none;align-items:center;justify-content:center;z-index:30;padding:14px}
 .pm.show{display:flex}
-.pc{background:#fff;border-radius:28px;padding:18px;max-width:440px;width:100%;max-height:94vh;overflow:auto;text-align:center}
+.pc{background:linear-gradient(#fffdf6,#fff4d6);border:5px solid #fff;box-shadow:0 14px 0 #e8c46a,0 22px 34px rgba(120,80,20,.28);color:#16204a;border-radius:34px;padding:18px;max-width:440px;width:100%;max-height:94vh;overflow:auto;text-align:center}
 .pc h3{margin:0 0 8px;font-size:26px}
 .pc label{display:block;text-align:right;font-weight:800;color:#7a7090;margin:12px 4px 6px}
 .in{width:100%;font-family:inherit;font-size:22px;border:3px solid #e6def8;border-radius:16px;padding:8px 12px;outline:none}
@@ -370,10 +370,10 @@ document.getElementById("trophy").onclick=progress;
    <ol style="font-size:17px;line-height:1.7;padding-inline-start:22px;margin:0 0 10px"><li>انسخي الرابط من الزر بالأسفل.</li><li>احذفي تطبيق «نجمة» القديم من الشاشة الرئيسية.</li><li>افتحي الرابط في <b>Safari</b>.</li><li>اضغطي <b>مشاركة</b> ← <b>إضافة إلى الشاشة الرئيسية</b>.</li></ol>
    <div style="font-size:13px;color:#7a7090;word-break:break-all;background:#f8f6fd;border-radius:12px;padding:8px" dir="ltr">${u.href}</div>
    <p style="font-size:14px;color:#7a7090;margin:8px 0 0">الرابط فيه رمز العائلة، فلن تحتاجي لكتابته. النجوم والتقدّم تبقى كما هي.</p>
-   <div class="prow"><button class="pb" id="imLater">لاحقًا</button><button class="pb go" id="imCopy">📋 نسخ الرابط</button></div></div>`;
+   <div class="prow" style="flex-wrap:wrap"><button class="pb" id="imLater">لاحقًا</button><button class="pb" id="imNever">🚫 لا تظهر مرة أخرى</button><button class="pb go" id="imCopy">📋 نسخ الرابط</button></div></div>`;
   document.body.appendChild(d);
   d.querySelector("#imCopy").onclick=async e=>{try{await navigator.clipboard.writeText(u.href);e.target.textContent="✅ تم النسخ"}catch(x){prompt("انسخي الرابط:",u.href)}L.setItem("najma:iconMsg","1")};
-  d.querySelector("#imLater").onclick=()=>{d.remove();sessionStorage.setItem("najma:iconLater","1")};
+  d.querySelector("#imNever").onclick=()=>{L.setItem("najma:iconMsg","1");d.remove()};d.querySelector("#imLater").onclick=()=>{d.remove();sessionStorage.setItem("najma:iconLater","1")};
   if(sessionStorage.getItem("najma:iconLater"))d.remove()}catch(e){}})();
 document.getElementById("me").onclick=()=>document.getElementById("kids").classList.toggle("show");
 

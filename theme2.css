@@ -50,3 +50,7 @@ div:has(>.nx-prog),.progress{max-width:760px;margin:6px auto 16px!important;padd
 main>.sub,main>p,main>.hint,main>small{display:table;margin-left:auto!important;margin-right:auto!important;background:rgba(255,253,245,.9);border-radius:999px;padding:4px 16px!important;color:#16204a!important;text-shadow:none!important}
 .progress{margin-bottom:6px!important}
 .count{display:table;margin:0 auto 14px!important;background:rgba(255,253,245,.92);border-radius:999px;padding:2px 16px}
+/* pop-ups and parent gates on every page */
+.pm .pc,.nx-gate div,.card{background:linear-gradient(#fffdf6,#fff4d6)!important;border:5px solid #fff;border-radius:34px!important;box-shadow:0 14px 0 #e8c46a,0 22px 34px rgba(120,80,20,.28)!important;color:#16204a}
+.pm,.nx-gate{background:rgba(70,45,10,.45)!important}
+.nx-gate button.go{background:linear-gradient(#5fd77b,#2fae4e)!important}

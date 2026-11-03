@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <script src="supa.js"></script>
-<script src="profile.js"></script><link rel="stylesheet" href="portal2.css?v=1"><script src="data/kidq.js"></script><script src="data/qk.js"></script><script src="data/qnames.js"></script><script src="data/base.js"></script>
+<script src="profile.js"></script><link rel="stylesheet" href="portal2.css?v=2"><script src="data/kidq.js"></script><script src="data/qk.js"></script><script src="data/qnames.js"></script><script src="data/base.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -580,10 +580,10 @@ function portalNote(){try{if(localStorage.getItem("najma:portalMsg")==="1"||docu
     <ol style="font-size:16px;line-height:1.7;padding-inline-start:22px;margin:0 0 8px"><li>احذفي أيقونة البوابة القديمة من الشاشة الرئيسية.</li><li>افتحي الرابط في <b>Safari</b>.</li><li><b>مشاركة</b> ← <b>إضافة إلى الشاشة الرئيسية</b>.</li></ol>
     <div class="link" dir="ltr" style="word-break:break-all">${u}</div>
     <p style="font-size:14px;color:#7a7090;margin:8px 0 0">آيبادات الأطفال تعرض رسالتها الخاصة مع رابطها.</p>
-    <div class="actions"><button class="b" id="pnLater">لاحقًا</button><button class="b go" id="pnCopy">📋 نسخ الرابط</button></div></div>`;
+    <div class="actions" style="flex-wrap:wrap;gap:6px"><button class="b" id="pnLater">لاحقًا</button><button class="b" id="pnNever">🚫 لا تظهر مرة أخرى</button><button class="b go" id="pnCopy">📋 نسخ الرابط</button></div></div>`;
   document.body.appendChild(d);
   d.querySelector("#pnCopy").onclick=async e=>{try{await navigator.clipboard.writeText(u);e.target.textContent="✅ تم النسخ"}catch(x){prompt("انسخي الرابط:",u)}localStorage.setItem("najma:portalMsg","1");setTimeout(()=>d.remove(),900)};
-  d.querySelector("#pnLater").onclick=()=>d.remove()}catch(e){}}
+  d.querySelector("#pnNever").onclick=()=>{localStorage.setItem("najma:portalMsg","1");d.remove()};d.querySelector("#pnLater").onclick=()=>d.remove()}catch(e){}}
 function fbInit(){portalNote();const B=$("fbBox");if(!B)return;B.style.display=DB&&FID&&feat("feedback")?"":"none";if(B.dataset.on)return;B.dataset.on=1;
   $("fbPic").onclick=()=>{$("fbFile").value="";$("fbFile").click()};
   $("fbFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const url=URL.createObjectURL(f),im=new Image();im.onload=()=>{const W=700,sc=Math.min(1,W/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*sc;c.height=im.height*sc;c.getContext("2d").drawImage(im,0,0,c.width,c.height);fbImg=c.toDataURL("image/jpeg",.6);$("fbPicN").textContent="✅ تمت إضافة الصورة"};im.src=url};
