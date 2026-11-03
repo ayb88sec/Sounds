@@ -100,9 +100,10 @@ main{max-width:none;padding:0;margin:0}
 .kids{display:none;position:absolute;z-index:7;left:3%;right:3%;top:calc(14% + env(safe-area-inset-top));background:rgba(255,255,255,.96);border-radius:24px;padding:10px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
 .kids.show{display:flex}.kid{color:#2b2340}
 /* section view */
-.sec{display:none;min-height:100vh;background:url(img/home3/bg_ipad.webp) center top/cover no-repeat fixed;padding:calc(14px + env(safe-area-inset-top)) clamp(14px,4vw,48px) 150px}
+.sec{display:none;min-height:100vh;background:#efcb84 url(img/home3/bg_ipad.webp) center top/100% auto no-repeat;padding:calc(44vw + env(safe-area-inset-top)) clamp(14px,4vw,48px) 150px}
 .sec.on{display:block}
-@media (max-width:600px){.sec{background-image:url(img/home3/bg_phone.webp)}}
+@media (max-width:600px){.sec{background-image:url(img/home3/bg_phone.webp);padding-top:calc(62vw + env(safe-area-inset-top))}}
+.back{top:calc(-44vw + 14px)}@media (max-width:600px){.back{top:calc(-62vw + 14px)}}
 .ctop{display:flex;align-items:center;justify-content:center;gap:16px;margin:8px 0 22px;position:relative}
 .ctop h2{margin:0;color:#16204a;font-size:clamp(34px,7vw,60px);text-shadow:0 3px 0 rgba(255,255,255,.85)}
 .back{position:absolute;inset-inline-start:0;border:0;background:rgba(255,255,255,.95);border-radius:999px;padding:8px 18px;font-family:inherit;font-size:clamp(17px,3vw,24px);font-weight:800;color:#16204a;box-shadow:0 6px 14px rgba(120,80,20,.25);cursor:pointer}
