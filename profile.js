@@ -77,7 +77,10 @@
     const l=document.createElement("link");l.rel="stylesheet";l.href="theme2.css?v=1";document.head.appendChild(l);
     document.addEventListener("DOMContentLoaded",()=>{const H="home6.html?preview=1";
       const bk=document.createElement("a");bk.className="n2back";bk.textContent="➡️ رجوع";bk.href=document.referrer&&/home\d*\.html/.test(document.referrer)?document.referrer:H;document.body.appendChild(bk);
-      const n=document.createElement("nav");n.className="n2bar";n.innerHTML=`<a href="${H}"><img src="img/home2/nav_home.webp" alt=""><b>الرئيسية</b><small>Home</small></a><a href="${H}#c=hw"><img src="img/home2/nav_hw.webp" alt=""><b>الواجب</b><small>Homework</small></a><a href="${H}#c=prog"><img src="img/home2/nav_prog.webp" alt=""><b>تقدّمي</b><small>My Progress</small></a>`;document.body.appendChild(n)})}}catch(e){}
+      const n=document.createElement("nav");n.className="n2bar";n.innerHTML=`<a href="${H}"><img src="img/home2/nav_home.webp" alt=""><b>الرئيسية</b><small>Home</small></a><a href="${H}#c=hw"><img src="img/home2/nav_hw.webp" alt=""><b>الواجب</b><small>Homework</small></a><a href="${H}#c=prog"><img src="img/home2/nav_prog.webp" alt=""><b>تقدّمي</b><small>My Progress</small></a>`;document.body.appendChild(n);
+      /* no rocket talk in the new look */
+      const fix=()=>document.querySelectorAll(".count,.nx-count").forEach(e=>{const t=e.textContent,u=t.replace(/[،,]?\s*طِ?ر بالصاروخ إلى القمر!?/,"").replace(/\.?\s*Fly the rocket to the moon!?/i,"").replace("وصلت إلى القمر","أكملت كل شيء").replace("You reached the moon","You finished everything");if(u!==t)e.textContent=u});
+      fix();new MutationObserver(fix).observe(document.body,{subtree:true,childList:true,characterData:true})})}}catch(e){}
   /* family code: private data (names, settings, recordings) is encrypted; each device stores the code once */
   let ckey=null;
   const ub=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)),bu=a=>{let s="";a.forEach(x=>s+=String.fromCharCode(x));return btoa(s)};
