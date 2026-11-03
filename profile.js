@@ -72,6 +72,12 @@
     c.style.cssText=`position:fixed;top:calc(10px + env(safe-area-inset-top));left:70px;z-index:15;height:52px;border-radius:18px;background:${me.color||"#fff"};color:#fff;
       display:flex;align-items:center;gap:6px;padding:0 14px 0 8px;font:800 20px "Baloo Bhaijaan 2","Baloo 2",system-ui,sans-serif;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18);text-shadow:0 2px 0 rgba(0,0,0,.15)`;
     c.innerHTML=`<span style="font-size:30px">${me.avatar||"⭐"}</span><span dir="auto">${me.name}</span>`;document.body.appendChild(c);const st=document.createElement("style");st.textContent="main{padding-top:74px !important}";document.head.appendChild(st)})}
+  /* new look (test only): switched on by the test home page, never on the kids' iPads until published */
+  try{if(G.call(localStorage,"najma:look2")==="1"&&!/(home\d*|parent|families|guide)\.html$/.test(location.pathname)){
+    const l=document.createElement("link");l.rel="stylesheet";l.href="theme2.css?v=1";document.head.appendChild(l);
+    document.addEventListener("DOMContentLoaded",()=>{const H="home6.html?preview=1";
+      const bk=document.createElement("a");bk.className="n2back";bk.textContent="➡️ رجوع";bk.href=document.referrer&&/home\d*\.html/.test(document.referrer)?document.referrer:H;document.body.appendChild(bk);
+      const n=document.createElement("nav");n.className="n2bar";n.innerHTML=`<a href="${H}"><img src="img/home2/nav_home.webp" alt=""><b>الرئيسية</b><small>Home</small></a><a href="${H}#c=hw"><img src="img/home2/nav_hw.webp" alt=""><b>الواجب</b><small>Homework</small></a><a href="${H}#c=prog"><img src="img/home2/nav_prog.webp" alt=""><b>تقدّمي</b><small>My Progress</small></a>`;document.body.appendChild(n)})}}catch(e){}
   /* family code: private data (names, settings, recordings) is encrypted; each device stores the code once */
   let ckey=null;
   const ub=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)),bu=a=>{let s="";a.forEach(x=>s+=String.fromCharCode(x));return btoa(s)};
