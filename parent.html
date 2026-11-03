@@ -220,7 +220,7 @@ async function ipadLink(p){if(!DB)return baseLink(p);const {data,error}=await sb
   return homeURL()+"?dev="+data+"&key="+encodeURIComponent(R.get("najma:key")||"")+"&kid="+p.id}
 let profs=NAJMA.profiles.slice(),secs=JSON.parse(JSON.stringify(NAJMA.sections));const vis=()=>secs.filter(s=>s.type!=="qimg"&&s.type!=="flags");
 /* new features reach other families only when the admin turns them on */
-const feat=n=>IS_ADMIN||!!(((secs.find(x=>x.type==="flags")||{}).features||{})[n]);
+const feat=n=>IS_ADMIN||n==="kidpics"||n==="feedback"||!!(((secs.find(x=>x.type==="flags")||{}).features||{})[n]);
 /* sharing: sections from other families are read-only (except for the admin) */
 var IS_ADMIN=false;const isMine=x=>!x._fam||x._fam===FID;const ownQ=()=>secs.find(x=>x.type==="qimg"&&isMine(x));
 const avT=v=>/^img:/.test(v||"")?"🧒":(v||"⭐");const AVH=v=>NAJMA_AV(v);const AVK=["img:k1","img:k2","img:k3","img:k4","img:k5","img:k6","img:k7","img:k8"];
@@ -571,7 +571,20 @@ function drawShare(){const box=$("sShare");if(!box)return;if(!DB||!FID||es.hw){b
 async function adSet(id,patch){const {error}=await sb.from("sections").update(patch).eq("id",id);if(error){alert(error.message);return false}return true}
 /* feedback: each message is a private row only the admin can read */
 let fbImg=null;
-function fbInit(){const B=$("fbBox");if(!B)return;B.style.display=DB&&FID&&feat("feedback")?"":"none";if(B.dataset.on)return;B.dataset.on=1;
+/* one-time note for parents: the portal link, to re-add it for the new icon */
+function portalNote(){try{if(localStorage.getItem("najma:portalMsg")==="1"||document.getElementById("pNote"))return;const u="https://ayb88sec.github.io/Sounds/parent.html";
+  const d=document.createElement("div");d.id="pNote";d.className="sheet show";d.style.alignItems="center";
+  d.innerHTML=`<div class="in-s" style="border-radius:26px;max-width:420px;margin:14px"><div style="text-align:center"><img src="icon.png" style="width:90px;border-radius:22px;box-shadow:0 8px 16px rgba(0,0,0,.2)"></div>
+    <h3 style="text-align:center">✨ نجمة بشكل جديد!</h3><p style="font-size:17px;margin:6px 0">شكل جديد للتطبيق وبوابة الوالدين، وصور جديدة للأطفال، وزر 💬 للملاحظات والاقتراحات.</p>
+    <p style="font-size:16px;margin:6px 0"><b>لتظهر الأيقونة الجديدة على جوالك:</b></p>
+    <ol style="font-size:16px;line-height:1.7;padding-inline-start:22px;margin:0 0 8px"><li>احذفي أيقونة البوابة القديمة من الشاشة الرئيسية.</li><li>افتحي الرابط في <b>Safari</b>.</li><li><b>مشاركة</b> ← <b>إضافة إلى الشاشة الرئيسية</b>.</li></ol>
+    <div class="link" dir="ltr" style="word-break:break-all">${u}</div>
+    <p style="font-size:14px;color:#7a7090;margin:8px 0 0">آيبادات الأطفال تعرض رسالتها الخاصة مع رابطها.</p>
+    <div class="actions"><button class="b" id="pnLater">لاحقًا</button><button class="b go" id="pnCopy">📋 نسخ الرابط</button></div></div>`;
+  document.body.appendChild(d);
+  d.querySelector("#pnCopy").onclick=async e=>{try{await navigator.clipboard.writeText(u);e.target.textContent="✅ تم النسخ"}catch(x){prompt("انسخي الرابط:",u)}localStorage.setItem("najma:portalMsg","1");setTimeout(()=>d.remove(),900)};
+  d.querySelector("#pnLater").onclick=()=>d.remove()}catch(e){}}
+function fbInit(){portalNote();const B=$("fbBox");if(!B)return;B.style.display=DB&&FID&&feat("feedback")?"":"none";if(B.dataset.on)return;B.dataset.on=1;
   $("fbPic").onclick=()=>{$("fbFile").value="";$("fbFile").click()};
   $("fbFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const url=URL.createObjectURL(f),im=new Image();im.onload=()=>{const W=700,sc=Math.min(1,W/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*sc;c.height=im.height*sc;c.getContext("2d").drawImage(im,0,0,c.width,c.height);fbImg=c.toDataURL("image/jpeg",.6);$("fbPicN").textContent="✅ تمت إضافة الصورة"};im.src=url};
   $("fbSend").onclick=async()=>{const t=$("fbT").value.trim();if(!t&&!fbImg)return;const M=$("fbMsg");M.style.display="";M.textContent="⏳";
