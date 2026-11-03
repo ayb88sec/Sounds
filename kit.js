@@ -36,7 +36,11 @@ fetch("audio/phonics-uk.json").then(r=>r.json()).then(j=>{Object.assign(PHON,j.s
 const APPROX={a:"a",b:"buh",c:"kuh",d:"duh",e:"eh",f:"fff",g:"guh",h:"huh",i:"ih",j:"juh",k:"kuh",l:"lll",m:"mmm",n:"nnn",o:"o",p:"puh",q:"kwuh",r:"rrr",s:"sss",t:"tuh",u:"uh",v:"vvv",w:"wuh",x:"ks",y:"yuh",z:"zzz"};
 function sound(ch){ch=ch.toLowerCase();if(ch==="ck")ch="k";if(ch==="nk"){sound("ng");setTimeout(()=>sound("k"),260);return}if(PHON[ch])play(PHON[ch]);else say(APPROX[ch]||ch,.7)}
 /* sound out a word: c... a... t... cat */
-function blend(word,onStep,snds){const L=snds||[...word];L.forEach((c,i)=>setTimeout(()=>{sound(c);onStep&&onStep(i)},i*800));setTimeout(()=>{say(word,.75);onStep&&onStep(-1)},L.length*800+350)}
+function sayEnd(word){const k=String(word).trim().toLowerCase();if(WORDA[k])return play(WORDA[k]);
+  /* iPads block the built-in voice when it starts from a timer, so the whole word is read with the online voice (built-in voice when offline) */
+  if(navigator.onLine!==false&&window.NAJMA&&NAJMA.aiSay){try{NAJMA.aiSay(word,"en",.8);return}catch(e){}}say(word,.75)}
+function blend(word,onStep,snds){const L=snds||[...word];try{speechSynthesis.speak(new SpeechSynthesisUtterance(""))}catch(e){}
+  L.forEach((c,i)=>setTimeout(()=>{sound(c);onStep&&onStep(i)},i*800));setTimeout(()=>{sayEnd(word);onStep&&onStep(-1)},L.length*800+350)}
 /* mascot */
 let sayT,hi="";
 function talk(t){const s=document.getElementById("say"),p=document.getElementById("pip");if(!s)return;s.textContent=t;s.classList.remove("pop");void s.offsetWidth;s.classList.add("pop");
