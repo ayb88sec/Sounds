@@ -83,6 +83,9 @@
     const P=[...Array(4)].map(()=>{const x=new Audio("audio/pop.wav");x.preload="auto";x.volume=.5;return x});let pi=0;
     const pop=()=>{const t=Date.now();if(t-last<60)return;last=t;try{const x=P[pi++%P.length];x.currentTime=0;const r=x.play();if(r&&r.catch)r.catch(()=>{})}catch(e){}};
     document.addEventListener("pointerdown",e=>{if(e.target.closest&&e.target.closest("button,a,.z,.tile,.app,.cat,.sym,[role=button],[onclick]"))pop()},{capture:true,passive:true})}}catch(e){}
+  /* the picture iPhone/iPad shows while a sound plays (Dynamic Island, lock screen) */
+  try{if("mediaSession" in navigator&&window.MediaMetadata){const md=()=>{try{navigator.mediaSession.metadata=new MediaMetadata({title:"نجمة",artist:"Najma",artwork:[{src:new URL("icon-n.png",location.href).href,sizes:"512x512",type:"image/png"},{src:new URL("icon2-180.png",location.href).href,sizes:"180x180",type:"image/png"}]})}catch(e){}};
+    md();document.addEventListener("play",md,true)}}catch(e){}
   /* a child's picture: an emoji, or one of the character pictures ("img:k1") */
   window.NAJMA_AV=v=>/^img:k\d$/.test(v||"")?`<img src="img/kids/${v.slice(4)}.webp" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block">`:(v||"⭐");
   /* new look (test only): switched on by the test home page, never on the kids' iPads until published */
