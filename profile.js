@@ -90,7 +90,7 @@
   window.NAJMA_AV=v=>/^img:k\d$/.test(v||"")?`<img src="img/kids/${v.slice(4)}.webp" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block">`:(v||"⭐");
   /* new look (test only): switched on by the test home page, never on the kids' iPads until published */
   try{if(!/(home\d*|parent|families|guide)\.html$/.test(location.pathname)&&location.pathname.split("/").pop()!==""){
-    const l=document.createElement("link");l.rel="stylesheet";l.href="theme2.css?v=5";document.head.appendChild(l);
+    const l=document.createElement("link");l.rel="stylesheet";l.href="theme2.css?v=6";document.head.appendChild(l);
     document.addEventListener("DOMContentLoaded",()=>{const H="home.html";
       const bk=document.createElement("a");bk.className="n2back";bk.textContent="➡️ رجوع";bk.href=document.referrer&&/home\d*\.html/.test(document.referrer)?document.referrer:H;document.body.appendChild(bk);
       const n=document.createElement("nav");n.className="n2bar";n.innerHTML=`<a href="${H}"><img src="img/home2/nav_home.webp" alt=""><b>الرئيسية</b><small>Home</small></a><a href="${H}#c=hw"><img src="img/home2/nav_hw.webp" alt=""><b>الواجب</b><small>Homework</small></a><a href="${H}#c=prog"><img src="img/home2/nav_prog.webp" alt=""><b>تقدّمي</b><small>My Progress</small></a>`;document.body.appendChild(n);
