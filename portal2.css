@@ -1,5 +1,5 @@
 /* ===== parent portal: new look (test only) ===== */
-html{background:#efcb84}
+html{background:linear-gradient(#2f9cfc 0 50%,#efcb84 50%)}
 body{background:transparent!important;color:#16204a}
 body::before{content:"";position:fixed;inset:0;z-index:-2;background:#efcb84 url(img/home3/calm_ipad.webp) center top/cover no-repeat}
 @media (max-width:600px){body::before{background-image:url(img/home3/calm_phone.webp)}}

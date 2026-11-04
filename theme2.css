@@ -58,7 +58,7 @@ main>.sub,main>p,main>.hint,main>small{display:table;margin-left:auto!important;
 .lang{right:auto!important;left:clamp(14px,4vw,40px)!important;top:calc(14px + env(safe-area-inset-top))!important;background:rgba(255,255,255,.95)!important;color:#16204a!important;border-radius:999px!important;box-shadow:0 6px 14px rgba(120,80,20,.25)!important}
 html[dir=ltr] .lang{left:auto!important;right:clamp(14px,4vw,40px)!important}
 /* ===== fixed header on every app page: back, title and language stay still, only the content scrolls ===== */
-html{background:linear-gradient(#4aa7f2 0 40%,#f6cf8c 40%)!important}
+html{background:linear-gradient(#2f9cfc 0 50%,#f6cf8c 50%)!important}
 body::before{background-size:100% auto!important;background-position:center top!important}
 body::after{content:"";position:fixed;left:0;right:0;top:0;height:calc(148px + env(safe-area-inset-top));z-index:20;pointer-events:none;
   background:url(img/home3/calm_ipad.webp) center top/100% auto no-repeat;-webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent)}
