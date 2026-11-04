@@ -54,3 +54,6 @@ main>.sub,main>p,main>.hint,main>small{display:table;margin-left:auto!important;
 .pm .pc,.nx-gate div,.card{background:linear-gradient(#fffdf6,#fff4d6)!important;border:5px solid #fff;border-radius:34px!important;box-shadow:0 14px 0 #e8c46a,0 22px 34px rgba(120,80,20,.28)!important;color:#16204a}
 .pm,.nx-gate{background:rgba(70,45,10,.45)!important}
 .nx-gate button.go{background:linear-gradient(#5fd77b,#2fae4e)!important}
+/* the language switch sits on the other side from «رجوع» */
+.lang{right:auto!important;left:clamp(14px,4vw,40px)!important;top:calc(14px + env(safe-area-inset-top))!important;background:rgba(255,255,255,.95)!important;color:#16204a!important;border-radius:999px!important;box-shadow:0 6px 14px rgba(120,80,20,.25)!important}
+html[dir=ltr] .lang{left:auto!important;right:clamp(14px,4vw,40px)!important}
