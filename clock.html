@@ -18,9 +18,9 @@ h1{color:#fff;font-size:clamp(40px,10vw,58px);margin:10px 0 4px;text-shadow:0 4p
 .lv{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0 4px}
 .lv button{border:0;border-radius:999px;padding:8px 14px;font-family:inherit;font-size:17px;font-weight:700;background:rgba(255,255,255,.55);color:#2b2340;cursor:pointer}
 .lv button.on{background:#fff;box-shadow:0 4px 0 rgba(0,0,0,.15);color:#e8590c}
-.face{position:relative;width:min(80vw,340px);margin:10px auto 0}
+.face{position:relative;width:min(84vw,380px);margin:10px auto 0}
 .clock{width:100%;display:block;filter:drop-shadow(0 10px 0 rgba(0,0,0,.15))}
-.clock .hand{transition:transform .7s cubic-bezier(.3,1.4,.5,1);transform-origin:150px 150px}
+.clock .hand{transition:transform .7s cubic-bezier(.3,1.4,.5,1)}
 .clock.tap{cursor:pointer}
 .ears{position:absolute;top:-34px;left:0;right:0;display:flex;justify-content:space-between;padding:0 14%;font-size:48px;pointer-events:none}
 .say{background:#fff;border-radius:26px;padding:10px 16px;margin:14px auto 0;max-width:460px;font-size:clamp(24px,6.5vw,34px);font-weight:700;box-shadow:0 6px 0 rgba(0,0,0,.12);min-height:60px}
@@ -71,20 +71,20 @@ const at=el=>{const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.
 let done={};try{done=JSON.parse(localStorage.getItem("clockDone")||"{}")}catch(e){}
 const rnd=n=>Math.floor(Math.random()*n),shuf=a=>[...a].sort(()=>Math.random()-.5);
 /* the clock: a smiling face, short hand for hours, long red hand for minutes */
-function drawClock(h,m){let t="";for(let i=1;i<=12;i++){const a=i*Math.PI/6;t+=`<text x="${150+Math.sin(a)*110}" y="${150-Math.cos(a)*110+11}" text-anchor="middle" font-size="32" font-weight="800" fill="${COL[i%6]}" font-family="Andika,sans-serif">${i}</text>`}
-  for(let i=0;i<60;i++)if(i%5){const a=i*Math.PI/30;t+=`<circle cx="${150+Math.sin(a)*136}" cy="${150-Math.cos(a)*136}" r="2" fill="#e0c9a6"/>`}
-  $("ck").innerHTML=`<svg class="clock" viewBox="0 0 300 300"><circle cx="150" cy="150" r="146" fill="#fff" stroke="#e8590c" stroke-width="10"/>${t}
-    <circle cx="118" cy="190" r="10" fill="#ffb3c7" opacity=".7"/><circle cx="182" cy="190" r="10" fill="#ffb3c7" opacity=".7"/>
-    <g class="hand" id="hH" style="transform:rotate(${(h%12)*30+m/2}deg)"><line x1="150" y1="150" x2="150" y2="86" stroke="#2b2340" stroke-width="13" stroke-linecap="round"/></g>
-    <g class="hand" id="hM" style="transform:rotate(${m*6}deg)"><line x1="150" y1="150" x2="150" y2="40" stroke="#ff4f87" stroke-width="8" stroke-linecap="round"/></g>
-    <circle cx="150" cy="150" r="12" fill="#ffd23f" stroke="#2b2340" stroke-width="3"/></svg>`}
+/* the clock: a picture face (Arabic or English numbers) with picture hands that turn around the centre */
+const CK={w:608,h:786,cx:302,cy:442,s:.62};
+function drawClock(h,m){const S=CK.s,img=(n,x,y,w,hh)=>`<image href="img/clock/${n}.webp" x="${x}" y="${y}" width="${w}" height="${hh}"/>`;
+  $("ck").innerHTML=`<svg class="clock" viewBox="0 0 ${CK.w} ${CK.h}">${img(AR?"face_ar":"face_en",0,0,CK.w,CK.h)}
+    <g class="hand" id="hH" style="transform-origin:${CK.cx}px ${CK.cy}px;transform:rotate(${(h%12)*30+m/2}deg)">${img("hand_h",CK.cx-56*S,CK.cy-235*S,113*S,286*S)}</g>
+    <g class="hand" id="hM" style="transform-origin:${CK.cx}px ${CK.cy}px;transform:rotate(${m*6}deg)">${img("hand_m",CK.cx-54*S,CK.cy-346*S,109*S,397*S)}</g>
+    ${img("cap",CK.cx-30,CK.cy-30,60,61)}</svg>`}
 /* the time is kept as minutes since 12:00 (can go forwards or backwards), so the hands always turn the right way */
 let T=180;const gH=()=>Math.floor(((T%720)+720)%720/60)||12,gM=()=>((T%60)+60)%60;
 function hands(){const a=$("hH"),b=$("hM");if(!a)return;a.style.transform=`rotate(${T/2}deg)`;b.style.transform=`rotate(${T*6}deg)`}
 function step(d){T+=d*LV[L].step;tick();hands()}
 /* drag either hand with a finger: the long hand moves the minutes, the short hand the hours */
 function draggable(onMove){const svg=$("ck").querySelector("svg");let which=null;
-  const ang=e=>{const r=svg.getBoundingClientRect(),x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2);return (Math.atan2(x,-y)*180/Math.PI+360)%360};
+  const ang=e=>{const r=svg.getBoundingClientRect(),x=e.clientX-(r.left+r.width*CK.cx/CK.w),y=e.clientY-(r.top+r.height*CK.cy/CK.h);return (Math.atan2(x,-y)*180/Math.PI+360)%360};
   const near=(a,b)=>{const d=Math.abs(((a-b)%360+540)%360-180);return d};
   const move=e=>{const a=ang(e),st=LV[L].step;
     if(which==="m"){let m=Math.round(a/6/st)*st%60,d=m-gM();if(d>30)d-=60;if(d<-30)d+=60;if(d){T+=d;tick()}}
