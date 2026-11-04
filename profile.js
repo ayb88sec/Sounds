@@ -90,10 +90,15 @@
   window.NAJMA_AV=v=>/^img:k\d$/.test(v||"")?`<img src="img/kids/${v.slice(4)}.webp" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block">`:(v||"⭐");
   /* new look (test only): switched on by the test home page, never on the kids' iPads until published */
   try{if(!/(home\d*|parent|families|guide)\.html$/.test(location.pathname)&&location.pathname.split("/").pop()!==""){
-    const l=document.createElement("link");l.rel="stylesheet";l.href="theme2.css?v=9";document.head.appendChild(l);const wst=window.scrollTo.bind(window);window.scrollTo=function(){try{const m=document.querySelector("main");if(m&&getComputedStyle(m).position==="fixed"){m.scrollTo.apply(m,arguments);return}}catch(e){}return wst.apply(null,arguments)};
+    const l=document.createElement("link");l.rel="stylesheet";l.href="theme2.css?v=13";document.head.appendChild(l);const wst=window.scrollTo.bind(window);window.scrollTo=function(){try{const m=document.querySelector("main");if(m&&getComputedStyle(m).position==="fixed"){m.scrollTo.apply(m,arguments);return}}catch(e){}return wst.apply(null,arguments)};
     document.addEventListener("DOMContentLoaded",()=>{const H="home.html";
       const bk=document.createElement("a");bk.className="n2back";bk.textContent="➡️ رجوع";bk.href=document.referrer&&/home\d*\.html/.test(document.referrer)?document.referrer:H;document.body.appendChild(bk);
       const n=document.createElement("nav");n.className="n2bar";n.innerHTML=`<a href="${H}"><img src="img/home2/nav_home.webp" alt=""><b>الرئيسية</b><small>Home</small></a><a href="${H}#c=hw"><img src="img/home2/nav_hw.webp" alt=""><b>الواجب</b><small>Homework</small></a><a href="${H}#c=prog"><img src="img/home2/nav_prog.webp" alt=""><b>تقدّمي</b><small>My Progress</small></a>`;document.body.appendChild(n);
+      /* 3D button icons instead of emoji at the start of a button */
+      const BI=[["⏪","back"],["⏩","fwd"],["🎮","game"],["🔊","sound"],["🔈","sound"],["🔉","sound"],["✏️","write"],["✍️","write"],["✏","write"],["🎤","mic"],["🎙️","mic"],["🎲","dice"],["🔄","again"],["🔁","again"],["💡","hint"],["✅","check"]];
+      const swapIcons=()=>document.querySelectorAll("button,.btn,a.n2back").forEach(b=>{if(b.dataset.ic)return;const w=document.createTreeWalker(b,NodeFilter.SHOW_TEXT);let t;while(t=w.nextNode()){const v=t.nodeValue.replace(/^\s+/,"");if(!v)continue;
+        const hit=BI.find(([e])=>v.startsWith(e));if(hit){const im=document.createElement("img");im.src="img/btn/"+hit[1]+".webp";im.alt="";im.className="bi";t.nodeValue=v.slice(hit[0].length).replace(/^️/,"");t.parentNode.insertBefore(im,t);b.dataset.ic=1;b.classList.add(b.textContent.trim()?"bi-text":"bi-only")}break}});
+      swapIcons();new MutationObserver(swapIcons).observe(document.body,{subtree:true,childList:true});
       /* no rocket talk in the new look */
       const fix=()=>document.querySelectorAll(".count,.nx-count").forEach(e=>{const t=e.textContent,u=t.replace(/[،,]?\s*طِ?ر بالصاروخ إلى القمر!?/,"").replace(/\.?\s*Fly the rocket to the moon!?/i,"").replace("وصلت إلى القمر","أكملت كل شيء").replace("You reached the moon","You finished everything");if(u!==t)e.textContent=u});
       fix();new MutationObserver(fix).observe(document.body,{subtree:true,childList:true,characterData:true})})}}catch(e){}

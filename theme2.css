@@ -81,3 +81,9 @@ main::before{content:"";display:block;position:sticky;top:0;z-index:5;height:cal
 @media (max-width:600px){main::before{background-image:url(img/home3/calm_phone.webp)}}
 main h1{z-index:25!important}
 html body main{padding-top:0!important}
+/* 3D button icons */
+img.bi{height:1.6em;width:1.6em;vertical-align:middle;margin-inline-end:.25em;filter:drop-shadow(0 3px 3px rgba(0,0,0,.18))}
+.bi-only{background:none!important;box-shadow:none!important;border:0!important;padding:0!important}
+.bi-only img.bi{height:clamp(64px,14vw,90px);width:clamp(64px,14vw,90px);margin:0}
+.bi-text{background:rgba(255,253,245,.95)!important;border:3px solid #fff!important;box-shadow:0 6px 0 rgba(120,80,20,.18)!important;color:#16204a!important;text-shadow:none!important;padding:4px 18px 4px 6px!important}
+html[dir=rtl] .bi-text{padding:4px 6px 4px 18px!important}
