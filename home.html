@@ -234,6 +234,13 @@ html.lock,html.lock body{overflow:hidden;height:100%;overscroll-behavior:none}
 .mine b{font-size:clamp(17px,3.4vw,24px)!important}
 .mine br{display:none}.mine .t>span{font-size:clamp(14px,2.8vw,20px)}
 .mine .pbar{height:10px;margin-top:4px}
+
+/* shorter sky on section pages: the scene slides up, the title sits on the fort line */
+.sec{padding-top:calc(12vw + env(safe-area-inset-top))!important}
+@media (max-width:600px){.sec{padding-top:calc(16vw + env(safe-area-inset-top))!important}}
+.sec::before{background-position:center -14vw!important}
+@media (max-width:600px){.sec::before{background-position:center -46vw!important}}
+.sec .wood{padding-top:clamp(6px,1.2vw,12px);padding-bottom:clamp(6px,1.2vw,12px)}
 </style>
 </head>
 <body>
