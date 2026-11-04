@@ -6,8 +6,12 @@
     if(m)fetch("https://ayb88sec.github.io/Sounds/moved.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(!j||!j.ok)return;
       const g=k=>Storage.prototype.getItem.call(localStorage,k),q=new URLSearchParams(location.search);
       if(g("najma:dev")&&g("najma:lock")&&!q.get("dev")){q.set("dev",g("najma:dev"));q.set("key",g("najma:key")||"");q.set("kid",g("najma:lock")||"")}
-      const qs=q.toString();location.replace("https://ayb88sec.github.io/Sounds/"+(m[1]||"home.html")+(qs?"?"+qs:"")+location.hash)}).catch(()=>{})}}catch(e){}
+      q.set("mv","1");const qs=q.toString();location.replace("https://ayb88sec.github.io/Sounds/"+(m[1]||"home.html")+(qs?"?"+qs:"")+location.hash)}).catch(()=>{})}}catch(e){}
 })();
+/* which home-screen app is this: the new one (added from the new link), the old one (moved from the old address), or the browser */
+(function(){try{const st=navigator.standalone||matchMedia("(display-mode: standalone)").matches;if(!sessionStorage.getItem("najma:appKind"))
+  sessionStorage.setItem("najma:appKind",!st?"browser":(new URLSearchParams(location.search).get("mv")||/githack/.test(document.referrer))?"old":"new");
+  window.NAJMA_APP=sessionStorage.getItem("najma:appKind")}catch(e){window.NAJMA_APP="?"}})();
 (function(){
   const S=Storage.prototype,G=S.getItem,SET0=S.setItem,RM=S.removeItem;
   /* storage full: the downloaded settings copy is the only big thing that can be thrown away (it comes back on the next sync) */
@@ -223,7 +227,7 @@
         const ms=JSON.stringify(m);if(ms!==G.call(localStorage,ns(k))){SET.call(localStorage,ns(k),ms);changed=true}if(ms!==JSON.stringify(srv))push(k,ms)});
       for(let i=0;i<localStorage.length;i++){const full=localStorage.key(i);if(full&&full.startsWith(`najma:${kid.id}:`)){const k=full.slice(kid.id.length+8);if(!(k in (js.progress||{})))push(k,G.call(localStorage,full))}}
       /* tell the portal how much space this iPad uses */
-      try{if(navigator.storage&&navigator.storage.estimate)navigator.storage.estimate().then(e=>{const mb=Math.round((e.usage||0)/1e5)/10;try{SET.call(localStorage,"najma:spaceMB",String(mb))}catch(x){}push("ipadSpace",JSON.stringify({mb,net:me&&me.net==="online"?"online":"offline",at:Date.now(),v:window.NAJMA.V,host:location.hostname}))}).catch(()=>{})}catch(e){}
+      try{if(navigator.storage&&navigator.storage.estimate)navigator.storage.estimate().then(e=>{const mb=Math.round((e.usage||0)/1e5)/10;try{SET.call(localStorage,"najma:spaceMB",String(mb))}catch(x){}push("ipadSpace",JSON.stringify({mb,net:me&&me.net==="online"?"online":"offline",at:Date.now(),v:window.NAJMA.V,host:location.hostname,app:window.NAJMA_APP}))}).catch(()=>{})}catch(e){}
       if(changed&&/home\.html$/.test(location.pathname)&&!sessionStorage.getItem("najma:reloaded")){sessionStorage.setItem("najma:reloaded","1");location.reload()}else if(!changed)sessionStorage.removeItem("najma:reloaded")})}).catch(e=>{try{SET.call(localStorage,"najma:syncErr",String(e&&e.message||e))}catch(x){}})}
   /* offline: cache everything once it has been opened online */
   const ONLINE=!!(me&&me.net==="online");window.NAJMA.online=ONLINE;

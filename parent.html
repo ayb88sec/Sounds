@@ -256,7 +256,7 @@ function drawKids(){const L=$("kidList");L.innerHTML="";
       .map(([k,n,t])=>`<span>${n} ${Math.min(count(p.id,k),t)}/${t}</span>`).join("")+
       vis().filter(s=>!p.apps||p.apps["s:"+s.id]!==false).map(s=>`<span>${s.icon} ${s.title} ${count(p.id,"sec_"+s.id)}/${s.words.length}</span>`).join("");
     d.innerHTML=`<div class="av" style="background:${p.color};overflow:hidden">${AVH(p.avatar)}</div><div class="info"><b dir="auto">${p.name}</b>
-      <small dir="auto">${[p.nameAr,p.nameEn].filter(Boolean).join(" · ")}${(()=>{let sp=(typeof PRG!=="undefined"&&PRG[p.id]||{}).ipadSpace;try{if(typeof sp==="string")sp=JSON.parse(sp)}catch(e){sp=null}return sp&&sp.mb!=null?` · ${sp.net==="online"?"📶":"💾"} الآيباد: ${sp.mb} MB · ${verTag(sp)}`:` · ${verTag(null)}`})()}</small><div class="bars">${prog}</div></div><button class="b">✏️ تعديل</button>`;
+      <small dir="auto">${[p.nameAr,p.nameEn].filter(Boolean).join(" · ")}${(()=>{let sp=(typeof PRG!=="undefined"&&PRG[p.id]||{}).ipadSpace;try{if(typeof sp==="string")sp=JSON.parse(sp)}catch(e){sp=null}return sp&&sp.mb!=null?` · ${appTag(sp.app)} · ${sp.net==="online"?"📶":"💾"} الآيباد: ${sp.mb} MB · ${verTag(sp)}`:` · ${verTag(null)}`})()}</small><div class="bars">${prog}</div></div><button class="b">✏️ تعديل</button>`;
     d.querySelector("button").onclick=()=>editKid(p);L.appendChild(d)})}
 let ed;
 function editKid(p){
@@ -579,6 +579,9 @@ async function adSet(id,patch){const {error}=await sb.from("sections").update(pa
 /* feedback: each message is a private row only the admin can read */
 let fbImg=null;
 /* one-time note for parents: the portal link, to re-add it for the new icon */
+const appTag=a=>a==="new"?'<span style="color:#2a9442;font-weight:800">📲 التطبيق الجديد</span>':a==="old"?'<span style="color:#c93a50;font-weight:800">⚠️ التطبيق القديم</span>':a==="browser"?'<span style="color:#b07a00;font-weight:800">🌐 من المتصفح</span>':'<span style="color:#9a90b0">❔ لم يفتح بعد التحديث</span>';
+/* tell the admin which app this parent uses */
+async function reportApp(){try{if(!DB||!FID||!ME)return;await sb.from("sections").upsert({id:"ps-"+ME.id,family_id:FID,data:{type:"pstatus",title:"pstatus",words:[],email:ME.email||"",app:window.NAJMA_APP||"?",v:NAJMA.V,at:new Date().toISOString()},shared:false,proposed:true,updated_at:new Date().toISOString()})}catch(e){}}
 function portalNote(force){try{if((!force&&localStorage.getItem("najma:portalMsg")==="1")||document.getElementById("pNote"))return;const u="https://ayb88sec.github.io/Sounds/parent.html";
   const d=document.createElement("div");d.id="pNote";d.className="sheet show";d.style.alignItems="center";
   d.innerHTML=`<div class="in-s" style="border-radius:26px;max-width:420px;margin:14px"><div style="text-align:center"><img src="icon.png" style="width:90px;border-radius:22px;box-shadow:0 8px 16px rgba(0,0,0,.2)"></div>
@@ -591,7 +594,7 @@ function portalNote(force){try{if((!force&&localStorage.getItem("najma:portalMsg
   document.body.appendChild(d);
   d.querySelector("#pnCopy").onclick=async e=>{try{await navigator.clipboard.writeText(u);e.target.textContent="✅ تم النسخ"}catch(x){prompt("انسخي الرابط:",u)}localStorage.setItem("najma:portalMsg","1");setTimeout(()=>d.remove(),900)};
   d.querySelector("#pnNever").onclick=()=>{localStorage.setItem("najma:portalMsg","1");d.remove()};d.querySelector("#pnLater").onclick=()=>d.remove()}catch(e){}}
-function fbInit(){portalNote();const B=$("fbBox");if(!B)return;B.style.display=DB&&FID&&feat("feedback")?"":"none";if(B.dataset.on)return;B.dataset.on=1;
+function fbInit(){portalNote();reportApp();const B=$("fbBox");if(!B)return;B.style.display=DB&&FID&&feat("feedback")?"":"none";if(B.dataset.on)return;B.dataset.on=1;
   $("fbPic").onclick=()=>{$("fbFile").value="";$("fbFile").click()};
   $("fbFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const url=URL.createObjectURL(f),im=new Image();im.onload=()=>{const W=700,sc=Math.min(1,W/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*sc;c.height=im.height*sc;c.getContext("2d").drawImage(im,0,0,c.width,c.height);fbImg=c.toDataURL("image/jpeg",.6);$("fbPicN").textContent="✅ تمت إضافة الصورة"};im.src=url};
   $("fbSend").onclick=async()=>{const t=$("fbT").value.trim();if(!t&&!fbImg)return;const M=$("fbMsg");M.style.display="";M.textContent="⏳";
@@ -618,7 +621,7 @@ async function drawAdmin(){if(!IS_ADMIN)return;
   row("📖 القرآن والأدعية والألوان وكل أصواتي (ديني والأساسية)",!!(q&&q._shared),async()=>{const Q=qSec();Q._shared=!Q._shared;saveS();await dbSaveS();drawAdmin()});
   secs.filter(x=>x.type!=="qimg"&&x.type!=="flags"&&!x.hw&&isMine(x)).forEach(x=>row(`${x.icon||"📝"} ${esc(x.title)}`,!!x._shared,async()=>{x._shared=!x._shared;x._proposed=false;saveS();await dbSaveS();drawSecs();drawAdmin()}));
   /* proposals */
-  const P=$("adProp");let {data:pr}=await sb.from("sections").select("id,data,family_id,updated_at,families(name)").eq("proposed",true).eq("shared",false);drawFb((pr||[]).filter(x=>x.data&&x.data.type==="feedback"));pr=(pr||[]).filter(x=>!(x.data&&x.data.type==="feedback"));
+  const P=$("adProp");let {data:pr}=await sb.from("sections").select("id,data,family_id,updated_at,families(name)").eq("proposed",true).eq("shared",false);pr=(pr||[]).filter(x=>!(x.data&&x.data.type==="pstatus"));drawFb((pr||[]).filter(x=>x.data&&x.data.type==="feedback"));pr=(pr||[]).filter(x=>!(x.data&&x.data.type==="feedback"));
   P.innerHTML=(pr&&pr.length)?"":'<div class="note" style="margin:0">لا توجد اقتراحات.</div>';
   (pr||[]).forEach(x=>{const r=document.createElement("div");r.className="rrow";r.style.flexWrap="wrap";
     r.innerHTML=`<b style="flex:1">${esc((x.data.icon||"📝")+" "+(x.data.title||x.data.type||""))}</b><small>${esc((x.families&&x.families.name)||"")}</small><button class="b go pub">🌍 انشر للجميع</button><button class="b del rej">✖</button>
@@ -642,11 +645,11 @@ async function drawAdmin(){if(!IS_ADMIN)return;
   F.innerHTML="";(fa.data||[]).forEach(f=>{const own=f.id===FID,box=document.createElement("div");box.className="qbox";box.style.background="#fff";
     const M=(me.data||[]).filter(m=>m.family_id===f.id),C=(ch.data||[]).filter(c=>c.family_id===f.id);
     box.innerHTML=`<div class="rrow" style="background:none;padding:0"><b style="flex:1;font-size:18px">👨‍👩‍👧 ${esc(f.name)}${own?" (عائلتي)":""}</b>${own?"":'<button class="b del df">🗑️ حذف العائلة</button>'}</div>`+
-      M.map(m=>`<div class="rrow"><span style="flex:1" dir="ltr">${m.role==="owner"?"👑":"🧑"} ${esc(m.email||m.user_id.slice(0,8))}</span>${m.user_id===ME.id?"":`<button class="b dm" data-u="${m.user_id}">🗑️</button>`}</div>`).join("")+
+      M.map(m=>`<div class="rrow" style="flex-wrap:wrap"><span style="flex:1" dir="ltr">${m.role==="owner"?"👑":"🧑"} ${esc(m.email||m.user_id.slice(0,8))}</span><span style="font-size:13px">${appTag(((sc.data||[]).find(x=>x.id==="ps-"+m.user_id)||{data:{}}).data.app)}</span>${m.user_id===ME.id?"":`<button class="b dm" data-u="${m.user_id}">🗑️</button>`}</div>`).join("")+
       C.map(c=>{const d=c.data||{},on=Object.values(d.apps||{}).filter(v=>v===false).length;return `<div class="rrow" style="flex-wrap:wrap"><span style="flex:1;font-weight:800">${esc(avT(d.avatar)+" "+(d.name||""))}</span>${own?"":`<button class="b dc" data-c="${c.id}">🗑️</button>`}
-        <div style="flex-basis:100%;font-size:14px;color:#7a7090">${d.grade?"🎓 "+esc(gName(d.grade))+" · ":""}⭐ ${stars[c.id]||0} · 📱 ${when(seen[c.id])} · ${verTag((()=>{try{const v=(PM[c.id]||{}).ipadSpace;return typeof v==="string"?JSON.parse(v):v}catch(e){return null}})())}${on?` · 🚫 ${on} تطبيقات مطفأة`:""}${d.net==="online"?" · 📶":""}</div>
+        <div style="flex-basis:100%;font-size:14px;color:#7a7090">${d.grade?"🎓 "+esc(gName(d.grade))+" · ":""}⭐ ${stars[c.id]||0} · 📱 ${when(seen[c.id])} · ${appTag((()=>{try{const v=(PM[c.id]||{}).ipadSpace;return (typeof v==="string"?JSON.parse(v):v||{}).app}catch(e){return null}})())} · ${verTag((()=>{try{const v=(PM[c.id]||{}).ipadSpace;return typeof v==="string"?JSON.parse(v):v}catch(e){return null}})())}${on?` · 🚫 ${on} تطبيقات مطفأة`:""}${d.net==="online"?" · 📶":""}</div>
         <button class="b kb" data-k="${c.id}" style="flex-basis:100%;margin-top:6px;padding:6px">📊 التقدّم بالتفصيل</button><div class="prow2" id="kb_${c.id}" style="display:none;flex-basis:100%"></div></div>`}).join("")+
-      (()=>{const S=(sc.data||[]).filter(x=>x.family_id===f.id&&x.data&&x.data.type!=="qimg"&&x.data.type!=="flags");return S.length?`<div style="margin-top:6px;font-size:14px;color:#5a5070"><b>📚 أقسامهم:</b> ${S.map(x=>esc((x.data.icon||"📝")+" "+(x.data.title||""))+(x.data.hw?" 📌":"")+(x.shared?" 🌍":"")).join("، ")}</div>`:""})()+
+      (()=>{const S=(sc.data||[]).filter(x=>x.family_id===f.id&&x.data&&x.data.type!=="qimg"&&x.data.type!=="flags"&&x.data.type!=="pstatus"&&x.data.type!=="feedback");return S.length?`<div style="margin-top:6px;font-size:14px;color:#5a5070"><b>📚 أقسامهم:</b> ${S.map(x=>esc((x.data.icon||"📝")+" "+(x.data.title||""))+(x.data.hw?" 📌":"")+(x.shared?" 🌍":"")).join("، ")}</div>`:""})()+
       `<div style="font-size:13px;color:#9a90b0;margin-top:4px">${C.length} أطفال · ${M.length} والدين${f.created_at?" · منذ "+new Date(f.created_at).toLocaleDateString("ar",{day:"numeric",month:"short"}):""}</div>`;
     const df=box.querySelector(".df");if(df)df.onclick=async()=>{if(!confirm(`حذف عائلة «${f.name}» بكل أطفالها وتقدّمهم؟ لا يمكن التراجع.`))return;const {error}=await sb.from("families").delete().eq("id",f.id);if(error)alert(error.message);drawAdmin()};
     box.querySelectorAll(".dm").forEach(b=>b.onclick=async()=>{if(!confirm("إزالة هذا الشخص من العائلة؟"))return;const {error}=await sb.from("family_members").delete().eq("family_id",f.id).eq("user_id",b.dataset.u);if(error)alert(error.message);drawAdmin()});
@@ -811,7 +814,7 @@ async function loadAll0(){
   if(s.error){console.warn(s.error);s=await sb.from("sections").select("id,data,family_id").eq("family_id",FID).order("updated_at")}
   if(pr.error){console.warn(pr.error);const ids=(k.data||[]).map(r=>r.id);pr=ids.length?await sb.from("progress").select("child_id,app_key,data").in("child_id",ids):{data:[]}}
   if(k.error){showErr("children: "+k.error.message);return}
-  profs=(k.data||[]).map(r=>Object.assign({},r.data,{id:r.id}));secs=(s.data||[]).filter(r=>!(r.data&&r.data.type==="feedback")).map(r=>Object.assign({},r.data,{id:r.id,_fam:r.family_id,_shared:!!r.shared,_proposed:!!r.proposed}));
+  profs=(k.data||[]).map(r=>Object.assign({},r.data,{id:r.id}));secs=(s.data||[]).filter(r=>!(r.data&&(r.data.type==="feedback"||r.data.type==="pstatus"))).map(r=>Object.assign({},r.data,{id:r.id,_fam:r.family_id,_shared:!!r.shared,_proposed:!!r.proposed}));
   if(!secs.length&&!profs.length){/* first time: bring over what this phone already has */const lp=NAJMA.profiles,ls=NAJMA.sections;profs=lp.slice();secs=ls.slice();if(profs.length||secs.length){await dbSaveP();await dbSaveS()}}
   loadedK=new Set(profs.map(p=>p.id));loadedS=new Set(secs.filter(x=>isMine(x)||IS_ADMIN).map(x=>x.id));
   try{const dv=await sb.from("devices").select("child_id,last_seen,created_at").eq("family_id",FID);devSeen={};(dv.data||[]).forEach(d=>{const t=d.last_seen||d.created_at;if(!devSeen[d.child_id]||t>devSeen[d.child_id+"_t"]){devSeen[d.child_id+"_t"]=t;devSeen[d.child_id]=d.last_seen?new Date(d.last_seen).toLocaleString("ar",{dateStyle:"short",timeStyle:"short"}):"لم يُفتح بعد"}})}catch(e){}
