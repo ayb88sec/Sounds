@@ -238,9 +238,10 @@ html.lock,html.lock body{overflow:hidden;height:100%;overscroll-behavior:none}
 /* shorter sky on section pages: the scene slides up, the title sits on the fort line */
 .sec{padding-top:calc(12vw + env(safe-area-inset-top))!important}
 @media (max-width:600px){.sec{padding-top:calc(16vw + env(safe-area-inset-top))!important}}
-.sec::before{background-position:center -14vw!important}
-@media (max-width:600px){.sec::before{background-position:center -46vw!important}}
+.sec::before{background-position:center bottom!important;background-size:auto calc(100% + 14vw)!important;bottom:-80px!important;top:-80px!important}
+@media (max-width:600px){.sec::before{background-size:auto calc(100% + 46vw)!important}}
 .sec .wood{padding-top:clamp(6px,1.2vw,12px);padding-bottom:clamp(6px,1.2vw,12px)}
+html,body{background-color:#f0b866!important}
 </style>
 </head>
 <body>
