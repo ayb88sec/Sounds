@@ -158,7 +158,7 @@ setTimeout(function(){var g=document.getElementById("gate");if(g&&getComputedSty
       <textarea id="fbT" dir="auto" placeholder="اكتب هنا..." style="width:100%;min-height:110px"></textarea>
       <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="b" id="fbPic">📷 صورة شاشة</button><span id="fbPicN" style="align-self:center;color:#7a7090"></span><button class="b go" id="fbSend" style="margin-inline-start:auto">📨 إرسال</button></div>
       <input type="file" id="fbFile" accept="image/*" style="display:none"><div id="fbMsg" class="note" style="display:none;margin-top:8px"></div></div>
-    <div style="margin-top:16px;text-align:center"><button class="b del" id="pOut">تسجيل الخروج</button></div>
+    <div style="margin-top:16px;text-align:center"><button class="b" onclick="portalNote(true)" style="margin-bottom:10px">📲 طلب التطبيق الجديد</button><br><button class="b del" id="pOut">تسجيل الخروج</button></div>
   </div>
   <div class="panel" id="cloud">
     <div class="note" id="cStatus"></div>
@@ -579,13 +579,13 @@ async function adSet(id,patch){const {error}=await sb.from("sections").update(pa
 /* feedback: each message is a private row only the admin can read */
 let fbImg=null;
 /* one-time note for parents: the portal link, to re-add it for the new icon */
-function portalNote(){try{if(localStorage.getItem("najma:portalMsg")==="1"||document.getElementById("pNote"))return;const u="https://ayb88sec.github.io/Sounds/parent.html";
+function portalNote(force){try{if((!force&&localStorage.getItem("najma:portalMsg")==="1")||document.getElementById("pNote"))return;const u="https://ayb88sec.github.io/Sounds/parent.html";
   const d=document.createElement("div");d.id="pNote";d.className="sheet show";d.style.alignItems="center";
   d.innerHTML=`<div class="in-s" style="border-radius:26px;max-width:420px;margin:14px"><div style="text-align:center"><img src="icon.png" style="width:90px;border-radius:22px;box-shadow:0 8px 16px rgba(0,0,0,.2)"></div>
     <h3 style="text-align:center">✨ نجمة بشكل جديد!</h3><p style="font-size:17px;margin:6px 0">شكل جديد للتطبيق وبوابة الوالدين، وصور جديدة للأطفال، وزر 💬 للملاحظات والاقتراحات.</p>
     <p style="font-size:16px;margin:6px 0"><b>لتظهر الأيقونة الجديدة على جوالك:</b></p>
-    <ol style="font-size:16px;line-height:1.7;padding-inline-start:22px;margin:0 0 8px"><li>احذفي أيقونة البوابة القديمة من الشاشة الرئيسية.</li><li>افتحي الرابط في <b>Safari</b>.</li><li><b>مشاركة</b> ← <b>إضافة إلى الشاشة الرئيسية</b>.</li></ol>
-    <div class="link" dir="ltr" style="word-break:break-all">${u}</div>
+    <ol style="font-size:16px;line-height:1.7;padding-inline-start:22px;margin:0 0 8px"><li>احذفي أيقونة البوابة القديمة من الشاشة الرئيسية.</li><li>اضغطي الرابط الأزرق بالأسفل، فيفتح في <b>Safari</b>.</li><li><b>مشاركة</b> ← <b>إضافة إلى الشاشة الرئيسية</b>.</li></ol>
+    <a class="link" href="${u}" target="_blank" rel="noopener" dir="ltr" style="display:block;word-break:break-all;color:#2f6bd8;font-weight:800;text-decoration:underline">${u}</a>${R.get("najma:key")?`<div style="margin-top:8px;font-size:16px">🔑 رمز العائلة: <b dir="ltr" style="letter-spacing:2px">${R.get("najma:key")}</b></div>`:""}
     <p style="font-size:14px;color:#7a7090;margin:8px 0 0">آيبادات الأطفال تعرض رسالتها الخاصة مع رابطها.</p>
     <div class="actions" style="flex-wrap:wrap;gap:6px"><button class="b" id="pnLater">لاحقًا</button><button class="b" id="pnNever">🚫 لا تظهر مرة أخرى</button><button class="b go" id="pnCopy">📋 نسخ الرابط</button></div></div>`;
   document.body.appendChild(d);

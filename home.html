@@ -255,7 +255,7 @@ html.lock,html.lock body{overflow:hidden;height:100%;overscroll-behavior:none}
     
     </div></div>
   <div class="sec" id="pg"><div class="ctop"><div class="wood"><img src="img/home2/nav_prog.webp" alt=""><div><b>تقدّمي</b><small>My Progress</small></div></div><img class="sq2" src="img/uae/saqoor_cheer.webp" alt=""></div>
-  <div class="scr"><div class="ach" id="ach"></div><div class="pgrid" id="progL"></div></div></div>
+  <div class="scr"><div class="ach" id="ach"></div><div class="pgrid" id="progL"></div><div style="text-align:center;margin-top:22px"><button class="back" style="position:static" onclick="iconMsg(true)">📲 طلب التطبيق الجديد</button></div></div></div>
   <div class="sec" id="sec"><div class="ctop"><button class="back" id="bk">➡️ رجوع</button><div class="wood"><img id="secI" alt=""><div><b id="secT"></b><small id="secE"></small></div></div></div><div class="scr"><div class="mine" id="mine"></div><div class="apps" id="apps"></div></div></div>
   <img id="star" src="icon.png" alt="" style="display:none"><img class="fly" id="fly" src="img/home3/falcon.webp" alt="">
 </main>
@@ -373,19 +373,21 @@ function progress(){if(location.hash!=="#c=prog"){location.hash="c=prog";return}
   document.getElementById("pg").classList.add("on");setNav("prog");window.scrollTo(0,0);setTimeout(()=>document.querySelectorAll(".pbar i").forEach(x=>x.style.width=x.dataset.w+"%"),50)}
 document.getElementById("trophy").onclick=progress;
 /* one-time note on the kids' iPads: how to get the new app icon */
-(function(){try{const L=localStorage,g=k=>L.getItem(k);if(!g("najma:lock")||g("najma:iconMsg")==="1")return;
+function iconMsg(force){try{const L=localStorage,g=k=>L.getItem(k);if(!force&&(!g("najma:lock")||g("najma:iconMsg")==="1"))return;if(document.getElementById("iconMsg"))return;
   const u=new URL("home.html",location.href);if(g("najma:dev"))u.searchParams.set("dev",g("najma:dev"));u.searchParams.set("key",g("najma:key")||"");u.searchParams.set("kid",g("najma:lock"));
-  const d=document.createElement("div");d.className="pm show";d.style.zIndex=60;
+  const d=document.createElement("div");d.id="iconMsg";d.className="pm show";d.style.zIndex=60;
   d.innerHTML=`<div class="pc" style="text-align:start"><div style="text-align:center"><img src="icon.png" style="width:96px;border-radius:24px;box-shadow:0 8px 16px rgba(0,0,0,.2)"></div>
    <h3 style="text-align:center">✨ نجمة بشكل جديد!</h3><p style="margin:4px 0 10px;font-size:18px">لتظهر الأيقونة الجديدة على الآيباد (مرة واحدة فقط، للوالدين):</p>
-   <ol style="font-size:17px;line-height:1.7;padding-inline-start:22px;margin:0 0 10px"><li>انسخي الرابط من الزر بالأسفل.</li><li>احذفي تطبيق «نجمة» القديم من الشاشة الرئيسية.</li><li>افتحي الرابط في <b>Safari</b>.</li><li>اضغطي <b>مشاركة</b> ← <b>إضافة إلى الشاشة الرئيسية</b>.</li></ol>
-   <div style="font-size:13px;color:#7a7090;word-break:break-all;background:#f8f6fd;border-radius:12px;padding:8px" dir="ltr">${u.href}</div>
+   <ol style="font-size:17px;line-height:1.7;padding-inline-start:22px;margin:0 0 10px"><li>احذفي تطبيق «نجمة» القديم من الشاشة الرئيسية.</li><li>اضغطي الرابط الأزرق بالأسفل، فيفتح في <b>Safari</b>.</li><li>اضغطي <b>مشاركة</b> ← <b>إضافة إلى الشاشة الرئيسية</b>.</li></ol>
+   <a href="${u.href}" target="_blank" rel="noopener" style="display:block;font-size:14px;color:#2f6bd8;font-weight:800;word-break:break-all;background:#eef6ff;border-radius:12px;padding:8px;text-decoration:underline" dir="ltr">${u.href}</a>
+   ${g("najma:key")?`<div style="margin-top:8px;font-size:16px">🔑 رمز العائلة: <b dir="ltr" style="letter-spacing:2px">${g("najma:key")}</b></div>`:""}
    <p style="font-size:14px;color:#7a7090;margin:8px 0 0">الرابط فيه رمز العائلة، فلن تحتاجي لكتابته. النجوم والتقدّم تبقى كما هي.</p>
    <div class="prow" style="flex-wrap:wrap"><button class="pb" id="imLater">لاحقًا</button><button class="pb" id="imNever">🚫 لا تظهر مرة أخرى</button><button class="pb go" id="imCopy">📋 نسخ الرابط</button></div></div>`;
   document.body.appendChild(d);
   d.querySelector("#imCopy").onclick=async e=>{try{await navigator.clipboard.writeText(u.href);e.target.textContent="✅ تم النسخ"}catch(x){prompt("انسخي الرابط:",u.href)}L.setItem("najma:iconMsg","1")};
   d.querySelector("#imNever").onclick=()=>{L.setItem("najma:iconMsg","1");d.remove()};d.querySelector("#imLater").onclick=()=>{d.remove();sessionStorage.setItem("najma:iconLater","1")};
-  if(sessionStorage.getItem("najma:iconLater"))d.remove()}catch(e){}})();
+  if(!force&&sessionStorage.getItem("najma:iconLater"))d.remove()}catch(e){}}
+iconMsg(false);
 document.getElementById("me").onclick=()=>document.getElementById("kids").classList.toggle("show");
 
 
