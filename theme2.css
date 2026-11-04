@@ -68,3 +68,16 @@ main h1{position:fixed!important;z-index:25!important;top:calc(64px + env(safe-a
 main{padding-top:calc(152px + env(safe-area-inset-top))!important}
 .lang,.n2back{z-index:30!important}
 main{z-index:auto!important}
+/* the page itself never moves (no bounce of the top); only the content area scrolls */
+html,body{height:100%!important;overflow:hidden!important;overscroll-behavior:none}
+main{position:fixed!important;inset:0!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;max-width:none!important;margin:0!important;
+  padding-left:max(14px,calc((100vw - 860px)/2))!important;padding-right:max(14px,calc((100vw - 860px)/2))!important}
+/* sky band lives inside the scrolling area so the title can sit on top of it */
+body::after{display:none!important}
+main{padding-top:0!important;z-index:1!important}
+main::before{content:"";display:block;position:sticky;top:0;z-index:5;height:calc(152px + env(safe-area-inset-top));
+  margin:0 calc(-1 * max(14px,(100vw - 860px)/2)) 0;pointer-events:none;
+  background:url(img/home3/calm_ipad.webp) center top/100vw auto no-repeat;-webkit-mask-image:linear-gradient(#000 84%,transparent);mask-image:linear-gradient(#000 84%,transparent)}
+@media (max-width:600px){main::before{background-image:url(img/home3/calm_phone.webp)}}
+main h1{z-index:25!important}
+html body main{padding-top:0!important}

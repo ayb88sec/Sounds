@@ -90,7 +90,7 @@
   window.NAJMA_AV=v=>/^img:k\d$/.test(v||"")?`<img src="img/kids/${v.slice(4)}.webp" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block">`:(v||"⭐");
   /* new look (test only): switched on by the test home page, never on the kids' iPads until published */
   try{if(!/(home\d*|parent|families|guide)\.html$/.test(location.pathname)&&location.pathname.split("/").pop()!==""){
-    const l=document.createElement("link");l.rel="stylesheet";l.href="theme2.css?v=6";document.head.appendChild(l);
+    const l=document.createElement("link");l.rel="stylesheet";l.href="theme2.css?v=9";document.head.appendChild(l);const wst=window.scrollTo.bind(window);window.scrollTo=function(){try{const m=document.querySelector("main");if(m&&getComputedStyle(m).position==="fixed"){m.scrollTo.apply(m,arguments);return}}catch(e){}return wst.apply(null,arguments)};
     document.addEventListener("DOMContentLoaded",()=>{const H="home.html";
       const bk=document.createElement("a");bk.className="n2back";bk.textContent="➡️ رجوع";bk.href=document.referrer&&/home\d*\.html/.test(document.referrer)?document.referrer:H;document.body.appendChild(bk);
       const n=document.createElement("nav");n.className="n2bar";n.innerHTML=`<a href="${H}"><img src="img/home2/nav_home.webp" alt=""><b>الرئيسية</b><small>Home</small></a><a href="${H}#c=hw"><img src="img/home2/nav_hw.webp" alt=""><b>الواجب</b><small>Homework</small></a><a href="${H}#c=prog"><img src="img/home2/nav_prog.webp" alt=""><b>تقدّمي</b><small>My Progress</small></a>`;document.body.appendChild(n);
@@ -207,7 +207,7 @@
   addEventListener("DOMContentLoaded",()=>{/* pull down to update */
 (function(){if(/parent\.html/.test(location.pathname))return;let y0=null,dy=0;const tip=document.createElement("div");
   tip.style.cssText="position:fixed;top:0;left:50%;transform:translate(-50%,-60px);background:#fff;color:#5b3fd6;font:800 17px system-ui;padding:10px 20px;border-radius:0 0 18px 18px;box-shadow:0 4px 0 rgba(0,0,0,.15);z-index:99;transition:transform .2s";document.body.appendChild(tip);
-  addEventListener("touchstart",e=>{y0=scrollY<=0?e.touches[0].clientY:null;dy=0},{passive:true});
+  addEventListener("touchstart",e=>{const m=document.querySelector("main");y0=scrollY<=0&&(!m||m.scrollTop<=0)?e.touches[0].clientY:null;dy=0},{passive:true});
   addEventListener("touchmove",e=>{if(y0==null)return;dy=e.touches[0].clientY-y0;if(dy>10){tip.textContent=dy>90?"⬆️ اترك للتحديث":"⬇️ اسحب للتحديث";tip.style.transition="none";tip.style.transform=`translate(-50%,${Math.min(dy,120)-60}px)`}},{passive:true});
   addEventListener("touchend",()=>{tip.style.transition="";if(y0!=null&&dy>90){tip.textContent="🔄 جاري التحديث…";tip.style.transform="translate(-50%,0)";try{sessionStorage.removeItem("najma:reloaded")}catch(e){}setTimeout(()=>location.reload(),400)}else tip.style.transform="translate(-50%,-60px)";y0=null;dy=0})})();});
   if(SB&&DEV){const isProg=k=>typeof k==="string"&&!k.startsWith("najma:");
