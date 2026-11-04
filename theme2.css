@@ -87,3 +87,5 @@ img.bi{height:1.6em;width:1.6em;vertical-align:middle;margin-inline-end:.25em;fi
 .bi-only img.bi{height:clamp(64px,14vw,90px);width:clamp(64px,14vw,90px);margin:0}
 .bi-text{background:rgba(255,253,245,.95)!important;border:3px solid #fff!important;box-shadow:0 6px 0 rgba(120,80,20,.18)!important;color:#16204a!important;text-shadow:none!important;padding:4px 18px 4px 6px!important}
 html[dir=rtl] .bi-text{padding:4px 6px 4px 18px!important}
+
+.n2bar b,.n2bar small{white-space:nowrap}.n2bar small{font-size:clamp(10px,1.9vw,17px)}
