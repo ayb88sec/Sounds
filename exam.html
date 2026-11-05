@@ -90,58 +90,27 @@ const L=[
  {type:"order",title:"رحلة سيدنا إبراهيم (أبو الأنبياء)",note:"ولد في العراق، ثم سافر إلى فلسطين، ثم مصر",items:["🇮🇶 العراق","🕌 فلسطين","🏜️ مصر"]},
  {type:"quiz",title:"قصة سيدنا إبراهيم",qs:[["ماذا كان قوم إبراهيم يعبدون؟",["الأصنام والنجوم والكواكب","الله وحده","الشجر"]],["بحكمته حطم جميع الأصنام إلا …",["الصنم الكبير","الصنم الصغير","لا شيء"]],["لماذا حطم الأصنام؟",["ليثبت لهم أنها لا تنفع ولا تضر","ليلعب","لأنها قديمة"]],["ماذا حدث لما ألقوه في النار؟",["جعلها الله بردا وسلاما","احترق","هرب"]]]},
  {type:"yesno",title:"هيا نتذكر معا (أجيب بنعم أو لا)",qs:[["أهلك الله قوم نوح بالزلازل؟",0],["كان سيدنا إبراهيم حكيما؟",1],["نجى الله سيدنا نوحا من الغرق؟",1],["استمر سيدنا نوح يدعو قومه 200 عام؟",0],["اختار الله الرسل ليهدوا الناس إلى عبادة الله وحده؟",1]]}]}];
-/* study first: interactive lessons (tap to discover, everything read aloud); the teacher's slide is one tap away */
-const C=["linear-gradient(160deg,#dff1ff,#a8d8ff)","linear-gradient(160deg,#ffe6d6,#ffbe9c)","linear-gradient(160deg,#dcf8e8,#9fe3c0)","linear-gradient(160deg,#fff6c4,#ffdf6e)","linear-gradient(160deg,#efe6ff,#c9b5ff)"];
-const STUDY={akh:[
-  {img:"s_akh1",t:"أحب الخير لأخي",kind:"hadith",pre:"عن أنس رضي الله عنه عن النبي صلى الله عليه وسلم قال:",text:"لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه",meaning:"إيمان المؤمن لا يكتمل إلا إذا أحب الخير لأخيه."},
-  {img:"s_akh2",t:"محب لأخيه وغير محب لأخيه",kind:"two",cols:[["😊 محب لأخيه",["دعا سالم الله لصديقه أن يكون من الأوائل.","علم زميله الوضوء الصحيح.","ساعد زميله في الرياضيات."]],["☹️ غير محب لأخيه",["ضحكوا وسخروا من صديقهم.","حزن لما رأى منزل صديقه أكبر.","غضبت لحصول صديقتها على هدية."]]]},
-  {img:"s_akh3",t:"أختار التصرف الصحيح",kind:"pairs",items:[["✏️","حدثني صديقي أنه فقد قلمه","أحاول مساعدته"],["🏅","حصل صديقي على أعلى درجة","أفرح له"],["⚠️","شاهدت زميلي يرتكب خطأ","أنصحه"]]}],
- tah:[
-  {img:"s_tah1",t:"الطهارة",kind:"tap",intro:"الطهارة: هي نظافة الجسم والثوب والمكان لأجل أداء بعض العبادات مثل الصلاة.",items:[["💧","طهارة البدن"],["👕","طهارة الملابس"],["🧎","طهارة المكان"]]},
-  {img:"s_tah2",t:"متى يتوضأ المسلم؟",kind:"tap",items:[["🕋","١. قبل الطواف حول الكعبة"],["🧎","٢. قبل أداء الصلاة"],["📖","٣. قبل مس وقراءة القرآن"]]},
-  {img:"s_tah3",t:"خطوات الوضوء",kind:"path",note:"جميع الأعضاء تغسل ثلاث مرات ماعدا الرأس والأذنان مرة واحدة",items:[["🙌","١. الكفان","٣ مرات"],["👄","٢. المضمضة","٣ مرات"],["👃","٣. الاستنشاق","٣ مرات"],["😊","٤. الوجه","٣ مرات"],["💪","٥. اليدان للمرفقين","٣ مرات"],["🧑","٦. الرأس","مرة واحدة"],["👂","٧. الأذنان","مرة واحدة"],["🦶","٨. القدمان","٣ مرات"]]},
-  {img:"s_tah4",t:"نواقض الوضوء",kind:"tap",items:[["🚪","البول والغائط"],["💨","خروج الريح"],["😵","الإغماء وزوال العقل"],["😴","النوم العميق"]],extra:["🥪","الأكل والشرب لا ينقض الوضوء."]},
-  {img:"s_tah5",t:"آداب قضاء الحاجة",kind:"flip",items:[["🦶","الدخول","بالرجل اليسرى. نقول: اللهم إني أعوذ بك من الخبث والخبائث"],["🦶","الخروج","بالرجل اليمنى. نقول: غفرانك"]]},
-  {img:"s_tah6",t:"آداب صحيحة وأخطاء شائعة",kind:"two",cols:[["✅ آداب صحيحة",["يستتر عن الناس ويغلق الباب.","إذا لم يجد الماء يستخدم المناديل أو الحجارة.","يدخل بالرجل اليسرى."]],["❌ أخطاء شائعة",["التبول في الحديقة العامة.","أفاق من نومه وصلى فورا بدون وضوء.","الاستنجاء باليد اليمنى."]]],extra:["💧","الاستنجاء معناه: تنظيف مكان خروج البول أو الغائط. الماء أفضل طريقة لأنه طاهر ومطهر لغيره."]}],
- rusl:[
-  {img:"s_rus1",t:"الركن الرابع: الإيمان بالرسل",kind:"path",note:"أركان الإيمان",items:[["☝️","الإيمان بالله"],["👼","بالملائكة"],["📚","بالكتب"],["📜","بالرسل","الركن الرابع"],["🌅","باليوم الآخر"],["✨","بالقدر"]]},
-  {img:"s_rus1",t:"أسئلة عن الرسل",kind:"flip",items:[["🔢","كم عددهم في القرآن؟","خمسة وعشرون رسولا."],["🧭","لماذا أرسلهم؟","دعوة الناس لعبادة الله."],["☝️","من أرسل الرسل؟","الله."]]},
-  {img:"s_rus2",t:"أخلاقهم وواجبنا",kind:"tap",items:[["🧭","أرسلهم الله لهداية الناس إلى الخير وعبادة الله وحده."],["⭐","من صفات الرسل: الصدق، الحكمة، الذكاء، الأمانة."],["❤️","واجبنا تجاه الرسل: نحبهم، ونصدقهم، ونقتدي بهم."]]},
-  {img:"s_rus3",t:"أولو العزم من الرسل",kind:"path",items:[["1️⃣","نوح"],["2️⃣","إبراهيم"],["3️⃣","موسى"],["4️⃣","عيسى"],["5️⃣","محمد"]]},
-  {img:"s_rus3",t:"قصة سيدنا نوح عليه السلام",kind:"path",note:"كان قوم سيدنا نوح عليه السلام يعبدون الأصنام. واستمر يدعو قومه 950 سنة",items:[["🗣️","دعا قومه فرفضوا وسخروا منه."],["🔨","أمره الله بصنع سفينة."],["🚢","حمل فيها المؤمنين وزوجين من الحيوانات."],["🌊","نجى الله المؤمنين من الغرق."]]},
-  {img:"s_rus4",t:"قصة سيدنا إبراهيم (أبو الأنبياء)",kind:"path",items:[["🇮🇶","ولد في العراق"],["🕌","سافر إلى فلسطين"],["🏜️","ثم مصر"],["🗿","كان قومه يعبدون الأصنام والنجوم والكواكب."],["🔨","وبحكمته حطم جميع الأصنام إلا الصنم الكبير، ليثبت لهم أنها لا تنفع ولا تضر."],["🔥","ألقوه في النار، فجعلها الله بردا وسلاما."]]}]};
+/* study first: the teacher's slides, read aloud */
+const STUDY={akh:[["s_akh1","أحب الخير لأخي. عن أنس رضي الله عنه عن النبي صلى الله عليه وسلم قال: لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه. المعنى الصحيح: إيمان المؤمن لا يكتمل إلا إذا أحب الخير لأخيه."],
+  ["s_akh2","محب لأخيه: دعا سالم الله لصديقه أن يكون من الأوائل. علم زميله الوضوء الصحيح. ساعد زميله في الرياضيات. غير محب لأخيه: ضحكوا وسخروا من صديقهم. حزن لما رأى منزل صديقه أكبر. غضبت لحصول صديقتها على هدية."],
+  ["s_akh3","أختار التصرف الصحيح. حدثني صديقي أنه فقد قلمه: أحاول مساعدته. حصل صديقي على أعلى درجة: أفرح له. شاهدت زميلي يرتكب خطأ: أنصحه."]],
+ tah:[["s_tah0","رحلة الطهارة والوضوء."],["s_tah1","الطهارة: هي نظافة الجسم والثوب والمكان لأجل أداء بعض العبادات مثل الصلاة. طهارة البدن، طهارة الملابس، طهارة المكان."],
+  ["s_tah2","متى يتوضأ المسلم؟ قبل الطواف حول الكعبة. قبل أداء الصلاة. قبل مس وقراءة القرآن."],
+  ["s_tah3","خطوات الوضوء: الكفان، المضمضة، الاستنشاق، الوجه، اليدان للمرفقين، الرأس، الأذنان، القدمان. جميع الأعضاء تغسل ثلاث مرات ماعدا الرأس والأذنان مرة واحدة."],
+  ["s_tah4","نواقض الوضوء: البول والغائط، خروج الريح، الإغماء وزوال العقل، النوم العميق. الأكل والشرب لا ينقض الوضوء."],
+  ["s_tah5","آداب قضاء الحاجة. الدخول بالرجل اليسرى، نقول: اللهم إني أعوذ بك من الخبث والخبائث. الخروج بالرجل اليمنى، نقول: غفرانك."],
+  ["s_tah6","آداب صحيحة: يستتر عن الناس ويغلق الباب. إذا لم يجد الماء يستخدم المناديل أو الحجارة. يدخل بالرجل اليسرى. أخطاء شائعة: التبول في الحديقة العامة. أفاق من نومه وصلى فورا بدون وضوء. الاستنجاء باليد اليمنى. الاستنجاء معناه: تنظيف مكان خروج البول أو الغائط. الماء أفضل طريقة لأنه طاهر ومطهر لغيره."]],
+ rusl:[["s_rus1","الركن الرابع: الإيمان بالرسل. كم عددهم في القرآن؟ خمسة وعشرون رسولا. لماذا أرسلهم؟ دعوة الناس لعبادة الله. من أرسل الرسل؟ الله."],
+  ["s_rus2","أخلاقهم وواجبنا. أرسلهم الله لهداية الناس إلى الخير وعبادة الله وحده. من صفات الرسل: الصدق، الحكمة، الذكاء، الأمانة. واجبنا تجاه الرسل: نحبهم، ونصدقهم، ونقتدي بهم."],
+  ["s_rus3","أولو العزم من الرسل: نوح، إبراهيم، موسى، عيسى، محمد. كان قوم سيدنا نوح عليه السلام يعبدون الأصنام. استمر يدعو قومه تسعمئة وخمسين سنة. دعا قومه فرفضوا وسخروا منه. أمره الله بصنع سفينة. حمل فيها المؤمنين وزوجين من الحيوانات. نجى الله المؤمنين من الغرق."],
+  ["s_rus4","قصة سيدنا إبراهيم أبو الأنبياء. ولد في العراق، سافر إلى فلسطين ثم مصر. كان قومه يعبدون الأصنام والنجوم والكواكب. وبحكمته حطم جميع الأصنام إلا الصنم الكبير، ليثبت لهم أنها لا تنفع ولا تضر. ألقوه في النار، فجعلها الله بردا وسلاما."]]};
+/* exercises: the learning cards are now in the study part */
 L.forEach(l=>l.steps=l.steps.filter(x=>x.type!=="learn"));
 function study(li,si){const l=L[li],S=STUDY[l.k];$("ttl").textContent=l.e+" "+l.t;window.scrollTo(0,0);
-  if(si>=S.length){mark("study_"+l.k);rain(40);return lesson(li,0)}const P=S[si];
-  $("app").innerHTML=`<div class="dots">${S.map((_,j)=>`<i class="${j<=si?"on":""}"></i>`).join("")}</div><p class="sub">📖 أذاكر أولاً</p><div class="card" id="sb"></div>
-   <div style="text-align:center">${si?'<button class="nx" id="pv">➡️ السابق</button> ':""}<button class="nx" id="nx" style="display:none">${si<S.length-1?"التالي ⬅️":"🎮 هيا نلعب!"}</button><br>
-   <button class="nx" id="sl" style="background:#fff;box-shadow:0 6px 0 rgba(120,80,20,.18);font-size:18px">🖼️ صفحة المعلمة</button> <button class="nx" id="hb" style="background:#fff;box-shadow:0 6px 0 rgba(120,80,20,.18);font-size:18px">🏠 الدروس</button><div id="slv"></div></div>`;
-  const box=$("sb"),ready=()=>{const n=$("nx");if(n.style.display==="none"){n.style.display="";yay();n.animate([{transform:"scale(.4)"},{transform:"scale(1.15)"},{transform:"scale(1)"}],450)}};
-  $("nx").onclick=()=>study(li,si+1);if(si)$("pv").onclick=()=>study(li,si-1);$("hb").onclick=hub;
-  $("sl").onclick=()=>{$("slv").innerHTML=$("slv").innerHTML?"":`<div class="card" style="padding:8px;margin-top:12px"><img src="img/exam/${P.img}.webp" alt="" style="width:100%;border-radius:20px;display:block"></div>`};
-  SK[P.kind](P,box,ready)}
-const tapCard=(e,txt,bg,i)=>`<button class="lc tc" data-i="${i}" style="background:${bg};animation-delay:${i*.12}s"><span class="e">${e}</span><b style="font-size:clamp(18px,4.2vw,22px)">${txt}</b></button>`;
-const SK={
- tap(P,box,ready){const seen=new Set();box.innerHTML=`<h2>${P.t}</h2>${P.intro?`<div class="big" style="background:#fff8e1;border-radius:20px;padding:10px;margin-bottom:10px">${P.intro}</div>`:""}<p style="font-weight:800">اضغطي على كل بطاقة 👆</p><div class="grid">${P.items.map((it,i)=>tapCard(it[0],it[1],C[i%5],i)).join("")}</div><div id="ex"></div>`;
-  speak(P.t+(P.intro?". "+P.intro:""));
-  box.querySelectorAll(".tc").forEach(b=>b.onclick=()=>{const it=P.items[+b.dataset.i];speak(it[1]);b.animate([{transform:"scale(1)"},{transform:"scale(1.1) rotate(-3deg)"},{transform:"scale(1)"}],400);b.style.outline="5px solid #3fc35a";b.querySelector(".e").textContent="✅ "+it[0];seen.add(b.dataset.i);
-    if(seen.size===P.items.length){if(P.extra){$("ex").innerHTML=`<div class="card" style="background:linear-gradient(160deg,#dcf8e8,#9fe3c0);margin-top:12px"><span style="font-size:44px">${P.extra[0]}</span><div class="big">${P.extra[1]}</div></div>`;setTimeout(()=>speak(P.extra[1]),900)}ready()}})},
- two(P,box,ready){let seen=0,tot=P.cols.reduce((s,c)=>s+c[1].length,0);
-  box.innerHTML=`<h2>${P.t}</h2><p style="font-weight:800">اضغطي على كل جملة لتسمعيها 👆</p><div class="two">${P.cols.map((c,ci)=>`<div><div class="bin" style="min-height:0;cursor:default;background:${/❌|☹️/.test(c[0])?"#ffd6d6":"#c9f2d6"}">${c[0]}</div>${c[1].map((t,i)=>`<button class="op tl" style="width:100%;margin-top:8px;font-size:clamp(15px,3.6vw,19px);animation:pin .4s ${(ci*3+i)*.1}s backwards">${t}</button>`).join("")}</div>`).join("")}</div><div id="ex"></div>`;
-  speak(P.t);box.querySelectorAll(".tl").forEach(b=>b.onclick=()=>{speak(b.textContent);if(!b.dataset.s){b.dataset.s=1;b.classList.add("ok");seen++;if(seen===tot){if(P.extra){$("ex").innerHTML=`<div class="card" style="background:linear-gradient(160deg,#dff1ff,#a8d8ff);margin-top:12px"><span style="font-size:44px">${P.extra[0]}</span><div class="big">${P.extra[1]}</div></div>`;setTimeout(()=>speak(P.extra[1]),900)}ready()}}})},
- pairs(P,box,ready){let seen=0;box.innerHTML=`<h2>${P.t}</h2><p style="font-weight:800">اضغطي على الموقف لتعرفي التصرف الصحيح 👆</p>${P.items.map((it,i)=>`<div class="flip" data-i="${i}" style="margin-bottom:12px"><div class="in" style="min-height:120px"><div class="f" style="background:${C[i]}"><span class="e">${it[0]}</span>${it[1]}</div><div class="b" style="background:#c9f2d6">➡️ ${it[2]}</div></div></div>`).join("")}`;
-  speak(P.t);box.querySelectorAll(".flip").forEach(f=>f.onclick=()=>{const it=P.items[+f.dataset.i];f.classList.toggle("on");if(f.classList.contains("on")){speak(it[1]+". "+it[2]);if(!f.dataset.s){f.dataset.s=1;if(++seen===P.items.length)setTimeout(ready,700)}}})},
- flip(P,box,ready){let seen=0;box.innerHTML=`<h2>${P.t}</h2><p style="font-weight:800">اقلبي كل بطاقة 👆</p><div class="grid">${P.items.map((it,i)=>`<div class="flip" data-i="${i}"><div class="in" style="min-height:170px"><div class="f" style="background:${C[i+3]}"><span class="e">${it[0]}</span>${it[1]}</div><div class="b" style="background:#fff8e1">${it[2]}</div></div></div>`).join("")}</div>`;
-  speak(P.t);box.querySelectorAll(".flip").forEach(f=>f.onclick=()=>{const it=P.items[+f.dataset.i];f.classList.toggle("on");if(f.classList.contains("on")){speak(it[1]+". "+it[2]);if(!f.dataset.s){f.dataset.s=1;if(++seen===P.items.length)setTimeout(ready,700)}}})},
- path(P,box,ready){let k=0;box.innerHTML=`<h2>${P.t}</h2>${P.note?`<div class="big" style="font-size:18px;background:#fff8e1;border-radius:18px;padding:6px 10px">💡 ${P.note}</div>`:""}<div id="pp" style="margin-top:10px"></div><button class="nx" id="go" style="background:linear-gradient(160deg,#dcf8e8,#7ddba3);box-shadow:0 6px 0 #2fae4e">👆 اضغطي لتظهر الخطوة ١</button>`;
-  speak(P.t+(P.note?". "+P.note:""));
-  $("go").onclick=()=>{const it=P.items[k],d=document.createElement("div");d.className="op";d.style.cssText=`display:flex;align-items:center;gap:12px;margin-bottom:8px;background:${C[k%5]};animation:pin .45s;text-align:start`;
-    d.innerHTML=`<span style="font-size:40px">${it[0]}</span><span style="flex:1">${it[1]}</span>${it[2]?`<small style="background:#fff;border-radius:999px;padding:2px 10px;font-size:15px">${it[2]}</small>`:""}`;$("pp").appendChild(d);speak(it[1]+(it[2]?"، "+it[2]:""));tone(500+k*60);k++;
-    if(k<P.items.length)$("go").textContent="👆 الخطوة "+"١٢٣٤٥٦٧٨٩"[k];else{$("go").remove();ready()}d.scrollIntoView({behavior:"smooth",block:"center"})}},
- hadith(P,box,ready){const W=P.text.split(" ");let k=0;
-  box.innerHTML=`<h2>${P.t}</h2><div class="big" style="font-size:18px">${P.pre}</div><div class="hadith" id="hd">( <span id="hw"></span> )</div><button class="nx" id="go" style="background:linear-gradient(160deg,#dff1ff,#a8d8ff);box-shadow:0 6px 0 #6aa9d8">👆 كلمة كلمة</button><div id="mn"></div>`;
-  speak(P.pre);$("go").onclick=()=>{const s=document.createElement("span");s.className="w";s.style.animation="pin .35s";s.textContent=W[k]+" ";$("hw").appendChild(s);tone(520+k*40);k++;
-   if(k===W.length){$("go").remove();speak(P.text);setTimeout(()=>{$("mn").innerHTML=`<div class="card" style="background:linear-gradient(160deg,#ffe6d6,#ffbe9c);margin-top:12px"><h2>المعنى الصحيح</h2><div class="big">${P.meaning}</div></div>`;speak("المعنى الصحيح: "+P.meaning);ready()},2500)}}}};
+  if(si>=S.length){mark("study_"+l.k);return lesson(li,0)}const [img,txt]=S[si];
+  $("app").innerHTML=`<p class="sub">📖 أذاكر أولاً (${si+1} من ${S.length})</p><div class="card" style="padding:8px"><img src="img/exam/${img}.webp" alt="" style="width:100%;border-radius:20px;display:block"></div>
+   <div style="text-align:center"><button class="nx" id="ls" style="background:linear-gradient(160deg,#dff1ff,#a8d8ff);box-shadow:0 6px 0 #6aa9d8">🔊 اسمعي</button> ${si?'<button class="nx" id="pv">➡️ السابق</button>':""} <button class="nx" id="nx">${si<S.length-1?"التالي ⬅️":"🎮 هيا نلعب!"}</button><br><button class="nx" id="hb" style="background:#fff;box-shadow:0 6px 0 rgba(120,80,20,.18)">🏠 الدروس</button></div>`;
+  $("ls").onclick=()=>speak(txt);speak(txt);$("nx").onclick=()=>study(li,si+1);if(si)$("pv").onclick=()=>study(li,si-1);$("hb").onclick=hub}
 const ALLSTEPS=L.reduce((s,l)=>s+l.steps.length+1,0)+1;
 
 /* ===== screens ===== */
