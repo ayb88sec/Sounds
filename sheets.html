@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<script src="supa.js"></script>
+<script src="profile.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#2f9cfc">
+<link rel="apple-touch-icon" href="icon-n.png"><link rel="icon" href="icon-n.png">
+<title>Activity Book</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Patrick+Hand&family=Baloo+Bhaijaan+2:wght@600;800&display=swap">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}html,body{margin:0}
+body{font-family:"Fredoka","Baloo Bhaijaan 2",system-ui,sans-serif;color:#1d1d2b;background:#f6cf8c;min-height:100vh}
+main{max-width:860px;margin:0 auto;padding:16px 12px 150px}
+h1{text-align:center}
+/* ---------- the paper ---------- */
+.paper{position:relative;background:#fffdf7;border-radius:18px;padding:18px 16px 22px;margin:18px 4px 10px;
+  box-shadow:0 2px 0 #e9e2cf,0 4px 0 #fffdf7,0 6px 0 #e9e2cf,0 14px 24px rgba(90,60,20,.28);transform:rotate(-.4deg);
+  background-image:repeating-linear-gradient(#fffdf7 0 31px,#e8f0ff 31px 32px);outline:2.5px dashed #1d1d2b;outline-offset:-10px}
+.paper::before,.paper::after{content:"";position:absolute;top:-12px;width:90px;height:26px;background:rgba(255,226,120,.75);box-shadow:0 2px 4px rgba(0,0,0,.08)}
+.paper::before{left:18px;transform:rotate(-6deg)}.paper::after{right:18px;transform:rotate(5deg)}
+.nd{display:flex;justify-content:space-between;gap:10px;font-family:"Patrick Hand",cursive;font-size:clamp(16px,3.6vw,22px);color:#555;padding:0 6px}
+.nd b{font-family:"Patrick Hand",cursive;color:#2f6bd8;font-weight:400;border-bottom:2px solid #999;padding:0 10px;font-size:1.15em}
+.st{font-family:"Fredoka",sans-serif;font-weight:700;font-size:clamp(30px,7.5vw,54px);text-align:center;margin:6px 0 2px;letter-spacing:.5px;line-height:1.05}
+.st span{display:inline-block;animation:wob 3s ease-in-out infinite}
+@keyframes wob{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+.ins{margin:8px auto 14px;max-width:560px;border:2.5px solid #1d1d2b;border-radius:16px;padding:6px 12px;text-align:center;font-family:"Patrick Hand",cursive;font-size:clamp(17px,3.8vw,22px);background:#fff}
+.sec{border:2.5px solid #1d1d2b;border-radius:18px;padding:10px;margin:12px 0;background:#fff}
+.sec h3{margin:0 0 8px;display:flex;align-items:center;gap:8px;font-size:clamp(17px,3.8vw,22px)}
+.sec h3 i{font-style:normal;background:#1d1d2b;color:#fff;border-radius:50%;width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;flex:none}
+/* answer boxes in crayon */
+.box{display:inline-flex;align-items:center;justify-content:center;min-width:54px;height:54px;border:2.5px solid #1d1d2b;border-radius:12px;background:#fff;font-family:"Patrick Hand",cursive;font-size:34px;cursor:pointer;vertical-align:middle;transition:transform .15s}
+.box:active{transform:scale(.92)}.box.ok{border-color:#2fae4e;background:#eaffef;animation:pop .4s}
+.crayon{color:var(--c,#e8590c)}
+@keyframes pop{50%{transform:scale(1.18) rotate(-4deg)}}
+@keyframes shake{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}.shake{animation:shake .35s}
+/* hub */
+.book{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:18px;margin-top:8px}
+.sh{position:relative;background:#fffdf7;border-radius:14px;padding:14px 12px 12px;cursor:pointer;border:0;font-family:inherit;text-align:center;color:#1d1d2b;
+  box-shadow:0 3px 0 #e9e2cf,0 10px 18px rgba(90,60,20,.25);outline:2px dashed #1d1d2b;outline-offset:-7px;transition:transform .15s;animation:in .5s backwards}
+.sh:nth-child(odd){transform:rotate(-1.5deg)}.sh:nth-child(even){transform:rotate(1.5deg)}.sh:active{transform:scale(.95)}
+.sh::before{content:"";position:absolute;top:-10px;left:50%;width:70px;height:20px;margin-left:-35px;background:rgba(160,220,255,.8);transform:rotate(-3deg)}
+.sh .pv{font-size:44px;line-height:1.2;letter-spacing:4px}.sh b{display:block;font-size:22px;margin-top:4px}.sh small{display:block;font-family:"Patrick Hand",cursive;font-size:17px;color:#666}
+.sh .done{position:absolute;top:6px;right:8px;font-size:28px;transform:rotate(12deg)}
+@keyframes in{from{transform:scale(.4) rotate(-10deg);opacity:0}}
+/* finish letters */
+.fl{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(46%,180px),1fr));gap:0;border:2.5px solid #1d1d2b;border-radius:14px;overflow:hidden;background:#fff}
+.fc{border:1.5px solid #1d1d2b;padding:8px 4px 10px;text-align:center;position:relative}
+.fc .n{position:absolute;top:4px;left:8px;font-weight:700;font-size:16px}
+.fc .pic{font-size:56px;line-height:1.15;cursor:pointer}
+.fc .wd{font-family:"Patrick Hand",cursive;font-size:30px;margin:2px 0 6px;display:flex;align-items:center;justify-content:center;gap:2px}
+.fc .wd .blank{display:inline-block;min-width:34px;border-bottom:3px solid #1d1d2b;text-align:center;line-height:1}
+.ch{display:flex;gap:6px;justify-content:center}
+.ch button{width:44px;height:44px;border-radius:50%;border:2.5px solid #1d1d2b;background:#fff;font-family:"Patrick Hand",cursive;font-size:26px;cursor:pointer;padding:0}
+.ch button.no{background:#ffe0e0;animation:shake .35s}
+.fc.won .ch{visibility:hidden}
+html[dir=rtl] .fc .wd,html[dir=rtl] .ch button{font-family:"Baloo Bhaijaan 2",sans-serif}
+/* find & count */
+.scene{position:relative;border:2.5px solid #1d1d2b;border-radius:18px;background:#fff;height:min(78vw,520px);overflow:hidden}
+.scene span{position:absolute;font-size:clamp(30px,7vw,48px);cursor:pointer;transition:transform .2s;line-height:1}
+.scene span.got{transform:scale(.85)}.scene span.got::after{content:"";position:absolute;inset:-6px;border:3px solid var(--c);border-radius:50%}
+.tally{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));border:2.5px solid #1d1d2b;border-radius:14px;overflow:hidden;margin-top:12px;background:#fff}
+.tally div{display:flex;align-items:center;justify-content:space-around;padding:8px;border:1.5px solid #1d1d2b;font-size:42px}
+/* matching with lines */
+.mt{position:relative;display:flex;justify-content:space-between;padding:4px 6px}
+.mt .col{display:flex;flex-direction:column;gap:10px;z-index:2}
+.mt .it{display:flex;align-items:center;gap:10px}
+.mt .k{min-width:58px;height:58px;border:2.5px solid #1d1d2b;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;font-family:"Fredoka",sans-serif;font-size:32px;cursor:pointer;padding:0 6px}
+.mt .k.sel{background:#fff3b0;transform:scale(1.08)}.mt .k.done{background:#eaffef;border-color:#2fae4e}
+.mt .dot{width:14px;height:14px;border-radius:50%;background:#1d1d2b}
+.mt svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible}
+.mt path{fill:none;stroke-width:6;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;animation:draw .5s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+/* shapes */
+.srow{display:flex;align-items:center;gap:8px;padding:8px 4px;border-bottom:2px dashed #1d1d2b}.srow:last-child{border-bottom:0}
+.srow .shp{width:78px;text-align:center;flex:none;font-family:"Patrick Hand",cursive;font-size:18px}.srow .shp svg{width:56px;height:56px;display:block;margin:0 auto}
+.srow .opt{flex:1;display:flex;justify-content:space-around}
+.srow .opt button{border:0;background:none;font-size:clamp(34px,8vw,48px);cursor:pointer;border-radius:50%;width:1.5em;height:1.5em;padding:0}
+.srow .opt button.ok{outline:4px solid #2fae4e;background:#eaffef}.srow .opt button.no{animation:shake .35s;opacity:.4}
+/* math sheet */
+.grp{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:2px solid #1d1d2b;flex-wrap:wrap}.grp:last-child{border:0}
+.grp .em{flex:1;font-size:clamp(26px,6.5vw,38px);letter-spacing:2px}
+.seq{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.seq .c{min-width:54px;height:54px;border:2.5px solid #1d1d2b;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:"Fredoka",sans-serif;font-size:28px;background:#fff}
+.nx3{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;font-family:"Patrick Hand",cursive;font-size:28px}
+.nx3 .ops{display:flex;gap:6px}.nx3 .ops button{width:50px;height:50px;border:2.5px solid #1d1d2b;border-radius:10px;background:#fff;font-family:"Fredoka",sans-serif;font-size:24px;cursor:pointer}
+.nx3 .ops button.ok{border-radius:50%;outline:4px solid #e8590c;outline-offset:2px}.nx3 .ops button.no{animation:shake .35s;opacity:.4}
+.addr{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.addr div{border:2px dashed #1d1d2b;border-radius:14px;padding:8px;text-align:center;font-size:26px}
+.bs{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.bs div{display:flex;justify-content:space-around;border:2.5px solid #1d1d2b;border-radius:14px;padding:8px}
+.bs button{width:56px;height:56px;border-radius:50%;border:2.5px dashed #1d1d2b;background:#fff;font-family:"Fredoka",sans-serif;font-size:26px;cursor:pointer}
+.bs button.ok{border-style:solid;outline:4px solid #e8590c}.bs button.no{animation:shake .35s;opacity:.4}
+/* keypad */
+.kp{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:80;background:#fff;border-radius:26px;padding:12px;box-shadow:0 14px 40px rgba(0,0,0,.35);display:none;grid-template-columns:repeat(5,1fr);gap:8px;width:min(94vw,420px)}
+.kp.show{display:grid;animation:in .25s}.kp button{height:58px;border-radius:16px;border:0;font-family:"Fredoka",sans-serif;font-size:28px;font-weight:700;cursor:pointer;color:#fff}
+.kp .x{grid-column:span 5;height:40px;background:#eee!important;color:#555;font-size:18px}
+.kpd{position:fixed;inset:0;z-index:79;display:none}.kpd.show{display:block}
+/* finish */
+.stamp{position:fixed;left:50%;top:40%;z-index:90;transform:translate(-50%,-50%) rotate(-12deg);font-family:"Fredoka",sans-serif;font-weight:700;font-size:clamp(40px,11vw,80px);color:#e8590c;border:8px solid #e8590c;border-radius:24px;padding:6px 26px;background:rgba(255,253,247,.95);animation:stp .6s cubic-bezier(.3,1.7,.5,1);pointer-events:none;text-align:center}
+.stamp small{display:block;font-size:.35em;color:#1d1d2b}
+@keyframes stp{from{transform:translate(-50%,-50%) rotate(-12deg) scale(3);opacity:0}}
+.foot{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.fb{border:2.5px solid #1d1d2b;border-radius:999px;padding:10px 22px;background:#fff3b0;font-family:inherit;font-size:20px;font-weight:700;cursor:pointer;box-shadow:0 5px 0 #1d1d2b}
+.fb:active{transform:translateY(4px);box-shadow:0 1px 0 #1d1d2b}
+.cheer{text-align:center;font-family:"Patrick Hand",cursive;font-size:22px;margin-top:10px}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:95}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<main><h1 id="ttl">📒 Activity Book</h1><div id="app"></div></main>
+<div class="kpd" id="kpd"></div><div class="kp" id="kp"></div>
+<script>
+const $=id=>document.getElementById(id),R=n=>Math.floor(Math.random()*n),shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]),pick=(a,n)=>shuf(a).slice(0,n);
+const CR=["#e8590c","#2f6bd8","#2fae4e","#c2185b","#7b3fe4","#d49a00"];
+const ME=NAJMA.me||{},NAME=(ME.preview?"":(ME.nameEn||ME.name||""))||"Star";
+const G=ME.grade||"KG2",BIG=/^G[2-6]$/.test(G);
+/* sounds */
+let ac;function tone(f,d=.12,w=0,t="triangle",v=.14){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g).connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
+const yay=()=>{tone(660);tone(990,.15,.08)},buzz=()=>tone(170,.22,0,"sawtooth",.07),fan=()=>[523,659,784,1047,1319].forEach((f,i)=>tone(f,.22,i*.1));
+const sayEn=t=>{try{if(window.NAJMA&&NAJMA.aiSay)NAJMA.aiSay(t,"en",.85)}catch(e){}},sayAr=t=>{try{NAJMA.aiSay(t,"ar",.9)}catch(e){}};
+/* confetti */
+const cv=$("fx"),cx=cv.getContext("2d");let P=[],run=false;function sz(){cv.width=innerWidth;cv.height=innerHeight}sz();addEventListener("resize",sz);
+function burst(x,y,n=24){for(let i=0;i<n;i++){const a=Math.random()*6.28,v=2+Math.random()*6;P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-4,c:CR[i%6],r:4+Math.random()*5,l:70})}go()}
+function rain(){for(let i=0;i<120;i++)P.push({x:Math.random()*innerWidth,y:-Math.random()*300,vx:Math.random()*2-1,vy:2+Math.random()*3,c:CR[i%6],r:5+Math.random()*6,l:240});go()}
+function go(){if(run)return;run=true;(function f(){cx.clearRect(0,0,cv.width,cv.height);P=P.filter(p=>p.l-->0);P.forEach(p=>{p.vy+=.15;p.x+=p.vx;p.y+=p.vy;cx.fillStyle=p.c;cx.fillRect(p.x,p.y,p.r,p.r*.6)});if(P.length)requestAnimationFrame(f);else{run=false;cx.clearRect(0,0,cv.width,cv.height)}})()}
+const at=el=>{const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2)};
+/* progress */
+let done={};try{done=JSON.parse(localStorage.getItem("sheetsDone")||"{}")}catch(e){}
+
+/* number keypad */
+let kpCb=null;function keypad(cb){kpCb=cb;$("kp").classList.add("show");$("kpd").classList.add("show")}
+function kpClose(){$("kp").classList.remove("show");$("kpd").classList.remove("show");kpCb=null}
+$("kp").innerHTML=[...Array(BIG?21:11).keys()].map(n=>`<button style="background:${CR[n%6]}">${n}</button>`).join("")+'<button class="x">✖ close</button>';
+$("kp").querySelectorAll("button").forEach(b=>b.onclick=()=>{if(b.classList.contains("x"))return kpClose();const cb=kpCb;kpClose();cb&&cb(+b.textContent)});$("kpd").onclick=kpClose;
+function askBox(box,ans,onOk){box.onclick=()=>{if(box.classList.contains("ok"))return;keypad(n=>{if(n===ans){box.textContent=n;box.classList.add("ok","crayon");box.style.setProperty("--c",CR[R(6)]);yay();at(box);onOk&&onOk()}else{box.textContent=n;box.classList.add("shake");buzz();setTimeout(()=>{box.classList.remove("shake");box.textContent=""},500)}})}}
+
+/* ---------- the sheet frame ---------- */
+const today=new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+let left=0;
+function sheet(def,body){window.scrollTo(0,0);document.documentElement.dir=def.ar?"rtl":"ltr";$("ttl").textContent=def.title;document.title=def.title;
+  $("app").innerHTML=`<div class="paper"><div class="nd" dir="ltr"><span>Name: <b>${NAME}</b></span><span>Date: <b>${today}</b></span></div>
+   <div class="st">${def.title.split(" ").map((w,i)=>`<span style="animation-delay:${i*.3}s;color:${i%2?"#1d1d2b":CR[(i+def.c)%6]}">${w}</span>`).join(" ")}</div>
+   <div class="ins">${def.ins}</div><div id="body"></div><div class="cheer" id="ch"></div></div>
+   <div class="foot"><button class="fb" id="nw">🔄 ${def.ar?"ورقة جديدة":"New sheet"}</button></div>`;
+  $("nw").onclick=()=>open(def.k);body($("body"))}
+function point(n=1){left-=n;const msgs=["Great job!","Super!","Keep going!","Wow!","Brilliant!"];if(left>0){$("ch").textContent="✏️ "+left+" more to go";return}
+  const d=SHEETS.find(s=>s.k===cur);done[cur]=1;try{localStorage.setItem("sheetsDone",JSON.stringify(done))}catch(e){}
+  $("ch").textContent="";fan();rain();const s=document.createElement("div");s.className="stamp";s.innerHTML=(d.ar?"أحسنت!":"Great Job!")+"<small>⭐⭐⭐ "+NAME+"</small>";document.body.appendChild(s);
+  (d.ar?sayAr:sayEn)(d.ar?"أحسنت يا بطل!":"Great job, "+NAME+"!");setTimeout(()=>s.remove(),2600)}
+
+/* ---------- 1. finish the letters ---------- */
+const EN=[["apple","🍎"],["ball","⚽"],["cat","🐱"],["dog","🐶"],["elephant","🐘"],["fish","🐟"],["hat","👒"],["ice cream","🍦"],["jug","🏺"],["kite","🪁"],["lion","🦁"],["mango","🥭"],["nest","🪺"],["orange","🍊"],["pig","🐷"],["queen","👸"],["rabbit","🐰"],["sun","☀️"],["tree","🌳"],["umbrella","☂️"],["van","🚐"],["watch","⌚"],["yo-yo","🪀"],["zebra","🦓"],["bus","🚌"],["duck","🦆"],["goat","🐐"],["moon","🌙"],["star","⭐"],["teddy","🧸"]];
+const AR=[["أرنب","🐰"],["بطة","🦆"],["تفاحة","🍎"],["ثعلب","🦊"],["جمل","🐪"],["حصان","🐴"],["خروف","🐑"],["دب","🐻"],["ذرة","🌽"],["زرافة","🦒"],["سمكة","🐟"],["شمس","☀️"],["صقر","🦅"],["ضفدع","🐸"],["طائرة","✈️"],["ظرف","✉️"],["عنب","🍇"],["غيمة","☁️"],["فراشة","🦋"],["قمر","🌙"],["كتاب","📖"],["ليمون","🍋"],["موز","🍌"],["نجمة","⭐"],["هدية","🎁"],["وردة","🌹"],["يد","✋"],["رمان","🍎"]].filter(x=>x[0]!=="رمان");
+const NOJOIN="اأإآدذرزوؤة";
+function finish(ar){return box=>{const L=pick(ar?AR:EN,8),abc=ar?"ابتثجحخدذرزسشصضطظعغفقكلمنهوي":"abcdefghijklmnopqrstuvwxyz";left=L.length;
+  box.innerHTML=`<div class="fl">${L.map(([w,e],i)=>{const f=w[0],rest=w.slice(1),joins=ar&&!NOJOIN.includes(f.replace(/[أإآ]/,"ا"));const base=ar?f.replace(/[أإآ]/,"ا"):f;
+    const opts=shuf([base,...pick([...abc].filter(c=>c!==base),2)]);
+    return `<div class="fc" data-i="${i}"><span class="n">${i+1}.</span><div class="pic">${e}</div><div class="wd"><span class="blank">&nbsp;</span><span>${joins?"ـ":""}${rest}</span></div><div class="ch">${opts.map(o=>`<button data-o="${o}">${o}</button>`).join("")}</div></div>`}).join("")}</div>`;
+  box.querySelectorAll(".fc").forEach(c=>{const [w,e]=L[+c.dataset.i],base=ar?w[0].replace(/[أإآ]/,"ا"):w[0];
+    c.querySelector(".pic").onclick=()=>(ar?sayAr:sayEn)(w);
+    c.querySelectorAll(".ch button").forEach(b=>b.onclick=()=>{if(c.classList.contains("won"))return;if(b.dataset.o===base){const bl=c.querySelector(".blank");bl.textContent=w[0];bl.className="blank crayon";bl.style.setProperty("--c",CR[R(6)]);bl.style.borderColor="transparent";c.classList.add("won");yay();at(bl);(ar?sayAr:sayEn)(w);point()}else{b.classList.add("no");buzz();setTimeout(()=>b.classList.remove("no"),400)}})})}}
+
+/* ---------- 2. find and count ---------- */
+const KINDS=[["🐶","dogs"],["🐱","cats"],["🐰","bunnies"],["🐤","chicks"],["🦋","butterflies"],["🌸","flowers"],["🌳","trees"],["🐞","ladybugs"],["🐢","turtles"],["🍄","mushrooms"]];
+function count(box){const K=pick(KINDS,BIG?6:4),N=K.map(()=>1+R(BIG?7:5));left=K.length;const items=[];K.forEach((k,i)=>{for(let j=0;j<N[i];j++)items.push(i)});
+  const cells=shuf([...Array(48).keys()]).slice(0,items.length);
+  box.innerHTML=`<div class="scene" id="sc">${items.map((ki,j)=>{const c=cells[j],x=(c%8)*12.2+1+R(4),y=Math.floor(c/8)*16+1+R(5);return `<span data-k="${ki}" style="left:${x}%;top:${y}%;--c:${CR[ki]};transform:rotate(${R(30)-15}deg)">${K[ki][0]}</span>`}).join("")}</div>
+   <div class="tally">${K.map((k,i)=>`<div>${k[0]}<span class="box" data-i="${i}"></span></div>`).join("")}</div>`;
+  box.querySelectorAll(".scene span").forEach(s=>s.onclick=()=>{s.classList.toggle("got");tone(500+R(400),.08)});
+  box.querySelectorAll(".tally .box").forEach(b=>askBox(b,N[+b.dataset.i],()=>{sayEn(N[+b.dataset.i]+" "+K[+b.dataset.i][1]);point()}))}
+
+/* ---------- 3. match with lines ---------- */
+function matcher(box,pairs,shape){left=pairs.length;const right=shuf(pairs.map((p,i)=>i));
+  box.innerHTML=`<div class="mt" id="mt"><svg id="ln"></svg><div class="col">${pairs.map((p,i)=>`<div class="it"><button class="k" data-l="${i}">${p[0]}</button><span class="dot"></span></div>`).join("")}</div>
+   <div class="col">${right.map(i=>`<div class="it"><span class="dot"></span><button class="k" data-r="${i}">${pairs[i][1]}</button></div>`).join("")}</div></div>`;
+  let sel=null;const mt=$("mt"),svg=$("ln");
+  const line=(a,b,c)=>{const m=mt.getBoundingClientRect(),p=a.getBoundingClientRect(),q=b.getBoundingClientRect(),x1=p.right-m.left+12,y1=p.top+p.height/2-m.top,x2=q.left-m.left-12,y2=q.top+q.height/2-m.top;
+    svg.insertAdjacentHTML("beforeend",`<path stroke="${c}" d="M${x1},${y1} C${(x1+x2)/2},${y1+R(30)-15} ${(x1+x2)/2},${y2+R(30)-15} ${x2},${y2}"/>`)};
+  box.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{if(b.classList.contains("done"))return;box.querySelectorAll("[data-l]").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");sel=b;tone(600,.06);(shape&&shape.say?shape.say:t=>{})(pairs[+b.dataset.l])});
+  box.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{if(!sel||b.classList.contains("done"))return;if(b.dataset.r===sel.dataset.l){const c=CR[R(6)];line(sel,b,c);sel.classList.add("done");b.classList.add("done");sel.classList.remove("sel");yay();at(b);sel=null;point()}else{b.classList.add("shake");buzz();setTimeout(()=>b.classList.remove("shake"),400)}})}
+function capsmall(box){const L=pick([..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"],6);matcher(box,L.map(c=>[c,c.toLowerCase()]),{say:p=>sayEn(p[0])})}
+function arpic(box){const L=pick(AR,6);matcher(box,L.map(([w,e])=>[e,w[0]]),{say:p=>{}})}
+function nummatch(box){const ems=["🪁","☁️","🧁","✏️","🚂","🎈","🐟","🍦","🚗","⭐"],N=pick([1,2,3,4,5,6,7,8,9].slice(0,BIG?9:6),5);matcher(box,N.map(n=>[n,`<span style="font-size:20px;letter-spacing:0">${ems[R(10)].repeat(n)}</span>`]),{say:p=>sayEn(String(p[0]))})}
+
+/* ---------- 4. shapes ---------- */
+const SH={circle:[`<circle cx="30" cy="30" r="24"/>`,["⚽","🍩","🕐","🍪","🪙","🔵"]],square:[`<rect x="7" y="7" width="46" height="46"/>`,["🎁","🧇","🖼️","🟦","🟩"]],triangle:[`<path d="M30 6 L55 52 L5 52Z"/>`,["🍕","🔺","⛺","🍉","📐"]],rectangle:[`<rect x="3" y="15" width="54" height="30"/>`,["🚪","📱","📺","📕","💵"]],star:[`<path d="M30 4l7 17 18 1-14 11 5 18-16-10-16 10 5-18L5 22l18-1z"/>`,["⭐","🌟","✴️"]],heart:[`<path d="M30 52S6 37 6 21c0-8 6-13 12-13 6 0 10 4 12 8 2-4 6-8 12-8 6 0 12 5 12 13 0 16-24 31-24 31z"/>`,["❤️","💝","💖","🩷"]],oval:[`<ellipse cx="30" cy="30" rx="26" ry="18"/>`,["🥚","🏉","🪞","🥔"]],diamond:[`<path d="M30 4 L55 30 L30 56 L5 30Z"/>`,["🪁","💎","🔷","♦️"]]};
+function shapes(box){const S=pick(Object.keys(SH),BIG?7:5);left=S.length;
+  box.innerHTML=S.map((s,i)=>{const ok=SH[s][1][R(SH[s][1].length)],others=pick(Object.keys(SH).filter(x=>x!==s&&!(s==="square"&&x==="rectangle")&&!(s==="rectangle"&&x==="square")),3).map(x=>SH[x][1][R(SH[x][1].length)]);
+    return `<div class="srow" data-s="${s}"><div class="shp"><svg viewBox="0 0 60 60" fill="#fff" stroke="${CR[i%6]}" stroke-width="4" stroke-linejoin="round">${SH[s][0]}</svg>${s}</div><div class="opt">${shuf([ok,...others]).map(o=>`<button data-ok="${o===ok?1:0}">${o}</button>`).join("")}</div></div>`}).join("");
+  box.querySelectorAll(".srow").forEach(r=>{r.querySelector(".shp").onclick=()=>sayEn(r.dataset.s);r.querySelectorAll(".opt button").forEach(b=>b.onclick=()=>{if(r.dataset.w)return;if(b.dataset.ok==="1"){r.dataset.w=1;b.classList.add("ok");yay();at(b);sayEn(r.dataset.s);point()}else{b.classList.add("no");buzz()}})})}
+
+/* ---------- 5. math fun ---------- */
+function math(box){const M=BIG?20:10,E=["🎈","🐟","🌙","🍦","🚗","🍎","🦋","⭐","🌞","🐞"];let html="",tasks=[];
+  /* count and write */
+  const cw=pick(E,3).map(e=>[e,1+R(BIG?9:6)]);html+=`<div class="sec"><h3><i>1</i>Count and write</h3>${cw.map(([e,n],i)=>`<div class="grp"><span class="em">${e.repeat(n)}</span><span class="box" data-a="${n}"></span></div>`).join("")}</div>`;
+  /* missing numbers */
+  const st=1+R(M-6),seq=[...Array(6)].map((_,i)=>st+i),hole=pick([1,2,3,4],2);html+=`<div class="sec"><h3><i>2</i>Write the missing numbers</h3><div class="seq">${seq.map((n,i)=>hole.includes(i)?`<span class="box" data-a="${n}"></span>`:`<span class="c">${n}</span>`).join("")}</div></div>`;
+  /* what comes next */
+  const nx=[0,1,2].map(()=>{const s=1+R(M-4),step=BIG&&R(2)?2:1;return [s,s+step,s+2*step,s+3*step]});
+  html+=`<div class="sec"><h3><i>3</i>What comes next? Circle it</h3>${nx.map(q=>{const a=q[3],o=shuf([a,a+1,a-1].filter(x=>x>=0));return `<div class="nx3"><span>${q.slice(0,3).join(", ")}, __</span><div class="ops">${o.map(x=>`<button data-ok="${x===a?1:0}">${x}</button>`).join("")}</div></div>`}).join("")}</div>`;
+  /* add the items */
+  const ad=pick(E,3).map(e=>[e,1+R(BIG?6:3),1+R(BIG?5:3)]);html+=`<div class="sec"><h3><i>4</i>Add the items</h3><div class="addr">${ad.map(([e,a,b])=>`<div>${e.repeat(a)} <b>+</b> ${e.repeat(b)}<br><b>=</b> <span class="box" data-a="${a+b}"></span></div>`).join("")}</div></div>`;
+  /* bigger number */
+  const bs=[0,1,2,3].map(()=>{let a=R(M+1),b=R(M+1);while(b===a)b=R(M+1);return [a,b]});html+=`<div class="sec"><h3><i>5</i>Circle the bigger number</h3><div class="bs">${bs.map(([a,b])=>`<div><button data-ok="${a>b?1:0}">${a}</button><button data-ok="${b>a?1:0}">${b}</button></div>`).join("")}</div></div>`;
+  box.innerHTML=html;left=box.querySelectorAll(".box").length+nx.length+bs.length;
+  box.querySelectorAll(".box").forEach(b=>askBox(b,+b.dataset.a,()=>point()));
+  box.querySelectorAll(".nx3 .ops,.bs div").forEach(g=>g.querySelectorAll("button").forEach(b=>b.onclick=()=>{if(g.dataset.w)return;if(b.dataset.ok==="1"){g.dataset.w=1;b.classList.add("ok");yay();at(b);sayEn(b.textContent);point()}else{b.classList.add("no");buzz()}}))}
+
+/* ---------- the book ---------- */
+const SHEETS=[
+ {k:"fin",title:"Finish the Letters",ins:"Look at the picture. Tap the missing letter to complete the word.",pv:"🍎 _pple",c:0,run:finish(false)},
+ {k:"finar",ar:1,title:"أكمل الحرف الناقص",ins:"انظر إلى الصورة واختر الحرف الناقص لتكمل الكلمة",pv:"🐰 _رنب",c:3,run:finish(true)},
+ {k:"cnt",title:"Find and Count",ins:"Find each animal. Tap them to mark them, then write the number in the box.",pv:"🐶🐱🐰",c:1,run:count},
+ {k:"abc",title:"Match Capital & Small",ins:"Tap a capital letter, then tap its small letter to draw a line.",pv:"A ➝ a",c:2,run:capsmall},
+ {k:"arp",ar:1,title:"صل الصورة بحرفها",ins:"اضغط على الصورة ثم على الحرف الذي تبدأ به",pv:"🐪 ➝ ج",c:4,run:arpic},
+ {k:"shp",title:"Shapes Matching",ins:"Look at the shape. Tap the object that has the same shape.",pv:"🔺 🍕",c:5,run:shapes},
+ {k:"num",title:"Match the Number",ins:"Tap a number, then tap the group with that many things.",pv:"3 ➝ 🧁🧁🧁",c:0,run:nummatch},
+ {k:"math",title:"Math Fun",ins:"Count, add and solve! Tap a box to write your answer.",pv:"2 + 1 = ?",c:1,run:math}];
+let cur=null;
+function open(k){cur=k;const d=SHEETS.find(s=>s.k===k);sheet(d,d.run)}
+function hub(){cur=null;document.documentElement.dir="ltr";$("ttl").textContent="📒 Activity Book";window.scrollTo(0,0);
+  $("app").innerHTML=`<div class="paper" style="text-align:center"><div class="st"><span style="color:#e8590c">My</span> <span>Activity</span> <span style="color:#2f6bd8">Book</span></div><div class="ins" style="margin-bottom:4px">✏️ ${NAME}'s fun sheets · كراسة أنشطة ${NAME}</div></div>
+   <div class="book">${SHEETS.map((s,i)=>`<button class="sh" data-k="${s.k}" style="animation-delay:${i*.06}s">${done[s.k]?'<span class="done">⭐</span>':""}<div class="pv" ${s.ar?'dir="rtl"':""}>${s.pv}</div><b ${s.ar?'dir="rtl"':""}>${s.title}</b><small>${s.ar?"عربي":"English"}</small></button>`).join("")}</div>`;
+  document.querySelectorAll(".sh").forEach(b=>b.onclick=()=>{tone(700,.06);open(b.dataset.k)})}
+{const k=new URLSearchParams(location.search).get("s");if(k&&SHEETS.some(x=>x.k===k))open(k);else hub()}
+</script>
+</body>
+</html>

@@ -256,6 +256,7 @@ html{background:#2f9cfc linear-gradient(#2f9cfc 0 50%,#fdbd6e 50%)!important}bod
 .bar b,.bar small{white-space:nowrap}.bar small{font-size:clamp(10px,1.9vw,17px)!important}
 .hi{display:none!important}
 .me .hn{display:block;margin-top:6px;background:rgba(255,255,255,.95);border-radius:999px;padding:2px 14px;font-weight:800;font-size:clamp(15px,3.2vw,22px);color:#16204a;box-shadow:0 5px 12px rgba(0,0,0,.18);white-space:nowrap}
+.apps .icon .glyph{color:#16204a;text-shadow:none;font-size:clamp(46px,10vw,70px)}
 </style>
 </head>
 <body>
@@ -304,6 +305,8 @@ const ROWS=[
   {id:"numAr",href:"numbers-ar.html",glyph:"١٢٣",name:"الأرقام",sub:"من ١ إلى ٢٠",bg:"linear-gradient(150deg,#ffb020,#ff5d9e)",key:"numDoneAr",total:20},
   {id:"uae",href:"uae.html",glyph:"🇦🇪",name:"بلادي الإمارات",sub:"زايد · الإمارات السبع",bg:"linear-gradient(150deg,#c8102e,#00843d)",key:"uaeDone",total:15},
   {id:"daysAr",href:"days.html?l=ar",glyph:"📅",name:"الأيام",sub:"أيام الأسبوع",bg:"linear-gradient(150deg,#8fd8ff,#6cc95a)",key:"daysDone",total:3},
+  {id:"wsFinAr",href:"sheets.html?s=finar",glyph:"✏️",name:"أكمل الحرف الناقص",sub:"ورقة نشاط",bg:"linear-gradient(150deg,#ffb020,#ff6f91)",key:"sheetsDone",total:0},
+  {id:"wsArPic",href:"sheets.html?s=arp",glyph:"🔗",name:"صل الصورة بحرفها",sub:"ورقة نشاط",bg:"linear-gradient(150deg,#22c7b8,#4f8bff)",key:"sheetsDone",total:0},
   {id:"monthsAr",href:"months.html?l=ar",glyph:"🗓️",name:"الأشهر",sub:"أشهر السنة",bg:"linear-gradient(150deg,#ff7eb6,#ffb020)",key:"monthsDone",total:3},
   {id:"clockAr",href:"clock.html?l=ar",glyph:"⏰",name:"الساعة",sub:"كم الساعة؟",bg:"linear-gradient(150deg,#ffb86b,#ff8a7a)",key:"clockDone",total:12},
   {id:"colorsAr",href:"colors.html",glyph:"🎨",name:"الألوان",sub:"١١ لونًا",bg:"linear-gradient(150deg,#ff5d73,#ffb020 50%,#3fc35a)",key:"colorsAr",total:11}]},
@@ -319,7 +322,13 @@ const ROWS=[
   {id:"writeEn",href:"writing.html",glyph:"Aa",name:"Handwriting",sub:"abc · ABC · 123",bg:"linear-gradient(150deg,#a66bff,#ff7eb6)",key:"writeEn",total:62}]},
  {t:"🔷 Maths",apps:[
   {id:"math",href:"math.html",glyph:"➕➖",name:"Maths + −",sub:"KG2 · Grade 2",bg:"linear-gradient(150deg,#4f8bff,#22c7b8)",key:"mathDone",total:18},
+  {id:"wsCnt",href:"sheets.html?s=cnt",glyph:"🔍",name:"Find and Count",sub:"Worksheet",bg:"linear-gradient(150deg,#a66bff,#ff7eb6)",key:"sheetsDone",total:0},
+  {id:"wsNum",href:"sheets.html?s=num",glyph:"🧁",name:"Match the Number",sub:"Worksheet",bg:"linear-gradient(150deg,#ff7eb6,#ffb020)",key:"sheetsDone",total:0},
+  {id:"wsMath",href:"sheets.html?s=math",glyph:"🧮",name:"Math Fun",sub:"Worksheet",bg:"linear-gradient(150deg,#4f8bff,#22c7b8)",key:"sheetsDone",total:0},
   {id:"days",href:"days.html",glyph:"📅",name:"Days",sub:"Days of the week",bg:"linear-gradient(150deg,#8fd8ff,#6cc95a)",key:"daysDone",total:3},
+  {id:"wsFin",href:"sheets.html?s=fin",glyph:"✏️",name:"Finish the Letters",sub:"Worksheet",bg:"linear-gradient(150deg,#ffb020,#ff6f91)",key:"sheetsDone",total:0},
+  {id:"wsAbc",href:"sheets.html?s=abc",glyph:"🔗",name:"Capital & Small",sub:"Worksheet",bg:"linear-gradient(150deg,#22c7b8,#4f8bff)",key:"sheetsDone",total:0},
+  {id:"wsShp",href:"sheets.html?s=shp",glyph:"🔺",name:"Shapes Matching",sub:"Worksheet",bg:"linear-gradient(150deg,#3fc35a,#22c7b8)",key:"sheetsDone",total:0},
   {id:"months",href:"months.html",glyph:"🗓️",name:"Months",sub:"Months of the year",bg:"linear-gradient(150deg,#ff7eb6,#ffb020)",key:"monthsDone",total:3},
   {id:"clock",href:"clock.html",glyph:"⏰",name:"Clock",sub:"Tell the time",bg:"linear-gradient(150deg,#ffb86b,#ff8a7a)",key:"clockDone",total:12},
   {id:"numEn",href:"numbers-en.html",glyph:"123",name:"Numbers",sub:"1 to 20",bg:"linear-gradient(150deg,#4f8bff,#3fc35a)",key:"numDoneEn",total:20},
@@ -357,7 +366,7 @@ const HWL=rowBy("📌 الواجب");
 {const me=NAJMA.me||{},nz=v=>String(v||"").replace(/[\u064B-\u0652]/g,"").replace(/ة/g,"ه").trim().toLowerCase();
  if([me.name,me.nameAr,me.nameEn].some(v=>/^(نوره|noura|nora)$/.test(nz(String(v||"").split(/\s+/)[0]))))
   HWL.unshift({id:"exam",href:"exam.html",glyph:"📝",name:"📝 الامتحان: التربية الإسلامية",sub:"مراجعة نهاية الفصل الأول",bg:"linear-gradient(150deg,#a66bff,#ff7eb6)",key:"examG2",total:22})}
-const CATS={hw:{t:"الواجب",e:"Homework",ic:"nav_hw",apps:HWL},uae:{t:"بلادي الإمارات",e:"My UAE",ic:"ap_uae",apps:rowBy("🔤 العربية").filter(a=>a.id==="uae")},ar:{t:"العربية",e:"Arabic",ic:"cat_ar",apps:rowBy("🔤 العربية").filter(a=>a.id!=="uae")},deen:{t:"ديني",e:"Islam",ic:"cat_deen",apps:rowBy("🕌 ديني")},en:{t:"English",e:"اللغة الإنجليزية",ic:"cat_en",apps:rowBy("🇬🇧 English").concat(rowBy("🔷 Maths").filter(a=>a.id!=="math"))},math:{t:"Maths",e:"Maths",ic:"cat_num",apps:rowBy("🔷 Maths").filter(a=>a.id==="math")},name:{t:"اسمي",e:"My Name",ic:"ap_name",apps:rowBy("✏️ اسمي · My name")}};
+const MATHIDS=["math","wsCnt","wsNum","wsMath"];const CATS={hw:{t:"الواجب",e:"Homework",ic:"nav_hw",apps:HWL},uae:{t:"بلادي الإمارات",e:"My UAE",ic:"ap_uae",apps:rowBy("🔤 العربية").filter(a=>a.id==="uae")},ar:{t:"العربية",e:"Arabic",ic:"cat_ar",apps:rowBy("🔤 العربية").filter(a=>a.id!=="uae")},deen:{t:"ديني",e:"Islam",ic:"cat_deen",apps:rowBy("🕌 ديني")},en:{t:"English",e:"اللغة الإنجليزية",ic:"cat_en",apps:rowBy("🇬🇧 English").concat(rowBy("🔷 Maths").filter(a=>!MATHIDS.includes(a.id)))},math:{t:"Maths",e:"Maths",ic:"cat_num",apps:rowBy("🔷 Maths").filter(a=>MATHIDS.includes(a.id))},name:{t:"اسمي",e:"My Name",ic:"ap_name",apps:rowBy("✏️ اسمي · My name")}};
 let stars=0,full=0;{const seen=new Set();ROWS.forEach(r=>r.apps.filter(visA).forEach(a=>{const n=a.total?Math.min(count(a.key),a.total):0;if(a.total&&!seen.has(a.key)){seen.add(a.key);stars+=n;if(n>=a.total)full++}}))}
 document.getElementById("sTotal").textContent=stars;document.getElementById("sDone").textContent=full;
 const meAv=document.getElementById("meAv");if(NAJMA.me){meAv.innerHTML=NAJMA_AV(NAJMA.me.avatar);meAv.style.overflow="hidden";meAv.style.background=NAJMA.me.color||"#ffd23f"}
