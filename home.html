@@ -335,7 +335,7 @@ NAJMA.sections.filter(s=>s.type!=="qimg"&&s.type!=="flags"&&!(((NAJMA.sections.f
 /* homework from school comes first */
 if(HW.length)ROWS.unshift({t:"📌 الواجب",apps:HW})}
 /* ===== rendering: the picture is the home screen ===== */
-const I="img/home2/";const AI={arabic:"arabic",name:"name",spell:"spell",numAr:"numAr",daysAr:"days",days:"days",clockAr:"clock",clock:"clock",colorsAr:"colors",colorsEn:"colorsEn",islam:"islam",iman:"iman",quran:"quran",duas:"duas",sounds:"sounds",cvc:"cvc",sent:"sent",writeEn:"writeEn",math:"math",numEn:"numEn",shapes:"shapes",uae:"uae"};
+const I="img/home2/";const AI={exam:"islam",arabic:"arabic",name:"name",spell:"spell",numAr:"numAr",daysAr:"days",days:"days",clockAr:"clock",clock:"clock",colorsAr:"colors",colorsEn:"colorsEn",islam:"islam",iman:"iman",quran:"quran",duas:"duas",sounds:"sounds",cvc:"cvc",sent:"sent",writeEn:"writeEn",math:"math",numEn:"numEn",shapes:"shapes",uae:"uae"};
 const visA=a=>a&&NAJMA.settings.apps[a.id]!==false;
 const HREFI=[["quran","quran"],["duas","duas"],["spell","spell"],["arabic","arabic"],["numbers-ar","numAr"],["numbers-en","numEn"],["islam","islam"],["iman","iman"],["index.html","sounds"],["cvc","cvc"],["sentences","sent"],["writing","writeEn"],["math","math"],["days","days"],["clock","clock"],["colors","colors"],["shapes","shapes"],["uae","uae"],["name","name"]];
 function icoOf(a){if(AI[a.id])return I+"ap_"+AI[a.id]+".webp";if(!a.id.startsWith("s:"))return null;const S=NAJMA.sections.find(x=>"s:"+x.id===a.id)||{},t=S.type||"words";
@@ -344,6 +344,10 @@ function icoOf(a){if(AI[a.id])return I+"ap_"+AI[a.id]+".webp";if(!a.id.startsWit
   return I+(S.lang==="ar"?"ap_arabic.webp":"ap_sounds.webp")}
 const rowBy=t=>(ROWS.find(r=>r.t===t)||{apps:[]}).apps;
 const HWL=rowBy("📌 الواجب");
+/* exam review: only for Noura, shown first under الواجب as «📝 الامتحان» */
+{const me=NAJMA.me||{},nz=v=>String(v||"").replace(/[\u064B-\u0652]/g,"").replace(/ة/g,"ه").trim().toLowerCase();
+ if([me.name,me.nameAr,me.nameEn].some(v=>/^(نوره|noura|nora)$/.test(nz(String(v||"").split(/\s+/)[0]))))
+  HWL.unshift({id:"exam",href:"exam.html",glyph:"📝",name:"📝 الامتحان: التربية الإسلامية",sub:"مراجعة نهاية الفصل الأول",bg:"linear-gradient(150deg,#a66bff,#ff7eb6)",key:"examG2",total:22})}
 const CATS={hw:{t:"الواجب",e:"Homework",ic:"nav_hw",apps:HWL},uae:{t:"بلادي الإمارات",e:"My UAE",ic:"ap_uae",apps:rowBy("🔤 العربية").filter(a=>a.id==="uae")},ar:{t:"العربية",e:"Arabic",ic:"cat_ar",apps:rowBy("🔤 العربية").filter(a=>a.id!=="uae")},deen:{t:"ديني",e:"Islam",ic:"cat_deen",apps:rowBy("🕌 ديني")},en:{t:"English",e:"اللغة الإنجليزية",ic:"cat_en",apps:rowBy("🇬🇧 English").concat(rowBy("🔷 Maths").filter(a=>a.id!=="math"))},math:{t:"Maths",e:"Maths",ic:"cat_num",apps:rowBy("🔷 Maths").filter(a=>a.id==="math")},name:{t:"اسمي",e:"My Name",ic:"ap_name",apps:rowBy("✏️ اسمي · My name")}};
 let stars=0,full=0;{const seen=new Set();ROWS.forEach(r=>r.apps.filter(visA).forEach(a=>{const n=a.total?Math.min(count(a.key),a.total):0;if(a.total&&!seen.has(a.key)){seen.add(a.key);stars+=n;if(n>=a.total)full++}}))}
 document.getElementById("sTotal").textContent=stars;document.getElementById("sDone").textContent=full;
