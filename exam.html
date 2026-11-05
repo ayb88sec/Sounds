@@ -90,13 +90,34 @@ const L=[
  {type:"order",title:"رحلة سيدنا إبراهيم (أبو الأنبياء)",note:"ولد في العراق، ثم سافر إلى فلسطين، ثم مصر",items:["🇮🇶 العراق","🕌 فلسطين","🏜️ مصر"]},
  {type:"quiz",title:"قصة سيدنا إبراهيم",qs:[["ماذا كان قوم إبراهيم يعبدون؟",["الأصنام والنجوم والكواكب","الله وحده","الشجر"]],["بحكمته حطم جميع الأصنام إلا …",["الصنم الكبير","الصنم الصغير","لا شيء"]],["لماذا حطم الأصنام؟",["ليثبت لهم أنها لا تنفع ولا تضر","ليلعب","لأنها قديمة"]],["ماذا حدث لما ألقوه في النار؟",["جعلها الله بردا وسلاما","احترق","هرب"]]]},
  {type:"yesno",title:"هيا نتذكر معا (أجيب بنعم أو لا)",qs:[["أهلك الله قوم نوح بالزلازل؟",0],["كان سيدنا إبراهيم حكيما؟",1],["نجى الله سيدنا نوحا من الغرق؟",1],["استمر سيدنا نوح يدعو قومه 200 عام؟",0],["اختار الله الرسل ليهدوا الناس إلى عبادة الله وحده؟",1]]}]}];
-const ALLSTEPS=L.reduce((s,l)=>s+l.steps.length,0)+1;
+/* study first: the teacher's slides, read aloud */
+const STUDY={akh:[["s_akh1","أحب الخير لأخي. عن أنس رضي الله عنه عن النبي صلى الله عليه وسلم قال: لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه. المعنى الصحيح: إيمان المؤمن لا يكتمل إلا إذا أحب الخير لأخيه."],
+  ["s_akh2","محب لأخيه: دعا سالم الله لصديقه أن يكون من الأوائل. علم زميله الوضوء الصحيح. ساعد زميله في الرياضيات. غير محب لأخيه: ضحكوا وسخروا من صديقهم. حزن لما رأى منزل صديقه أكبر. غضبت لحصول صديقتها على هدية."],
+  ["s_akh3","أختار التصرف الصحيح. حدثني صديقي أنه فقد قلمه: أحاول مساعدته. حصل صديقي على أعلى درجة: أفرح له. شاهدت زميلي يرتكب خطأ: أنصحه."]],
+ tah:[["s_tah0","رحلة الطهارة والوضوء."],["s_tah1","الطهارة: هي نظافة الجسم والثوب والمكان لأجل أداء بعض العبادات مثل الصلاة. طهارة البدن، طهارة الملابس، طهارة المكان."],
+  ["s_tah2","متى يتوضأ المسلم؟ قبل الطواف حول الكعبة. قبل أداء الصلاة. قبل مس وقراءة القرآن."],
+  ["s_tah3","خطوات الوضوء: الكفان، المضمضة، الاستنشاق، الوجه، اليدان للمرفقين، الرأس، الأذنان، القدمان. جميع الأعضاء تغسل ثلاث مرات ماعدا الرأس والأذنان مرة واحدة."],
+  ["s_tah4","نواقض الوضوء: البول والغائط، خروج الريح، الإغماء وزوال العقل، النوم العميق. الأكل والشرب لا ينقض الوضوء."],
+  ["s_tah5","آداب قضاء الحاجة. الدخول بالرجل اليسرى، نقول: اللهم إني أعوذ بك من الخبث والخبائث. الخروج بالرجل اليمنى، نقول: غفرانك."],
+  ["s_tah6","آداب صحيحة: يستتر عن الناس ويغلق الباب. إذا لم يجد الماء يستخدم المناديل أو الحجارة. يدخل بالرجل اليسرى. أخطاء شائعة: التبول في الحديقة العامة. أفاق من نومه وصلى فورا بدون وضوء. الاستنجاء باليد اليمنى. الاستنجاء معناه: تنظيف مكان خروج البول أو الغائط. الماء أفضل طريقة لأنه طاهر ومطهر لغيره."]],
+ rusl:[["s_rus1","الركن الرابع: الإيمان بالرسل. كم عددهم في القرآن؟ خمسة وعشرون رسولا. لماذا أرسلهم؟ دعوة الناس لعبادة الله. من أرسل الرسل؟ الله."],
+  ["s_rus2","أخلاقهم وواجبنا. أرسلهم الله لهداية الناس إلى الخير وعبادة الله وحده. من صفات الرسل: الصدق، الحكمة، الذكاء، الأمانة. واجبنا تجاه الرسل: نحبهم، ونصدقهم، ونقتدي بهم."],
+  ["s_rus3","أولو العزم من الرسل: نوح، إبراهيم، موسى، عيسى، محمد. كان قوم سيدنا نوح عليه السلام يعبدون الأصنام. استمر يدعو قومه تسعمئة وخمسين سنة. دعا قومه فرفضوا وسخروا منه. أمره الله بصنع سفينة. حمل فيها المؤمنين وزوجين من الحيوانات. نجى الله المؤمنين من الغرق."],
+  ["s_rus4","قصة سيدنا إبراهيم أبو الأنبياء. ولد في العراق، سافر إلى فلسطين ثم مصر. كان قومه يعبدون الأصنام والنجوم والكواكب. وبحكمته حطم جميع الأصنام إلا الصنم الكبير، ليثبت لهم أنها لا تنفع ولا تضر. ألقوه في النار، فجعلها الله بردا وسلاما."]]};
+/* exercises: the learning cards are now in the study part */
+L.forEach(l=>l.steps=l.steps.filter(x=>x.type!=="learn"));
+function study(li,si){const l=L[li],S=STUDY[l.k];$("ttl").textContent=l.e+" "+l.t;window.scrollTo(0,0);
+  if(si>=S.length){mark("study_"+l.k);return lesson(li,0)}const [img,txt]=S[si];
+  $("app").innerHTML=`<p class="sub">📖 أذاكر أولاً (${si+1} من ${S.length})</p><div class="card" style="padding:8px"><img src="img/exam/${img}.webp" alt="" style="width:100%;border-radius:20px;display:block"></div>
+   <div style="text-align:center"><button class="nx" id="ls" style="background:linear-gradient(160deg,#dff1ff,#a8d8ff);box-shadow:0 6px 0 #6aa9d8">🔊 اسمعي</button> ${si?'<button class="nx" id="pv">➡️ السابق</button>':""} <button class="nx" id="nx">${si<S.length-1?"التالي ⬅️":"🎮 هيا نلعب!"}</button><br><button class="nx" id="hb" style="background:#fff;box-shadow:0 6px 0 rgba(120,80,20,.18)">🏠 الدروس</button></div>`;
+  $("ls").onclick=()=>speak(txt);speak(txt);$("nx").onclick=()=>study(li,si+1);if(si)$("pv").onclick=()=>study(li,si-1);$("hb").onclick=hub}
+const ALLSTEPS=L.reduce((s,l)=>s+l.steps.length+1,0)+1;
 
 /* ===== screens ===== */
 function hub(){$("ttl").textContent="🕌 مراجعة التربية الإسلامية";window.scrollTo(0,0);
-  $("app").innerHTML=`<p class="sub">دروس الامتحان: الصف الثاني</p><div class="grid">${L.map((l,i)=>{const n=l.steps.filter((_,j)=>done[l.k+j]).length;return `<button class="lc" data-i="${i}" style="background:${l.bg};animation-delay:${i*.1}s"><span class="e">${l.e}</span><b>${l.t}</b><small>${n} / ${l.steps.length} ⭐</small><div class="st">${n>=l.steps.length?"🏆":"▶️ ابدأ"}</div></button>`}).join("")}
+  $("app").innerHTML=`<div class="card" style="padding:8px"><img src="img/exam/cover.webp" alt="" style="width:100%;border-radius:20px;display:block"></div><p class="sub">كل درس: 📖 أذاكر أولاً، ثم 🎮 أتمرن</p><div class="grid">${L.map((l,i)=>{const n=l.steps.filter((_,j)=>done[l.k+j]).length;return `<button class="lc" data-i="${i}" style="background:${l.bg};animation-delay:${i*.1}s"><span class="e">${l.e}</span><b>${l.t}</b><small>${n} / ${l.steps.length} ⭐</small><div class="st">${n>=l.steps.length?"🏆":done["study_"+l.k]?"🎮 التمارين":"📖 أذاكر ثم ألعب"}</div></button>`}).join("")}
    <button class="lc" id="final" style="background:linear-gradient(160deg,#efe6ff,#c9b5ff);animation-delay:.3s"><span class="e">🏆</span><b>الاختبار الشامل</b><small>أسئلة من كل الدروس</small><div class="st">${done.final?"⭐ أحسنت!":"▶️ ابدأ"}</div></button></div>`;
-  document.querySelectorAll(".lc[data-i]").forEach(b=>b.onclick=()=>lesson(+b.dataset.i,0));$("final").onclick=final;speak("مراجعة التربية الإسلامية. اختاري درسًا")}
+  document.querySelectorAll(".lc[data-i]").forEach(b=>b.onclick=()=>study(+b.dataset.i,0));$("final").onclick=final;speak("مراجعة التربية الإسلامية. اختاري درسًا")}
 function lesson(li,si){const l=L[li];if(si>=l.steps.length){rain();yay();speak("أحسنت! أنهيت درس "+l.t);return hub()}
   const s=l.steps[si];$("ttl").textContent=l.e+" "+l.t;window.scrollTo(0,0);
   const next=()=>{mark(l.k+si);lesson(li,si+1)};
