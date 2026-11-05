@@ -297,6 +297,7 @@ const ROWS=[
   {id:"numAr",href:"numbers-ar.html",glyph:"١٢٣",name:"الأرقام",sub:"من ١ إلى ٢٠",bg:"linear-gradient(150deg,#ffb020,#ff5d9e)",key:"numDoneAr",total:20},
   {id:"uae",href:"uae.html",glyph:"🇦🇪",name:"بلادي الإمارات",sub:"زايد · الإمارات السبع",bg:"linear-gradient(150deg,#c8102e,#00843d)",key:"uaeDone",total:15},
   {id:"daysAr",href:"days.html?l=ar",glyph:"📅",name:"الأيام",sub:"أيام الأسبوع",bg:"linear-gradient(150deg,#8fd8ff,#6cc95a)",key:"daysDone",total:3},
+  {id:"monthsAr",href:"months.html?l=ar",glyph:"🗓️",name:"الأشهر",sub:"أشهر السنة",bg:"linear-gradient(150deg,#ff7eb6,#ffb020)",key:"monthsDone",total:3},
   {id:"clockAr",href:"clock.html?l=ar",glyph:"⏰",name:"الساعة",sub:"كم الساعة؟",bg:"linear-gradient(150deg,#ffb86b,#ff8a7a)",key:"clockDone",total:12},
   {id:"colorsAr",href:"colors.html",glyph:"🎨",name:"الألوان",sub:"١١ لونًا",bg:"linear-gradient(150deg,#ff5d73,#ffb020 50%,#3fc35a)",key:"colorsAr",total:11}]},
  {t:"🕌 ديني",apps:[
@@ -312,6 +313,7 @@ const ROWS=[
  {t:"🔷 Maths",apps:[
   {id:"math",href:"math.html",glyph:"➕➖",name:"Maths + −",sub:"KG2 · Grade 2",bg:"linear-gradient(150deg,#4f8bff,#22c7b8)",key:"mathDone",total:18},
   {id:"days",href:"days.html",glyph:"📅",name:"Days",sub:"Days of the week",bg:"linear-gradient(150deg,#8fd8ff,#6cc95a)",key:"daysDone",total:3},
+  {id:"months",href:"months.html",glyph:"🗓️",name:"Months",sub:"Months of the year",bg:"linear-gradient(150deg,#ff7eb6,#ffb020)",key:"monthsDone",total:3},
   {id:"clock",href:"clock.html",glyph:"⏰",name:"Clock",sub:"Tell the time",bg:"linear-gradient(150deg,#ffb86b,#ff8a7a)",key:"clockDone",total:12},
   {id:"numEn",href:"numbers-en.html",glyph:"123",name:"Numbers",sub:"1 to 20",bg:"linear-gradient(150deg,#4f8bff,#3fc35a)",key:"numDoneEn",total:20},
   {id:"colorsEn",href:"colors.html?l=en",glyph:"🎨",name:"Colours",sub:"11 colours",bg:"linear-gradient(150deg,#4f8bff,#a66bff 50%,#ff7eb6)",key:"colorsEn",total:11},
@@ -335,7 +337,7 @@ NAJMA.sections.filter(s=>s.type!=="qimg"&&s.type!=="flags"&&!(((NAJMA.sections.f
 /* homework from school comes first */
 if(HW.length)ROWS.unshift({t:"📌 الواجب",apps:HW})}
 /* ===== rendering: the picture is the home screen ===== */
-const I="img/home2/";const AI={exam:"islam",arabic:"arabic",name:"name",spell:"spell",numAr:"numAr",daysAr:"days",days:"days",clockAr:"clock",clock:"clock",colorsAr:"colors",colorsEn:"colorsEn",islam:"islam",iman:"iman",quran:"quran",duas:"duas",sounds:"sounds",cvc:"cvc",sent:"sent",writeEn:"writeEn",math:"math",numEn:"numEn",shapes:"shapes",uae:"uae"};
+const I="img/home2/";const AI={exam:"islam",monthsAr:"days",months:"days",arabic:"arabic",name:"name",spell:"spell",numAr:"numAr",daysAr:"days",days:"days",clockAr:"clock",clock:"clock",colorsAr:"colors",colorsEn:"colorsEn",islam:"islam",iman:"iman",quran:"quran",duas:"duas",sounds:"sounds",cvc:"cvc",sent:"sent",writeEn:"writeEn",math:"math",numEn:"numEn",shapes:"shapes",uae:"uae"};
 const visA=a=>a&&NAJMA.settings.apps[a.id]!==false;
 const HREFI=[["quran","quran"],["duas","duas"],["spell","spell"],["arabic","arabic"],["numbers-ar","numAr"],["numbers-en","numEn"],["islam","islam"],["iman","iman"],["index.html","sounds"],["cvc","cvc"],["sentences","sent"],["writing","writeEn"],["math","math"],["days","days"],["clock","clock"],["colors","colors"],["shapes","shapes"],["uae","uae"],["name","name"]];
 function icoOf(a){if(AI[a.id])return I+"ap_"+AI[a.id]+".webp";if(!a.id.startsWith("s:"))return null;const S=NAJMA.sections.find(x=>"s:"+x.id===a.id)||{},t=S.type||"words";

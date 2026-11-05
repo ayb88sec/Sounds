@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<script src="supa.js"></script>
+<script src="profile.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon-n.png"><link rel="icon" href="icon-n.png">
+<title>Months</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#2f9cfc">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;800&family=Andika:wght@700&display=swap">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0}
+body{font-family:"Andika","Baloo Bhaijaan 2",system-ui,sans-serif;color:#2b2340;min-height:100vh;overflow-x:hidden;background:linear-gradient(180deg,#8fd8ff 0%,#c8eeff 55%,#9be08a 55%,#6cc95a 100%);background-attachment:fixed}
+body.ar{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif}
+main{max-width:900px;margin:0 auto;padding:18px 0 40px}
+h1{color:#fff;text-align:center;font-size:clamp(40px,10vw,60px);margin:10px 0 0;text-shadow:0 4px 0 rgba(0,0,0,.18)}
+.sun{position:fixed;bottom:46%;right:-34px;font-size:90px;opacity:.9;animation:spin 30s linear infinite;pointer-events:none}@keyframes spin{to{transform:rotate(360deg)}}
+.cloud{position:fixed;font-size:70px;opacity:.85;animation:float 40s linear infinite;pointer-events:none}@keyframes float{from{left:-120px}to{left:110%}}
+.say{background:#fff;border-radius:26px;padding:12px 18px;margin:12px auto 0;max-width:560px;text-align:center;font-size:clamp(22px,6vw,30px);font-weight:700;box-shadow:0 6px 0 rgba(0,0,0,.12);min-height:62px}
+.say b{color:#7c4dff}
+.rail{position:relative;margin-top:24px;padding:0 12px}
+.track{display:flex;gap:10px;overflow-x:auto;padding:36px 14px 30px;scrollbar-width:none;scroll-snap-type:x mandatory}.track::-webkit-scrollbar{display:none}
+.track::after{content:"";flex:none;width:6px}
+.car{flex:none;scroll-snap-align:center;width:clamp(120px,30vw,150px);border:0;border-radius:24px 24px 14px 14px;padding:12px 6px 30px;color:#fff;font-family:inherit;font-weight:700;font-size:clamp(18px,4.6vw,22px);cursor:pointer;position:relative;box-shadow:0 8px 0 rgba(0,0,0,.2);transition:transform .25s}
+.car .e{font-size:clamp(46px,12vw,60px);display:block;line-height:1.1}
+.car::after{content:"";position:absolute;bottom:-14px;left:16px;width:26px;height:26px;border-radius:50%;background:#333;box-shadow:calc(clamp(120px,30vw,150px) - 58px) 0 0 #333;border:4px solid #888}
+.car.now::before{content:"⭐";position:absolute;top:-30px;left:50%;transform:translateX(-50%);font-size:30px;animation:bob 1s ease-in-out infinite}
+.car.hop{animation:hop .5s}@keyframes hop{40%{transform:translateY(-26px) rotate(-4deg)}}@keyframes bob{50%{transform:translate(-50%,-6px)}}
+.car.q{background:#fff!important;color:#7c4dff;border:5px dashed #7c4dff}.car.q .e{font-size:56px}
+.car.dim{opacity:.35}
+.engine{flex:none;font-size:clamp(70px,18vw,96px);align-self:flex-end;margin-bottom:-4px}
+.ground{height:10px;background:repeating-linear-gradient(90deg,#7a5230 0 22px,transparent 22px 34px);margin:0 12px;border-top:6px solid #8a8a8a}
+.big{display:block;margin:22px auto 0;border:0;border-radius:999px;padding:16px 34px;font-family:inherit;font-size:clamp(24px,6vw,30px);font-weight:700;color:#fff;background:#ff6f91;box-shadow:0 8px 0 #d14d72;cursor:pointer}
+.big:active{transform:translateY(6px);box-shadow:0 2px 0 #d14d72}
+.big.alt{background:#7c4dff;box-shadow:0 8px 0 #5a33c9;font-size:22px;padding:12px 26px}
+.picks{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:18px;padding:0 10px}
+.picks .car{animation:none}
+.stars{text-align:center;font-size:30px;margin-top:8px;min-height:40px}
+.lang{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;z-index:15;border:0;border-radius:18px;background:#fff;height:52px;padding:0 14px;font-family:inherit;font-size:18px;font-weight:700;color:#7c4dff;box-shadow:0 5px 0 rgba(0,0,0,.18);cursor:pointer}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+</style>
+</head>
+<body>
+<a href="home.html" aria-label="Home" style="position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;z-index:15;width:52px;height:52px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18)">🏠</a>
+<button class="lang" id="lang"></button>
+<div class="sun">🌙</div><div class="cloud" style="top:120px">☁️</div><div class="cloud" style="top:200px;animation-delay:-20s;font-size:50px">☁️</div>
+<canvas id="fx"></canvas>
+<main><h1 id="ttl"></h1><div class="say" id="say"></div><div class="rail"><div class="track" id="tr"></div><div class="ground"></div></div><div id="ctl"></div><div class="stars" id="st"></div></main>
+<script>
+const $=id=>document.getElementById(id);
+let AR=new URLSearchParams(location.search).get("l")==="ar";
+/* the 12 months, each with a picture from life in the UAE */
+const DAYS=[["January","يناير","⛄","#4f8bff"],["February","فبراير","💝","#ff7eb6"],["March","مارس","🌸","#ff5d73"],["April","أبريل","🌷","#3fc35a"],["May","مايو","🌻","#ffb020"],["June","يونيو","☀️","#ff9f1c"],["July","يوليو","🏖️","#22c7b8"],["August","أغسطس","🍉","#3fc35a"],["September","سبتمبر","🎒","#a66bff"],["October","أكتوبر","🍂","#e07a2f"],["November","نوفمبر","🇦🇪","#c8102e"],["December","ديسمبر","🎉","#4f8bff"]];
+const NM=DAYS.length,ALL=[...Array(NM).keys()];
+const dn=d=>AR?DAYS[d][1]:DAYS[d][0],TODAY=new Date().getMonth();
+const T=()=>AR?{t:"🗓️ الأشهر",hi:`نحن في شهر <b>${DAYS[TODAY][2]} ${dn(TODAY)}</b>! اضغط على أي عربة`,all:"🎵 كل الأشهر",play:"🎮 يلا نلعب",find:d=>`وين شهر <b>${dn(d)}</b>؟`,next:"أي شهر مكان ❓",after:d=>`أي شهر يأتي بعد <b>${dn(d)}</b>؟`,good:["أحسنت!","رائع!","شاطر!","برافو!"],end:"🎉 خلصت!",again:"🔁 مرة ثانية"}
+  :{t:"🗓️ The Months",hi:`This month is <b>${DAYS[TODAY][2]} ${dn(TODAY)}</b>! Tap a carriage`,all:"🎵 Sing the months",play:"🎮 Let's play",find:d=>`Where is <b>${dn(d)}</b>?`,next:"Which month goes in the ❓",after:d=>`Which month comes after <b>${dn(d)}</b>?`,good:["Yes!","Brilliant!","Super!","Well done!"],end:"🎉 All done!",again:"🔁 Play again"};
+let voice=null;function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
+const VM=NAJMA.vmode("months","ai");
+function speak(t){t=String(t).replace(/<[^>]+>/g,"").replace(/[\u{1F000}-\u{1FAFF}☀-➿❓]/gu,"");if(VM==="none")return;if(AR){NAJMA.aiSay(t);return}try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.8;speechSynthesis.speak(u)}catch(e){}}
+let ac;function tone(f,d,w=0,ty="triangle",v=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(v,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
+const yay=()=>{tone(660,.12);tone(990,.15,.08)},fan=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12)),buzz=()=>tone(160,.25,0,"sawtooth",.08),toot=()=>{tone(440,.25,0,"square",.06);tone(554,.35,.28,"square",.06)};
+const COL=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
+const cv=$("fx"),cx=cv.getContext("2d");let parts=[],run=false;function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}size();addEventListener("resize",size);
+function burst(x,y,n=36){for(let i=0;i<n;i++){const a=Math.random()*6.28,v=3+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:4+Math.random()*7,c:COL[i%6],rot:0,vr:(Math.random()-.5)*.4,life:90})}if(!run){run=true;requestAnimationFrame(loop)}}
+function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.life-->0);for(const p of parts){p.vy+=.25;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);cx.fillStyle=p.c;cx.globalAlpha=Math.min(1,p.life/30);cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);cx.restore()}if(parts.length)requestAnimationFrame(loop);else run=false}
+const at=el=>{const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,30)};
+let done={};try{done=JSON.parse(localStorage.getItem("monthsDone")||"{}")}catch(e){}
+const rnd=n=>Math.floor(Math.random()*n),shuf=a=>[...a].sort(()=>Math.random()-.5);
+const car=(d,cls)=>{const b=document.createElement("button");b.className="car"+(cls?" "+cls:"");b.style.background=DAYS[d][3];b.innerHTML=`<span class="e">${DAYS[d][2]}</span>${dn(d)}`;return b};
+function train(onTap){const tr=$("tr");tr.innerHTML=`<span class="engine">🚂</span>`;tr.dir="ltr";const cars=DAYS.map((_,d)=>{const b=car(d,d===TODAY?"now":"");b.onclick=()=>onTap(d,b);tr.appendChild(b);return b});return cars}
+const hop=b=>{b.classList.remove("hop");void b.offsetWidth;b.classList.add("hop")};
+
+/* learn: tap any carriage */
+function learn(){document.documentElement.lang=AR?"ar":"en";document.documentElement.dir=AR?"rtl":"ltr";document.body.classList.toggle("ar",AR);$("lang").textContent=AR?"English":"عربي";$("ttl").textContent=T().t;
+  $("say").innerHTML=T().hi;$("st").textContent="";
+  const cars=train((d,b)=>{hop(b);toot();speak(dn(d));$("say").innerHTML=`${DAYS[d][2]} <b>${dn(d)}</b>`});
+  $("ctl").innerHTML=`<button class="big alt" id="all">${T().all}</button><button class="big" id="play">${T().play}</button>`;
+  $("all").onclick=async()=>{for(let d=0;d<NM;d++){cars[d].scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});hop(cars[d]);speak(dn(d));$("say").innerHTML=`${DAYS[d][2]} <b>${dn(d)}</b>`;await new Promise(r=>setTimeout(r,AR?1400:1000))}$("say").innerHTML=T().hi};
+  $("play").onclick=play;setTimeout(()=>cars[TODAY].scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}),300)}
+
+/* play: 8 turns, two simple games mixed: find the carriage, and fill the missing carriage */
+function play(){let k=0,score=0;const N=9,order=shuf(ALL).concat(shuf(ALL));const N2=9;
+  function next(){if(k>=N)return end();$("st").textContent="⭐".repeat(score);const target=order[k];
+    if(k%3===2){/* what comes after? */
+      const prev=(target+NM-1)%NM;$("say").innerHTML=T().after(prev);speak($("say").textContent);train((d,b)=>{hop(b);speak(dn(d))});
+      setTimeout(()=>{const c=$("tr").querySelectorAll(".car")[prev];c&&c.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"})},200);
+      const opts=shuf([target,...shuf(ALL.filter(x=>x!==target&&x!==prev)).slice(0,2)]);$("ctl").innerHTML=`<div class="picks" id="pk"></div>`;let first=true;
+      opts.forEach(d=>{const b=car(d);b.onclick=()=>{if(d===target){yay();at(b);hop(b);speak(dn(d));if(first)score++;k++;$("say").innerHTML=`${T().good[rnd(4)]} <b>${dn(prev)}</b> ➜ <b>${dn(d)}</b>`;setTimeout(next,1500)}else{first=false;buzz();b.classList.add("dim")}};$("pk").appendChild(b)})}
+    else if(k%3===0){/* find it on the train */
+      $("say").innerHTML=T().find(target);speak($("say").textContent);$("ctl").innerHTML="";let first=true;
+      train((d,b)=>{if(d===target){hop(b);yay();at(b);speak(dn(d));if(first)score++;k++;$("say").innerHTML=`${T().good[rnd(4)]} ${DAYS[d][2]} <b>${dn(d)}</b>`;setTimeout(next,1300)}else{first=false;buzz();b.classList.add("dim");setTimeout(()=>b.classList.remove("dim"),600)}})}
+    else{/* a carriage is missing: which day goes there? */
+      $("say").innerHTML=T().next;speak(T().next);const tr=$("tr");tr.innerHTML=`<span class="engine">🚂</span>`;
+      let hole=null;DAYS.forEach((_,d)=>{if(d===target){hole=document.createElement("div");hole.className="car q";hole.innerHTML=`<span class="e">❓</span>&nbsp;`;tr.appendChild(hole)}else{const b=car(d);b.onclick=()=>{hop(b);speak(dn(d))};tr.appendChild(b)}});
+      setTimeout(()=>hole.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}),200);
+      const opts=shuf([target,...shuf(ALL.filter(x=>x!==target)).slice(0,2)]);$("ctl").innerHTML=`<div class="picks" id="pk"></div>`;let first=true;
+      opts.forEach(d=>{const b=car(d);b.onclick=()=>{if(d===target){yay();at(hole);hole.className="car";hole.style.background=DAYS[d][3];hole.innerHTML=b.innerHTML;hop(hole);speak(dn(d));if(first)score++;k++;$("say").innerHTML=`${T().good[rnd(4)]} <b>${dn(d)}</b>`;setTimeout(next,1400)}else{first=false;buzz();b.classList.add("dim")}};$("pk").appendChild(b)})}}
+  next()
+  function end(){const stars=score>=8?3:score>=6?2:score>=3?1:0;if(stars){const n=Object.keys(done).length;if(n<3){done["r"+(n+1)]=stars;try{localStorage.setItem("monthsDone",JSON.stringify(done))}catch(e){}}}
+    fan();for(let j=0;j<6;j++)setTimeout(()=>burst(Math.random()*innerWidth,innerHeight/3),j*150);$("say").innerHTML=T().end+" "+"⭐".repeat(Math.max(stars,1));$("st").textContent="";
+    train((d,b)=>{hop(b);toot();speak(dn(d))});$("ctl").innerHTML=`<button class="big" id="ag">${T().again}</button>`;$("ag").onclick=play}}
+$("lang").onclick=()=>{AR=!AR;learn()};learn();
+</script>
+</body>
+</html>
