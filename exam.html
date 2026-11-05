@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<script src="supa.js"></script>
+<script src="profile.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#2f9cfc">
+<link rel="apple-touch-icon" href="icon-n.png"><link rel="icon" href="icon-n.png">
+<title>مراجعة التربية الإسلامية</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;800&display=swap">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0}
+body{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif;color:#16204a;min-height:100vh;background:#f6cf8c}
+main{max-width:860px;margin:0 auto;padding:18px 14px 150px}
+h1{text-align:center}
+.sub{text-align:center;font-weight:800;font-size:clamp(16px,3.6vw,22px);margin:0 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:16px}
+.lc{border:4px solid #fff;border-radius:34px;padding:16px;text-align:center;cursor:pointer;font-family:inherit;color:#16204a;box-shadow:0 10px 20px rgba(120,80,20,.22),inset 0 10px 18px rgba(255,255,255,.55);animation:pin .5s backwards}
+.lc .e{font-size:64px;display:block;line-height:1.1}.lc b{display:block;font-size:clamp(22px,5vw,28px)}.lc small{display:block;font-size:16px;font-weight:700;opacity:.8}
+.lc .st{font-size:22px;margin-top:4px}
+@keyframes pin{from{transform:scale(.3) rotate(-8deg);opacity:0}}
+.card{background:rgba(255,253,245,.96);border:4px solid #fff;border-radius:30px;padding:16px;margin:0 0 16px;box-shadow:0 10px 20px rgba(120,80,20,.2);text-align:center;animation:pin .45s backwards}
+.card h2{margin:0 0 8px;font-size:clamp(22px,5vw,30px)}
+.big{font-size:clamp(20px,4.6vw,27px);font-weight:800;line-height:1.7}
+.dots{display:flex;gap:6px;justify-content:center;margin:0 0 12px}.dots i{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.7)}.dots i.on{background:#ffb703}
+.opts{display:grid;gap:10px;margin-top:10px}
+.op{border:4px solid #fff;border-radius:22px;padding:12px;font-family:inherit;font-size:clamp(18px,4.4vw,24px);font-weight:800;cursor:pointer;color:#16204a;box-shadow:0 6px 0 rgba(120,80,20,.18);background:#fff}
+.op.ok{background:#b9f3c9!important;animation:pop .4s}.op.no{background:#ffc9c9!important;animation:shake .4s}.op.dim{opacity:.45}
+@keyframes pop{50%{transform:scale(1.07)}}@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bin{border:4px dashed rgba(22,32,74,.25);border-radius:24px;padding:10px;min-height:110px;font-weight:800;font-size:20px;cursor:pointer}
+.bin .it{display:block;background:#fff;border-radius:14px;padding:6px 8px;margin-top:6px;font-size:15px;animation:pin .3s}
+.nx{display:inline-block;border:4px solid #fff;border-radius:999px;padding:10px 28px;margin-top:12px;font-family:inherit;font-size:22px;font-weight:800;color:#16204a;background:linear-gradient(160deg,#fff6c4,#ffd84a);box-shadow:0 6px 0 #d49a00;cursor:pointer}
+.flip{perspective:900px;cursor:pointer}.flip .in{position:relative;min-height:150px;transition:transform .6s;transform-style:preserve-3d}.flip.on .in{transform:rotateY(180deg)}
+.flip .f,.flip .b{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;font-weight:800;font-size:clamp(17px,4vw,22px);border:4px solid #fff;box-shadow:0 6px 12px rgba(120,80,20,.18)}
+.flip .b{transform:rotateY(180deg);background:#fff}
+.flip .f .e{font-size:44px}
+.chain{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}
+.slot{min-width:84px;padding:8px 12px;border-radius:999px;border:3px dashed rgba(22,32,74,.3);font-weight:800;font-size:18px;min-height:46px}
+.slot.full{border-style:solid;background:#b9f3c9;border-color:#fff}
+.say{border:0;background:#eef6ff;border-radius:999px;padding:6px 14px;font-family:inherit;font-weight:800;font-size:17px;cursor:pointer;margin:4px}
+.hadith{background:linear-gradient(160deg,#dff1ff,#a8d8ff);border-radius:26px;padding:14px;font-size:clamp(20px,4.6vw,26px);font-weight:800;line-height:1.8}
+.w{display:inline-block;padding:0 4px;border-radius:8px;transition:background .3s}.w.hid{background:#16204a;color:#16204a;cursor:pointer}
+.score{font-size:60px}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:90}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<main><h1 id="ttl">🕌 مراجعة التربية الإسلامية</h1><div id="app"></div></main>
+<script>
+const $=id=>document.getElementById(id),shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+const speak=t=>{try{NAJMA.aiSay(String(t).replace(/[\u{1F000}-\u{1FAFF}☀-➿️]/gu," "),"ar",.9)}catch(e){}};
+let ac;function tone(f,d=.15,w=0){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=.12;o.connect(g).connect(ac.destination);o.start(ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.stop(ac.currentTime+w+d)}catch(e){}}
+const yay=()=>{tone(660);tone(880,.15,.1);tone(1100,.2,.2)},buzz=()=>tone(180,.25);
+/* confetti */
+const cv=$("fx"),cx=cv.getContext("2d");let P=[];function size(){cv.width=innerWidth;cv.height=innerHeight}size();addEventListener("resize",size);
+function rain(n=90){for(let i=0;i<n;i++)P.push({x:Math.random()*innerWidth,y:-20-Math.random()*200,vx:Math.random()*2-1,vy:2+Math.random()*3,c:["#ffb703","#3fc35a","#4f8bff","#ff5d73","#a66bff"][i%5],r:5+Math.random()*6,l:200});loop()}
+let run=false;function loop(){if(run)return;run=true;(function f(){cx.clearRect(0,0,cv.width,cv.height);P=P.filter(p=>p.l-->0&&p.y<innerHeight+20);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;cx.fillStyle=p.c;cx.fillRect(p.x,p.y,p.r,p.r*.6)});if(P.length)requestAnimationFrame(f);else{run=false;cx.clearRect(0,0,cv.width,cv.height)}})()}
+/* progress (stars) */
+let done={};try{done=JSON.parse(localStorage.getItem("examG2")||"{}")}catch(e){}
+const mark=k=>{done[k]=1;try{localStorage.setItem("examG2",JSON.stringify(done))}catch(e){}};
+window.NAJMA_PROGRESS=()=>({done:Object.keys(done).length,total:ALLSTEPS});
+
+/* ===== content, exactly as in the study guide ===== */
+const L=[
+{k:"akh",t:"أحب الخير لأخي",e:"🤝",bg:"linear-gradient(160deg,#dff1ff,#a8d8ff)",steps:[
+ {type:"hadith",title:"أحب الخير لأخي",pre:"عن أنس رضي الله عنه عن النبي صلى الله عليه وسلم قال:",text:"لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه",hide:["يؤمن","يحب","لأخيه","لنفسه"],meaning:"إيمان المؤمن لا يكتمل إلا إذا أحب الخير لأخيه."},
+ {type:"sort",title:"محب لأخيه أم غير محب لأخيه؟",bins:["😊 محب لأخيه","☹️ غير محب لأخيه"],items:[["دعا سالم الله لصديقه أن يكون من الأوائل.",0],["علم زميله الوضوء الصحيح.",0],["ساعد زميله في الرياضيات.",0],["ضحكوا وسخروا من صديقهم.",1],["حزن لما رأى منزل صديقه أكبر.",1],["غضبت لحصول صديقتها على هدية.",1]]},
+ {type:"match",title:"أختار التصرف الصحيح",pairs:[["حدثني صديقي أنه فقد قلمه","أحاول مساعدته"],["حصل صديقي على أعلى درجة","أفرح له"],["شاهدت زميلي يرتكب خطأ","أنصحه"]]}]},
+{k:"tah",t:"الطهارة ونواقض الوضوء",e:"💧",bg:"linear-gradient(160deg,#dcf8e8,#9fe3c0)",steps:[
+ {type:"learn",title:"الطهارة",text:"الطهارة: هي نظافة الجسم والثوب والمكان لأجل أداء بعض العبادات مثل الصلاة.",cards:[["💧","طهارة البدن"],["👕","طهارة الملابس"],["🧎","طهارة المكان"]]},
+ {type:"quiz",title:"الطهارة",qs:[["الطهارة هي نظافة …",["الجسم والثوب والمكان","الجسم فقط","المكان فقط"]],["لماذا نتطهر؟",["لأجل أداء بعض العبادات مثل الصلاة","لأجل اللعب","لأجل النوم"]]]},
+ {type:"learn",title:"متى يتوضأ المسلم؟",cards:[["🕋","١. قبل الطواف حول الكعبة"],["🧎","٢. قبل أداء الصلاة"],["📖","٣. قبل مس وقراءة القرآن"]]},
+ {type:"order",title:"رتّب خطوات الوضوء",note:"جميع الأعضاء تغسل ثلاث مرات ماعدا الرأس والأذنان مرة واحدة",items:["🙌 الكفان","👄 المضمضة","👃 الاستنشاق","😊 الوجه","💪 اليدان للمرفقين","🧑 الرأس","👂 الأذنان","🦶 القدمان"]},
+ {type:"quiz",title:"كم مرة؟",qs:[["كم مرة نغسل الوجه؟",["ثلاث مرات","مرة واحدة","خمس مرات"]],["كم مرة نمسح الرأس والأذنين؟",["مرة واحدة","ثلاث مرات","مرتين"]]]},
+ {type:"sort",title:"نواقض الوضوء: ينقض أم لا ينقض؟",bins:["❌ ينقض الوضوء","✅ لا ينقض الوضوء"],items:[["🚪 البول والغائط",0],["💨 خروج الريح",0],["😵 الإغماء وزوال العقل",0],["😴 النوم العميق",0],["🥪 الأكل والشرب",1]]},
+ {type:"quiz",title:"آداب قضاء الحاجة",qs:[["ندخل الحمام بالرجل …",["اليسرى","اليمنى"]],["نخرج من الحمام بالرجل …",["اليمنى","اليسرى"]],["ماذا نقول عند الدخول؟",["اللهم إني أعوذ بك من الخبث والخبائث","غفرانك"]],["ماذا نقول عند الخروج؟",["غفرانك","اللهم إني أعوذ بك من الخبث والخبائث"]]]},
+ {type:"sort",title:"آداب صحيحة أم أخطاء شائعة؟",bins:["✅ آداب صحيحة","❌ أخطاء شائعة"],items:[["يستتر عن الناس ويغلق الباب.",0],["إذا لم يجد الماء يستخدم المناديل أو الحجارة.",0],["يدخل بالرجل اليسرى.",0],["التبول في الحديقة العامة.",1],["أفاق من نومه وصلى فورا بدون وضوء.",1],["الاستنجاء باليد اليمنى.",1]]},
+ {type:"quiz",title:"الاستنجاء",qs:[["ما معنى الاستنجاء؟",["تنظيف مكان خروج البول أو الغائط","غسل اليدين","غسل الوجه"]],["ما أفضل طريقة للاستنجاء؟",["الماء، لأنه طاهر ومطهر لغيره","الرمل","الهواء"]]]}]},
+{k:"rusl",t:"الإيمان بالرسل",e:"📜",bg:"linear-gradient(160deg,#fff6c4,#ffdf6e)",steps:[
+ {type:"order",title:"رتّب أركان الإيمان",note:"الإيمان بالرسل هو الركن الرابع",items:["الإيمان بالله","بالملائكة","بالكتب","بالرسل","باليوم الآخر","بالقدر"]},
+ {type:"flips",title:"اقلب البطاقة واعرف الجواب",cards:[["❓","كم عددهم في القرآن؟","خمسة وعشرون رسولا."],["❓","لماذا أرسلهم؟","دعوة الناس لعبادة الله."],["❓","من أرسل الرسل؟","الله."]]},
+ {type:"learn",title:"أخلاقهم وواجبنا",cards:[["🧭","أرسلهم الله لهداية الناس إلى الخير وعبادة الله وحده."],["⭐","من صفات الرسل: الصدق، الحكمة، الذكاء، الأمانة."],["❤️","واجبنا تجاه الرسل: نحبهم، ونصدقهم، ونقتدي بهم."]]},
+ {type:"quiz",title:"صفات الرسل وواجبنا",qs:[["أي هذه من صفات الرسل؟",["الصدق والأمانة","الكذب","الغضب"]],["ما واجبنا تجاه الرسل؟",["نحبهم ونصدقهم ونقتدي بهم","نسخر منهم","ننساهم"]]]},
+ {type:"order",title:"أولو العزم من الرسل: رتّبهم",items:["نوح","إبراهيم","موسى","عيسى","محمد"]},
+ {type:"order",title:"قصة سيدنا نوح عليه السلام: رتّب القصة",note:"كان قوم سيدنا نوح عليه السلام يعبدون الأصنام، واستمر يدعو قومه 950 سنة",items:["🗣️ دعا قومه فرفضوا وسخروا منه.","🔨 أمره الله بصنع سفينة.","🚢 حمل فيها المؤمنين وزوجين من الحيوانات.","🌊 نجى الله المؤمنين من الغرق."]},
+ {type:"quiz",title:"سيدنا نوح",qs:[["كم سنة استمر نوح يدعو قومه؟",["950 سنة","200 سنة","50 سنة"]],["ماذا كان قوم نوح يعبدون؟",["الأصنام","الله وحده","البحر"]]]},
+ {type:"order",title:"رحلة سيدنا إبراهيم (أبو الأنبياء)",note:"ولد في العراق، ثم سافر إلى فلسطين، ثم مصر",items:["🇮🇶 العراق","🕌 فلسطين","🏜️ مصر"]},
+ {type:"quiz",title:"قصة سيدنا إبراهيم",qs:[["ماذا كان قوم إبراهيم يعبدون؟",["الأصنام والنجوم والكواكب","الله وحده","الشجر"]],["بحكمته حطم جميع الأصنام إلا …",["الصنم الكبير","الصنم الصغير","لا شيء"]],["لماذا حطم الأصنام؟",["ليثبت لهم أنها لا تنفع ولا تضر","ليلعب","لأنها قديمة"]],["ماذا حدث لما ألقوه في النار؟",["جعلها الله بردا وسلاما","احترق","هرب"]]]},
+ {type:"yesno",title:"هيا نتذكر معا (أجيب بنعم أو لا)",qs:[["أهلك الله قوم نوح بالزلازل؟",0],["كان سيدنا إبراهيم حكيما؟",1],["نجى الله سيدنا نوحا من الغرق؟",1],["استمر سيدنا نوح يدعو قومه 200 عام؟",0],["اختار الله الرسل ليهدوا الناس إلى عبادة الله وحده؟",1]]}]}];
+const ALLSTEPS=L.reduce((s,l)=>s+l.steps.length,0)+1;
+
+/* ===== screens ===== */
+function hub(){$("ttl").textContent="🕌 مراجعة التربية الإسلامية";window.scrollTo(0,0);
+  $("app").innerHTML=`<p class="sub">دروس الامتحان: الصف الثاني</p><div class="grid">${L.map((l,i)=>{const n=l.steps.filter((_,j)=>done[l.k+j]).length;return `<button class="lc" data-i="${i}" style="background:${l.bg};animation-delay:${i*.1}s"><span class="e">${l.e}</span><b>${l.t}</b><small>${n} / ${l.steps.length} ⭐</small><div class="st">${n>=l.steps.length?"🏆":"▶️ ابدأ"}</div></button>`}).join("")}
+   <button class="lc" id="final" style="background:linear-gradient(160deg,#efe6ff,#c9b5ff);animation-delay:.3s"><span class="e">🏆</span><b>الاختبار الشامل</b><small>أسئلة من كل الدروس</small><div class="st">${done.final?"⭐ أحسنت!":"▶️ ابدأ"}</div></button></div>`;
+  document.querySelectorAll(".lc[data-i]").forEach(b=>b.onclick=()=>lesson(+b.dataset.i,0));$("final").onclick=final;speak("مراجعة التربية الإسلامية. اختاري درسًا")}
+function lesson(li,si){const l=L[li];if(si>=l.steps.length){rain();yay();speak("أحسنت! أنهيت درس "+l.t);return hub()}
+  const s=l.steps[si];$("ttl").textContent=l.e+" "+l.t;window.scrollTo(0,0);
+  const next=()=>{mark(l.k+si);lesson(li,si+1)};
+  $("app").innerHTML=`<div class="dots">${l.steps.map((_,j)=>`<i class="${j<=si?"on":""}"></i>`).join("")}</div><div class="card" id="st"></div><div style="text-align:center"><button class="nx" id="hb">🏠 الدروس</button></div>`;
+  $("hb").onclick=hub;STEP[s.type](s,$("st"),next)}
+const nxBtn=(box,next,label="⬅️ التالي")=>{const b=document.createElement("button");b.className="nx";b.textContent=label;b.onclick=next;box.appendChild(b);b.scrollIntoView({behavior:"smooth",block:"center"})};
+const STEP={
+ hadith(s,box,next){const words=s.text.split(" ");let left=0;
+  box.innerHTML=`<h2>${s.title}</h2><div class="big" style="font-size:18px">${s.pre}</div><div class="hadith">( ${words.map(w=>s.hide.includes(w)?(left++,`<span class="w hid" data-w="${w}">${w}</span>`):`<span class="w">${w}</span>`).join(" ")} )</div>
+   <p class="big" style="font-size:18px">اضغطي على الكلمات المخفية لتظهر 👆</p><button class="say" id="ls">🔊 اسمعي الحديث</button><div id="mn"></div>`;
+  $("ls").onclick=()=>speak(s.pre+" "+s.text);speak(s.pre+" "+s.text);
+  box.querySelectorAll(".w.hid").forEach(w=>w.onclick=()=>{if(!w.classList.contains("hid"))return;w.classList.remove("hid");w.style.background="#ffe27a";yay();speak(w.dataset.w);
+    if(--left===0){$("mn").innerHTML=`<div class="card" style="background:linear-gradient(160deg,#ffe6d6,#ffbe9c);margin-top:12px"><h2>المعنى الصحيح</h2><div class="big">${s.meaning}</div></div>`;speak("المعنى: "+s.meaning);rain(40);nxBtn(box,next)}})},
+ sort(s,box,next){const items=shuf(s.items.slice());let cur=0;
+  const draw=()=>{if(cur>=items.length){rain(50);speak("ممتاز!");return nxBtn(box,next)}const it=items[cur];
+   box.querySelector("#q").innerHTML=`<div class="big">${it[0]}</div><button class="say" id="sq">🔊</button>`;$("sq").onclick=()=>speak(it[0]);speak(it[0])};
+  box.innerHTML=`<h2>${s.title}</h2><div class="card" id="q" style="background:#fff8e1"></div><div class="two">${s.bins.map((b,i)=>`<div class="bin" data-b="${i}" style="background:${/❌|☹️/.test(b)?"#ffe8e8":"#e3f8e9"}">${b}</div>`).join("")}</div>`;
+  box.querySelectorAll(".bin").forEach(b=>b.onclick=()=>{if(cur>=items.length)return;const it=items[cur];if(+b.dataset.b===it[1]){yay();const d=document.createElement("span");d.className="it";d.textContent=it[0];b.appendChild(d);cur++;draw()}else{buzz();b.animate([{transform:"translateX(-8px)"},{transform:"translateX(8px)"},{transform:"none"}],300)}});draw()},
+ match(s,box,next){let i=0;const P=s.pairs;
+  const draw=()=>{if(i>=P.length){rain(50);speak("أحسنت!");return nxBtn(box,next)}const [q,a]=P[i];
+   box.innerHTML=`<h2>${s.title}</h2><div class="card" style="background:linear-gradient(160deg,#dff1ff,#a8d8ff)"><div class="big">${q}</div></div><div style="font-size:30px">⬇️</div><div class="opts">${shuf(P.map(p=>p[1])).map(o=>`<button class="op">${o}</button>`).join("")}</div>`;speak(q);
+   box.querySelectorAll(".op").forEach(b=>b.onclick=()=>{if(b.textContent===a){b.classList.add("ok");yay();speak(a);i++;setTimeout(draw,900)}else{b.classList.add("no");buzz();setTimeout(()=>b.classList.remove("no"),500)}})};draw()},
+ learn(s,box,next){let seen=new Set();
+  box.innerHTML=`<h2>${s.title}</h2>${s.text?`<div class="big" style="background:linear-gradient(160deg,#dff1ff,#a8d8ff);border-radius:22px;padding:10px;margin-bottom:10px">${s.text}</div>`:""}<p style="font-weight:800">اضغطي على كل بطاقة 👆</p><div class="grid">${s.cards.map((c,i)=>`<button class="lc" data-i="${i}" style="background:${["linear-gradient(160deg,#dff1ff,#a8d8ff)","linear-gradient(160deg,#ffe6d6,#ffbe9c)","linear-gradient(160deg,#dcf8e8,#9fe3c0)"][i%3]};animation-delay:${i*.1}s"><span class="e">${c[0]}</span><b style="font-size:20px">${c[1]}</b></button>`).join("")}</div>`;
+  if(s.text)speak(s.text);
+  box.querySelectorAll(".lc").forEach(b=>b.onclick=()=>{const c=s.cards[+b.dataset.i];speak(c[1]);b.style.outline="5px solid #3fc35a";seen.add(b.dataset.i);if(seen.size===s.cards.length&&!box.querySelector(".nx")){yay();nxBtn(box,next)}})},
+ flips(s,box,next){let seen=new Set();
+  box.innerHTML=`<h2>${s.title}</h2><div class="grid">${s.cards.map((c,i)=>`<div class="flip" data-i="${i}"><div class="in"><div class="f" style="background:linear-gradient(160deg,#efe6ff,#c9b5ff)"><span class="e">${c[0]}</span>${c[1]}</div><div class="b">✅ ${c[2]}</div></div></div>`).join("")}</div>`;
+  box.querySelectorAll(".flip").forEach(f=>f.onclick=()=>{const c=s.cards[+f.dataset.i];f.classList.toggle("on");if(f.classList.contains("on")){speak(c[1]+" "+c[2]);seen.add(f.dataset.i);if(seen.size===s.cards.length&&!box.querySelector(".nx")){yay();setTimeout(()=>nxBtn(box,next),700)}}else speak(c[1])})},
+ order(s,box,next){let k=0;const right=s.items;
+  box.innerHTML=`<h2>${s.title}</h2>${s.note?`<div class="big" style="font-size:18px;background:#fff8e1;border-radius:18px;padding:6px 10px">💡 ${s.note}</div>`:""}<p style="font-weight:800">اضغطي بالترتيب الصحيح 👆</p><div class="chain">${right.map((_,i)=>`<div class="slot" id="sl${i}">${i+1}</div>`).join("")}</div><div class="opts">${shuf(right.map((x,i)=>[x,i])).map(([x,i])=>`<button class="op" data-i="${i}">${x}</button>`).join("")}</div>`;
+  if(s.note)speak(s.note);
+  box.querySelectorAll(".op").forEach(b=>b.onclick=()=>{if(b.disabled)return;if(+b.dataset.i===k){const sl=$("sl"+k);sl.textContent=right[k];sl.classList.add("full");b.disabled=true;b.classList.add("dim");speak(right[k].replace(/^\S+\s/,""));tone(500+k*80);k++;if(k===right.length){yay();rain(50);nxBtn(box,next)}}else{b.classList.add("no");buzz();setTimeout(()=>b.classList.remove("no"),500)}})},
+ quiz(s,box,next){let i=0;const Q=s.qs;
+  const draw=()=>{if(i>=Q.length){rain(40);return nxBtn(box,next)}const [q,o]=Q[i];
+   box.innerHTML=`<h2>${s.title}</h2><div class="big">${q}</div><button class="say" id="sq">🔊</button><div class="opts">${shuf(o.map((x,j)=>[x,j])).map(([x,j])=>`<button class="op" data-j="${j}">${x}</button>`).join("")}</div>`;
+   $("sq").onclick=()=>speak(q);speak(q);
+   box.querySelectorAll(".op").forEach(b=>b.onclick=()=>{if(b.dataset.j==="0"){b.classList.add("ok");yay();speak(b.textContent);i++;setTimeout(draw,1100)}else{b.classList.add("no");buzz();setTimeout(()=>b.classList.remove("no"),500)}})};draw()},
+ yesno(s,box,next){let i=0;const Q=s.qs;
+  const draw=()=>{if(i>=Q.length){rain();return nxBtn(box,next)}const [q,a]=Q[i];
+   box.innerHTML=`<h2>${s.title}</h2><div class="big">${q}</div><button class="say" id="sq">🔊</button><div class="two" style="margin-top:12px"><button class="op" data-a="1" style="background:#b9f3c9">👍 نعم</button><button class="op" data-a="0" style="background:#ffd6d6">👎 لا</button></div>`;
+   $("sq").onclick=()=>speak(q);speak(q);
+   box.querySelectorAll(".op").forEach(b=>b.onclick=()=>{if(+b.dataset.a===a){b.classList.add("ok");yay();speak(a?"نعم":"لا");i++;setTimeout(draw,1000)}else{b.classList.add("no");buzz();setTimeout(()=>b.classList.remove("no"),500)}})};draw()}};
+
+/* final test: 12 questions from all lessons, score at the end */
+function final(){$("ttl").textContent="🏆 الاختبار الشامل";const pool=[];
+  L.forEach(l=>l.steps.forEach(s=>{if(s.type==="quiz")s.qs.forEach(q=>pool.push(["q",q]));if(s.type==="yesno")s.qs.forEach(q=>pool.push(["yn",q]));if(s.type==="sort")s.items.forEach(it=>pool.push(["q",["«"+it[0].replace(/^\S+\s/,m=>/[\u0600-\u06FF]/.test(m)?m:"")+"»\nمن أي مجموعة؟",[s.bins[it[1]],s.bins[1-it[1]]]]]));if(s.type==="match")s.pairs.forEach(p=>pool.push(["q",[p[0]+" … ماذا أفعل؟",[p[1]].concat(s.pairs.filter(x=>x!==p).map(x=>x[1]))]]))}));
+  const Q=shuf(pool).slice(0,12);let i=0,score=0,first=true;
+  const draw=()=>{window.scrollTo(0,0);if(i>=Q.length){const st=score>=11?3:score>=8?2:1;if(st>=2)mark("final");rain(st*50);yay();
+     $("app").innerHTML=`<div class="card"><div class="score">${"⭐".repeat(st)}</div><h2>${score} / ${Q.length}</h2><div class="big">${st===3?"ممتاز! أنتِ جاهزة للامتحان 🏆":st===2?"أحسنتِ! راجعي قليلاً 💪":"بداية جميلة! جربي مرة ثانية 🌟"}</div><button class="nx" id="ag">🔄 مرة ثانية</button> <button class="nx" id="hb">🏠 الدروس</button></div>`;$("ag").onclick=final;$("hb").onclick=hub;speak(score+" من "+Q.length);return}
+   const [t,q]=Q[i];first=true;
+   $("app").innerHTML=`<div class="dots">${Q.map((_,j)=>`<i class="${j<i?"on":""}"></i>`).join("")}</div><div class="card" id="st"></div>`;const box=$("st");
+   if(t==="yn"){box.innerHTML=`<div class="big">${q[0]}</div><div class="two" style="margin-top:12px"><button class="op" data-a="1" style="background:#b9f3c9">👍 نعم</button><button class="op" data-a="0" style="background:#ffd6d6">👎 لا</button></div>`;speak(q[0]);
+     box.querySelectorAll(".op").forEach(b=>b.onclick=()=>{if(+b.dataset.a===q[1]){b.classList.add("ok");yay();if(first)score++;i++;setTimeout(draw,900)}else{first=false;b.classList.add("no");buzz()}})}
+   else{box.innerHTML=`<div class="big" style="white-space:pre-line">${q[0]}</div><div class="opts">${shuf(q[1].map((x,j)=>[x,j])).map(([x,j])=>`<button class="op" data-j="${j}">${x}</button>`).join("")}</div>`;speak(q[0]);
+     box.querySelectorAll(".op").forEach(b=>b.onclick=()=>{if(b.dataset.j==="0"){b.classList.add("ok");yay();if(first)score++;i++;setTimeout(draw,900)}else{first=false;b.classList.add("no");buzz()}})}};draw()}
+hub();
+</script>
+</body>
+</html>
