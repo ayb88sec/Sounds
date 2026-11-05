@@ -132,6 +132,12 @@ main{padding-bottom:calc(140px + env(safe-area-inset-bottom))}
 #scIpad{--iw:min(1180px,clamp(100vw,calc((100dvh - clamp(92px,13.5vw,132px) - env(safe-area-inset-bottom))*1087/1255),110vw));height:calc(var(--iw)*1255/1087)}
 #scPhone{--iw:clamp(100vw,calc((100dvh - clamp(92px,13.5vw,132px) - env(safe-area-inset-bottom))*852/1572),110vw);height:calc(var(--iw)*1572/852)}
 .scene .inner{width:var(--iw)!important;margin-left:calc((100vw - var(--iw))/2)}
+/* the picture keeps its place even before it has loaded, and is also painted as a background */
+#scIpad .inner{aspect-ratio:1087/1447;background:url(img/home3/home_ipad.webp) center top/100% auto no-repeat}
+#scPhone .inner{aspect-ratio:852/1846;background:url(img/home3/home_phone.webp) center top/100% auto no-repeat}
+.scene .inner img.bg{position:absolute;inset:0;height:100%!important}
+.hi{position:absolute;z-index:6;left:50%;transform:translateX(-50%);top:calc(clamp(74px,12vw,110px) + env(safe-area-inset-top));background:rgba(255,255,255,.94);border-radius:999px;padding:4px 18px;
+  font-size:clamp(18px,4.4vw,30px);font-weight:800;color:#16204a;box-shadow:0 6px 14px rgba(0,0,0,.18);white-space:nowrap;animation:cin .6s .2s backwards}
 main{padding-bottom:calc(clamp(58px,8.5vw,92px) + env(safe-area-inset-bottom))}
 .prow2{display:flex;align-items:center;gap:10px;background:#f8f6fd;border-radius:16px;padding:8px 12px;margin-bottom:6px;text-align:start}
 .prow2 .g{width:44px;text-align:center;font-size:26px}.prow2 .g img{width:40px;height:40px}.prow2 .t{flex:1;font-weight:800}.prow2 .bb{height:10px;border-radius:9px;background:#eee8fb;overflow:hidden;margin-top:4px}.prow2 .bb i{display:block;height:100%;background:#ffc83d;border-radius:9px}
@@ -250,7 +256,7 @@ html{background:#2f9cfc linear-gradient(#2f9cfc 0 50%,#fdbd6e 50%)!important}bod
 <main>
   <div class="corner tl"><button class="me" id="me"><span class="av" id="meAv">⭐</span><b>⭐ <span id="sTotal">0</span></b></button></div>
   <div class="corner tr"><button class="rb" id="trophy" aria-label="Progress">🏆<i id="sDone">0</i></button><button class="rb" id="gear" aria-label="Settings">⚙️</button><button class="rb" aria-label="New app" onclick="iconMsg(true)">📲</button></div>
-  <div class="kids" id="kids"></div>
+  <div class="hi" id="hi" style="display:none"></div><div class="kids" id="kids"></div>
   <div class="scene" id="scIpad"><div class="inner"><img class="bg" src="img/home3/home_ipad.webp" alt="" fetchpriority="high" decoding="async"><div class="signov" style="left:27.97%;top:21.15%;width:42.5%;height:10.37%"><img src="img/home3/ipad_sign.webp" alt=""></div><div class="cardov" data-k="uae" style="left:5.89%;top:32.2%;width:42.87%;height:17.0%;animation-delay:0.25s,1.0s"><img src="img/home3/ipad_uae.webp" alt=""></div><div class="cardov" data-k="ar" style="left:50.51%;top:32.2%;width:43.51%;height:17.0%;animation-delay:0.37s,1.5s"><img src="img/home3/ipad_ar.webp" alt=""></div><div class="cardov" data-k="deen" style="left:5.7%;top:49.76%;width:43.05%;height:17.14%;animation-delay:0.49s,2.0s"><img src="img/home3/ipad_deen.webp" alt=""></div><div class="cardov" data-k="en" style="left:50.51%;top:49.76%;width:43.51%;height:17.14%;animation-delay:0.61s,2.5s"><img src="img/home3/ipad_en.webp" alt=""></div><div class="cardov" data-k="math" style="left:5.52%;top:67.86%;width:43.24%;height:17.0%;animation-delay:0.73s,3.0s"><img src="img/home3/ipad_math.webp" alt=""></div><div class="cardov" data-k="name" style="left:50.51%;top:67.86%;width:43.51%;height:17.0%;animation-delay:0.85s,3.5s"><img src="img/home3/ipad_name.webp" alt=""></div>
     <button class="z" data-c="uae" style="left:5.7%;top:33%;width:42%;height:15.4%"></button><button class="z" data-c="ar" style="left:50.4%;top:33%;width:42.6%;height:15.4%"></button>
     <button class="z" data-c="deen" style="left:5.7%;top:49.6%;width:42%;height:16.7%"></button><button class="z" data-c="en" style="left:50.4%;top:49.6%;width:42.6%;height:16.7%"></button>
@@ -342,6 +348,7 @@ const CATS={hw:{t:"الواجب",e:"Homework",ic:"nav_hw",apps:HWL},uae:{t:"بل
 let stars=0,full=0;{const seen=new Set();ROWS.forEach(r=>r.apps.filter(visA).forEach(a=>{const n=a.total?Math.min(count(a.key),a.total):0;if(a.total&&!seen.has(a.key)){seen.add(a.key);stars+=n;if(n>=a.total)full++}}))}
 document.getElementById("sTotal").textContent=stars;document.getElementById("sDone").textContent=full;
 const meAv=document.getElementById("meAv");if(NAJMA.me){meAv.innerHTML=NAJMA_AV(NAJMA.me.avatar);meAv.style.overflow="hidden";meAv.style.background=NAJMA.me.color||"#ffd23f"}
+{const me=NAJMA.me,h=document.getElementById("hi");if(me&&!me.preview){h.textContent="مرحبا "+(me.nameAr||me.name)+" 👋";h.style.display=""}}
 const hwN=HWL.filter(visA).length;{const e=document.getElementById("nb");if(hwN){e.textContent=hwN;e.style.display="block"}}
 let ti=0;function tile(a){ti++;const n=a.total?Math.min(count(a.key),a.total):0,pct=a.total?n/a.total:0,C=2*Math.PI*21;
   const el=document.createElement("a");el.className="app";el.href=a.href;el.style.animationDelay=(ti*.06)+"s";
@@ -350,9 +357,9 @@ let ti=0;function tile(a){ti++;const n=a.total?Math.min(count(a.key),a.total):0,
      <div class="name" dir="auto">${a.name}</div><div class="sub" dir="auto">${a.sub}</div>`;return el}
 const phone=()=>matchMedia("(max-width:600px)").matches;
 function home(){document.body.classList.add("athome");document.documentElement.classList.remove("lock");document.getElementById("sec").classList.remove("on");setNav("home");
-  document.getElementById("scIpad").classList.toggle("on",!phone());document.getElementById("scPhone").classList.toggle("on",phone());document.querySelector(".corner.tl").style.display="";document.querySelector(".corner.tr").style.display="";window.scrollTo(0,0)}
+  document.getElementById("scIpad").classList.toggle("on",!phone());document.getElementById("scPhone").classList.toggle("on",phone());document.querySelector(".corner.tl").style.display="";document.querySelector(".corner.tr").style.display="";document.getElementById("hi").style.visibility="";window.scrollTo(0,0)}
 function cat(k){document.body.classList.remove("athome");document.documentElement.classList.add("lock");const c=CATS[k];if(!c)return home();const L=c.apps.filter(visA);
-  document.querySelectorAll(".scene").forEach(s=>s.classList.remove("on"));document.querySelector(".corner.tl").style.display="none";document.querySelector(".corner.tr").style.display="none";
+  document.querySelectorAll(".scene").forEach(s=>s.classList.remove("on"));document.querySelector(".corner.tl").style.display="none";document.querySelector(".corner.tr").style.display="none";document.getElementById("hi").style.visibility="hidden";
   document.getElementById("secT").textContent=c.t;document.getElementById("secE").textContent=c.e||"";document.getElementById("secI").src=I+c.ic+".webp";const A=document.getElementById("apps");A.innerHTML="";ti=0;
   if(!L.length)A.innerHTML='<div class="tip" style="grid-column:1/-1;text-align:center">'+(k==="hw"?"لا يوجد واجب اليوم 🎉":"لا يوجد شيء هنا بعد")+'</div>';L.forEach(a=>A.appendChild(tile(a)));
   {const M=document.getElementById("mine");let n=0,t=0;L.forEach(a=>{if(a.total){t+=a.total;n+=Math.min(count(a.key),a.total)}});
@@ -365,7 +372,7 @@ addEventListener("hashchange",route);
 /* never leave a blank screen: coming back to the page, or a picture that did not load */
 addEventListener("pageshow",e=>{if(e.persisted)route()});
 setTimeout(()=>{if(location.hash)return;const sc=document.querySelector(".scene.on");if(!sc||sc.getBoundingClientRect().height<100){home();}
-  document.querySelectorAll(".scene.on img").forEach(im=>{if(!im.complete||!im.naturalWidth){const u=im.getAttribute("src").split("?")[0];im.src=u+"?r="+Date.now()}})},2500);addEventListener("resize",()=>{if(!location.hash)home()});route();
+  let n=0;const fix=()=>{let bad=0;document.querySelectorAll(".scene.on img").forEach(im=>{if(!im.complete||!im.naturalWidth){bad++;const u=im.getAttribute("src").split("?")[0];im.src=u+"?r="+Date.now()}});if(bad&&++n<6)setTimeout(fix,3000)};fix()},2500);addEventListener("resize",()=>{if(!location.hash)home()});route();
 document.querySelectorAll(".z").forEach(b=>b.onclick=()=>{const k=b.dataset.c;const ov=b.parentNode.querySelector(`.cardov[data-k="${k}"]`);if(ov&&!b.dataset.go){b.dataset.go=1;ov.classList.add("tap");setTimeout(()=>{ov.classList.remove("tap");b.click()},360);return}delete b.dataset.go;if(k==="prog")return progress();const c=CATS[k],L=c?c.apps.filter(visA):[];if(k!=="hw"&&L.length===1){location.href=L[0].href;return}location.hash="c="+k});
 document.querySelectorAll(".scene").forEach(sc=>{for(let i=0;i<14;i++){const e=document.createElement("i");e.className="spk";e.style.left=(6+Math.random()*86)+"%";e.style.top=(32+Math.random()*52)+"%";e.style.animationDelay=(Math.random()*5)+"s";e.style.animationDuration=(2+Math.random()*2.5)+"s";sc.appendChild(e)}});
 document.getElementById("apps").addEventListener("click",e=>{const a=e.target.closest(".app");if(!a||a.dataset.go)return;e.preventDefault();a.classList.add("wig");a.dataset.go=1;setTimeout(()=>location.href=a.href,380)});
@@ -378,7 +385,7 @@ function progress(){if(location.hash!=="#c=prog"){location.hash="c=prog";return}
     d.innerHTML=`${icoOf(a)?`<img src="${icoOf(a)}" alt="">`:`<span class="g2">${a.glyph.length<=3?a.glyph:"⭐"}</span>`}<div class="t"><div class="nm" dir="auto">${a.name} ${n>=a.total?"🏆":""}</div><span class="num">${n} / ${a.total}</span><div class="pbar"><i data-w="${Math.round(n/a.total*100)}"></i></div></div>`;L.appendChild(d)}));
   const S=Math.min(10,Math.floor(stars/10));
   document.getElementById("ach").innerHTML=`<div style="background:linear-gradient(160deg,#fff6c4,#ffd84a)"><img src="${I}nav_star.webp" alt=""><b>${stars}</b><span>نجمة · Stars</span></div><div style="background:linear-gradient(160deg,#dcf8e8,#8fdcb6)"><img src="${I}cat_prog.webp" alt=""><b>${done} / ${tot}</b><span>أكملت · Completed</span></div><div class="stars">${Array.from({length:10},(_,k)=>`<i class="${k<S?"on":""}" style="animation-delay:${k*.08}s"></i>`).join("")}</div>`;
-  document.querySelectorAll(".scene").forEach(s=>s.classList.remove("on"));document.getElementById("sec").classList.remove("on");document.querySelectorAll(".corner").forEach(c=>c.style.display="none");
+  document.querySelectorAll(".scene").forEach(s=>s.classList.remove("on"));document.getElementById("sec").classList.remove("on");document.querySelectorAll(".corner").forEach(c=>c.style.display="none");document.getElementById("hi").style.visibility="hidden";
   document.getElementById("pg").classList.add("on");setNav("prog");window.scrollTo(0,0);setTimeout(()=>document.querySelectorAll(".pbar i").forEach(x=>x.style.width=x.dataset.w+"%"),50)}
 document.getElementById("trophy").onclick=progress;
 /* one-time note on the kids' iPads: how to get the new app icon */
