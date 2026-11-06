@@ -48,7 +48,7 @@ let voice=null;function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=
 if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
 function sayEn(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.75;speechSynthesis.speak(u)}catch(e){}}
 const main=document.getElementById("main");
-if(me)document.getElementById("av").textContent=me.avatar||"⭐";
+if(me){const av=document.getElementById("av");if(/^img:k\d$/.test(me.avatar||"")){av.innerHTML=NAJMA_AV(me.avatar);av.style.cssText+=";width:1.4em;height:1.4em;margin:0 auto;overflow:hidden;border-radius:50%"}else av.textContent=me.avatar||"⭐"}
 const ar=me&&(me.nameAr||(/[؀-ۿ]/.test(me.name)?me.name:"")),en=me&&(me.nameEn||(/[A-Za-z]/.test(me.name)?me.name:""));
 function block(name,isAr){const c=document.createElement("div");c.className="card";
   const letters=[...name].filter(ch=>ch!==" ");
