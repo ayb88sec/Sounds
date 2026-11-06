@@ -272,9 +272,10 @@ function editKid(p){
       try{await navigator.clipboard.writeText(u);$("kCopy").textContent="✅ تم النسخ"}catch(e){$("kCopy").textContent="⚠️ انسخ يدويًا"}setTimeout(()=>$("kCopy").textContent="📋 نسخ الرابط",2500)}}
   const NETS=[["offline","💾 أوفلاين"],["online","📶 أونلاين"]],netNote=()=>{$("kNetNote").textContent=ed.net==="online"?"أقل مساحة على الآيباد، لكنه يحتاج إنترنت دائمًا. تسجيلات صوتك تبقى محفوظة.":"يعمل بدون إنترنت. يحفظ التطبيقات على الآيباد (حوالي ٢٠ إلى ٣٠ ميغابايت)."};
   chips("kNet",NETS.map(x=>x[1]),(x,k)=>(ed.net||"offline")===NETS[k][0],(x,k)=>{ed.net=NETS[k][0];netNote()});netNote();
+  if(!ed.gender&&/^img:k\d$/.test(ed.avatar||""))ed.gender=+ed.avatar.slice(5)%2?"m":"f";
   chips("kGender",["👦 ولد","👧 بنت"],(x,k)=>ed.gender===(k?"f":"m"),(x,k)=>{ed.gender=k?"f":"m"});
   chips("kGrade",GRADES.map(g=>g[1]),(x,k)=>ed.grade===GRADES[k][0],(x,k)=>{ed.grade=ed.grade===GRADES[k][0]?"":GRADES[k][0]});
-  if(feat("kidpics")){const box=$("kAv");box.className="chips av kpics";box.innerHTML="";AVK.forEach(a=>{const b=document.createElement("button");b.innerHTML=AVH(a);if(a===ed.avatar)b.classList.add("on");b.onclick=()=>{ed.avatar=a;[...box.children].forEach(x=>x.classList.toggle("on",x===b))};box.appendChild(b)})}
+  if(feat("kidpics")){const box=$("kAv");box.className="chips av kpics";box.innerHTML="";AVK.forEach(a=>{const b=document.createElement("button");b.innerHTML=AVH(a);if(a===ed.avatar)b.classList.add("on");b.onclick=()=>{ed.avatar=a;ed.gender=+a.slice(5)%2?"m":"f";chips("kGender",["👦 ولد","👧 بنت"],(x,k)=>ed.gender===(k?"f":"m"),(x,k)=>{ed.gender=k?"f":"m"});[...box.children].forEach(x=>x.classList.toggle("on",x===b))};box.appendChild(b)})}
   else chips("kAv",AV,a=>a===ed.avatar,a=>ed.avatar=a,"av");
   chips("kCol",PC,c=>c===ed.color,c=>ed.color=c);
   const apps=[...BUILT,...vis().map(s=>["s:"+s.id,`${s.icon} ${s.title}`])];

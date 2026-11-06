@@ -69,6 +69,8 @@
     spell:["الطويل والقصير","أ ب د س م","ل ن ف ق ر","المقاطع ١","المقاطع ٢"],
     quran:["الفاتحة","الناس – قريش","الفيل – القدر","العلق – الفجر","الغاشية – النبأ"]};
   const lv=app=>{const L=me&&me.levels&&me.levels[app];return Array.isArray(L)&&L.length?L:LEVELS[app].map((_,i)=>i)};
+  /* boy or girl: from the parent's choice, otherwise from the character picture (odd = boy, even = girl) */
+  const genderOf=p=>p&&(p.gender||(/^img:k\d$/.test(p.avatar||"")?(+p.avatar.slice(5)%2?"m":"f"):""));if(me&&!me.gender&&genderOf(me))me.gender=genderOf(me);
   window.NAJMA={LEVELS,lv,me,profiles,sections,DEFSEC,settings:Object.assign({},DEF,me||{},{apps:Object.assign({},DEF.apps,(me&&me.apps)||{})}),DEF,
     raw:{get:k=>G.call(localStorage,k),set:(k,v)=>SET.call(localStorage,k,v),remove:k=>RM.call(localStorage,k)}};
   /* name chip next to the home button on every page */
