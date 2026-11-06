@@ -316,7 +316,7 @@ function maze(box){left=1;const W=BIG?8:6,H=BIG?8:6,cell=[...Array(W*H)].map(()=
 /* صنّف السمك بالألوان */
 function bowls(box){const C=[["#ff7eb6","الوَرْدِيُّ"],["#ffd23f","الأَصْفَرُ"],["#4f8bff","الأَزْرَقُ"],["#3fc35a","الأَخْضَرُ"],["#a66bff","البَنَفْسَجِيُّ"]];const F=shuf([0,1,2,3,4,0,1,2,3,4]);left=F.length;let sel=null;
   box.innerHTML=`<div class="bwl">${C.map(([c,n],i)=>`<button class="bw" data-i="${i}" style="--c:${c}"><span class="fl2"></span><small>${n}</small></button>`).join("")}</div><div class="fsh">${F.map((k,j)=>`<button data-k="${k}" style="--c:${C[k][0]}">🐟</button>`).join("")}</div>`;
-  box.querySelectorAll(".fsh button").forEach(b=>b.onclick=()=>{if(b.classList.contains("in"))return;box.querySelectorAll(".fsh button").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");sel=b;sayAr("سَمَكَةٌ "+C[+b.dataset.k][1].replace("ُّ","ٌّ"))});
+  box.querySelectorAll(".fsh button").forEach(b=>b.onclick=()=>{if(b.classList.contains("in"))return;box.querySelectorAll(".fsh button").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");sel=b;sayAr("سَمَكَةْ "+["وَرْدِيَّةْ","صَفْرَاءْ","زَرْقَاءْ","خَضْرَاءْ","بَنَفْسَجِيَّةْ"][+b.dataset.k])});
   box.querySelectorAll(".bw").forEach(w=>w.onclick=()=>{if(!sel)return;if(w.dataset.i===sel.dataset.k){sel.classList.add("in");sel.classList.remove("sel");const f=document.createElement("i");f.textContent="🐟";f.style.setProperty("--c",C[+w.dataset.i][0]);w.querySelector(".fl2").appendChild(f);sel=null;yay();at(w);point()}else{w.classList.add("shake");buzz();setTimeout(()=>w.classList.remove("shake"),400)}})}
 
 const SHEETS=[
