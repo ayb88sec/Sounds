@@ -187,6 +187,7 @@ setTimeout(function(){var g=document.getElementById("gate");if(g&&getComputedSty
   <div class="chips" id="kCol" style="display:none"></div>
   <label>التطبيقات الظاهرة</label><div class="chips" id="kApps"></div>
   <label>المستويات المفعّلة</label><div class="note" style="margin:0 0 8px">اضغط على أي مستوى لتشغيله أو إيقافه. المستوى المفعّل لونه بنفسجي وعليه ✓.</div><div id="kLevels"></div>
+  <label>👦👧 ولد أم بنت؟</label><div class="chips" id="kGender"></div>
   <label>🎓 الصف في المدرسة</label><div class="chips" id="kGrade"></div>
   <label>الأرقام حتى</label><div class="chips" id="kNum"></div>
   <label>📲 على الآيباد</label><div class="chips" id="kNet"></div><div class="note" id="kNetNote" style="margin:6px 0 0"></div>
@@ -271,6 +272,7 @@ function editKid(p){
       try{await navigator.clipboard.writeText(u);$("kCopy").textContent="✅ تم النسخ"}catch(e){$("kCopy").textContent="⚠️ انسخ يدويًا"}setTimeout(()=>$("kCopy").textContent="📋 نسخ الرابط",2500)}}
   const NETS=[["offline","💾 أوفلاين"],["online","📶 أونلاين"]],netNote=()=>{$("kNetNote").textContent=ed.net==="online"?"أقل مساحة على الآيباد، لكنه يحتاج إنترنت دائمًا. تسجيلات صوتك تبقى محفوظة.":"يعمل بدون إنترنت. يحفظ التطبيقات على الآيباد (حوالي ٢٠ إلى ٣٠ ميغابايت)."};
   chips("kNet",NETS.map(x=>x[1]),(x,k)=>(ed.net||"offline")===NETS[k][0],(x,k)=>{ed.net=NETS[k][0];netNote()});netNote();
+  chips("kGender",["👦 ولد","👧 بنت"],(x,k)=>ed.gender===(k?"f":"m"),(x,k)=>{ed.gender=k?"f":"m"});
   chips("kGrade",GRADES.map(g=>g[1]),(x,k)=>ed.grade===GRADES[k][0],(x,k)=>{ed.grade=ed.grade===GRADES[k][0]?"":GRADES[k][0]});
   if(feat("kidpics")){const box=$("kAv");box.className="chips av kpics";box.innerHTML="";AVK.forEach(a=>{const b=document.createElement("button");b.innerHTML=AVH(a);if(a===ed.avatar)b.classList.add("on");b.onclick=()=>{ed.avatar=a;[...box.children].forEach(x=>x.classList.toggle("on",x===b))};box.appendChild(b)})}
   else chips("kAv",AV,a=>a===ed.avatar,a=>ed.avatar=a,"av");

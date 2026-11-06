@@ -55,8 +55,12 @@ h1{text-align:center}
 <canvas id="fx"></canvas>
 <main><h1 id="ttl">🕌 مراجعة التربية الإسلامية</h1><div id="app"></div></main>
 <script>
+/* boy or girl: every word the teacher and the page say follows the child (set in the portal) */
+const BOY=((window.NAJMA&&NAJMA.me)||{}).gender==="m";
+const MW=[["يَا بَطَلَةُ","يَا بَطَلُ"],["يَا بَطَلَة","يَا بَطَل"],["يا بطلة","يا بطل"],["انْظُرِي","انْظُرْ"],["أَحْبَبْتِ أَنْ تَنْجَحِي، تُحِبِّين أَنْ تَنْجَحَ صَدِيقَتُكِ","أَحْبَبْتَ أَنْ تَنْجَحَ، تُحِبُّ أَنْ يَنْجَحَ صَدِيقُكَ"],["صَدِيقَتُكِ حَصَلَتْ عَلَى أَعْلَى دَرَجَةٍ. مَاذَا تَفْعَلِينَ؟","صَدِيقُكَ حَصَلَ عَلَى أَعْلَى دَرَجَةٍ. مَاذَا تَفْعَلُ؟"],["أَفْرَحُ لَهَا","أَفْرَحُ لَهُ"],["تَذَكَّرِي","تَذَكَّرْ"],["انْتَبِهِي","انْتَبِهْ"],["فَكِّرِي","فَكِّرْ"],["أَحْسَنْتِ","أَحْسَنْتَ"],["أحسنتِ","أحسنتَ"],["اضغطي","اضغط"],["اسمعي","اسمع"],["أعيدي","أعد"],["اختاري","اختر"],["فكري","فكر"],["أنتِ جاهزة","أنتَ جاهز"],["راجعي","راجع"],["جربي","جرب"],["اقلبي","اقلب"],["أذاكر","أذاكر"]];
+const G=t=>{if(!BOY||typeof t!=="string")return t;MW.forEach(([f,m])=>{t=t.split(f).join(m)});return t};
 const $=id=>document.getElementById(id),shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
-const speak=(t,done)=>{t=String(t).replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F\u200D]/gu," ");try{NAJMA.aiSay(t,"ar",.85)}catch(e){}if(done)setTimeout(done,Math.min(9000,600+t.length*75))};
+const speak=(t,done)=>{t=G(String(t)).replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F\u200D]/gu," ");try{NAJMA.aiSay(t,"ar",.85)}catch(e){}if(done)setTimeout(done,Math.min(9000,600+t.length*75))};
 let ac;function tone(f,d=.15,w=0){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=.12;o.connect(g).connect(ac.destination);o.start(ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.stop(ac.currentTime+w+d)}catch(e){}}
 const yay=()=>{tone(660);tone(880,.15,.1);tone(1100,.2,.2)},buzz=()=>tone(180,.25);
 /* confetti */
@@ -178,6 +182,8 @@ function final(){$("ttl").textContent="🏆 الاختبار الشامل";const
      box.querySelectorAll(".op").forEach(b=>b.onclick=()=>{if(+b.dataset.a===q[1]){b.classList.add("ok");yay();if(first)score++;i++;setTimeout(draw,900)}else{first=false;b.classList.add("no");buzz()}})}
    else{box.innerHTML=`<div class="big" style="white-space:pre-line">${q[0]}</div><div class="opts">${shuf(q[1].map((x,j)=>[x,j])).map(([x,j])=>`<button class="op" data-j="${j}">${x}</button>`).join("")}</div>`;speak(q[0]);
      box.querySelectorAll(".op").forEach(b=>b.onclick=()=>{if(b.dataset.j==="0"){b.classList.add("ok");yay();if(first)score++;i++;setTimeout(draw,900)}else{first=false;b.classList.add("no");buzz()}})}};draw()}
+if(BOY){const fix=n=>{const w=document.createTreeWalker(n,NodeFilter.SHOW_TEXT);let x;while(x=w.nextNode()){const v=G(x.nodeValue);if(v!==x.nodeValue)x.nodeValue=v}};
+  new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===3){const v=G(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v}else if(n.nodeType===1)fix(n)}))).observe(document.body,{subtree:true,childList:true});fix(document.body)}
 /* one lesson on its own (from ديني): ?l=akh | tah | rusl */
 const ONE=L.findIndex(l=>l.k===new URLSearchParams(location.search).get("l"));
 if(ONE>=0){const l=L[ONE];hub=function(){$("ttl").textContent=l.e+" "+l.t;window.scrollTo(0,0);const n=l.steps.filter((_,j)=>done[l.k+j]).length;
