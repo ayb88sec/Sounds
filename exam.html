@@ -118,7 +118,7 @@ function study(li,si,ln=0){const l=L[li],S=TEACH[l.k];$("ttl").textContent=l.e+"
 const ALLSTEPS=L.reduce((s,l)=>s+l.steps.length+1,0)+1;
 
 /* ===== screens ===== */
-function hub(){$("ttl").textContent="🕌 مراجعة التربية الإسلامية";window.scrollTo(0,0);
+var hub=function(){$("ttl").textContent="🕌 مراجعة التربية الإسلامية";window.scrollTo(0,0);
   $("app").innerHTML=`<div class="card" style="padding:8px"><img src="img/exam/cover.webp" alt="" style="width:100%;border-radius:20px;display:block"></div><p class="sub">كل درس: 📖 أذاكر أولاً، ثم 🎮 أتمرن</p><div class="grid">${L.map((l,i)=>{const n=l.steps.filter((_,j)=>done[l.k+j]).length;return `<button class="lc" data-i="${i}" style="background:${l.bg};animation-delay:${i*.1}s"><span class="e">${l.e}</span><b>${l.t}</b><small>${n} / ${l.steps.length} ⭐</small><div class="st">${n>=l.steps.length?"🏆":done["study_"+l.k]?"🎮 التمارين":"📖 أذاكر ثم ألعب"}</div></button>`}).join("")}
    <button class="lc" id="final" style="background:linear-gradient(160deg,#efe6ff,#c9b5ff);animation-delay:.3s"><span class="e">🏆</span><b>الاختبار الشامل</b><small>أسئلة من كل الدروس</small><div class="st">${done.final?"⭐ أحسنت!":"▶️ ابدأ"}</div></button></div>`;
   document.querySelectorAll(".lc[data-i]").forEach(b=>b.onclick=()=>study(+b.dataset.i,0));$("final").onclick=final;speak("مراجعة التربية الإسلامية. اختاري درسًا")}
@@ -178,7 +178,11 @@ function final(){$("ttl").textContent="🏆 الاختبار الشامل";const
      box.querySelectorAll(".op").forEach(b=>b.onclick=()=>{if(+b.dataset.a===q[1]){b.classList.add("ok");yay();if(first)score++;i++;setTimeout(draw,900)}else{first=false;b.classList.add("no");buzz()}})}
    else{box.innerHTML=`<div class="big" style="white-space:pre-line">${q[0]}</div><div class="opts">${shuf(q[1].map((x,j)=>[x,j])).map(([x,j])=>`<button class="op" data-j="${j}">${x}</button>`).join("")}</div>`;speak(q[0]);
      box.querySelectorAll(".op").forEach(b=>b.onclick=()=>{if(b.dataset.j==="0"){b.classList.add("ok");yay();if(first)score++;i++;setTimeout(draw,900)}else{first=false;b.classList.add("no");buzz()}})}};draw()}
-hub();
+/* one lesson on its own (from ديني): ?l=akh | tah | rusl */
+const ONE=L.findIndex(l=>l.k===new URLSearchParams(location.search).get("l"));
+if(ONE>=0){const l=L[ONE];hub=function(){$("ttl").textContent=l.e+" "+l.t;window.scrollTo(0,0);const n=l.steps.filter((_,j)=>done[l.k+j]).length;
+  $("app").innerHTML=`<div class="grid"><button class="lc" id="st1" style="background:${l.bg}"><span class="e">📖</span><b>أذاكر مع المعلمة</b><small>شرح الدرس خطوة بخطوة</small></button><button class="lc" id="pl1" style="background:linear-gradient(160deg,#efe6ff,#c9b5ff)"><span class="e">🎮</span><b>أتمرن وألعب</b><small>${n} / ${l.steps.length} ⭐</small></button></div>`;
+  $("st1").onclick=()=>study(ONE,0);$("pl1").onclick=()=>lesson(ONE,0)};hub()}else hub();
 </script>
 </body>
 </html>
