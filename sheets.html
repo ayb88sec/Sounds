@@ -23,7 +23,7 @@ h1{text-align:center}
 .nd{display:flex;justify-content:space-between;gap:10px;font-family:"Patrick Hand",cursive;font-size:clamp(16px,3.6vw,22px);color:#555;padding:0 6px}
 .nd b{font-family:"Patrick Hand",cursive;color:#2f6bd8;font-weight:400;border-bottom:2px solid #999;padding:0 10px;font-size:1.15em}
 .st{font-family:"Fredoka",sans-serif;font-weight:700;font-size:clamp(30px,7.5vw,54px);text-align:center;margin:6px 0 2px;letter-spacing:.5px;line-height:1.05}
-.st span{display:inline-block;animation:wob 3s ease-in-out infinite}
+.st span{display:inline-block;will-change:transform;animation:wob 3s ease-in-out infinite}
 @keyframes wob{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
 .ins{margin:8px auto 14px;max-width:560px;border:0;box-shadow:0 4px 10px rgba(0,0,0,.08);border-radius:16px;padding:6px 12px;text-align:center;font-family:"Patrick Hand",cursive;font-size:clamp(17px,3.8vw,22px);background:#fff}
 .sec{border:2.5px solid #1d1d2b;border-radius:18px;padding:10px;margin:12px 0;background:#fff}
@@ -113,7 +113,7 @@ html[dir=rtl] .fc .wd,html[dir=rtl] .ch button{font-family:"Baloo Bhaijaan 2",sa
 .tree{position:relative;height:min(120vw,620px);max-width:560px;margin:0 auto}
 .trunk{position:absolute;left:44%;width:12%;top:40%;bottom:0;background:linear-gradient(90deg,#8a5a2b,#b07a40,#8a5a2b);border-radius:20px 20px 6px 6px}
 .crown{position:absolute;left:2%;right:2%;top:0;height:62%;background:radial-gradient(circle at 30% 40%,#8be07a,#3fae4e 70%);border-radius:50% 50% 45% 45%;box-shadow:inset 0 -14px 0 rgba(0,0,0,.08)}
-.leaf{position:absolute;transform:translate(-50%,0);width:clamp(84px,22vw,118px);border:4px solid #fff;border-radius:50% 50% 50% 8%;background:#fff8e1;padding:6px 6px 2px;cursor:pointer;font-family:"Baloo Bhaijaan 2",sans-serif;box-shadow:0 6px 12px rgba(0,0,0,.18);animation:sway 3s var(--d) ease-in-out infinite}
+.leaf{position:absolute;transform:translate(-50%,0);width:clamp(84px,22vw,118px);border:4px solid #fff;border-radius:50% 50% 50% 8%;background:#fff8e1;padding:6px 6px 2px;cursor:pointer;font-family:"Baloo Bhaijaan 2",sans-serif;box-shadow:0 6px 12px rgba(0,0,0,.18);will-change:transform;animation:sway 3s var(--d) ease-in-out infinite}
 .leaf .ph{display:block;aspect-ratio:1}.leaf small{display:block;font-weight:800;font-size:13px;line-height:1.2}.leaf.lit{background:#fff3b0;box-shadow:0 0 0 4px #ffd23f,0 6px 16px rgba(255,180,0,.5)}
 @keyframes sway{0%,100%{transform:translate(-50%,0) rotate(-3deg)}50%{transform:translate(-50%,0) rotate(3deg)}}
 .hrt{position:absolute;left:50%;bottom:4%;transform:translateX(-50%) scale(.4);opacity:.3;background:#ffd6e3;border:4px solid #fff;border-radius:24px;padding:6px 14px;text-align:center;font-family:"Baloo Bhaijaan 2",sans-serif;font-weight:800;font-size:18px;transition:.5s}.hrt.on{transform:translateX(-50%) scale(1);opacity:1}
@@ -136,7 +136,7 @@ html[dir=rtl] .fc .wd,html[dir=rtl] .ch button{font-family:"Baloo Bhaijaan 2",sa
 /* creativity: scene, guide, movement */
 .paper{overflow:hidden;background:transparent!important;box-shadow:0 14px 28px rgba(90,60,20,.25)!important;transform:none!important;border-radius:28px!important}
 .paper>*:not(.scn){position:relative;z-index:1}
-.scn{position:absolute;inset:0;z-index:0;overflow:hidden;border-radius:24px}.scn i{position:absolute;font-style:normal;opacity:.75;pointer-events:none}
+.scn{position:absolute;inset:0;z-index:0;overflow:hidden;border-radius:24px}.scn i{position:absolute;font-style:normal;opacity:.75;pointer-events:none;will-change:transform;backface-visibility:hidden}.scn{contain:strict}
 .m-up{animation:mup 9s linear infinite}@keyframes mup{from{transform:translateY(110%)}to{transform:translateY(-700%)}}
 .m-fly{animation:mfly 7s ease-in-out infinite}@keyframes mfly{0%,100%{transform:translate(0,0) rotate(-8deg)}50%{transform:translate(30px,-24px) rotate(8deg)}}
 .m-drift{animation:mdr 12s ease-in-out infinite}@keyframes mdr{0%,100%{transform:translateX(0)}50%{transform:translateX(40px)}}
@@ -149,7 +149,7 @@ html[dir=rtl] .fc .wd,html[dir=rtl] .ch button{font-family:"Baloo Bhaijaan 2",sa
 .gd.go.think{animation:gw .6s ease-in-out}@keyframes gw{25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
 .gd.go.wave{animation:gi .8s cubic-bezier(.3,1.6,.5,1)}@keyframes gi{from{transform:translateX(160%) rotate(20deg)}}
 .akc.good,.akc.bad{animation:flip .6s}@keyframes flip{0%{transform:rotateY(0)}50%{transform:rotateY(90deg) scale(1.08)}100%{transform:rotateY(0)}}
-.leaf.lit{background:linear-gradient(160deg,#fff6c4,#ffd23f)!important;animation:sway 3s var(--d) ease-in-out infinite,glw 1.6s ease-in-out infinite}@keyframes glw{50%{box-shadow:0 0 0 4px #ffd23f,0 0 26px 8px rgba(255,210,63,.8)}}
+.leaf.lit{background:linear-gradient(160deg,#fff6c4,#ffd23f)!important;box-shadow:0 0 0 4px #ffd23f,0 0 22px 6px rgba(255,210,63,.7)}@keyframes glw{50%{box-shadow:0 0 0 4px #ffd23f,0 0 26px 8px rgba(255,210,63,.8)}}
 .bw .fl2 i{display:inline-block;animation:pop .4s,swim 2.4s .4s ease-in-out infinite}@keyframes swim{0%,100%{transform:translateX(-6px) scaleX(1)}49%{transform:translateX(6px) scaleX(1)}50%{transform:translateX(6px) scaleX(-1)}99%{transform:translateX(-6px) scaleX(-1)}}
 .frow.won{animation:pop .5s}.fc.won .pic{animation:pop .5s,wob 2s .5s ease-in-out infinite}
 .box.ok{animation:pop .4s,glw2 1.2s}.mt .k.done{animation:pop .4s}
@@ -196,7 +196,7 @@ let gT=0;function guide(m){const g=document.getElementById("gd");if(!g)return;co
 const SCN={sea:{bg:"linear-gradient(180deg,#bfe9ff,#7cc8f5 60%,#f6d79a 92%)",fx:["🫧","🫧","🫧","🐟","🫧"],mv:"up"},garden:{bg:"linear-gradient(180deg,#c9f0ff,#e8fbd9 55%,#9fdc7a)",fx:["🦋","🌼","🦋","🌸","🐝"],mv:"fly"},
   sky:{bg:"linear-gradient(180deg,#a8dcff,#e3f4ff 70%,#fff)",fx:["☁️","⭐","☁️","✨","🎈"],mv:"drift"},desert:{bg:"linear-gradient(180deg,#bfe6ff,#fde9be 55%,#f2c77e)",fx:["☀️","🌴","🐪","✨","🌵"],mv:"drift"},
   night:{bg:"linear-gradient(180deg,#2b2d6e,#5b4fb0 60%,#a98be0)",fx:["⭐","✨","🌙","⭐","✨"],mv:"twinkle"}};
-function scene(k){const d=SHEETS.find(s=>s.k===k)||{},S=SCN[d.scene||"sky"];return `<div class="scn" style="background:${S.bg}">${[...Array(12)].map((_,i)=>`<i class="m-${S.mv}" style="left:${(i*37)%96}%;top:${(i*53)%90}%;animation-delay:${-i*1.3}s;font-size:${18+(i*7)%22}px">${S.fx[i%S.fx.length]}</i>`).join("")}</div>`}
+function scene(k){const d=SHEETS.find(s=>s.k===k)||{},S=SCN[d.scene||"sky"];return `<div class="scn" style="background:${S.bg}">${[...Array(6)].map((_,i)=>`<i class="m-${S.mv}" style="left:${(i*41+5)%92}%;top:${(i*29+8)%86}%;animation-delay:${-i*1.9}s;font-size:${18+(i*7)%22}px">${S.fx[i%S.fx.length]}</i>`).join("")}</div>`}
 function sheet(def,body){window.scrollTo(0,0);document.documentElement.dir=def.ar?"rtl":"ltr";$("ttl").textContent=def.title;document.title=def.title;
   $("app").innerHTML=`<div class="paper">${scene(def.k)}
    <div class="st">${def.title.split(" ").map((w,i)=>`<span style="animation-delay:${i*.3}s;color:${i%2?"#1d1d2b":CR[(i+def.c)%6]}">${w}</span>`).join(" ")}</div>
