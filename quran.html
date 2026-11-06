@@ -190,7 +190,7 @@ function drawPath(){const P=$("path");if(!P)return;const n=PATH.length,STEP=96,H
   const e=document.createElement("button");e.className="node end"+(cur===-1?"":" lock");e.style.left=end.x+"%";e.style.top=end.y+"px";e.innerHTML=`<div class="c">🏆</div><span class="t" style="font-family:inherit">الجائزة</span>`;
   e.onclick=()=>{if(cur===-1)reward();else{buzz();e.animate([{transform:"translate(-50%,-50%) rotate(-8deg)"},{transform:"translate(-50%,-50%) rotate(8deg)"},{transform:"translate(-50%,-50%)"}],400)}};P.appendChild(e);
   /* the child's character walks to the next stop when a surah is finished */
-  const hero=document.createElement("div");hero.className="hero";{const v=(NAJMA.me&&NAJMA.me.avatar)||"🧒";if(/^img:k\d$/.test(v)){hero.innerHTML=NAJMA_AV(v);hero.style.width=hero.style.height="1.3em"}else hero.textContent=v}P.appendChild(hero);
+  const hero=document.createElement("div");hero.className="hero";{const v=(NAJMA.me&&NAJMA.me.avatar)||"🧒";if(/^img:k\d$/.test(v)){hero.innerHTML=NAJMA_AV(v);hero.style.width=hero.style.height="1.7em";hero.style.borderRadius="50%";hero.style.border="3px solid #fff";hero.style.overflow="hidden"}else hero.textContent=v}P.appendChild(hero);
   const at=k=>{const p=k<0?end:pts[k];hero.style.left=p.x+"%";hero.style.top=p.y+"px"};
   const target=cur===-1?n:cur,last=+(localStorage.getItem("qkPathPos")||0);
   hero.style.transition="none";at(Math.min(last,n-1)>=0&&last<n?last:-1);void hero.offsetWidth;hero.style.transition="";
