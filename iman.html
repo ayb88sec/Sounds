@@ -135,7 +135,7 @@ footer a,#reset{color:#fff;background:none;border:0;font:inherit;text-decoration
     <div class="cname" id="cName"></div>
     <div class="phrase" id="cPhrase"></div>
     <div class="explain"><b>💡 يعني:</b> <span id="cExp"></span> <button class="say" id="cExpPlay">🔊</button></div>
-    <div class="bar" id="cPlayBar"><button class="btn" id="cPlay">🔊 اسمع</button></div>
+    <div class="bar" id="cPlayBar"><button class="btn" id="cPlay">🔊 اسمع</button></div><div class="bar" id="cLesson" style="display:none"><a class="btn" href="exam.html?l=rusl" style="text-decoration:none;background:linear-gradient(160deg,#fff6c4,#ffd84a);color:#16204a">👩‍🏫 درس الرسل مع المعلمة</a></div>
     <div id="practice"></div>
     <div class="navrow"><button class="btn ghost" id="cNext">التالي ⬅️</button><button class="btn ghost" id="cPrev">➡️ السابق</button></div>
   </div>
@@ -218,6 +218,7 @@ function openCard(i,el){cur=i;const [name,emo,phrase,exp]=ITEMS[i];popSnd();if(e
   ep.style.display=AUD[PFX+"e"+(i+1)]?"inline-block":"none";ep.onclick=()=>play(PFX+"e"+(i+1));
   document.getElementById("cPrev").style.visibility=i>0?"visible":"hidden";
   document.getElementById("cNext").style.visibility=i<N-1?"visible":"hidden";
+  document.getElementById("cLesson").style.display=/الرُّسُل|الرسل/.test(name)?"flex":"none";
   practiceUI(PFX+(i+1));cm.classList.add("show");setTimeout(()=>play(PFX+(i+1)),300);
   const first=!done[i];done[i]=1;save();document.querySelector(`.col[data-i="${i}"]`).classList.add("done");
   const n=update();talk(`${NUMS[i]}. ${name}! ${praise[Math.floor(Math.random()*praise.length)]}`);
