@@ -148,7 +148,7 @@ main{padding-bottom:calc(clamp(58px,8.5vw,92px) + env(safe-area-inset-bottom))}
 .prow2 .g{width:44px;text-align:center;font-size:26px}.prow2 .g img{width:40px;height:40px}.prow2 .t{flex:1;font-weight:800}.prow2 .bb{height:10px;border-radius:9px;background:#eee8fb;overflow:hidden;margin-top:4px}.prow2 .bb i{display:block;height:100%;background:#ffc83d;border-radius:9px}
 
 /* ===== movement ===== */
-.cardov{position:absolute;pointer-events:none;z-index:2;animation:cin .7s cubic-bezier(.3,1.6,.5,1) backwards,flo 4.2s ease-in-out infinite;transform-origin:50% 60%}
+.cardov{position:absolute;pointer-events:none;z-index:2;will-change:transform;animation:cin .7s cubic-bezier(.3,1.6,.5,1) backwards,flo 4.2s ease-in-out infinite;transform-origin:50% 60%}
 .cardov img{width:100%;height:100%;display:block;filter:drop-shadow(0 10px 12px rgba(110,60,10,.28))}
 .cardov.tap{animation:squish .38s ease}
 @keyframes cin{0%{transform:scale(.94)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
@@ -159,8 +159,8 @@ main{padding-bottom:calc(clamp(58px,8.5vw,92px) + env(safe-area-inset-bottom))}
 @keyframes sgin{0%{transform:scale(.94)}60%{transform:scale(1.06) rotate(-2deg)}100%{transform:scale(1)}}
 @keyframes wig{0%,86%,100%{transform:rotate(0)}89%{transform:rotate(-3deg)}92%{transform:rotate(3deg)}95%{transform:rotate(-1.5deg)}}
 .z{z-index:3}
-.fly{position:fixed;z-index:4;width:clamp(90px,16vw,170px);pointer-events:none;top:8%;left:-25%;animation:flyx 14s linear infinite;filter:drop-shadow(0 8px 6px rgba(0,0,0,.15))}
-@keyframes flyx{0%{left:-25%;top:10%;transform:rotate(-4deg)}50%{top:4%;transform:rotate(3deg)}100%{left:115%;top:9%;transform:rotate(-4deg)}}
+.fly{position:fixed;z-index:4;width:clamp(90px,16vw,170px);pointer-events:none;top:8%;left:0;animation:flyx 14s linear infinite;will-change:transform}
+@keyframes flyx{0%{transform:translate(-30vw,2vh) rotate(-4deg)}50%{transform:translate(50vw,-4vh) rotate(3deg)}100%{transform:translate(120vw,1vh) rotate(-2deg)}}
 .spk{position:absolute;z-index:3;pointer-events:none;width:clamp(10px,1.8vw,20px);height:clamp(10px,1.8vw,20px);background:radial-gradient(circle,#fff 0 20%,rgba(255,240,170,.9) 35%,transparent 70%);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);animation:tw 2.6s ease-in-out infinite;opacity:0}
 @keyframes tw{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1) rotate(40deg)}}
 .hwn{z-index:4;animation:pulse 1.4s ease-in-out infinite}
@@ -405,7 +405,7 @@ addEventListener("pageshow",e=>{if(e.persisted)route()});
 setTimeout(()=>{if(location.hash)return;const sc=document.querySelector(".scene.on");if(!sc||sc.getBoundingClientRect().height<100){home();}
   let n=0;const fix=()=>{let bad=0;document.querySelectorAll(".scene.on img").forEach(im=>{if(!im.complete||!im.naturalWidth){bad++;const u=im.getAttribute("src").split("?")[0];im.src=u+"?r="+Date.now()}});if(bad&&++n<6)setTimeout(fix,3000)};fix()},2500);addEventListener("resize",()=>{if(!location.hash)home()});route();
 document.querySelectorAll(".z").forEach(b=>b.onclick=()=>{const k=b.dataset.c;const ov=b.parentNode.querySelector(`.cardov[data-k="${k}"]`);if(ov&&!b.dataset.go){b.dataset.go=1;ov.classList.add("tap");setTimeout(()=>{ov.classList.remove("tap");b.click()},360);return}delete b.dataset.go;if(k==="prog")return progress();const c=CATS[k],L=c?c.apps.filter(visA):[];if(k!=="hw"&&L.length===1){location.href=L[0].href;return}location.hash="c="+k});
-document.querySelectorAll(".scene").forEach(sc=>{for(let i=0;i<14;i++){const e=document.createElement("i");e.className="spk";e.style.left=(6+Math.random()*86)+"%";e.style.top=(32+Math.random()*52)+"%";e.style.animationDelay=(Math.random()*5)+"s";e.style.animationDuration=(2+Math.random()*2.5)+"s";sc.appendChild(e)}});
+document.querySelectorAll(".scene").forEach(sc=>{for(let i=0;i<6;i++){const e=document.createElement("i");e.className="spk";e.style.left=(6+Math.random()*86)+"%";e.style.top=(32+Math.random()*52)+"%";e.style.animationDelay=(Math.random()*5)+"s";e.style.animationDuration=(2+Math.random()*2.5)+"s";sc.appendChild(e)}});
 document.getElementById("apps").addEventListener("click",e=>{const a=e.target.closest(".app");if(!a||a.dataset.go)return;e.preventDefault();a.classList.add("wig");a.dataset.go=1;setTimeout(()=>location.href=a.href,380)});
 document.getElementById("bk").onclick=()=>{location.hash=""};
 document.querySelectorAll(".bar button").forEach(b=>b.onclick=()=>{const k=b.dataset.b;if(k==="home")location.hash="";else location.hash="c="+k});

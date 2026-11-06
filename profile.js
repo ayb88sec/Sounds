@@ -82,8 +82,8 @@
   /* soft "pop" when a child taps anything (not in the parent portal) */
   try{if(!/(parent|families|guide)\.html$/.test(location.pathname)){let ac=null,last=0;
     try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}
-    const P=[...Array(4)].map(()=>{const x=new Audio("audio/pop.wav");x.preload="auto";x.volume=.5;return x});let pi=0;
-    const pop=()=>{const t=Date.now();if(t-last<60)return;last=t;try{const x=P[pi++%P.length];x.currentTime=0;const r=x.play();if(r&&r.catch)r.catch(()=>{})}catch(e){}};
+    let buf=null,ld=false;const load=()=>{if(ld)return;ld=true;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();fetch("audio/pop.wav").then(r=>r.arrayBuffer()).then(b=>new Promise((ok,no)=>ac.decodeAudioData(b,ok,no))).then(d=>{buf=d}).catch(()=>{})}catch(e){}};setTimeout(load,800);
+    const pop=()=>{const t=Date.now();if(t-last<60)return;last=t;try{load();if(ac.state==="suspended")ac.resume();if(!buf)return;const s=ac.createBufferSource(),g=ac.createGain();g.gain.value=.5;s.buffer=buf;s.connect(g);g.connect(ac.destination);s.start(0)}catch(e){}};
     document.addEventListener("pointerdown",e=>{if(e.target.closest&&e.target.closest("button,a,.z,.tile,.app,.cat,.sym,[role=button],[onclick]"))pop()},{capture:true,passive:true})}}catch(e){}
   /* the picture iPhone/iPad shows while a sound plays (Dynamic Island, lock screen) */
   try{if("mediaSession" in navigator&&window.MediaMetadata){const md=()=>{try{navigator.mediaSession.metadata=new MediaMetadata({title:"نجمة",artist:"Najma",artwork:[{src:new URL("icon-n.png",location.href).href,sizes:"512x512",type:"image/png"},{src:new URL("icon2-180.png",location.href).href,sizes:"180x180",type:"image/png"}]})}catch(e){}};
@@ -246,6 +246,3 @@
     if(ONLINE){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(window.caches)caches.keys().then(ks=>ks.forEach(k=>caches.delete(k))).catch(()=>{})}
     else navigator.serviceWorker.register("sw.js").catch(()=>{})})}
 })();
-/* perf: pause decorative animations while scrolling */
-(function(){var st=document.createElement("style");st.textContent=".nj-scroll *{animation-play-state:paused!important}";document.head.appendChild(st);
-var t;document.addEventListener("scroll",function(){document.documentElement.classList.add("nj-scroll");clearTimeout(t);t=setTimeout(function(){document.documentElement.classList.remove("nj-scroll")},160)},{capture:true,passive:true})})();
