@@ -205,11 +205,11 @@ const gbox=document.getElementById("groups");
 function groupDone(i){return GROUPS[i].w.filter(w=>done[w]).length}
 function drawGroups(){gbox.innerHTML="";GROUPS.forEach((g,i)=>{const b=document.createElement("button");b.className="g"+(i===gi?" on":"");
   b.style.background=COLORS[i%6];const n=groupDone(i);
-  b.innerHTML=`<span>${n===g.w.length?"🏆":g.e}</span>${g.n}<small>${n}/${g.w.length}</small>`;
+  b.innerHTML=`<span>${n===g.w.length?"🏆":i+1}</span>${g.n}<small>${n}/${g.w.length}</small>`;
   b.onclick=()=>{gi=i;save();popSnd();drawGroups();drawWords();talk(`${g.n}! Let's read!`)};gbox.appendChild(b)});
   gbox.children[gi].scrollIntoView({inline:"center",block:"nearest"})}
 const grid=document.getElementById("grid");
-function drawWords(){const g=GROUPS[gi];document.getElementById("gTitle").textContent=`${g.e} ${g.n}`;
+function drawWords(){const g=GROUPS[gi];document.getElementById("gTitle").textContent=g.n;
   document.getElementById("gCount").textContent=`⭐ ${groupDone(gi)} of ${g.w.length}`;grid.innerHTML="";
   g.w.forEach((w,i)=>{const b=document.createElement("button");b.className="tile"+(done[w]?" done":"")+(kid[w]?" rec":"");b.dataset.w=w;
     b.style.background=COLORS[(i+gi)%6];b.style.animationDelay=(i*.04)+"s";b.textContent=w;b.onclick=()=>openWord(i,b);grid.appendChild(b)})}

@@ -165,7 +165,7 @@ footer a,#reset{color:#fff;background:none;border:0;font:inherit;text-decoration
   <div class="card">
     <button class="x" data-close>✕</button>
     <div class="wbig" id="wBig"></div>
-    <div class="wemo" id="wEmo"></div>
+    <div class="wemo" id="wEmo" hidden></div>
     <div class="bar"><button class="btn" id="wSay">🔊 اسمع الكلمة</button></div>
     <div class="lbl">اقرأ الكلمة بصوت عالٍ ثلاث مرات!</div>
 <div class="practice" data-p></div>
@@ -286,7 +286,7 @@ L.forEach(([ch,name],i)=>{const b=document.createElement("button");b.className="
 
 const wgrid=document.getElementById("wgrid");
 W.forEach(([w,,emo],i)=>{const b=document.createElement("button");b.className="tile";b.dataset.w=i;b.dataset.k="w:"+w;
-  b.style.background=col(i+2);b.style.animationDelay=(i*.04)+"s";b.innerHTML=`<b>${w}</b>${emo?`<small>${emo}</small>`:""}`;
+  b.style.background=col(i+2);b.style.animationDelay=(i*.04)+"s";b.innerHTML=`<b>${w}</b>`;
   if(done["w:"+w])b.classList.add("done");b.addEventListener("click",()=>openWord(i,b));wgrid.appendChild(b)});
 
 function update(){const n=L.filter(([c])=>done[c]).length+W.filter(([w])=>done["w:"+w]).length,pct=n/TOTAL*100;
@@ -327,7 +327,7 @@ const wm=document.getElementById("wordModal");
 function openWord(i,el){const [w,v,emo]=W[i];popSnd();if(el)burstAt(el);
   const big=document.getElementById("wBig");big.textContent=w;big.style.background=col(i+2);
   big.onclick=()=>{play("w:"+w,v);big.classList.remove("pop");void big.offsetWidth;big.classList.add("pop")};
-  document.getElementById("wEmo").textContent=emo;
+  
   document.getElementById("wSay").onclick=()=>play("w:"+w,v);
   practiceUI("w:"+w);
   wm.classList.add("show");setTimeout(()=>play("w:"+w,v),250);
