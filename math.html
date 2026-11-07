@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
 <script src="supa.js"></script>
 <script src="profile.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -59,7 +60,7 @@ const save=()=>{try{localStorage.setItem("mathDone",JSON.stringify(done))}catch(
 const rnd=n=>Math.floor(Math.random()*n),shuf=a=>[...a].sort(()=>Math.random()-.5);
 /* sounds + confetti */
 let ac;function tone(f,d,w=0,ty="triangle",v=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(v,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
-const yay=()=>{tone(660,.12);tone(990,.15,.08)},fan=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12)),buzz=()=>tone(160,.25,0,"sawtooth",.08);
+const yay=()=>{tone(660,.12);tone(990,.15,.08)},fan=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12)),buzz=()=>{tone(330,.12,0,"sine",.07);tone(247,.18,.1,"sine",.07)};
 const COL=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
 const cv=$("fx"),cx=cv.getContext("2d");let parts=[],run=false;function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}size();addEventListener("resize",size);
 function burst(x,y,n=36){for(let i=0;i<n;i++){const a=Math.random()*6.28,v=3+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:4+Math.random()*7,c:COL[i%6],rot:0,vr:(Math.random()-.5)*.4,life:90})}if(!run){run=true;requestAnimationFrame(loop)}}

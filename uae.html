@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
 <script src="supa.js"></script>
 <script src="profile.js"></script>
 <script src="data/uaemap.js"></script>
@@ -152,7 +153,7 @@ let voice=null;function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=
 const VM=NAJMA.vmode("uae","ai");
 function speak(s){s=String(s).replace(/<[^>]+>/g," ").replace(/[\u{1F000}-\u{1FAFF}☀-➿️⃣]/gu," ");if(VM==="none")return;if(!EN){NAJMA.aiSay(s,"ar",.85);return}try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(s);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
 let ac;function tone(f,d,w=0,ty="triangle",v=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(v,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
-const yay=()=>{tone(660,.12);tone(990,.15,.08)},fan=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12)),buzz=()=>tone(160,.25,0,"sawtooth",.08),pop=()=>{tone(520,.1);tone(880,.12,.06)},
+const yay=()=>{tone(660,.12);tone(990,.15,.08)},fan=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12)),buzz=()=>{tone(330,.12,0,"sine",.07);tone(247,.18,.1,"sine",.07)},pop=()=>{tone(520,.1);tone(880,.12,.06)},
   drum=()=>{for(let i=0;i<8;i++)tone(i%2?180:120,.12,i*.25,"square",.06)};
 const COL=["#c8102e","#00843d","#ffffff","#2b2b2b","#ffd23f"];
 const cv=$("fx"),cx=cv.getContext("2d");let parts=[],run=false;function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}size();addEventListener("resize",size);

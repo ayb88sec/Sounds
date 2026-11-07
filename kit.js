@@ -11,7 +11,7 @@ for(let i=0;i<14;i++){const s=document.createElement("span"),z=20+Math.random()*
 let ac;function tone(f,d,type="sine",w=0,vol=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();
   o.type=type;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(vol,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);
   o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
-const pop=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)},fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",i*.12)),buzz=()=>tone(160,.25,"sawtooth",0,.08);
+const pop=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)},fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",i*.12)),buzz=()=>{tone(330,.12,"sine",0,.07);tone(247,.18,"sine",.1,.07)};
 /* confetti */
 const cv=document.getElementById("fx"),cx=cv.getContext("2d");let parts=[],running=false;
 function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}size();addEventListener("resize",size);

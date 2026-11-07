@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
 <script src="supa.js"></script>
 <script src="profile.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -108,6 +109,7 @@ footer button{color:#fff;background:none;border:0;font:inherit;text-decoration:u
     <div class="bar">
       <button class="btn pink" id="game">🎧 Listen &amp; find</button>
       <button class="btn teal" id="flash">⚡ Flash cards</button>
+      <button class="btn ghost" id="mix">🔀 Mix words</button>
     </div>
   </section>
   <footer><button id="reset">Start again</button></footer>
@@ -140,6 +142,7 @@ footer button{color:#fff;background:none;border:0;font:inherit;text-decoration:u
 </div></div>
 
 <script>window.AUDIO_S={};</script>
+<script src="round.js?v=1"></script>
 <script src="audio/sight.js"></script>
 <script>
 const ALLG=[
@@ -181,7 +184,7 @@ function tone(f,d,type="sine",w=0,vol=.15){try{ac=ac||new (window.AudioContext||
   o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
 const popSnd=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)};
 const fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",i*.12));
-const buzz=()=>tone(160,.25,"sawtooth",0,.08);
+const buzz=()=>{tone(330,.12,"sine",0,.07);tone(247,.18,"sine",.1,.07)};
 const cv=document.getElementById("fx"),cx=cv.getContext("2d");let parts=[],running=false;
 function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}
 size();addEventListener("resize",size);
@@ -255,15 +258,18 @@ function practiceUI(k){const box=document.getElementById("practice");
   me.onclick=()=>playKid(k)}
 
 /* listen & find */
-const gm=document.getElementById("gameModal");let ans,right=0,lock=false;
-function round(){lock=false;const ws=[...GROUPS[gi].w].sort(()=>Math.random()-.5).slice(0,4);ans=ws[0];
+const gm=document.getElementById("gameModal");let ans,prevAns,lock=false,RD=null;
+function round(){lock=false;RD.question();let pool=[...GROUPS[gi].w].sort(()=>Math.random()-.5);if(pool[0]===prevAns)pool.push(pool.shift());
+  const ws=pool.slice(0,3);ans=prevAns=ws[0];let rb;
   const box=document.getElementById("gOpts");box.innerHTML="";
-  ws.sort(()=>Math.random()-.5).forEach((w,n)=>{const b=document.createElement("button");b.textContent=w;b.style.background=COLORS[n+1];
-    b.onclick=()=>{if(lock)return;if(w===ans){lock=true;right++;b.classList.add("right");popSnd();fanfare();burstAt(b);talk(praise[Math.floor(Math.random()*praise.length)]);mark(w);
-        document.getElementById("gScore").textContent=`⭐ ${right} correct`;setTimeout(round,1400)}
-      else{b.classList.add("wrong");buzz();talk("Try again! 💪")}};box.appendChild(b)});
+  ws.sort(()=>Math.random()-.5).forEach((w,n)=>{const b=document.createElement("button");b.textContent=w;b.style.background=COLORS[n+1];if(w===ans)rb=b;
+    b.onclick=()=>{if(lock)return;if(w===ans){lock=true;b.classList.remove("nr-glow");b.classList.add("right");popSnd();fanfare();burstAt(b);mark(w);
+        const fin=RD.hit("sight:"+w,w,`Yes! "${w}" starts with ${w[0].toLowerCase()}.`);setTimeout(()=>{if(fin){rain();RD.finish()}else round()},1500)}
+      else{buzz();RD.miss(b,rb,()=>sayWord(ans),`Listen: "${ans}". It starts with ${ans[0].toLowerCase()}.`)}};box.appendChild(b)});
   setTimeout(()=>sayWord(ans),300)}
-document.getElementById("game").onclick=()=>{right=0;document.getElementById("gScore").textContent="Listen, then tap the word";gm.classList.add("show");round()};
+function startGame(){RD=RD||NajmaRound({card:gm.querySelector(".card"),again:startGame,hello:"Listen, then tap the word"});
+  document.getElementById("gScore").textContent="";RD.start();gm.classList.add("show");round()}
+document.getElementById("game").onclick=startGame;
 document.getElementById("gAgain").onclick=()=>sayWord(ans);
 
 /* flash cards */
@@ -277,6 +283,7 @@ document.getElementById("fNext").onclick=()=>{popSnd();fi++;if(fi>=fl.length){fa
 
 document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m||e.target.hasAttribute("data-close")){m.classList.remove("show");try{speechSynthesis.cancel()}catch(e){}}}));
 document.getElementById("reset").onclick=()=>{done={};save();drawGroups();drawWords();talk("Fresh start! 🚀")};
+document.getElementById("mix").onclick=()=>{popSnd();NajmaMix(grid);talk("Mixed! Can you still read them? 👀")};
 drawGroups();drawWords();
 </script>
 </body>

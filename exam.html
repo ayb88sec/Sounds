@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
 <script src="supa.js"></script>
 <script src="profile.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -62,7 +63,7 @@ const G=t=>{if(!BOY||typeof t!=="string")return t;MW.forEach(([f,m])=>{t=t.split
 const $=id=>document.getElementById(id),shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
 const speak=(t,done)=>{t=G(String(t)).replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F\u200D]/gu," ");try{NAJMA.aiSay(t,"ar",.85)}catch(e){}if(done)setTimeout(done,Math.min(9000,600+t.length*75))};
 let ac;function tone(f,d=.15,w=0){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=.12;o.connect(g).connect(ac.destination);o.start(ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.stop(ac.currentTime+w+d)}catch(e){}}
-const yay=()=>{tone(660);tone(880,.15,.1);tone(1100,.2,.2)},buzz=()=>tone(180,.25);
+const yay=()=>{tone(660);tone(880,.15,.1);tone(1100,.2,.2)},buzz=()=>{tone(330,.12);tone(247,.18,.1)};
 /* confetti */
 const cv=$("fx"),cx=cv.getContext("2d");let P=[];function size(){cv.width=innerWidth;cv.height=innerHeight}size();addEventListener("resize",size);
 function rain(n=90){for(let i=0;i<n;i++)P.push({x:Math.random()*innerWidth,y:-20-Math.random()*200,vx:Math.random()*2-1,vy:2+Math.random()*3,c:["#ffb703","#3fc35a","#4f8bff","#ff5d73","#a66bff"][i%5],r:5+Math.random()*6,l:200});loop()}

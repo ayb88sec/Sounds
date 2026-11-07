@@ -23,7 +23,7 @@ const MC=ISL?[["عَدَدُ أَرْكَانِ الإِسْلَامِ",["خَم
 const AQ=[["aq1","مَنْ رَبُّكَ؟","رَبِّيَ اللَّهُ"],["aq2","مَا دِينُكَ؟","دِينِيَ الإِسْلَامُ"],["aq3","مَنْ نَبِيُّكَ؟","نَبِيِّي مُحَمَّدٌ ﷺ"],["aq4","مَا كِتَابُكَ؟","كِتَابِيَ القُرْآنُ"]];
 const sayA=t=>{try{NAJMA.aiSay(t,"ar",.85)}catch(e){}};
 let ac;const tone=(f,d=.12,w=0)=>{try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.setValueAtTime(.13,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g).connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}};
-const yay=()=>{tone(660);tone(990,.15,.08)},buzz=()=>tone(170,.22);
+const yay=()=>{tone(660);tone(990,.15,.08)},buzz=()=>{tone(330,.12);tone(247,.18,.1)};
 const shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
 const boom=el=>{try{window.burstAt&&burstAt(el)}catch(e){}};
 const st=document.createElement("style");st.textContent=`

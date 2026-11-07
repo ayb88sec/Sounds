@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
 <script src="supa.js"></script>
 <script src="profile.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -172,7 +173,7 @@ function tone(f,d,type="sine",w=0,vol=.15){try{ac=ac||new (window.AudioContext||
   o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
 const popSnd=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)};
 const fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",i*.12));
-const buzz=()=>tone(160,.25,"sawtooth",0,.08);
+const buzz=()=>{tone(330,.12,"sine",0,.07);tone(247,.18,"sine",.1,.07)};
 
 
 /* confetti */

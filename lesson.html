@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
 <script src="supa.js"></script>
 <script src="profile.js"></script><script src="data/kidq.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -151,7 +152,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 let ac;function tone(f,d,type="sine",w=0,vol=.15){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();
   o.type=type;o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(vol,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);
   o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d+.02)}catch(e){}}
-const popSnd=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)},fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",i*.12)),buzz=()=>tone(160,.25,"sawtooth",0,.08);
+const popSnd=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)},fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",i*.12)),buzz=()=>{tone(330,.12,"sine",0,.07);tone(247,.18,"sine",.1,.07)};
 /* parent's recorded voice first; English falls back to the iPad voice; Arabic has no robot voice */
 const MINE={},IMG={};let mA=null,voice=null;
 function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}
