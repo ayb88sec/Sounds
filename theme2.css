@@ -103,3 +103,6 @@ button.right::after{content:"";position:absolute;top:-14px;inset-inline-end:-14p
 button.wrong{box-shadow:0 0 0 6px #ff9f43!important}
 /* calmer when the iPad asks for less motion */
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* ===== kids-app-design batch 1: nothing a child reads is smaller than 18px ===== */
+.tile small,.lvb small,button.g small,button.sc .meta,button.sc .num,.node .t,.tile .nm,.lv button,.tabs button,.bar .btn,main button small{font-size:18px!important;line-height:1.25}

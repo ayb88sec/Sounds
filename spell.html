@@ -113,7 +113,7 @@ function tabs(){$("tabs").innerHTML="";ON.forEach(i=>{const b=document.createEle
   b.onclick=()=>{cur=i;try{localStorage.setItem("spellTab",i)}catch(e){}tabs();draw()};$("tabs").appendChild(b)})}
 const missing=()=>VM==="mine"&&Object.keys(SP).length===0;
 function draw(){const P=$("pane");P.innerHTML="";window.scrollTo(0,0);
-  $("hint").style.display=missing()&&cur!==1&&cur!==2?"":"none";$("hint").textContent="🎙️ الأصوات الطويلة والكلمات تحتاج تسجيل صوت ماما من بوابة الوالدين.";
+  $("hint").style.display="none";$("hint").textContent="🎙️ الأصوات الطويلة والكلمات تحتاج تسجيل صوت ماما من بوابة الوالدين.";
   if(cur===0)drawGrid(P);else if(cur<3)drawLetters(P,S.letters[cur-1]);else drawWords(P,S.words[cur-3])}
 
 /* phase 1: long and short sounds (booklet pages 4 and 5) */
@@ -166,7 +166,7 @@ function gameBuild(WS){let right=0,order=shuf(WS);
   round()}
 
 tabs();draw();
-setTimeout(()=>{if(missing())$("hint").style.display=cur!==1&&cur!==2?"":"none";else $("hint").style.display="none"},1500);
+/* parent note moved off the child screen (kids-app-design) */
 </script>
 </body>
 </html>

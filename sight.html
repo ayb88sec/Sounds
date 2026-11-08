@@ -284,7 +284,10 @@ document.getElementById("fNext").onclick=()=>{popSnd();fi++;if(fi>=fl.length){fa
 document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m||e.target.hasAttribute("data-close")){m.classList.remove("show");try{speechSynthesis.cancel()}catch(e){}}}));
 document.getElementById("reset").onclick=()=>{done={};save();drawGroups();drawWords();talk("Fresh start! 🚀")};
 document.getElementById("mix").onclick=()=>{popSnd();NajmaMix(grid);talk("Mixed! Can you still read them? 👀")};
+window.NAJMA_PROGRESS=()=>{const all=GROUPS.flatMap(g=>g.w);return{done:all.filter(w=>done[w]).length,total:all.length}};
+window.NAJMA_RESET=()=>{done={};save();drawGroups();drawWords()};
 drawGroups();drawWords();
 </script>
+<script src="extras.js?v=1"></script>
 </body>
 </html>

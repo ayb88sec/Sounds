@@ -20,6 +20,8 @@ h1{color:#fff;text-align:center;font-size:clamp(38px,9vw,56px);margin:8px 0 2px;
 .lv button{border:0;border-radius:26px;padding:18px 14px;font-family:inherit;font-size:22px;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 7px 0 rgba(0,0,0,.18);text-align:left;position:relative}
 .lv button small{display:block;font-size:15px;opacity:.9;margin-top:4px}
 .lv button .st{position:absolute;top:10px;right:14px;font-size:16px}
+.lv button.kg{text-align:center;padding:16px 10px}
+.lv button .big{display:block;font-size:46px;line-height:1.25;margin-bottom:4px;white-space:nowrap}
 .lv button:active{transform:translateY(5px)}
 .grp{color:#fff;font-weight:800;font-size:20px;margin:18px 4px 8px}
 .card{background:#fff;border-radius:34px;padding:20px 16px;box-shadow:0 8px 0 rgba(0,0,0,.12);text-align:center}
@@ -79,10 +81,11 @@ function pic(q,L){if(!L.pic)return"";const e=EMO[rnd(EMO.length)];
   if(q.op==="+")return e.repeat(q.a)+(q.a&&q.b?" ➕ ":"")+e.repeat(q.b);
   return e.repeat(q.b===q.a?0:q.a-q.b)+`<span class="x">${e.repeat(q.b)}</span>`}
 
+const KGPIC=["🍎 + 🍎","🍎 − 🍎","🍎 ± 🍎"];
 function menu(){const A=$("app");A.innerHTML="";let lastG="";
   ON.forEach(i=>{const L=LV[i];if(L.g!==lastG){lastG=L.g;A.insertAdjacentHTML("beforeend",`<div class="grp">${L.g==="KG2"?"🧸 KG2":"🎒 Grade 2"}</div><div class="lv" id="g_${L.g.replace(/\s/g,"")}"></div>`)}
     const b=document.createElement("button");b.style.background=L.c;const st=Object.keys(done).filter(k=>k.startsWith("L"+i+"r")).length;
-    b.innerHTML=`<span class="st">${"⭐".repeat(Math.min(st,3))}</span>${L.t}<small>${L.s}</small>`;b.onclick=()=>play(i);$("g_"+L.g.replace(/\s/g,"")).appendChild(b)})}
+    if(L.pic){b.className="kg";b.innerHTML=`<span class="st">${"⭐".repeat(Math.min(st,3))}</span><span class="big">${KGPIC[i]||L.s}</span>${L.t}`}else b.innerHTML=`<span class="st">${"⭐".repeat(Math.min(st,3))}</span>${L.t}<small>${L.s}</small>`;b.onclick=()=>play(i);$("g_"+L.g.replace(/\s/g,"")).appendChild(b)})}
 
 /* never the same sum twice in a round, and not the ones from the last rounds either */
 let recent=[];try{recent=JSON.parse(sessionStorage.getItem("mathRecent")||"[]")}catch(e){}

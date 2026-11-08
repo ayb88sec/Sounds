@@ -46,6 +46,7 @@ body{background:linear-gradient(160deg,#3fc35a,#22c7b8 50%,#4f8bff)}
   <div class="opts" id="gOpts"></div><div class="score" id="gScore"></div>
 </div></div>
 <script src="kit.js?v=9"></script>
+<script src="round.js?v=1"></script>
 <script>
 const {COLORS,rnd,shuffle,pop,fanfare,buzz,burstAt,say,talk,PRAISE}=KIT;
 KIT.mascot("Tap a shape to learn about it!");
@@ -80,18 +81,26 @@ function open(i,el){const s=SH[i];pop();if(el)burstAt(el);document.getElementByI
   document.getElementById("sm").classList.add("show");setTimeout(()=>say(line,.8),300);prog.d[s.n]=1;prog.save();
   draw();talk(`${s.n}! ${rnd(PRAISE)}`)}
 /* games */
-let ans,right=0,lock=false,mode="find";
-function round(){lock=false;const box=document.getElementById("gOpts");box.innerHTML="";
-  if(mode==="find"){const pick=shuffle(SHI.map(i=>SH[i])).slice(0,Math.min(4,SHI.length));ans=pick[0];document.getElementById("gQ").textContent=`Find the ${ans.n}!`;document.getElementById("gSvg").innerHTML="";say(`Find the ${ans.n}`);
-    shuffle(pick).forEach((s,k)=>{const b=document.createElement("button");b.innerHTML=svg(s,"#fff");b.style.background=COLORS[k+1];b.querySelector("g").setAttribute("stroke",COLORS[k+1]);
-      b.onclick=()=>check(b,s===ans,ans.n);box.appendChild(b)})}
-  else{let pool=SHI.map(i=>SH[i]).filter(s=>[3,4,5,6].includes(s.s));if(!pool.length)pool=SH.filter(s=>[3,4].includes(s.s));ans=rnd(pool);document.getElementById("gQ").textContent="How many sides?";
-    document.getElementById("gSvg").innerHTML=svg(ans,COLORS[Math.floor(Math.random()*6)]);say("How many sides?");
-    [3,4,5,6].forEach((n,k)=>{const b=document.createElement("button");b.textContent=n;b.style.background=COLORS[k+1];b.onclick=()=>check(b,n===ans.s,`${n} sides`);box.appendChild(b)})}}
-function check(b,ok,word){if(lock)return;if(ok){lock=true;right++;b.classList.add("right");fanfare();burstAt(b);say(word);talk(rnd(PRAISE));
-    document.getElementById("gScore").textContent=`⭐ ${right}`;setTimeout(round,1500)}else{b.classList.add("wrong");buzz();talk("Try again 💪")}}
-document.getElementById("game").onclick=()=>{mode="find";right=0;document.getElementById("gScore").textContent="";document.getElementById("gm").classList.add("show");round()};
-document.getElementById("count").onclick=()=>{mode="count";right=0;document.getElementById("gScore").textContent="";document.getElementById("gm").classList.add("show");round()};
+let ans,prev,lock=false,mode="find",RD=null;
+/* kids-app-design: rounds of 6, 3 choices, hints that build up, praise that says why */
+function round(){lock=false;RD.question();const box=document.getElementById("gOpts");box.innerHTML="";let rb;
+  const opt=(b,ok,key,word,why,hint,replay)=>{if(ok)rb=b;b.onclick=()=>{if(lock)return;
+    if(ok){lock=true;b.classList.remove("nr-glow");b.classList.add("right");fanfare();burstAt(b);say(word);
+      const fin=RD.hit(key,word,why);setTimeout(()=>{if(fin)RD.finish();else round()},1500)}
+    else{buzz();RD.miss(b,rb,replay,hint)}};box.appendChild(b)};
+  if(mode==="find"){let pool=shuffle(SHI.map(i=>SH[i]));if(pool[0]===prev)pool.push(pool.shift());const pick=pool.slice(0,Math.min(3,pool.length));ans=prev=pick[0];
+    document.getElementById("gQ").textContent=`Find the ${ans.n}!`;document.getElementById("gSvg").innerHTML="";const ask=()=>say(`Find the ${ans.n}`);ask();
+    const why=ans.s===0?`Yes! A ${ans.n} has no straight sides.`:`Yes! A ${ans.n} has ${ans.s} sides.`,hint=ans.s===0?`Look for the round one: no corners.`:`Look for ${ans.s} sides.`;
+    shuffle(pick).forEach((sh,k)=>{const b=document.createElement("button");b.innerHTML=svg(sh,"#fff");b.style.background=COLORS[k+1];b.querySelector("g").setAttribute("stroke",COLORS[k+1]);
+      opt(b,sh===ans,"shape:"+ans.n,ans.n,why,hint,ask)})}
+  else{let pool=SHI.map(i=>SH[i]).filter(x=>[3,4,5,6].includes(x.s));if(!pool.length)pool=SH.filter(x=>[3,4].includes(x.s));ans=rnd(pool);
+    document.getElementById("gQ").textContent="How many sides?";document.getElementById("gSvg").innerHTML=svg(ans,COLORS[Math.floor(Math.random()*6)]);const ask=()=>say("How many sides? Count them.");ask();
+    shuffle([ans.s,...shuffle([3,4,5,6].filter(n=>n!==ans.s)).slice(0,2)]).forEach((n,k)=>{const b=document.createElement("button");b.textContent=n;b.style.background=COLORS[k+1];
+      opt(b,n===ans.s,"sides:"+ans.n,`${n} sides`,`Yes! A ${ans.n} has ${n} sides.`,`Touch each side and count: 1, 2, 3...`,ask)})}}
+function startGame(m){mode=m;RD=RD||NajmaRound({card:document.querySelector("#gm .card"),again:()=>startGame(mode)});
+  document.getElementById("gScore").textContent="";RD.start();RD.say(mode==="find"?"Listen, then tap the shape":"Count the sides, then tap the number");document.getElementById("gm").classList.add("show");round()}
+document.getElementById("game").onclick=()=>startGame("find");
+document.getElementById("count").onclick=()=>startGame("count");
 </script>
 <script>
 window.NAJMA_PROGRESS=()=>({done:SHI.filter(i=>prog.d[SH[i].n]).length,total:SHI.length});
