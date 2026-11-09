@@ -11,9 +11,10 @@
   .nr-guide img{width:84px;height:84px;object-fit:contain;flex:none;transition:transform .3s}
   .nr-guide p{flex:1;margin:0;background:linear-gradient(#fffdf5,#fff6d8);border:3px solid #fff;border-radius:22px;padding:10px 14px;
     font:800 22px "Baloo 2","Baloo Bhaijaan 2",system-ui,sans-serif;line-height:1.3;color:#16204a;box-shadow:0 6px 14px rgba(120,80,20,.18)}
-  .nr-dots{display:flex;gap:8px;justify-content:center;margin:8px 0 2px}
-  .nr-dots span{width:34px;height:12px;border-radius:99px;background:rgba(0,0,0,.1)}
-  .nr-dots span.on{background:linear-gradient(#ffe27a,#ffb703)}
+  .nr-dots{display:flex;align-items:center;gap:12px;margin:10px 0 4px}
+  .nr-dots .tr{flex:1;height:20px;border-radius:999px;background:#efe9d8;box-shadow:inset 0 3px 5px rgba(0,0,0,.1);overflow:hidden}
+  .nr-dots .tr div{height:100%;background:linear-gradient(#ffe27a,#ffb703);border-radius:999px;transition:width .5s cubic-bezier(.23,1,.32,1)}
+  .nr-dots b{font:800 22px "Baloo 2","Baloo Bhaijaan 2",system-ui,sans-serif;color:#16204a;white-space:nowrap}
   .opts{grid-template-columns:repeat(3,minmax(0,1fr))!important}
   .opts button.nr-off{opacity:.35;pointer-events:none}
   .opts button.nr-glow{box-shadow:0 0 0 7px #ffe066,0 0 26px 8px rgba(255,214,74,.9)!important;animation:nrPulse 1s ease-in-out infinite}
@@ -44,7 +45,8 @@
     const parts=[...card.children].filter(x=>x!==end&&!x.classList.contains("x"));
     function say(t,mood){guide.querySelector("p").textContent=t;const im=guide.querySelector("img");im.src=`img/uae/saqoor_${mood||"point"}.webp`;
       im.style.transform="scale(1.12)";setTimeout(()=>im.style.transform="",300)}
-    function drawDots(){dots.innerHTML=Array.from({length:T},(_,i)=>`<span class="${i<n?"on":""}"></span>`).join("")}
+    function drawDots(){const q=Math.min(n+1,T),ad=x=>String(x).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+      dots.innerHTML=`<div class="tr"><div style="width:${n/T*100}%"></div></div><b>${ar?`${ad(q)} من ${ad(T)}`:`${q} of ${T}`}</b>`}
     function master(key,first){try{const k="najma:mastery",m=JSON.parse(localStorage.getItem(k)||"{}"),d=new Date().toISOString().slice(0,10),r=m[key]||{run:0,days:[],miss:0};
       if(first){r.run++;if(!r.days.includes(d))r.days.push(d);r.days=r.days.slice(-5)}else{r.run=0;r.miss++}r.last=d;m[key]=r;localStorage.setItem(k,JSON.stringify(m))}catch(e){}}
     const R={

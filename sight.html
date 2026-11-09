@@ -142,7 +142,8 @@ footer button{color:#fff;background:none;border:0;font:inherit;text-decoration:u
 </div></div>
 
 <script>window.AUDIO_S={};</script>
-<script src="round.js?v=1"></script>
+<script src="round.js?v=2"></script>
+<script src="path.js?v=1"></script>
 <script src="audio/sight.js"></script>
 <script>
 const ALLG=[
@@ -220,7 +221,10 @@ function drawWords(){const g=GROUPS[gi];document.getElementById("gTitle").textCo
 function mark(w){const first=!done[w];done[w]=1;save();drawGroups();
   const t=grid.querySelector(`.tile[data-w="${w}"]`);if(t)t.classList.add("done");
   document.getElementById("gCount").textContent=`⭐ ${groupDone(gi)} of ${GROUPS[gi].w.length}`;
-  if(first&&groupDone(gi)===GROUPS[gi].w.length)setTimeout(()=>{fanfare();rain();talk(`${GROUPS[gi].n} complete! 🏆`)},400)}
+  if(first&&groupDone(gi)===GROUPS[gi].w.length){const k=gi;setTimeout(()=>{fanfare();rain();
+    NajmaLevelUp({title:`${GROUPS[k].n} done!`,line:`You can read ${GROUPS[k].w.length} more words!`,prev:k>0?{big:k,label:GROUPS[k-1].n}:null,cur:{big:k+1,label:GROUPS[k].n},next:GROUPS[k+1]?{label:GROUPS[k+1].n}:null,
+      onContinue:()=>{if(GROUPS[k+1]){gi=k+1;save();drawGroups();drawWords();PATH&&PATH.select(k+1)}else PATH&&PATH.refresh()}})},500)}
+  else if(window.PATH)PATH.refresh()}
 
 /* word card */
 const wm=document.getElementById("wordModal");let cur=0;
@@ -287,6 +291,12 @@ document.getElementById("mix").onclick=()=>{popSnd();NajmaMix(grid);talk("Mixed!
 window.NAJMA_PROGRESS=()=>{const all=GROUPS.flatMap(g=>g.w);return{done:all.filter(w=>done[w]).length,total:all.length}};
 window.NAJMA_RESET=()=>{done={};save();drawGroups();drawWords()};
 drawGroups();drawWords();
+/* learning path (kids-app-design): groups become stops on a road */
+gbox.style.display="none";
+var PATH=NajmaPath({mount:gbox,stops:GROUPS.map((g,i)=>({big:i+1,label:g.n,sub:g.w.length+" words",words:g.w})),
+  isDone:i=>groupDone(i)===GROUPS[i].w.length,selected:gi,
+  onSelect:i=>{gi=i;save();drawGroups();drawWords()},
+  onStart:i=>{gi=i;save();drawGroups();drawWords();popSnd();grid.closest("section").scrollIntoView({behavior:"smooth",block:"start"});talk(`${GROUPS[i].n}! Let's read!`)}});
 </script>
 <script src="extras.js?v=1"></script>
 </body>

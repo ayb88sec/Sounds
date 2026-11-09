@@ -185,7 +185,8 @@ footer a,#reset{color:#fff;background:none;border:0;font:inherit;text-decoration
 </div>
 
 <script>window.AUDIO={};NAJMA.loadAudio("clips","AUDIO")</script>
-<script src="round.js?v=1"></script>
+<script src="round.js?v=2"></script>
+<script src="path.js?v=1"></script>
 <script src="writepad.js"></script>
 <script>
 const L=[
@@ -296,6 +297,15 @@ W.forEach(([w,,emo],i)=>{if(!WON)return;const b=document.createElement("button")
   b.style.background=col(i+2);b.style.animationDelay=(i*.04)+"s";b.innerHTML=`<b>${w}</b>`;
   if(done["w:"+w])b.classList.add("done");b.addEventListener("click",()=>openWord(i,b));wgrid.appendChild(b)});
 
+/* learning path (kids-app-design): letters in groups of 4, then the sight words */
+var ARST=[];for(let a=0;a<LI.length;a+=4){const g=LI.slice(a,a+4);ARST.push({kind:"l",idx:g,big:L[g[0]][0],label:g.map(i=>L[i][0]).join(" "),words:g.map(i=>L[i][0]),keys:g.map(i=>L[i][0])})}
+if(WON)ARST.push({kind:"w",big:"ك",label:"الكلمات البصرية",words:W.slice(0,5).map(x=>x[0]),keys:W.map(x=>"w:"+x[0])});
+document.querySelector(".progress").style.display="none";document.getElementById("count").style.display="none";
+var PATH=ARST.length?NajmaPath({ar:true,mount:document.querySelector("main .bar"),stops:ARST,prize:"img/home2/ap_arabic.webp",isDone:i=>ARST[i].keys.every(x=>done[x]),
+  onStart:i=>{const s=ARST[i];popSnd();if(s.kind==="w"){wgrid.closest("section").scrollIntoView({behavior:"smooth",block:"start"});talk("يلا نقرأ الكلمات!");return}
+    const li=s.idx.find(x=>!done[L[x][0]])??s.idx[0],tile=grid.querySelector(`.tile[data-k="${L[li][0]}"]`);
+    grid.querySelectorAll(".tile").forEach(t=>t.style.outline="");s.idx.forEach(x=>{const t=grid.querySelector(`.tile[data-k="${L[x][0]}"]`);if(t)t.style.outline="6px solid #ffe066"});
+    if(tile)tile.scrollIntoView({behavior:"smooth",block:"center"});setTimeout(()=>openLetter(li,tile),450)}}):null;
 document.getElementById("mixW").onclick=()=>{popSnd();NajmaMix(wgrid);talk("خلطناها! هل تقدر تقرأها؟ 👀")};
 function update(){const n=LI.filter(i=>done[L[i][0]]).length+(WON?W.filter(([w])=>done["w:"+w]).length:0),pct=n/TOTAL*100;
   document.getElementById("fill").style.width=pct+"%";
@@ -307,7 +317,11 @@ update();
 function markDone(ch){const first=!done[ch];done[ch]=1;save();
   const t=document.querySelector(`.tile[data-k="${ch}"]`);if(t)t.classList.add("done");
   const n=update();
-  if(first&&[5,10,20,30,TOTAL].includes(n))setTimeout(()=>{fanfare();rain();talk(n===TOTAL?"تعلمت كل الحروف والكلمات! 🏆🎉":`واو! ${n} حروف! 🎉`)},400)}
+  const k=window.ARST?ARST.findIndex(s=>s.keys.includes(ch)):-1;
+  if(first&&k>=0&&ARST[k].keys.every(x=>done[x])){const G=((window.NAJMA&&NAJMA.me)||{}).gender==="m"?"أحسنت":"أحسنتِ";setTimeout(()=>{fanfare();rain();
+    NajmaLevelUp({ar:true,title:`${G}! أنهيت ${ARST[k].label}`,line:ARST[k].kind==="w"?"صرت تقرأ الكلمات البصرية!":`صرت تعرف الحروف: ${ARST[k].label}`,prev:k>0?{big:ARST[k-1].big,label:ARST[k-1].label}:null,cur:{big:ARST[k].big,label:ARST[k].label},next:ARST[k+1]?{label:ARST[k+1].label}:null,onContinue:()=>PATH&&(ARST[k+1]?PATH.select(k+1):PATH.refresh())})},500)}
+  else if(first&&[5,10,20,30,TOTAL].includes(n))setTimeout(()=>{fanfare();rain();talk(n===TOTAL?"تعلمت كل الحروف والكلمات! 🏆🎉":`واو! ${n} حروف! 🎉`)},400);
+  if(window.PATH)PATH.refresh()}
 
 /* letter card */
 const lm=document.getElementById("letterModal");
