@@ -130,7 +130,7 @@ function gameLS(){let right=0,n=0;const pool=[...new Set(S.grid.flat())].filter(
     say(t);$("ag").onclick=()=>say(t);
     $("mb").querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(b.dataset.v===t){b.classList.add("right");burstAt(b);mark("g"+right);right++;n++;
       if(right>=10){fan();setTimeout(()=>open(`<div class="q">${rnd(praise)} 🏆</div><div style="font-size:70px">⭐</div><button class="btn" id="again">🔁 العب مرة ثانية</button>`),700);setTimeout(()=>{const a=$("again");if(a)a.onclick=gameLS},760)}
-      else setTimeout(round,900)}else{b.classList.add("wrong");buzz()}})}
+      else setTimeout(round,900)}else{b.classList.add("wrong");buzz();NajmaHint(b,`[data-v="${t}"]`)}})}
   round()}
 
 /* phases 2 and 3: each letter with short and long sounds (booklet pages 6 and 7) */
@@ -145,7 +145,7 @@ function gameLetters(LS){let right=0;const all=LS.flatMap(L=>L.f.flat());
   function round(){const t=rnd(all),L=LS.find(L=>L.f.flat().includes(t)),ch=shuf([t,...shuf(L.f.flat().filter(x=>x!==t)).slice(0,3)]);
     open(`<div class="q">اسمع واضغط على الصوت</div><button class="btn g" id="ag">🔊 مرة ثانية</button><div class="opts">${ch.map((c,i)=>`<button class="c${i%5}" data-v="${c}">${c}</button>`).join("")}</div><div class="score">⭐ ${right}</div>`);
     say(t);$("ag").onclick=()=>say(t);
-    $("mb").querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(b.dataset.v===t){b.classList.add("right");burstAt(b);right++;if(right%5===0)fan();setTimeout(round,900)}else{b.classList.add("wrong");buzz()}})}
+    $("mb").querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(b.dataset.v===t){b.classList.add("right");burstAt(b);right++;if(right%5===0)fan();setTimeout(round,900)}else{b.classList.add("wrong");buzz();NajmaHint(b,`[data-v="${t}"]`)}})}
   round()}
 
 /* phases 4 and 5: read the syllables, then the word (booklet pages 8 to 15) */
@@ -168,5 +168,6 @@ function gameBuild(WS){let right=0,order=shuf(WS);
 tabs();draw();
 /* parent note moved off the child screen (kids-app-design) */
 </script>
+<script src="hint.js?v=1"></script>
 </body>
 </html>

@@ -249,11 +249,11 @@ function practiceUI(k){const box=document.getElementById("practice");
 const gm=document.getElementById("gameModal");let step=0;
 function startGame(){step=0;const built=document.getElementById("built"),pool=document.getElementById("pool");built.innerHTML="";pool.innerHTML="";
   [...Array(N).keys()].sort(()=>Math.random()-.5).forEach((i,k)=>{const b=document.createElement("button");b.style.background=COLORS[i%6];
-    b.innerHTML=`<span>${ITEMS[i][1]}</span>${ITEMS[i][0]}`;
+    b.innerHTML=`<span>${ITEMS[i][1]}</span>${ITEMS[i][0]}`;b.dataset.i=i;
     b.onclick=()=>{if(i===step){b.classList.add("used");popSnd();burstAt(b);play(PFX+(i+1));
         const d=document.createElement("div");d.style.background=COLORS[i%6];d.innerHTML=`<span>${NUMS[i]}</span>${ITEMS[i][0]}`;built.appendChild(d);step++;
         if(step===N){setTimeout(()=>{fanfare();rain();document.getElementById("gQ").textContent="🏆 أحسنت! بنيتها كاملة!";talk("ما شاء الله! 🏆")},300)}}
-      else{b.classList.remove("wrong");void b.offsetWidth;b.classList.add("wrong");buzz();talk("حاول مرة ثانية 💪")}};
+      else{b.classList.remove("wrong");void b.offsetWidth;b.classList.add("wrong");buzz();talk("حاول مرة ثانية 💪");NajmaHint(b,`[data-i="${step}"]`,{key:step,keep:1})}};
     pool.appendChild(b)});
   document.getElementById("gQ").textContent="ابنِ أركان الإيمان بالترتيب!"}
 document.getElementById("game").onclick=()=>{startGame();gm.classList.add("show")};
@@ -266,5 +266,6 @@ window.NAJMA_PROGRESS=()=>({done:Object.keys(done).length,total:N});
 window.NAJMA_RESET=()=>localStorage.removeItem("imanDone");
 </script>
 <script src="extras.js?v=10"></script><script src="pillars2.js?v=1"></script>
+<script src="hint.js?v=1"></script>
 </body>
 </html>

@@ -263,10 +263,11 @@ function quiz(){const Q=shuf(QUIZ).slice(0,8);let k=0,score=0;
     const q=Q[k],O=shuf([0,1,2]);
     $("app").innerHTML=head()+`<div class="card"><img class="sq" id="qm" src="${IMG("saqoor_think")}" alt=""><div class="dots">${Q.map((_,i)=>`<i class="${i<k?"on":""}"></i>`).join("")}</div><div class="say">${t(q[0],q[1])}</div><div class="opts">${O.map((o,j)=>`<button style="background:${["#c8102e","#00843d","#2b2b2b"][j]}" data-v="${o}">${(EN?q[3]:q[2])[o]}</button>`).join("")}</div></div>`;
     backTo(hub);speak(t(q[0],q[1]));let first=true;
-    document.querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(b.dataset.v==="0"){b.classList.add("right");$("qm").src=IMG("saqoor_cheer");yay();at(b);speak(b.textContent);if(first)score++;k++;setTimeout(ask,1300)}else{first=false;b.classList.add("wrong");buzz()}})};
+    document.querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(b.dataset.v==="0"){b.classList.add("right");$("qm").src=IMG("saqoor_cheer");yay();at(b);speak(b.textContent);if(first)score++;k++;setTimeout(ask,1300)}else{first=false;b.classList.add("wrong");buzz();NajmaHint(b,'[data-v="0"]')}})};
   ask()}
 
 setLang();const V=new URLSearchParams(location.search).get("v");({flag,map,zayed,syms,rulers,quiz})[V]?({flag,map,zayed,syms,rulers,quiz})[V]():hub();
 </script>
+<script src="hint.js?v=1"></script>
 </body>
 </html>

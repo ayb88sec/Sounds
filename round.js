@@ -47,7 +47,7 @@
       im.style.transform="scale(1.12)";setTimeout(()=>im.style.transform="",300)}
     function drawDots(){const q=Math.min(n+1,T),ad=x=>String(x).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
       dots.innerHTML=`<div class="tr"><div style="width:${n/T*100}%"></div></div><b>${ar?`${ad(q)} من ${ad(T)}`:`${q} of ${T}`}</b>`}
-    function master(key,first){try{const k="najma:mastery",m=JSON.parse(localStorage.getItem(k)||"{}"),d=new Date().toISOString().slice(0,10),r=m[key]||{run:0,days:[],miss:0};
+    function master(key,first){try{const k="mastery",m=JSON.parse(localStorage.getItem(k)||"{}"),d=new Date().toISOString().slice(0,10),r=m[key]||{run:0,days:[],miss:0};
       if(first){r.run++;if(!r.days.includes(d))r.days.push(d);r.days=r.days.slice(-5)}else{r.run=0;r.miss++}r.last=d;m[key]=r;localStorage.setItem(k,JSON.stringify(m))}catch(e){}}
     const R={
       say,

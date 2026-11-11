@@ -88,6 +88,7 @@ textarea{min-height:160px;line-height:1.5}
 .devnote{font-size:13px;color:#7a7090;margin-top:8px}
 @keyframes pulse{50%{transform:scale(1.3);opacity:.6}}
 .kpics button{width:64px;height:64px;padding:2px!important;border-radius:50%!important;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:32px}.kpics button img{border-radius:50%}
+.mst{margin:10px 0 4px;background:#faf8ff;border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-size:15px}.mst3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.mst3 div{border-radius:12px;padding:6px;text-align:center;font-size:14px}.mst3 b{display:block;font-size:24px}
 </style>
 </head>
 <body>
@@ -756,6 +757,16 @@ const APPS_D=[["arabic","حروفي","arDone","arabic",[7,7,7,7,10]],["spell","�
   ["writeEn","Handwriting","writeEn","writeEn",[26,26,10]],["math","Maths + −","mathDone","math",[3,3,3,3,3,3]],["uae","🇦🇪 بلادي الإمارات","uaeDone",null,null],["days","📅 Days","daysDone",null,null],["months","🗓️ Months","monthsDone",null,null],["clock","⏰ Clock","clockDone","clock",[3,3,3,3]],["numEn","Numbers","numDoneEn",null,null],["colorsAr","الألوان","colorsAr",null,null],["colorsEn","Colours","colorsEn",null,null],["shapes","2D Shapes","shapesDone","shapes",[4,4,2]],["quran","قصص القرآن","qkDone","quran",[7,43,68,132,321]],["duas","أدعية","sec_duas",null,null]];
 function lvOf(p,app){const L=p.levels&&p.levels[app];return Array.isArray(L)&&L.length?L:NAJMA.LEVELS[app].map((_,i)=>i)}
 function lvText(p,app){const all=NAJMA.LEVELS[app],on=lvOf(p,app);if(on.length===all.length)return "";return on.map(i=>all[i].split(" · ")[0]).join("، ")}
+/* mastery (kids-app-design): mastered = right on the first try 3 times in a row, on 2 different days */
+function masteryHTML(p){let M=PRG[p.id]&&PRG[p.id].mastery;if(typeof M==="string"){try{M=JSON.parse(M)}catch(e){M=null}}
+  if(!M||!Object.keys(M).length)return `<div class="mst"><b>🎯 الإتقان</b><small>يظهر هنا بعد أن يلعب الطفل الألعاب على الآيباد.</small></div>`;
+  const name=k=>k.replace(/^(sight|blend|bme|shape|sides|num:(ar|en)|ar:w|ar):/,"").replace(/\|n$/,"");
+  const E=Object.entries(M),ok=E.filter(([,r])=>r.run>=3&&(r.days||[]).length>=2),hard=E.filter(([,r])=>r.run<3&&r.miss>=2).sort((a,b)=>b[1].miss-a[1].miss),prac=E.length-ok.length-hard.length;
+  const chip=(k,c)=>`<span style="background:${c};border-radius:10px;padding:2px 10px;margin:2px;display:inline-block" dir="auto">${name(k)}</span>`;
+  return `<div class="mst"><b>🎯 الإتقان</b><div class="mst3"><div style="background:#d9f5e6"><b>${ok.length}</b>متقنة</div><div style="background:#ffe9cc"><b>${prac}</b>قيد التدريب</div><div style="background:#ffe3e7"><b>${hard.length}</b>تحتاج تدريب</div></div>
+    ${hard.length?`<small>تحتاج تدريب:</small><div>${hard.slice(0,8).map(([k])=>chip(k,"#ffe3e7")).join("")}</div>`:""}
+    ${ok.length?`<small>أتقنها:</small><div>${ok.slice(-8).map(([k])=>chip(k,"#d9f5e6")).join("")}</div>`:""}
+    <small style="opacity:.75">متقنة = صحيحة من أول مرة ٣ مرات متتالية في يومين مختلفين. ما يخطئ فيه يرجع له في الجولات القادمة.</small></div>`}
 function drawDash(){
   const lock=R.get("najma:lock"),here=lock||R.get("najma:cur");
   $("dStats").innerHTML=`<div><b>${profs.length}</b><span>أطفال</span></div><div><b>${vis().length}</b><span>أقسام</span></div><div><b>${(DB?FID:R.get(TK))?"☁️":"⚠️"}</b><span>${(DB?FID:R.get(TK))?"متصل":"غير متصل"}</span></div>`;
@@ -769,7 +780,7 @@ function drawDash(){
         return `<div class="pr"><span dir="auto">${s.icon} ${s.title}</span><span class="bar"><i style="width:${pct}%"></i></span><span>${n}/${s.words.length}</span></div>`}).join("");
     const d=document.createElement("div");d.className="dk";
     d.innerHTML=`<div class="top"><div class="av" style="background:${p.color};overflow:hidden">${AVH(p.avatar)}</div><div class="nm"><b dir="auto">${p.name}</b><small dir="auto">${[p.nameAr,p.nameEn].filter(Boolean).join(" · ")}</small></div></div>
-      <div class="prow2">${rows}</div>
+      <div class="prow2">${rows}</div>${masteryHTML(p)}
       <div class="devnote">${DB?(devSeen[p.id]?"☁️ التقدّم من آيباد الطفل · آخر مزامنة: "+devSeen[p.id]:"📲 لم يُربط آيباد بعد. اضغط «رابط الآيباد» لربطه."):(p.id===here?"📱 التقدّم من هذا الجهاز.":"📱 التقدّم المعروض هو المسجّل على هذا الجهاز فقط؛ نجوم الطفل محفوظة على آيباده.")}</div>
       <div class="acts"><button class="b">✏️ تعديل</button><button class="b">📲 رابط الآيباد</button></div>`;
     const [eb,lb]=d.querySelectorAll(".acts .b");eb.onclick=()=>editKid(p);

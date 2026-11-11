@@ -123,6 +123,7 @@ footer button{color:#fff;background:none;border:0;font:inherit;text-decoration:u
 </div></div>
 
 <script>window.AUDIO_N={};NAJMA.loadAudio("numbers","AUDIO_N")</script>
+<script src="round.js?v=2"></script>
 <script src="writepad.js"></script>
 <script>
 const MAXN=(window.NAJMA&&NAJMA.settings.numMax)||20;
@@ -217,17 +218,20 @@ function openWrite(n){const items=[];for(let i=1;i<=MAXN;i++)items.push(disp(i))
 document.getElementById("write").onclick=()=>openWrite(1);
 
 /* count & pick game */
-const gm=document.getElementById("gameModal");let ans,right=0,lock=false;
-function round(){lock=false;const t=T[lang];ans=1+Math.floor(Math.random()*Math.min(right<5?10:20,MAXN));
+const gm=document.getElementById("gameModal");let ans,prevA,right=0,lock=false,RD=null;
+/* kids-app-design: rounds of 6, 3 choices, hints that build up, praise that says why */
+function round(){lock=false;RD.question();const t=T[lang],AR=lang==="ar";let a;do{a=1+Math.floor(Math.random()*Math.min(right<3?10:20,MAXN))}while(a===prevA&&MAXN>1);ans=prevA=a;
   document.getElementById("gQ").textContent=t.q;const ob=document.getElementById("gObjs");ob.innerHTML="";const emo=rnd(OBJ);
   for(let i=0;i<ans;i++){const s=document.createElement("span");s.textContent=emo;s.onclick=()=>s.classList.toggle("c");ob.appendChild(s)}
-  const set=new Set([ans]);while(set.size<4){const d=ans+Math.floor(Math.random()*7)-3;if(d>=1&&d<=MAXN)set.add(d)}
-  const box=document.getElementById("gOpts");box.innerHTML="";box.dir=lang==="ar"?"rtl":"ltr";
-  [...set].sort(()=>Math.random()-.5).forEach((v,k)=>{const b=document.createElement("button");b.className=lang==="ar"?"ar":"";b.textContent=disp(v);b.style.background=COLORS[k+1];
-    b.onclick=()=>{if(lock)return;if(v===ans){lock=true;right++;b.classList.add("right");popSnd();fanfare();burstAt(b);sayN(v);talk(rnd(t.praise));
-        document.getElementById("gScore").textContent=`⭐ ${disp(right)}`;setTimeout(round,1500)}
-      else{b.classList.add("wrong");buzz();talk(t.again)}};box.appendChild(b)})}
-document.getElementById("game").onclick=()=>{right=0;document.getElementById("gScore").textContent="";gm.dir=lang==="ar"?"rtl":"ltr";gm.classList.add("show");round()};
+  const set=new Set([ans]);while(set.size<Math.min(3,MAXN)){const d=ans+Math.floor(Math.random()*5)-2;if(d>=1&&d<=MAXN)set.add(d)}
+  const box=document.getElementById("gOpts");box.innerHTML="";box.dir=AR?"rtl":"ltr";let rb;
+  [...set].sort(()=>Math.random()-.5).forEach((v,k)=>{const b=document.createElement("button");b.className=AR?"ar":"";b.textContent=disp(v);b.style.background=COLORS[k+1];if(v===ans)rb=b;
+    b.onclick=()=>{if(lock)return;if(v===ans){lock=true;right++;b.classList.remove("nr-glow");b.classList.add("right");popSnd();fanfare();burstAt(b);sayN(v);
+        const fin=RD.hit("num:"+lang+v,disp(v),AR?`صح! عددها ${disp(v)}`:`Yes! There are ${v}.`);setTimeout(()=>{if(fin)RD.finish();else round()},1500)}
+      else{buzz();RD.miss(b,rb,()=>{},AR?"المس كل واحد وعُدّ: ١، ٢، ٣...":"Touch each one and count: 1, 2, 3...")}};box.appendChild(b)})}
+function startGame(){RD=RD||NajmaRound({card:gm.querySelector(".card"),ar:lang==="ar",again:startGame});right=0;document.getElementById("gScore").textContent="";
+  gm.dir=lang==="ar"?"rtl":"ltr";RD.start();RD.say(T[lang].tap);gm.classList.add("show");round()}
+document.getElementById("game").onclick=startGame;
 
 document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m||e.target.hasAttribute("data-close")){m.classList.remove("show");try{speechSynthesis.cancel()}catch(e){}}}));
 document.getElementById("reset").onclick=()=>{done={};wrote={};save();draw();talk("🚀")};

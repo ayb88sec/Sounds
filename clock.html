@@ -113,7 +113,7 @@ function play(){const N=8;let k=0,score=0;const used=new Set();$("lv").innerHTML
       T=(h%12)*60+m;drawClock(h,m);$("say").textContent=AR?"كم الساعة؟":"What time is it?";speak($("say").textContent);
       const alts=new Set([h+":"+m]);while(alts.size<3){const a=1+rnd(12),b=rnd(60/LV[L].step)*LV[L].step;alts.add(a+":"+b)}
       $("ctl").innerHTML=`<div class="opts">${shuf([...alts]).map((s,j)=>`<button style="background:${COL[(j*2+k)%6]}" data-v="${s}">${dig(...s.split(":").map(Number))}</button>`).join("")}</div>`;let first=true;
-      document.querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(b.dataset.v===h+":"+m){b.classList.add("right");yay();at(b);$("say").innerHTML=`${dig(h,m)}<small>${words(h,m)}</small>`;speak(words(h,m));if(first)score++;k++;setTimeout(next,1600)}else{first=false;b.classList.add("wrong");buzz()}})}
+      document.querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(b.dataset.v===h+":"+m){b.classList.add("right");yay();at(b);$("say").innerHTML=`${dig(h,m)}<small>${words(h,m)}</small>`;speak(words(h,m));if(first)score++;k++;setTimeout(next,1600)}else{first=false;b.classList.add("wrong");buzz();NajmaHint(b,`[data-v="${h}:${m}"]`)}})}
     else{/* make the time: tap ⏩ until the clock shows it */
       T=0;drawClock(12,0);$("say").innerHTML=`${AR?"اجعل الساعة":"Make it"}<small>${words(h,m)}</small>`;speak((AR?"اجعل الساعة ":"Make it ")+words(h,m));let tries=0;
       $("ctl").innerHTML=`<div style="color:#16204a;font-weight:700;font-size:18px;margin-top:8px" dir="auto">${AR?"حرّك العقارب بإصبعك":"Move the hands with your finger"} 👆</div><button class="big pink" id="bk">⏪</button><button class="big pink" id="go">⏩</button><br><button class="big green" id="ok">✅ ${AR?"تم":"Done"}</button>`;
@@ -127,5 +127,6 @@ function play(){const N=8;let k=0,score=0;const used=new Set();$("lv").innerHTML
 $("lang").onclick=()=>{AR=!AR;learn()};
 const P=new URLSearchParams(location.search).get("v");if(P!=null&&LV[+P])L=+P;learn();
 </script>
+<script src="hint.js?v=1"></script>
 </body>
 </html>

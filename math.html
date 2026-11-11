@@ -97,7 +97,7 @@ function play(i){const L=LV[i];let k=0,score=0;const res=[],used=new Set();
       <div class="pic">${pic(q,L)}</div><div class="q">${txt}</div><div class="opts">${O.map((o,j)=>`<button style="background:${COL[(j+i)%6]}" data-v="${o}">${o}</button>`).join("")}</div></div>`;
     $("back").onclick=menu;speak(txt.replace("?","what").replace("−","minus").replace("+","plus").replace("=","equals"));let first=true;
     document.querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(+b.dataset.v===q.ans){b.classList.add("right");yay();const r=b.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,24);
-        if(first)score++;res[k]=first?1:0;k++;setTimeout(next,800)}else{if(first){first=false}b.classList.add("wrong");buzz()}})}
+        if(first)score++;res[k]=first?1:0;k++;setTimeout(next,800)}else{if(first){first=false}b.classList.add("wrong");buzz();NajmaHint(b,`[data-v="${q.ans}"]`)}})}
   function finish(){const stars=score>=9?3:score>=7?2:score>=5?1:0;if(stars){const n=Object.keys(done).filter(x=>x.startsWith("L"+i+"r")).length;if(n<3){done["L"+i+"r"+(n+1)]=stars;save()}}fan();for(let j=0;j<6;j++)setTimeout(()=>burst(Math.random()*innerWidth,innerHeight/3),j*150);
     $("app").innerHTML=`<div class="card"><div class="done">${stars?"🎉 Well done!":"💪 Good try!"}</div><div style="font-size:60px">${stars?"⭐".repeat(stars):"🙂"}</div><div style="font-size:24px;margin:10px 0">${score} / ${N} right first time</div>
       <div class="opts" style="grid-template-columns:1fr 1fr"><button style="background:#3fc35a;font-size:24px" id="again">🔁 Again</button><button style="background:#4f8bff;font-size:24px" id="lv">📚 Levels</button></div></div>`;
@@ -105,5 +105,6 @@ function play(i){const L=LV[i];let k=0,score=0;const res=[],used=new Set();
   next()}
 const P=new URLSearchParams(location.search).get("l");if(P!=null&&LV[+P])play(+P);else menu();
 </script>
+<script src="hint.js?v=1"></script>
 </body>
 </html>

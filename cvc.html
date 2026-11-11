@@ -67,6 +67,7 @@ body{background:linear-gradient(160deg,#22c7b8,#4f8bff 50%,#a66bff)}
 
 <script src="writepad.js"></script>
 <script src="kit.js?v=9"></script>
+<script src="round.js?v=2"></script>
 <script>
 const {COLORS,rnd,shuffle,pop,fanfare,buzz,burstAt,rain,say,sound,blend,talk,PRAISE}=KIT;
 KIT.mascot("Tap a word and sound it out with me!");
@@ -102,33 +103,36 @@ function writeW(items,i){WritePad.open({items,index:i,lang:"en",font:'"Andika"',
 
 /* oral blending: hear sounds only, pick the picture */
 let bAns,bRight=0,bLock=false;
-function bRound(){bLock=false;if(ALL.length<3){document.getElementById("bOpts").innerHTML="";return}const pick=shuffle(ALL).slice(0,3);bAns=pick[0];sndRow("bSnd",bAns[1],true);
+let RDb=null,RDm=null,bPrev;
+function bRound(){bLock=false;if(ALL.length<3){document.getElementById("bOpts").innerHTML="";return}RDb.question();let pick=shuffle(ALL);if(pick[0]===bPrev)pick.push(pick.shift());pick=pick.slice(0,3);bAns=bPrev=pick[0];sndRow("bSnd",bAns[1],true);let rb;
   const box=document.getElementById("bOpts");box.innerHTML="";box.style.gridTemplateColumns="1fr 1fr 1fr";
-  shuffle(pick).forEach(([w,s,e],k)=>{const b=document.createElement("button");b.className="big";b.textContent=e;b.style.background=COLORS[k+1];
-    b.onclick=()=>{if(bLock)return;if(w===bAns[0]){bLock=true;bRight++;b.classList.add("right");sndRow("bSnd",bAns[1]);say(w);fanfare();burstAt(b);talk(`${w}! ${rnd(PRAISE)}`);mark(w);
-        document.getElementById("bScore").textContent=`⭐ ${bRight}`;setTimeout(bRound,1900)}
-      else{b.classList.add("wrong");buzz();talk("Listen again 👂");setTimeout(playB,400)}};box.appendChild(b)});
+  shuffle(pick).forEach(([w,s,e],k)=>{const b=document.createElement("button");b.className="big";b.textContent=e;b.style.background=COLORS[k+1];if(w===bAns[0])rb=b;
+    b.onclick=()=>{if(bLock)return;if(w===bAns[0]){bLock=true;bRight++;b.classList.remove("nr-glow");b.classList.add("right");sndRow("bSnd",bAns[1]);say(w);fanfare();burstAt(b);mark(w);
+        const fin=RDb.hit("blend:"+w,w,`Yes! ${s.join("-")} makes ${w}.`);setTimeout(()=>{if(fin)RDb.finish();else bRound()},1900)}
+      else{buzz();RDb.miss(b,rb,playB,"Say each sound, then push them together: "+bAns[1].join("-"))}};box.appendChild(b)});
   setTimeout(playB,400)}
 function playB(){bAns[1].forEach((c,i)=>setTimeout(()=>{sound(c);lit("bSnd",i)},i*900))}
-document.getElementById("startBlend").onclick=()=>{bRight=0;document.getElementById("bScore").textContent="";document.getElementById("blendM").classList.add("show");bRound()};
+function startBlend(){RDb=RDb||NajmaRound({card:document.querySelector("#blendM .card"),again:startBlend});bRight=0;document.getElementById("bScore").textContent="";RDb.start();RDb.say("Listen to the sounds, then tap the picture");document.getElementById("blendM").classList.add("show");bRound()}
+document.getElementById("startBlend").onclick=startBlend;
 document.getElementById("bAgain").onclick=playB;
 
 /* BME: label beginning, middle, end sounds */
 let mW,mStep,mMiss,mRight=0;const NAMES=["beginning","middle","end"];
-function mRound(){if(!ALL.length)return;[mW]=[rnd(ALL)];mStep=0;mMiss=0;const pic=document.getElementById("mPic");pic.textContent=mW[2];pic.onclick=()=>say(mW[0]);
+function mRound(){if(!ALL.length)return;RDm.question();[mW]=[rnd(ALL)];mStep=0;mMiss=0;const pic=document.getElementById("mPic");pic.textContent=mW[2];pic.onclick=()=>say(mW[0]);
   document.querySelectorAll("#mSlots div").forEach(d=>{d.classList.remove("ok","cur");d.querySelector("b").textContent=""});setTimeout(()=>say(mW[0]),300);ask()}
 function ask(){const slots=document.querySelectorAll("#mSlots div");slots.forEach((d,k)=>d.classList.toggle("cur",k===mStep));
   document.getElementById("mQ").textContent=`What is the ${NAMES[mStep]} sound?`;
   const right=mW[1][mStep],V=["a","e","i","o","u"],pool=mStep===1?KNOWN.filter(c=>V.includes(c)):KNOWN.filter(c=>!V.includes(c));
-  const opts=shuffle([right,...shuffle(pool.filter(c=>c!==right)).slice(0,3)]);
+  const opts=shuffle([right,...shuffle(pool.filter(c=>c!==right)).slice(0,2)]);let rb;RDm.question();
   const box=document.getElementById("mOpts");box.innerHTML="";box.style.gridTemplateColumns=`repeat(${opts.length},1fr)`;
-  opts.forEach((c,k)=>{const b=document.createElement("button");b.textContent=c;b.style.background=COLORS[k+1];
-    b.onclick=()=>{sound(c);if(c===right){pop();slots[mStep].querySelector("b").textContent=c;slots[mStep].classList.add("ok");burstAt(slots[mStep]);mStep++;
-        if(mStep===3){slots.forEach(d=>d.classList.remove("cur"));mRight++;fanfare();setTimeout(()=>blend(mW[0],null,mW[1]),300);mark(mW[0]);talk(`${mW[0]}! ${rnd(PRAISE)}`);
-          document.getElementById("mScore").textContent=`⭐ ${mRight}`;document.getElementById("mQ").textContent="🎉 "+mW[0];box.innerHTML="";setTimeout(mRound,3600)}
+  opts.forEach((c,k)=>{const b=document.createElement("button");b.textContent=c;b.style.background=COLORS[k+1];if(c===right)rb=b;
+    b.onclick=()=>{sound(c);if(c===right){b.classList.remove("nr-glow");pop();slots[mStep].querySelector("b").textContent=c;slots[mStep].classList.add("ok");burstAt(slots[mStep]);mStep++;
+        if(mStep===3){slots.forEach(d=>d.classList.remove("cur"));mRight++;fanfare();setTimeout(()=>blend(mW[0],null,mW[1]),300);mark(mW[0]);
+          const fin=RDm.hit("bme:"+mW[0],mW[0],`Yes! ${mW[1].join("-")} makes ${mW[0]}.`);document.getElementById("mQ").textContent="🎉 "+mW[0];box.innerHTML="";setTimeout(()=>{if(fin)RDm.finish();else mRound()},3600)}
         else setTimeout(ask,350)}
-      else{b.classList.add("wrong");buzz();mMiss++;talk("Try again 💪")}};box.appendChild(b)})}
-document.getElementById("startBme").onclick=()=>{mRight=0;document.getElementById("mScore").textContent="";document.getElementById("bmeM").classList.add("show");mRound()};
+      else{buzz();mMiss++;RDm.miss(b,rb,()=>sound(right),`Listen to "${mW[0]}": what is the ${NAMES[mStep]} sound?`)}};box.appendChild(b)})}
+function startBme(){RDm=RDm||NajmaRound({card:document.querySelector("#bmeM .card"),again:startBme});mRight=0;document.getElementById("mScore").textContent="";RDm.start();RDm.say("Listen to the word, then find each sound");document.getElementById("bmeM").classList.add("show");mRound()}
+document.getElementById("startBme").onclick=startBme;
 document.getElementById("mHear").onclick=()=>say(mW[0]);
 </script>
 <script>

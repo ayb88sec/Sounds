@@ -327,7 +327,7 @@ function pickPic(){const order=shuf(GR);let k=0,score=0;const id=++runId;
     openM(`<div style="height:30px"></div>${g.ay.map(a=>ayahHTML(a)).join("")}<div class="score">أيّ صورة تناسب هذه الآية؟</div><div class="opts" id="op"></div><div class="score">${AD(k+1)} / ${AD(order.length)}</div>`);
     bindAyat($("mb"));play(S.g+g.ay[0]-1);
     opts.forEach(o=>{const b=document.createElement("button");b.innerHTML=scene(o.bg,o.em,N+":"+o.ay[0]);b.firstChild.style.aspectRatio="1";
-      b.onclick=()=>{if(o===g){const s=miss?1:3;score+=s;g.ay.forEach(a=>star(N,a,s));fan();burstAt(b);k++;setTimeout(step,1100)}else{miss++;b.classList.add("wrong");buzz()}};$("op").appendChild(b)})};step()}
+      b.onclick=()=>{if(o===g){const s=miss?1:3;score+=s;g.ay.forEach(a=>star(N,a,s));fan();burstAt(b);k++;setTimeout(step,1100)}else{miss++;b.classList.add("wrong");buzz();NajmaHint(b)}};if(o===g)b.dataset.ok=1;$("op").appendChild(b)})};step()}
 function orderGame(){const n=S.t.length,len=Math.min(n,5),start=Math.floor(Math.random()*(n-len+1)),want=[...Array(len)].map((_,i)=>start+i+1);let pos=0,miss=0;
   openM(`<div style="height:30px"></div><div class="score">رتّب الآيات من ${AD(want[0])} إلى ${AD(want[len-1])}</div><div class="built" id="bt"></div><div class="pool" id="pl"></div>`);
   shuf(want).forEach(a=>{const b=document.createElement("button");b.textContent=S.t[a-1];b.onclick=()=>{if(a===want[pos]){b.classList.add("used");pop();$("bt").insertAdjacentHTML("beforeend",ayahHTML(a));play(S.g+a-1);pos++;
@@ -337,7 +337,7 @@ function quiz(){const L=shuf(S.q);let k=0,score=0;
   const step=()=>{if(k>=L.length){fan();rain();openM(`<div class="msg">🏆 ${rnd(PRAISE)}<br>⭐ ${AD(score)} / ${AD(L.length*3)}</div>`);return}
     const [q,a]=L[k];let miss=0;openM(`<div style="height:30px"></div><div class="intro" style="font-size:22px;font-weight:700;text-align:center">${esc(q)}</div><div class="ans" id="an"></div><div class="score">${AD(k+1)} / ${AD(L.length)}</div>`);
     shuf(a.map((x,i)=>[x,i])).forEach(([x,i],c)=>{const b=document.createElement("button");b.textContent=x;b.style.background=COL[c%6];
-      b.onclick=()=>{if(i===0){b.classList.add("right");score+=miss?1:3;fan();burstAt(b);k++;setTimeout(step,1100)}else{miss++;b.classList.add("wrong");buzz()}};$("an").appendChild(b)})};step()}
+      b.onclick=()=>{if(i===0){b.classList.add("right");score+=miss?1:3;fan();burstAt(b);k++;setTimeout(step,1100)}else{miss++;b.classList.add("wrong");buzz();NajmaHint(b)}};if(i===0)b.dataset.ok=1;$("an").appendChild(b)})};step()}
 function lessons(B){B.innerHTML=`<div class="box lessons"><h3>🌟 الدروس المستفادة</h3><ul>${(S.l||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>${S.m?`<div class="msg">💖 ${esc(S.m)}</div>`:""}`}
 /* modal */
 const MD=$("m");function openM(h){$("mb").innerHTML=h;MD.classList.add("show")}function closeM(){MD.classList.remove("show");stop()}
@@ -351,5 +351,6 @@ const jobs=Object.keys(QIMG).filter(k=>!N||k.startsWith(N+":")).map(k=>NAJMA.dec
 if(jobs.length)Promise.all(jobs).then(()=>{if(N&&(tab==="story"||tab==="learn"))draw();else if(!N)hub()});
 </script>
 <script src="extras.js?v=10"></script>
+<script src="hint.js?v=1"></script>
 </body>
 </html>

@@ -91,12 +91,13 @@ function play(){let k=0,score=0;const N=8,order=shuf([0,1,2,3,4,5,6]).concat(shu
       let hole=null;DAYS.forEach((_,d)=>{if(d===target){hole=document.createElement("div");hole.className="car q";hole.innerHTML=`<span class="e">❓</span>&nbsp;`;tr.appendChild(hole)}else{const b=car(d);b.onclick=()=>{hop(b);speak(dn(d))};tr.appendChild(b)}});
       setTimeout(()=>hole.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}),200);
       const opts=shuf([target,...shuf([0,1,2,3,4,5,6].filter(x=>x!==target)).slice(0,2)]);$("ctl").innerHTML=`<div class="picks" id="pk"></div>`;let first=true;
-      opts.forEach(d=>{const b=car(d);b.onclick=()=>{if(d===target){yay();at(hole);hole.className="car";hole.style.background=DAYS[d][3];hole.innerHTML=b.innerHTML;hop(hole);speak(dn(d));if(first)score++;k++;$("say").innerHTML=`${T().good[rnd(4)]} <b>${dn(d)}</b>`;setTimeout(next,1400)}else{first=false;buzz();b.classList.add("dim")}};$("pk").appendChild(b)})}}
+      opts.forEach(d=>{const b=car(d);b.onclick=()=>{if(d===target){yay();at(hole);hole.className="car";hole.style.background=DAYS[d][3];hole.innerHTML=b.innerHTML;hop(hole);speak(dn(d));if(first)score++;k++;$("say").innerHTML=`${T().good[rnd(4)]} <b>${dn(d)}</b>`;setTimeout(next,1400)}else{first=false;buzz();b.classList.add("dim");NajmaHint(b,null,{keep:1})}};if(d===target)b.dataset.ok=1;$("pk").appendChild(b)})}}
   next()
   function end(){const stars=score>=7?3:score>=5?2:score>=3?1:0;if(stars){const n=Object.keys(done).length;if(n<3){done["r"+(n+1)]=stars;try{localStorage.setItem("daysDone",JSON.stringify(done))}catch(e){}}}
     fan();for(let j=0;j<6;j++)setTimeout(()=>burst(Math.random()*innerWidth,innerHeight/3),j*150);$("say").innerHTML=T().end+" "+"⭐".repeat(Math.max(stars,1));$("st").textContent="";
     train((d,b)=>{hop(b);toot();speak(dn(d))});$("ctl").innerHTML=`<button class="big" id="ag">${T().again}</button>`;$("ag").onclick=play}}
 $("lang").onclick=()=>{AR=!AR;learn()};learn();
 </script>
+<script src="hint.js?v=1"></script>
 </body>
 </html>
