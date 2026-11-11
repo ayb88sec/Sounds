@@ -180,7 +180,7 @@ document.getElementById("sPeek").textContent=T.peek;document.getElementById("lSp
 function pretty(w){const pre=["anti","un","re","dis","pre","mis"].find(p=>w.toLowerCase().startsWith(p)&&w.length>p.length+3);return pre?`<b>${w.slice(0,pre.length)}</b>${w.slice(pre.length)}`:w}
 
 const grid=document.getElementById("grid");
-function draw(){grid.innerHTML="";WORDS.forEach((w,i)=>{const b=document.createElement("button");b.className="tile";b.style.background=COLORS[i%6];
+function draw(){grid.innerHTML="";if(SEC&&SEC.test){const d=document.createElement("div");d.style.cssText="grid-column:1/-1;text-align:center;font-size:24px;font-weight:700;padding:18px";d.textContent=(AR?"🙈 الكلمات مخفية حتى تكتبها. اضغط على زر الاختبار وابدأ!":"🙈 The words stay hidden until you spell them. Tap the test button to start!")+(WORDS.some(w=>done[w])?" ⭐ "+WORDS.filter(w=>done[w]).length+" / "+WORDS.length:"");grid.appendChild(d);return}WORDS.forEach((w,i)=>{const b=document.createElement("button");b.className="tile";b.style.background=COLORS[i%6];
   b.style.animationDelay=(i*.04)+"s";b.innerHTML=pretty(w)+(done[w]?`<span class="st">${"⭐".repeat(done[w])}</span>`:"");b.onclick=()=>openW(i,b);grid.appendChild(b)})}
 draw();
 
@@ -238,13 +238,13 @@ function next(){if(si>=order.length){fanfare();rain();talk(T.done);document.getE
     document.getElementById("sShow").textContent="⭐ "+score+" / "+order.length*3;document.getElementById("slots").innerHTML="";document.getElementById("pool").innerHTML="";return}
   word=order[si];pos=0;miss=0;peeks=0;const letters=[...word].filter(c=>c!==" ");
   document.getElementById("sScore").textContent=`${si+1} / ${order.length}`;
-  const sh=document.getElementById("sShow");sh.innerHTML=pretty(word);sh.style.opacity=1;document.getElementById("sQ").textContent=T.look;sayW(word);document.getElementById("sHear").style.display=hasV(word)?"":"none";
+  const TEST=!!(SEC&&SEC.test);const sh=document.getElementById("sShow");sh.innerHTML=pretty(word);sh.style.opacity=TEST?0:1;document.getElementById("sQ").textContent=TEST?(AR?"اسمع ثم اكتب الكلمة":"Listen, then spell the word"):T.look;sayW(word);document.getElementById("sHear").style.display=hasV(word)?"":"none";
   const slots=document.getElementById("slots");slots.innerHTML="";letters.forEach(()=>slots.appendChild(document.createElement("span")));
   const pool=document.getElementById("pool");pool.innerHTML="";
   const extra=[...EXTRA].filter(c=>!letters.includes(c)).sort(()=>Math.random()-.5).slice(0,Math.min(3,Math.max(1,6-letters.length)));
   [...letters,...extra].sort(()=>Math.random()-.5).forEach((c,k)=>{const b=document.createElement("button");b.textContent=c;b.style.background=COLORS[k%6];
     b.onclick=()=>tapLetter(b,c,letters);pool.appendChild(b)});
-  pool.style.pointerEvents="none";pool.style.opacity=.5;
+  if(TEST)return;pool.style.pointerEvents="none";pool.style.opacity=.5;
   setTimeout(()=>{sh.style.opacity=0;document.getElementById("sQ").textContent=T.build;pool.style.pointerEvents="";pool.style.opacity=1},Math.max(2500,word.length*350))}
 function tapLetter(b,c,letters){if(c===letters[pos]){b.classList.add("used");popSnd();const s=document.getElementById("slots").children[pos];s.textContent=c;s.classList.add("f");pos++;
     if(pos===letters.length){const st=Math.max(1,3-(miss>1?1:0)-(peeks?1:0));score+=st;
