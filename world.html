@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<script src="supa.js"></script>
+<script src="profile.js"></script><script src="data/kidq.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="نجمة">
+<meta name="theme-color" content="#4fa9f2">
+<link rel="apple-touch-icon" href="icon-n.png">
+<link rel="icon" href="icon-n.png">
+<title>نجمة ⭐ Najma</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;800&display=swap">
+<style>
+:root{--ink:#1d2547;--mute:#5a5670;--card:#fffdf7;--gold:#f5b700;--ac:#177a52;--ease:cubic-bezier(.23,1,.32,1);--bounce:cubic-bezier(.34,1.56,.64,1)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#f3c27c;font-family:"Baloo Bhaijaan 2",system-ui,sans-serif;color:var(--ink);overflow:hidden}
+button{font-family:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
+/* the stage is always landscape; held upright, it turns itself sideways */
+#app{position:fixed;top:0;left:0;width:100vw;height:100dvh;overflow:hidden;container-type:size;background:#f6d9a4}
+body.rot #app{left:100vw;width:100dvh;height:100vw;transform-origin:0 0;transform:rotate(90deg)}
+.scr{position:absolute;inset:0;display:none;overflow:hidden}
+.scr.on{display:block;animation:fade .35s var(--ease)}
+@keyframes fade{from{opacity:0}}
+.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+.top{position:absolute;top:2.5cqh;left:2.5cqh;right:2.5cqh;display:flex;align-items:center;justify-content:space-between;gap:2cqh;z-index:6}
+.pill{display:flex;align-items:center;gap:1.2cqh;height:11cqh;padding:0 3.4cqh;background:var(--card);border:.5cqh solid #fff;border-radius:999px;box-shadow:0 1.2cqh 2.6cqh rgba(110,70,15,.2);font-weight:800;font-size:4.6cqh;white-space:nowrap}
+.pill img{width:7cqh;height:7cqh;object-fit:contain}
+.pill.ic{width:11cqh;padding:0;justify-content:center}.pill.ic svg{width:5.5cqh;height:5.5cqh}
+.title{min-width:34cqh;text-align:center;font-weight:800;font-size:5.2cqh;color:#fff;background:var(--ac);border:.5cqh solid #fff;border-radius:999px;height:11cqh;line-height:9.6cqh;box-shadow:0 1.2cqh 0 rgba(0,0,0,.15);padding:0 5cqh}
+.card{background:var(--card);border:.5cqh solid #fff;border-radius:5cqh;box-shadow:0 1.6cqh 3.6cqh rgba(110,70,15,.2)}
+.btn{display:flex;align-items:center;justify-content:center;height:12cqh;padding:0 5.5cqh;border-radius:999px;background:var(--ac);color:#fff;font-weight:800;font-size:4.8cqh;border:.5cqh solid #fff;box-shadow:0 1.3cqh 0 rgba(0,0,0,.18);transition:transform .12s var(--ease),box-shadow .12s;white-space:nowrap}
+.btn:active{transform:translateY(.9cqh);box-shadow:0 .4cqh 0 rgba(0,0,0,.18)}
+.btn.ghost{background:var(--card);color:var(--ac);border-color:var(--ac)}
+.falcon{position:absolute}
+.falcon img{width:100%;height:100%;object-fit:contain;display:block}
+.falcon.hop{animation:hop .6s var(--bounce)}
+@keyframes hop{40%{transform:translateY(-5cqh) scale(1.05)}}
+.wood{background:linear-gradient(#d99a52,#b9722f);border:.5cqh solid #7d4a1c;box-shadow:0 .9cqh 0 rgba(90,50,10,.35),inset 0 .4cqh 0 rgba(255,255,255,.25);color:#fffdf7;font-weight:800;text-shadow:0 .4cqh 0 #7d4a1c;white-space:nowrap}
+/* home: one world, all on one screen */
+#map{background:linear-gradient(#4fa9f2 0,#8ccbf8 26%,#d8effc 43%,#f7d193 43%,#f3c27c 100%)}
+#map::before,#map::after{content:"";position:absolute;left:0;right:0;pointer-events:none}
+#map::before{top:33%;height:11%;background:radial-gradient(ellipse 50% 100% at 50% 100%,#eebf7e 99%,transparent 100%) 0 0/70cqh 100% repeat-x}
+#map::after{top:37%;height:8%;background:radial-gradient(ellipse 50% 100% at 50% 100%,#f7d193 99%,transparent 100%) 24cqh 0/104cqh 100% repeat-x}
+#map>*{position:absolute;z-index:1}
+#map svg.path{inset:0;width:100%;height:100%}
+.cloud{top:var(--t);left:var(--x);width:var(--s);animation:drift 9s ease-in-out infinite alternate;animation-delay:var(--d)}
+@keyframes drift{to{transform:translateX(-5cqh)}}
+.decor{left:var(--x);bottom:var(--b);width:var(--s);pointer-events:none;transform-origin:50% 100%;margin-left:calc(var(--s) / -2)}
+.decor.sway{animation:sway 4s ease-in-out infinite alternate;animation-delay:var(--d)}
+@keyframes sway{from{transform:rotate(-2deg)}to{transform:rotate(2.5deg)}}
+#heroK{left:50%;bottom:4cqh;height:43cqh;aspect-ratio:632/559;margin-left:-24.3cqh;z-index:3;background:url(img/v2/kids_sign.webp) center/contain no-repeat;animation:breathe 3.6s ease-in-out infinite alternate;transform-origin:50% 100%;pointer-events:none}
+@keyframes breathe{to{transform:scale(1.02)}}
+#heroK b{position:absolute;left:16%;right:14%;top:59%;height:31%;display:flex;align-items:center;justify-content:center;font-size:6cqh;color:#fffdf7;text-shadow:0 .5cqh 0 #8a4b12,0 0 2cqh rgba(90,45,5,.45);white-space:nowrap}
+.bld{z-index:2;display:flex;align-items:flex-end;justify-content:center;transform-origin:50% 100%}
+.bld img{max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 1.2cqh .8cqh rgba(120,70,10,.25))}
+.bld:active{transform:scale(.95)}
+.bld.hit{animation:bhit .6s var(--bounce)}
+@keyframes bhit{35%{transform:scale(1.1,.92)}70%{transform:scale(.97,1.05)}}
+.post{z-index:4;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;padding:0 3cqh .7cqh;border-radius:2.6cqh;font-size:4cqh;line-height:1.3}
+.post i{display:flex;gap:.3cqh;margin-top:-.3cqh}.post i img{width:2.4cqh;height:2.4cqh}.post i img.off{filter:grayscale(1) brightness(.75);opacity:.55}
+#wf{width:19cqh;height:19cqh;z-index:6;transition:left 1s var(--ease),bottom 1s var(--ease)}
+#whw{z-index:5;left:calc(50% + 25.5cqh);bottom:2cqh;width:17cqh;display:flex;flex-direction:column;align-items:center;animation:hwb 2.2s ease-in-out infinite}
+#whw img{width:11cqh;height:11cqh;object-fit:contain;margin-bottom:-1cqh;position:relative}
+#whw span{padding:0 1.6cqh .5cqh;border-radius:2.2cqh;font-size:3.3cqh;line-height:1.4}
+@keyframes hwb{50%{transform:translateY(-1.2cqh) rotate(-1.5deg)}}
+#whw:active{animation:none;transform:scale(.94)}
+#map .pill{top:2.5cqh;z-index:5}
+#wstars{left:2.5cqh}#wstk{right:2.5cqh}
+/* road */
+#roadarea{position:absolute;inset:0}
+#roadarea svg{position:absolute;inset:0;width:100%;height:100%}
+.stop{position:absolute;transform:translate(-50%,-50%);width:16cqh;height:16cqh;border-radius:50%;background:var(--card);border:.7cqh solid #fff;box-shadow:0 1.2cqh 0 rgba(110,70,15,.25);display:flex;align-items:center;justify-content:center}
+.stop img{width:68%;height:68%;object-fit:contain}
+.stop.cur{border-color:var(--gold);box-shadow:0 0 0 .9cqh #fff,0 0 4cqh 1.5cqh rgba(245,183,0,.85),0 1.2cqh 0 rgba(110,70,15,.25);animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translate(-50%,calc(-50% - 1.3cqh))}}
+.stop i{position:absolute;top:-1.4cqh;inset-inline-end:-1.4cqh;width:6cqh;height:6cqh;border-radius:50%;background:#1f9d5c;border:.5cqh solid #fff;display:flex;align-items:center;justify-content:center}
+.stop i svg{width:3.4cqh;height:3.4cqh}
+.stop small{position:absolute;top:100%;margin-top:1.2cqh;white-space:nowrap;font-weight:800;font-size:3.4cqh;background:rgba(255,253,247,.92);border-radius:999px;padding:0 2cqh;line-height:1.5}
+.stop.chest{background:none;border:0;box-shadow:none;width:20cqh;height:20cqh;animation:none}
+.stop.chest img{width:100%;height:100%}
+.stop.chest.shut{filter:grayscale(.6);opacity:.8}
+#roadfalcon{width:20cqh;height:20cqh;transition:left .6s var(--ease),top .6s var(--ease);pointer-events:none;z-index:3;margin:-10cqh 0 0 -10cqh}
+.nextcard{position:absolute;left:50%;bottom:2cqh;transform:translateX(-50%);display:flex;align-items:center;gap:2.4cqh;padding:1.4cqh 2cqh;z-index:4}
+.nextcard img{width:9cqh;height:9cqh;object-fit:contain}
+.nextcard span{line-height:1.25;white-space:nowrap;padding-inline-end:2cqh}.nextcard span b{display:block;font-size:4.2cqh}.nextcard span small{font-size:3.1cqh;color:var(--mute);font-weight:600}
+.nextcard .btn{height:10cqh;font-size:4.2cqh}
+
+/* road with every lesson of the place as a stop */
+.stop{text-decoration:none;color:var(--ink)}
+.stop.sm{width:12.5cqh;height:12.5cqh}
+.stop small{max-width:25cqh;white-space:normal!important;text-align:center;line-height:1.2!important;border-radius:2.4cqh!important;padding:.3cqh 1.6cqh!important;width:max-content}
+.stop.sm small{font-size:2.9cqh;margin-top:.8cqh;max-width:18cqh}
+.stop svg.ring{position:absolute;inset:-1.3cqh;width:calc(100% + 2.6cqh);height:calc(100% + 2.6cqh);transform:rotate(-90deg);pointer-events:none}
+.stop.go{animation:bhit .5s var(--bounce)}
+#empty{position:absolute;left:50%;top:60%;transform:translate(-50%,-50%);padding:3cqh 5cqh;font-weight:800;font-size:4.6cqh;white-space:nowrap}
+#roadfalcon{margin:0;transform:translate(-50%,-100%)}
+/* child button and chooser */
+#wkid{right:2.5cqh;padding-inline:1cqh 3cqh;gap:1.6cqh}
+#wkid span.av{width:8.6cqh;height:8.6cqh;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:5cqh;background:#ffd23f}
+#hwn{position:absolute;top:-1cqh;inset-inline-end:0;min-width:5.4cqh;height:5.4cqh;border-radius:999px;background:#e5484d;color:#fff;border:.5cqh solid #fff;font-weight:800;font-size:3cqh;line-height:4.4cqh;text-align:center;z-index:2}
+#kidsOv{position:absolute;inset:0;z-index:20;background:rgba(29,37,71,.45);display:none;align-items:center;justify-content:center}
+#kidsOv.on{display:flex}
+#kidsBox{max-width:86%;padding:4cqh;display:flex;flex-wrap:wrap;gap:3cqh;justify-content:center}
+#kidsBox button{display:flex;flex-direction:column;align-items:center;gap:1cqh;font-weight:800;font-size:3.8cqh;width:22cqh}
+#kidsBox .av{width:15cqh;height:15cqh;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:8cqh;border:.7cqh solid #fff;box-shadow:0 1cqh 2cqh rgba(110,70,15,.25)}
+#kidsBox button.on .av{border-color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="app">
+<section class="scr on" id="map"></section>
+<section class="scr" id="road">
+  <img class="bg" id="roadbg" alt="">
+  <div id="roadarea"></div>
+  <div class="top"><button class="pill ic" id="rback" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button><div class="title" id="roadtitle"></div><span class="pill"><img src="img/v2/r_star.webp" alt=""><span class="starcount"></span></span></div>
+</section>
+<div id="kidsOv"><div class="card" id="kidsBox"></div></div>
+</div>
+<script>
+const ROWS=[
+ {t:"🔤 العربية",apps:[
+  {id:"arabic",href:"arabic.html",glyph:"أ ب",name:"حروفي",sub:"الحروف العربية",bg:"linear-gradient(150deg,#22c7b8,#2f8cff)",key:"arDone",total:38},
+  {id:"spell",href:"spell.html",glyph:"بـا",name:"كلماتي الأولى",sub:"المقاطع والكلمات",bg:"linear-gradient(150deg,#3fc35a,#22c7b8)",key:"spellDone",total:60},
+  {id:"numAr",href:"numbers-ar.html",glyph:"١٢٣",name:"الأرقام",sub:"من ١ إلى ٢٠",bg:"linear-gradient(150deg,#ffb020,#ff5d9e)",key:"numDoneAr",total:20},
+  {id:"uae",href:"uae.html",glyph:"🇦🇪",name:"بلادي الإمارات",sub:"زايد · الإمارات السبع",bg:"linear-gradient(150deg,#c8102e,#00843d)",key:"uaeDone",total:15},
+  {id:"daysAr",href:"days.html?l=ar",glyph:"📅",name:"الأيام",sub:"أيام الأسبوع",bg:"linear-gradient(150deg,#8fd8ff,#6cc95a)",key:"daysDone",total:3},
+  {id:"wsFinAr",href:"sheets.html?s=finar",glyph:"✏️",name:"أكمل الحرف الناقص",sub:"ورقة نشاط",bg:"linear-gradient(150deg,#ffb020,#ff6f91)",key:"sheetsDone",total:0},
+  {id:"wsArPic",href:"sheets.html?s=arp",glyph:"🔗",name:"صل الصورة بحرفها",sub:"ورقة نشاط",bg:"linear-gradient(150deg,#22c7b8,#4f8bff)",key:"sheetsDone",total:0},
+  {id:"wsSens",href:"sheets.html?s=sens",glyph:"👁️",name:"الحواس الخمس",sub:"ورقة نشاط",bg:"linear-gradient(150deg,#4f8bff,#a66bff)",key:"sheetsDone",total:0},
+  {id:"wsSea",href:"sheets.html?s=sea",glyph:"🐠",name:"ابحث وعدّ",sub:"ورقة نشاط",bg:"linear-gradient(150deg,#22c7b8,#4f8bff)",key:"sheetsDone",total:0},
+  {id:"wsFoc",href:"sheets.html?s=foc",glyph:"🔍",name:"نشاط التركيز",sub:"ورقة نشاط",bg:"linear-gradient(150deg,#ff7eb6,#ffb020)",key:"sheetsDone",total:0},
+  {id:"wsMaze",href:"sheets.html?s=maze",glyph:"🧭",name:"ساعد السمكة",sub:"ورقة نشاط",bg:"linear-gradient(150deg,#22c7b8,#3fc35a)",key:"sheetsDone",total:0},
+  {id:"wsBwl",href:"sheets.html?s=bwl",glyph:"🐟",name:"صنّف السمك بالألوان",sub:"ورقة نشاط",bg:"linear-gradient(150deg,#ffb020,#a66bff)",key:"sheetsDone",total:0},
+  {id:"monthsAr",href:"months.html?l=ar",glyph:"🗓️",name:"الأشهر",sub:"أشهر السنة",bg:"linear-gradient(150deg,#ff7eb6,#ffb020)",key:"monthsDone",total:3},
+  {id:"clockAr",href:"clock.html?l=ar",glyph:"⏰",name:"الساعة",sub:"كم الساعة؟",bg:"linear-gradient(150deg,#ffb86b,#ff8a7a)",key:"clockDone",total:12},
+  {id:"colorsAr",href:"colors.html",glyph:"🎨",name:"الألوان",sub:"١١ لونًا",bg:"linear-gradient(150deg,#ff5d73,#ffb020 50%,#3fc35a)",key:"colorsAr",total:11}]},
+ {t:"🕌 ديني",apps:[
+  {id:"islam",href:"islam.html",glyph:"🕌",name:"أركان الإسلام",sub:"خمسة أركان",bg:"linear-gradient(150deg,#1fb59a,#0f9b8e)",key:"islamDone",total:5},
+  {id:"iman",href:"iman.html",glyph:"✨",name:"أركان الإيمان",sub:"ستة أركان",bg:"linear-gradient(150deg,#8a5cff,#ff7eb6)",key:"imanDone",total:6},
+  {id:"quran",href:"quran.html",glyph:"📖",name:"قصص القرآن",sub:"رحلة الحفظ",bg:"linear-gradient(150deg,#3fd3a8,#1fa2c9)",key:"qkDone",total:571},
+  {id:"lsAkh",href:"exam.html?l=akh",glyph:"🤝",name:"أحب الخير لأخي",sub:"درس مع المعلمة",bg:"linear-gradient(150deg,#4f8bff,#22c7b8)",key:"examG2",total:0},
+  {id:"lsTah",href:"exam.html?l=tah",glyph:"💧",name:"الطهارة ونواقض الوضوء",sub:"درس مع المعلمة",bg:"linear-gradient(150deg,#22c7b8,#3fc35a)",key:"examG2",total:0},
+  {id:"wsAkh",href:"sheets.html?s=akh",glyph:"🌟",name:"الأخلاق الحميدة والسيئة",sub:"ورقة نشاط",bg:"linear-gradient(150deg,#3fc35a,#22c7b8)",key:"sheetsDone",total:0},
+  {id:"wsNium",href:"sheets.html?s=nium",glyph:"🌳",name:"شجرة نعم الله",sub:"ورقة نشاط",bg:"linear-gradient(150deg,#ff7eb6,#3fc35a)",key:"sheetsDone",total:0},
+  {id:"duas",href:"duas.html",glyph:"📿",name:"أدعية",sub:"أدعية يومية",bg:"linear-gradient(150deg,#ffb020,#ff6f91)",key:"sec_duas",total:(((NAJMA.sections.find(s=>s.type==="qimg")||{}).duas||{}).list||window.KID_DUAS||[]).length}]},
+ {t:"🇬🇧 English",apps:[
+  {id:"sounds",href:"index.html",glyph:"🔤",name:"Sounds",sub:"Phonics",bg:"linear-gradient(150deg,#ff7eb6,#a66bff)",key:"soundsDone",total:32},
+  {id:"cvc",href:"cvc.html",glyph:"cat",name:"Word Time",sub:"RWI 1.1 – 1.7",bg:"linear-gradient(150deg,#22c7b8,#4f8bff)",key:"cvcDone",total:52},
+  {id:"sent",href:"sentences.html",glyph:"✍🏽",name:"Sentences",sub:"Build & write",bg:"linear-gradient(150deg,#ff7eb6,#ffb020)",key:"sentDone",total:16},
+  {id:"writeEn",href:"writing.html",glyph:"Aa",name:"Handwriting",sub:"abc · ABC · 123",bg:"linear-gradient(150deg,#a66bff,#ff7eb6)",key:"writeEn",total:62}]},
+ {t:"🔷 Maths",apps:[
+  {id:"math",href:"math.html",glyph:"➕➖",name:"Maths + −",sub:"KG2 · Grade 2",bg:"linear-gradient(150deg,#4f8bff,#22c7b8)",key:"mathDone",total:18},
+  {id:"wsCnt",href:"sheets.html?s=cnt",glyph:"🔍",name:"Find and Count",sub:"Worksheet",bg:"linear-gradient(150deg,#a66bff,#ff7eb6)",key:"sheetsDone",total:0},
+  {id:"wsNum",href:"sheets.html?s=num",glyph:"🧁",name:"Match the Number",sub:"Worksheet",bg:"linear-gradient(150deg,#ff7eb6,#ffb020)",key:"sheetsDone",total:0},
+  {id:"wsMath",href:"sheets.html?s=math",glyph:"🧮",name:"Math Fun",sub:"Worksheet",bg:"linear-gradient(150deg,#4f8bff,#22c7b8)",key:"sheetsDone",total:0},
+  {id:"days",href:"days.html",glyph:"📅",name:"Days",sub:"Days of the week",bg:"linear-gradient(150deg,#8fd8ff,#6cc95a)",key:"daysDone",total:3},
+  {id:"wsFin",href:"sheets.html?s=fin",glyph:"✏️",name:"Finish the Letters",sub:"Worksheet",bg:"linear-gradient(150deg,#ffb020,#ff6f91)",key:"sheetsDone",total:0},
+  {id:"wsAbc",href:"sheets.html?s=abc",glyph:"🔗",name:"Capital & Small",sub:"Worksheet",bg:"linear-gradient(150deg,#22c7b8,#4f8bff)",key:"sheetsDone",total:0},
+  {id:"wsShp",href:"sheets.html?s=shp",glyph:"🔺",name:"Shapes Matching",sub:"Worksheet",bg:"linear-gradient(150deg,#3fc35a,#22c7b8)",key:"sheetsDone",total:0},
+  {id:"months",href:"months.html",glyph:"🗓️",name:"Months",sub:"Months of the year",bg:"linear-gradient(150deg,#ff7eb6,#ffb020)",key:"monthsDone",total:3},
+  {id:"clock",href:"clock.html",glyph:"⏰",name:"Clock",sub:"Tell the time",bg:"linear-gradient(150deg,#ffb86b,#ff8a7a)",key:"clockDone",total:12},
+  {id:"numEn",href:"numbers-en.html",glyph:"123",name:"Numbers",sub:"1 to 20",bg:"linear-gradient(150deg,#4f8bff,#3fc35a)",key:"numDoneEn",total:20},
+  {id:"colorsEn",href:"colors.html?l=en",glyph:"🎨",name:"Colours",sub:"11 colours",bg:"linear-gradient(150deg,#4f8bff,#a66bff 50%,#ff7eb6)",key:"colorsEn",total:11},
+  {id:"shapes",href:"shapes.html",glyph:"🔺",name:"2D Shapes",sub:"Sides & corners",bg:"linear-gradient(150deg,#3fc35a,#22c7b8)",key:"shapesDone",total:10}]},
+];
+function count(k){try{return Object.keys(JSON.parse(localStorage.getItem(k)||"{}")).length}catch(e){return 0}}
+ROWS.push({t:"✏️ اسمي · My name",apps:[{id:"name",href:"name.html",glyph:NAJMA.me?(NAJMA.me.avatar||"✏️"):"✏️",name:"اسمي",sub:"My name",bg:"linear-gradient(150deg,#3fc35a,#22c7b8)",key:"_none",total:0}]});
+{const HW=[],today=new Date().toISOString().slice(0,10);
+NAJMA.sections.filter(s=>s.type!=="qimg"&&s.type!=="flags"&&!(((NAJMA.sections.find(q=>q.type==="qimg")||{}).hide||{})[s.id])&&!(s.hw&&s.hw.due&&s.hw.due<today)).forEach((s,k)=>{
+  const t=s.type||"words",href=t==="app"?((s.app&&s.app.href)||"home.html"):t==="task"?"task.html?s="+encodeURIComponent(s.id):(t==="words"?"words.html":"lesson.html")+"?s="+encodeURIComponent(s.id);
+  const due=s.hw&&s.hw.due?new Date(s.hw.due).toLocaleDateString("ar",{day:"numeric",month:"short"}):"";
+  const a={id:"s:"+s.id,href,glyph:s.icon||"📝",name:s.title,sub:s.hw?("📌 "+(due?"حتى "+due:"واجب")):s.words.length+(s.lang==="ar"?" كلمات":" words"),
+    bg:s.hw?"linear-gradient(150deg,#ff6f91,#ffb020)":["linear-gradient(150deg,#ffcf3c,#ff6f91)","linear-gradient(150deg,#4f8bff,#a66bff)","linear-gradient(150deg,#22c7b8,#3fc35a)"][k%3],key:"sec_"+s.id,total:t==="app"?0:s.words.length};
+  /* homework for a grade or for named children: the child's grade decides, so it works even if the parent set the grade later */
+  if(s.hw&&(s.hwGrade||s.hwKids)&&NAJMA.me&&!NAJMA.me.preview){const me=NAJMA.me,nz=v=>String(v||"").replace(/[\u064B-\u0652]/g,"").replace(/[إأآ]/g,"ا").replace(/ة/g,"ه").trim();
+    const ok=s.hwKids?s.hwKids.some(n=>[me.name,me.nameAr,me.nameEn].some(v=>v&&String(v).split(/\s+/).some(w=>nz(w)===nz(n)))):me.grade===s.hwGrade;NAJMA.settings.apps[a.id]=ok}
+  if(s.hw)HW.push(a);else ROWS[s.lang==="ar"?0:2].apps.push(a)});
+/* homework from school comes first */
+if(HW.length)ROWS.unshift({t:"📌 الواجب",apps:HW})}
+/* ===== rendering: the picture is the home screen ===== */
+const I="img/home2/";const AI={exam:"exam",monthsAr:"months",months:"months",lsAkh:"lsAkh",lsTah:"lsTah",wsFin:"wsFin",wsAbc:"wsAbc",wsShp:"wsShp",wsCnt:"wsCnt",wsFoc:"wsFoc",wsMaze:"wsMaze",wsBwl:"wsBwl",wsFinAr:"wsFinAr",wsArPic:"wsArPic",wsSens:"wsSens",wsSea:"wsSea",wsNium:"wsNium",wsAkh:"wsAkh",wsNum:"wsNum",wsMath:"wsMath",arabic:"arabic",name:"name",spell:"spell",numAr:"numAr",daysAr:"days",days:"days",clockAr:"clock",clock:"clock",colorsAr:"colors",colorsEn:"colorsEn",islam:"islam",iman:"iman",quran:"quran",duas:"duas",sounds:"sounds",cvc:"cvc",sent:"sent",writeEn:"writeEn",math:"math",numEn:"numEn",shapes:"shapes",uae:"uae"};
+const visA=a=>a&&NAJMA.settings.apps[a.id]!==false;
+const HREFI=[["quran","quran"],["duas","duas"],["spell","spell"],["arabic","arabic"],["numbers-ar","numAr"],["numbers-en","numEn"],["islam","islam"],["iman","iman"],["index.html","sounds"],["cvc","cvc"],["sentences","sent"],["writing","writeEn"],["math","math"],["days","days"],["clock","clock"],["colors","colors"],["shapes","shapes"],["uae","uae"],["name","name"]];
+function icoOf(a){if(AI[a.id])return I+"ap_"+AI[a.id]+".webp";if(!a.id.startsWith("s:"))return null;const S=NAJMA.sections.find(x=>"s:"+x.id===a.id)||{},t=S.type||"words";
+  if(t==="app"&&S.app){const h=S.app.href||"";const m=HREFI.find(x=>h.includes(x[0]));if(m)return I+"ap_"+m[1]+".webp"}
+  if(t==="task")return I+"ap_task.webp";if(t==="sent")return I+"ap_sent.webp";if(t==="quiz")return I+"cat_prog.webp";if(t==="pic")return I+"ap_spell.webp";
+  return I+(S.lang==="ar"?"ap_arabic.webp":"ap_sounds.webp")}
+const rowBy=t=>(ROWS.find(r=>r.t===t)||{apps:[]}).apps;
+const HWL=rowBy("📌 الواجب");
+/* exam review: only for Noura, shown first under الواجب as «📝 الامتحان» */
+{const me=NAJMA.me||{},nz=v=>String(v||"").replace(/[\u064B-\u0652]/g,"").replace(/ة/g,"ه").trim().toLowerCase();
+ if([me.name,me.nameAr,me.nameEn].some(v=>/^(نوره|noura|nora)$/.test(nz(String(v||"").split(/\s+/)[0]))))
+  HWL.unshift({id:"exam",href:"exam.html",glyph:"📝",name:"📝 الامتحان: التربية الإسلامية",sub:"مراجعة نهاية الفصل الأول",bg:"linear-gradient(150deg,#a66bff,#ff7eb6)",key:"examG2",total:22})}
+const MATHIDS=["math","wsCnt","wsNum","wsMath"];const CATS={hw:{t:"الواجب",e:"Homework",ic:"nav_hw",apps:HWL},uae:{t:"بلادي الإمارات",e:"My UAE",ic:"ap_uae",apps:rowBy("🔤 العربية").filter(a=>a.id==="uae")},ar:{t:"العربية",e:"Arabic",ic:"cat_ar",apps:rowBy("🔤 العربية").filter(a=>a.id!=="uae")},deen:{t:"ديني",e:"Islam",ic:"cat_deen",apps:rowBy("🕌 ديني")},en:{t:"English",e:"اللغة الإنجليزية",ic:"cat_en",apps:rowBy("🇬🇧 English").concat(rowBy("🔷 Maths").filter(a=>!MATHIDS.includes(a.id)))},math:{t:"Maths",e:"Maths",ic:"cat_num",apps:rowBy("🔷 Maths").filter(a=>MATHIDS.includes(a.id))},name:{t:"اسمي",e:"My Name",ic:"ap_name",apps:rowBy("✏️ اسمي · My name")}};
+let stars=0,full=0;{const seen=new Set();ROWS.forEach(r=>r.apps.filter(visA).forEach(a=>{const n=a.total?Math.min(count(a.key),a.total):0;if(a.total&&!seen.has(a.key)){seen.add(a.key);stars+=n;if(n>=a.total)full++}}))}
+const hwN=HWL.filter(visA).length;
+/* ===== new look: one world, the falcon guides, every lesson is a stop on its place's road ===== */
+try{sessionStorage.setItem("najma:v2","1")}catch(e){}
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const V="img/v2/",pic=n=>`<img src="${V}${n}.webp" alt="">`,APP=$("#app");
+const AD=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+let ROT=false;function fit(){ROT=innerHeight>innerWidth;document.body.classList.toggle("rot",ROT)}fit();addEventListener("resize",fit);
+const PLACE={ar:{p:"p_fort",bg:"bg_fort",c:"#177a52",name:"العربية",lang:"ar"},en:{p:"p_library",bg:"bg_library",c:"#2567c9",name:"English",lang:"en"},deen:{p:"p_mosque",bg:"bg_mosque",c:"#8a5a0c",name:"ديني",lang:"ar"},
+  math:{p:"p_souq",bg:"bg_souq",c:"#b8500a",name:"الرياضيات",lang:"ar"},uae:{p:"p_dhow",bg:"bg_harbour",c:"#a8281f",name:"بلادي",lang:"ar"},name:{p:"p_tent",bg:"bg_tent",c:"#6a45b8",name:"اسمي",lang:"ar"},hw:{bg:"bg_calm",c:"#c2410c",name:"واجب اليوم",lang:"ar"}};
+/* one matching picture for every lesson */
+const LI={sounds:"l_sound",cvc:"l_puzzle",sent:"l_cards",writeEn:"l_write",numEn:"l_abacus",numAr:"l_abacus",colorsEn:"l_colors",colorsAr:"l_colors",days:"l_week",daysAr:"l_week",months:"l_month",monthsAr:"l_month",clock:"l_clock",clockAr:"l_clock",shapes:"l_shapes",math:"l_dice",arabic:"l_blocks",spell:"l_book",uae:"l_flag",islam:"l_pillars",iman:"l_lantern",quran:"l_quran",duas:"l_dua",name:"l_name",exam:"l_task",lsAkh:"l_mat",lsTah:"l_mat"};
+const LH=[["quran","l_quran"],["duas","l_dua"],["spell","l_book"],["arabic","l_blocks"],["numbers","l_abacus"],["islam","l_pillars"],["iman","l_lantern"],["index.html","l_sound"],["cvc","l_puzzle"],["sentences","l_cards"],["writing","l_write"],["math","l_dice"],["days","l_week"],["months","l_month"],["clock","l_clock"],["colors","l_colors"],["shapes","l_shapes"],["uae","l_flag"],["name","l_name"],["sight","l_sight"],["sheets","l_crayons"],["exam","l_task"]];
+function lpic(a){if(LI[a.id])return LI[a.id];if(a.id.startsWith("ws"))return "l_crayons";if(a.id.startsWith("s:")){const S=NAJMA.sections.find(x=>"s:"+x.id===a.id)||{},t=S.type||"words";
+  if(t==="app"&&S.app){const m=LH.find(x=>(S.app.href||"").includes(x[0]));if(m)return m[1]}return t==="task"||t==="quiz"?"l_task":t==="sent"?"l_cards":t==="pic"?"l_book":"l_sight"}
+  const m=LH.find(x=>(a.href||"").includes(x[0]));return m?m[1]:"l_book"}
+const vis=k=>(CATS[k]?CATS[k].apps:[]).filter(visA);
+function frac(k){let n=0,t=0;vis(k).forEach(a=>{if(a.total){t+=a.total;n+=Math.min(count(a.key),a.total)}});return t?n/t:0}
+/* the falcon */
+function falcon(el,frame){el.querySelector("img").src=`${V}f_${frame}.webp`;el.dataset.f=frame}
+function hop(el){el.classList.remove("hop");void el.offsetWidth;el.classList.add("hop")}
+setInterval(()=>$$(".falcon").forEach(el=>{if(!el.offsetParent||el.dataset.busy)return;const im=el.querySelector("img"),keep=im.src;im.src=V+"f_blink.webp";setTimeout(()=>{if(!el.dataset.busy)im.src=keep},160)}),3200);
+function talk(el,ms){el.dataset.busy=1;let k=0;const t=setInterval(()=>falcon(el,k++%2?"talk1":"talk2"),150);setTimeout(()=>{clearInterval(t);delete el.dataset.busy;falcon(el,"wave")},ms||900)}
+let AC;function tone(f,d,t=0,type="sine",v=.08){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;
+  g.gain.setValueAtTime(v,AC.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+t+d);o.connect(g).connect(AC.destination);o.start(AC.currentTime+t);o.stop(AC.currentTime+t+d)}catch(e){}}
+const sPop=()=>{tone(520,.08,0,"triangle");tone(880,.12,.05,"triangle")},sWin=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.18,i*.09)),sTap=()=>tone(660,.05,0,"triangle",.05);
+function speak(text,lang){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=lang==="en"?"en-GB":"ar-SA";u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
+
+/* home */
+const ORDER=["ar","en","deen","math","uae","name"],SPOT=[[88,13,25],[76.5,45,22],[58.5,58,18],[41.5,58,18],[23.5,45,22],[12,13,25]];
+const HOME=["calc(50% - 42.5cqh)","1cqh"];let flying=false;
+const perch=i=>[`calc(${SPOT[i][0]}% - ${(SPOT[i][0]>50?1:-1)*SPOT[i][2]*.72+10.5}cqh)`,SPOT[i][1]-1+"cqh"];
+function drawMap(){const M=$("#map"),me=NAJMA.me;
+  let h=`<svg class="path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M12,90 A38,46 0 0 1 88,90" fill="none" vector-effect="non-scaling-stroke" stroke="#e2ad66" style="stroke-width:11cqh" stroke-linecap="round"/><path d="M12,90 A38,46 0 0 1 88,90" fill="none" vector-effect="non-scaling-stroke" stroke="#fbe3b6" style="stroke-width:8.6cqh" stroke-linecap="round"/></svg>`;
+  [[18,5,22,0],[36,14,15,-3],[60,4,20,-5],[78,15,14,-2]].forEach(([x,t,w,dl])=>h+=`<img class="cloud" src="${V}s_cloud.webp" alt="" style="--x:${x}%;--t:${t}%;--s:${w}cqh;--d:${dl}s">`);
+  const dec=(n,x,b,w,sw,dl=0)=>h+=`<img class="decor${sw?" sway":""}" src="${V}${n}.webp" alt="" style="--x:${x}%;--b:${b}cqh;--s:${w}cqh;--d:${dl}s">`;
+  dec("s_palm",50,56,15,1);dec("s_palm",3,50,17,1,-2);dec("s_ghaf",97,50,17,1,-1);dec("s_palm",33,52,12,1,-3);dec("s_ghaf",67,52,12,1,-2);dec("s_flowers",31,3,8);dec("s_rocks",70,30,9);
+  h+=`<div id="heroK"><b>هيا نتعلم!</b></div><button id="whw"><img src="${V}l_task.webp" alt=""><span class="wood">واجب اليوم</span>${hwN?`<i id="hwn">${AD(hwN)}</i>`:""}</button>`;
+  ORDER.forEach((k,i)=>{const [x,b,ht]=SPOT[i],s=PLACE[k],n=Math.round(frac(k)*4),on=vis(k).length;if(!on)return;
+    h+=`<button class="bld" data-k="${k}" style="left:${x}%;bottom:${b}cqh;height:${ht}cqh;width:${ht*1.45}cqh;margin-left:${-ht*.725}cqh" aria-label="${s.name}">${pic(s.p)}</button><button class="post wood" data-k="${k}" style="left:${x}%;bottom:${b-7.6}cqh">${s.name}<i>${[0,1,2,3].map(j=>`<img src="${V}r_star.webp" alt=""${j<n?"":' class="off"'}>`).join("")}</i></button>`});
+  h+=`<div class="falcon" id="wf" data-f="wave"><img alt=""></div><span class="pill" id="wstars"><img src="${V}r_star.webp" alt=""><span>${AD(stars)}</span></span>
+    <button class="pill" id="wkid"><span class="av" style="background:${me&&me.color||"#ffd23f"}">${NAJMA_AV(me&&me.avatar)}</span><span dir="auto">${me&&!me.preview?(me.nameAr||me.name):""}</span></button>`;
+  M.innerHTML=h;const wf=$("#wf");wf.style.left=HOME[0];wf.style.bottom=HOME[1];falcon(wf,"wave");flying=false;
+  wf.onclick=()=>{hop(wf);talk(wf,1200);speak("هلا! شو بنتعلم اليوم؟","ar")};
+  $("#whw").onclick=()=>{sTap();location.hash="c=hw"};$("#wkid").onclick=()=>{sTap();$("#kidsOv").classList.add("on")};
+  M.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>flyTo(b.dataset.k))}
+function flyTo(k){if(flying)return;flying=true;const wf=$("#wf"),i=ORDER.indexOf(k),bl=$(`.bld[data-k="${k}"]`),[l,b]=perch(i);sPop();
+  wf.dataset.busy=1;falcon(wf,"jump");wf.style.left=l;wf.style.bottom=b;
+  setTimeout(()=>{bl.classList.add("hit");falcon(wf,"point");hop(wf);sWin();speak(PLACE[k].name,PLACE[k].lang)},950);
+  setTimeout(()=>{delete wf.dataset.busy;const L=vis(k);if(L.length===1){open1(k,L[0].href)}else location.hash="c="+k},1900)}
+function open1(k,href){try{sessionStorage.setItem("najma:v2c",k)}catch(e){}location.href=href}
+
+/* road */
+function drawRoad(k){const s=PLACE[k],L=vis(k).slice(0,21),A=$("#roadarea");document.documentElement.style.setProperty("--ac",s.c);$("#roadbg").src=`${V}${s.bg}.webp`;$("#roadbg").style.objectPosition=k==="hw"?"bottom":"top";$("#roadtitle").textContent=s.name;
+  $$(".starcount").forEach(e=>e.textContent=AD(stars));
+  if(!L.length){A.innerHTML=`<div class="card" id="empty">${k==="hw"?"لا يوجد واجب اليوم":"لا يوجد شيء هنا بعد"}</div><div class="falcon" id="roadfalcon" style="left:50%;top:48%"><img alt=""></div>`;falcon($("#roadfalcon"),"thumb");return}
+  const per=L.length<=5?L.length:L.length<=12?Math.ceil(L.length/2):7,rows=Math.ceil(L.length/per),Y=rows===1?[68]:rows===2?[53,80]:[46,65,84],sm=rows===3||per>6;
+  const P=L.map((a,i)=>{const r=Math.floor(i/per),c=i%per,n=Math.min(per,L.length-r*per),span=per>1?80/(per-1):0,x0=per===1?50:90-c*span;return [r%2?90-(per-1-c)*span- (per-n)*0:x0,Y[r]]});
+  /* serpentine: odd rows run back the other way */
+  L.forEach((a,i)=>{const r=Math.floor(i/per),c=i%per,span=per>1?80/(per-1):0;P[i]=[per===1?50:(r%2?10+c*span:90-c*span),Y[r]]});
+  let d=`M${P[0][0]},${P[0][1]}`;for(let i=1;i<P.length;i++){const [x0,y0]=P[i-1],[x1,y1]=P[i];if(y0===y1){const m=(x0+x1)/2;d+=` C${m},${y0-5} ${m},${y1+5} ${x1},${y1}`}else{const ex=x0>50?x0+7:x0-7;d+=` C${ex},${y0} ${ex},${y1} ${x1},${y1}`}}
+  let h=`<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" vector-effect="non-scaling-stroke" stroke="#d9a95e" stroke-linecap="round" style="stroke-width:${sm?8:9.6}cqh"/><path d="${d}" fill="none" vector-effect="non-scaling-stroke" stroke="#fbe6bd" stroke-linecap="round" style="stroke-width:${sm?6.2:7.6}cqh"/></svg>`;
+  const cur=L.findIndex(a=>!a.total||count(a.key)<a.total);
+  L.forEach((a,i)=>{const n=a.total?Math.min(count(a.key),a.total):0,pr=a.total?n/a.total:0,dn=a.total&&n>=a.total;
+    h+=`<a class="stop${sm?" sm":""}${i===cur?" cur":""}" href="${a.href}" style="left:${P[i][0]}%;top:${P[i][1]}%" aria-label="${a.name}">${pic(lpic(a))}${pr&&!dn?`<svg class="ring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="${s.c}" stroke-width="6" stroke-linecap="round" pathLength="100" stroke-dasharray="${pr*100} 100"/></svg>`:""}${dn?`<i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>`:""}<small dir="auto">${a.name}</small></a>`});
+  const at=P[cur<0?0:cur];h+=`<div class="falcon" id="roadfalcon" style="left:${at[0]}%;top:calc(${at[1]}% - ${sm?5.5:7}cqh);width:${sm?15:19}cqh;height:${sm?15:19}cqh"><img alt=""></div>`;
+  A.innerHTML=h;falcon($("#roadfalcon"),cur<0?"thumb":"wave");
+  A.querySelectorAll("a.stop").forEach(el=>el.onclick=e=>{e.preventDefault();if(el.dataset.go)return;el.dataset.go=1;sPop();el.classList.add("go");hop($("#roadfalcon"));setTimeout(()=>open1(k,el.getAttribute("href")),380)})}
+$("#rback").onclick=()=>{sTap();location.hash=""};
+
+function route(){const m=location.hash.match(/c=(\w+)/),k=m&&PLACE[m[1]]?m[1]:null;$("#map").classList.toggle("on",!k);$("#road").classList.toggle("on",!!k);if(k)drawRoad(k);else drawMap()}
+addEventListener("hashchange",route);addEventListener("pageshow",e=>{if(e.persisted)location.reload()});route();
+
+/* choose the child (not on a child's own iPad), parents' door, progress */
+{const B=$("#kidsBox"),R=NAJMA.raw,use=id=>{R.set("najma:cur",id);location.reload()},add=(av,bg,name,on,fn)=>{const b=document.createElement("button");b.className=on?"on":"";b.innerHTML=`<span class="av" style="background:${bg}">${av}</span><span dir="auto">${name}</span>`;b.onclick=fn;B.appendChild(b)};
+  NAJMA.profiles.filter(p=>!NAJMA.lock||p.id===NAJMA.lock).forEach(p=>add(NAJMA_AV(p.avatar),p.color,p.name,NAJMA.me&&NAJMA.me.id===p.id,()=>{if(NAJMA.me&&NAJMA.me.id===p.id)$("#kidsOv").classList.remove("on");else use(p.id)}));
+  add("🏆","#fff6c4","تقدّمي",false,()=>location.href="home.html#c=prog");
+  if(!NAJMA.lock)add("👨‍👩‍👧","#e9f4ff","للوالدين",false,()=>location.href="parent.html");
+  $("#kidsOv").onclick=e=>{if(e.target.id==="kidsOv")e.currentTarget.classList.remove("on")}}
+</script>
+</body>
+</html>

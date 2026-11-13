@@ -106,3 +106,9 @@ button.wrong{box-shadow:0 0 0 6px #ff9f43!important}
 
 /* ===== kids-app-design batch 1: nothing a child reads is smaller than 18px ===== */
 .tile small,.lvb small,button.g small,button.sc .meta,button.sc .num,.node .t,.tile .nm,.lv button,.tabs button,.bar .btn,main button small{font-size:18px!important;line-height:1.25}
+
+/* ===== opened from the new world: the new falcon, no bottom bar ===== */
+html.v2 .n2bar{display:none!important}
+html.v2 main{padding-bottom:calc(40px + env(safe-area-inset-bottom))!important}
+html.v2 .mascotWrap::after{background-image:url(img/v2/f_thumb.webp)}
+html.v2 body::before{background-image:url(img/v2/bg_calm.webp);background-position:center bottom}
