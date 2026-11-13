@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-v2>
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<script src="supa.js"></script>
+<script src="profile.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="apple-touch-icon" href="icon-n.png">
+<link rel="icon" href="icon-n.png">
+<title>Sound Practice</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#bfe3f5">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@700&family=Baloo+2:wght@600;800&display=swap">
+<style>
+:root{--ink:#1d2547;--mute:#5a5670;--card:#fffdf7;--gold:#f5b700;--ac:#2567c9;--ease:cubic-bezier(.23,1,.32,1);--bounce:cubic-bezier(.34,1.56,.64,1)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#f6d9a4;font-family:"Baloo 2",system-ui,sans-serif;color:var(--ink);overflow:hidden}
+button{font-family:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
+/* the stage is always landscape, like the world; held upright it turns itself sideways */
+#app{position:fixed;top:0;left:0;width:100vw;height:100dvh;overflow:hidden;container-type:size}
+body.rot #app{left:100vw;width:100dvh;height:100vw;transform-origin:0 0;transform:rotate(90deg)}
+.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:bottom}
+.top{position:absolute;top:2.5cqh;left:2.5cqh;right:2.5cqh;display:flex;align-items:center;justify-content:space-between;gap:2cqh;z-index:6}
+.pill{display:flex;align-items:center;gap:1.2cqh;height:11cqh;padding:0 3.4cqh;background:var(--card);border:.5cqh solid #fff;border-radius:999px;box-shadow:0 1.2cqh 2.6cqh rgba(110,70,15,.2);font-weight:800;font-size:4.6cqh;white-space:nowrap;text-decoration:none;color:var(--ink)}
+.pill img{width:7cqh;height:7cqh;object-fit:contain}
+.pill.ic{width:11cqh;padding:0;justify-content:center}.pill.ic svg{width:5.5cqh;height:5.5cqh}
+.title{min-width:34cqh;text-align:center;font-weight:800;font-size:5.2cqh;color:#fff;background:var(--ac);border:.5cqh solid #fff;border-radius:999px;height:11cqh;line-height:10cqh;box-shadow:0 1.2cqh 0 rgba(0,0,0,.15);padding:0 5cqh}
+.card{background:var(--card);border:.5cqh solid #fff;border-radius:5cqh;box-shadow:0 1.6cqh 3.6cqh rgba(110,70,15,.2)}
+.btn{display:flex;align-items:center;justify-content:center;height:12cqh;padding:0 5.5cqh;border-radius:999px;background:var(--ac);color:#fff;font-weight:800;font-size:4.8cqh;border:.5cqh solid #fff;box-shadow:0 1.3cqh 0 rgba(0,0,0,.18);transition:transform .12s var(--ease),box-shadow .12s;white-space:nowrap;text-decoration:none}
+.btn:active{transform:translateY(.9cqh);box-shadow:0 .4cqh 0 rgba(0,0,0,.18)}
+.btn.ghost{background:var(--card);color:var(--ac);border-color:var(--ac)}
+/* the guide's side */
+#say{position:absolute;left:3cqh;top:16cqh;width:31cqh;padding:1.8cqh 2.4cqh;font-weight:800;font-size:3.5cqh;line-height:1.3;border-radius:4cqh;min-height:19cqh;display:flex;align-items:center;z-index:3}
+#say.pop{animation:pop .4s}
+@keyframes pop{40%{transform:scale(1.06)}}
+#tools{position:absolute;left:5cqh;top:38cqh;width:27cqh;display:grid;grid-template-columns:repeat(2,1fr);gap:1.4cqh 2.4cqh;z-index:3}
+#tools button{aspect-ratio:1;border-radius:50%;background:var(--card);border:.5cqh solid #fff;box-shadow:0 .9cqh 0 rgba(110,70,15,.25);display:flex;align-items:center;justify-content:center;transition:transform .12s var(--ease),box-shadow .12s}
+#tools button:active{transform:translateY(.6cqh);box-shadow:0 .3cqh 0 rgba(110,70,15,.25)}
+#tools svg{width:52%;height:52%}
+#tools button.arm{background:#ffe9a8}
+.falcon{position:absolute}
+.falcon img{width:100%;height:100%;object-fit:contain;display:block}
+.falcon.hop{animation:hop .6s var(--bounce)}
+@keyframes hop{40%{transform:translateY(-5cqh) scale(1.05)}}
+#pf{left:4cqh;bottom:0;width:30cqh;height:30cqh;z-index:2}
+/* the sounds */
+#board{position:absolute;left:38cqh;right:3cqh;top:16cqh;bottom:3cqh;display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:1fr;gap:1.7cqh}
+.tile{position:relative;display:flex;align-items:center;justify-content:center;border-radius:3.6cqh;background:var(--c);border:.5cqh solid #fff;box-shadow:0 1.1cqh 0 var(--d);color:#fff;font-family:Andika,sans-serif;font-weight:700;font-size:8.6cqh;line-height:1;text-decoration:none;transition:transform .12s var(--ease),box-shadow .12s;animation:enter .45s var(--bounce) backwards;padding-bottom:1cqh}
+.tile.two{font-size:7cqh}
+.tile:active{transform:translateY(.8cqh);box-shadow:0 .3cqh 0 var(--d)}
+.tile.done::after{content:"";position:absolute;top:-1.6cqh;right:-1.6cqh;width:5.6cqh;height:5.6cqh;background:url(img/v2/r_star.webp) center/contain no-repeat;animation:spinIn .5s var(--bounce)}
+.tile.spot{transform:scale(1.14);box-shadow:0 0 0 .8cqh #fff,0 0 0 1.8cqh var(--gold);z-index:2}
+@keyframes enter{from{transform:scale(0);opacity:0}}
+@keyframes spinIn{from{transform:scale(0) rotate(-180deg)}}
+/* surprise card */
+#modal{position:absolute;inset:0;background:rgba(29,37,71,.5);display:none;align-items:center;justify-content:center;z-index:20}
+#modal.show{display:flex}
+#mcard{padding:4cqh 6cqh;display:flex;align-items:center;gap:6cqh;animation:enter .45s var(--bounce)}
+#mBig{width:34cqh;height:34cqh;border-radius:6cqh;display:flex;align-items:center;justify-content:center;color:#fff;font-family:Andika,sans-serif;font-weight:700;font-size:22cqh;line-height:1;border:.8cqh solid #fff;box-shadow:0 1.6cqh 0 rgba(0,0,0,.18);padding-bottom:2cqh}
+#mcol{display:flex;flex-direction:column;align-items:center;gap:3cqh}
+#mcol h3{margin:0;font-size:6cqh}#mcol p{margin:0;font-size:3.8cqh;color:var(--mute);font-weight:600;max-width:46cqh;text-align:center}
+.conf{position:absolute;top:-16%;width:14cqh;z-index:30;pointer-events:none;animation:fall 2.4s linear forwards}
+@keyframes fall{to{transform:translateY(130cqh) rotate(260deg)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div id="app">
+  <img class="bg" src="img/v2/bg_calm.webp" alt="">
+  <div class="top">
+    <a class="pill ic" id="back" href="world.html#c=en" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></a>
+    <div class="title">Sounds</div>
+    <span class="pill"><img src="img/v2/r_star.webp" alt=""><span id="count">0 / 32</span></span>
+  </div>
+  <div class="card" id="say">Tap a sound and say it with me!</div>
+  <div id="tools">
+    <button id="surprise" aria-label="Surprise me"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="2.2" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><g fill="#1d2547" stroke="none"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg></button>
+    <button id="writeBtn" aria-label="Write letters"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4.5L16.5 4a2.1 2.1 0 0 1 3 3L8 18.5 4 20z"/><path d="M14.5 6l3.5 3.5"/></svg></button>
+    <button id="mute" aria-label="Sound"></button>
+    <button id="reset" aria-label="Start again"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.6-5.9"/><path d="M4 4v4.5h4.5"/></svg></button>
+  </div>
+  <div class="falcon" id="pf"><img alt=""></div>
+  <div id="board"></div>
+  <div id="modal"><div class="card" id="mcard"><div id="mBig">a</div><div id="mcol"><h3>Your sound is…</h3><p>Watch the video, then say it 3 times!</p><a class="btn" id="mGo" target="_blank" rel="noopener">Let's go!</a><button class="btn ghost" id="mClose">Not now</button></div></div></div>
+</div>
+<script>
+const B="https://schools.ruthmiskin.com/training/view/";
+const set1=[
+ ["m","lNKjR3q5/YT9Wmu1D"],["a","uhQq9Eb3/iVXIFxI3"],["s","sgmCS4gY/x6cYe8Tw"],["d","LncvcfSW/doZOY0bG"],
+ ["t","iyqruT68/ESs5gzYn"],["i","mlimIij7/KbKUN4X0"],["n","5MLUko5D/p1Hgxn5L"],["p","HKzfaciE/bmXoedSR"],
+ ["g","pFt3JSy7/KYXiFalr"],["o","iB03iZZ6/AX1RFvsC"],["c","BVBiGEDW/t2fKkJKV"],["k","oIxqbONx/vTIja95F"],
+ ["u","spiaSIwb/DP1OFMJk"],["b","6p4FNtjn/f0YlH2bl"],["f","2gdQyDWU/3AWg02S6"],["e","yz7mc6xu/z5zIRYxX"],
+ ["l","PFz7wwBl/0RJ1qKZ0"],["h","ZWFjTc1U/tRSUdiwZ"],["r","s4Ici8Pr/R9VXQwh0"],["j","lVrG2mjA/ZlpxkpXK"],
+ ["v","Tzmjo7IG/TYSCvdKT"],["y","Tm0T6T7w/i8js7HZc"],["w","XY6PJErF/4dH3YCdp"],["z","jyNzgb54/WbVEwpS9"],
+ ["x","qhJrHjqp/cVxVL8ab"]
+];
+const set2=[
+ ["sh","uidyEWDa/wLaECRmM"],["th","VpHeEpQB/rEgK8gnQ"],["ch","01g8r0t5/yEzrqC5u"],["qu","EXGnlqb3/rt4Pfn9G"],
+ ["ng","G48aum0u/iWkXwYEb"],["nk","SX5kHdX5/X71urvdO"],["ck","QHSEcTAM/bbKIYLoa"]
+];
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],V="img/v2/",APP=$("#app");
+let ROT=false;function fit(){ROT=innerHeight>innerWidth;document.body.classList.toggle("rot",ROT)}fit();addEventListener("resize",fit);
+const EL=NAJMA.lv("sounds"),S1=EL.includes(0)?set1:[],S2=EL.includes(1)?set2:[],ALL=[...S1,...S2];
+/* the six colours of the world, one after another */
+const COL=[["#2f74d6","#1f52a3"],["#1f9163","#136845"],["#d0611a","#9c440b"],["#7a55c7","#573a99"],["#c13a30","#8f241c"],["#a26c14","#74490a"]];
+const cheers=["Super star!","Amazing!","You did it!","Great listening!","Brilliant!","High five!","So clever!","Keep going!","Fantastic!"];
+const tapLines=["Say it 3 times: loud, quiet, silly!","Can you think of a word with that sound?","Watch my mouth, now yours!","Sound it out!"];
+let done={},muted=false;
+try{done=JSON.parse(localStorage.getItem("soundsDone")||"{}")}catch(e){}
+try{muted=localStorage.getItem("soundsMuted")==="1"}catch(e){}
+const save=()=>{try{localStorage.setItem("soundsDone",JSON.stringify(done))}catch(e){}};
+let ac;function tone(freq,dur,type="sine",when=0,vol=.16){if(muted)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.setValueAtTime(freq,ac.currentTime+when);
+  g.gain.setValueAtTime(vol,ac.currentTime+when);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+when+dur);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+when);o.stop(ac.currentTime+when+dur+.02)}catch(e){}}
+const popSnd=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)},tick=()=>tone(700+Math.random()*300,.05,"square",0,.05),fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",i*.12,.14));
+function rain(){for(let i=0;i<10;i++){const c=document.createElement("img");c.src=V+"g_confetti.webp";c.className="conf";c.alt="";c.style.left=(3+Math.random()*90)+"%";c.style.animationDelay=(Math.random()*.9)+"s";APP.appendChild(c);setTimeout(()=>c.remove(),3500)}}
+/* the falcon */
+const pf=$("#pf"),say=$("#say");let sayT,busyT;
+function frame(f){pf.querySelector("img").src=V+"f_"+f+".webp";pf.dataset.f=f}
+function hop(){pf.classList.remove("hop");void pf.offsetWidth;pf.classList.add("hop")}
+function act(f,ms){clearTimeout(busyT);pf.dataset.busy=1;frame(f);hop();busyT=setTimeout(()=>{delete pf.dataset.busy;frame("talk1")},ms||1400)}
+function talk(t,f){say.textContent=t;say.classList.remove("pop");void say.offsetWidth;say.classList.add("pop");act(f||"jump");clearTimeout(sayT);sayT=setTimeout(()=>say.textContent="Tap a sound and say it with me!",6000)}
+frame("wave");setInterval(()=>{if(pf.dataset.busy)return;const im=pf.querySelector("img"),k=im.src;im.src=V+"f_blink.webp";setTimeout(()=>{if(!pf.dataset.busy)im.src=k},160)},3200);
+pf.onclick=()=>{popSnd();talk(["Tee-hee, that tickles!","I love sounds!","Pick a sound for me!"][Math.floor(Math.random()*3)],"thumb")};
+/* tiles: each one opens the school's video for that sound */
+const board=$("#board");
+ALL.forEach(([s,u],i)=>{const a=document.createElement("a"),c=COL[i%6];a.className="tile"+(s.length>1?" two":"")+(done[s]?" done":"");a.dataset.s=s;a.href=B+u;a.target="_blank";a.rel="noopener";a.textContent=s;
+  a.style.cssText=`--c:${c[0]};--d:${c[1]};animation-delay:${(i*.02).toFixed(2)}s`+(S1.length&&i===S1.length?";grid-column-start:1":"");a.addEventListener("click",()=>practise(s,a));board.appendChild(a)});
+function update(){const n=ALL.filter(([s])=>done[s]).length;$("#count").textContent=n+" / "+ALL.length;return n}
+function practise(s,el){popSnd();const first=!done[s];done[s]=1;save();el.classList.add("done");const n=update();
+  if(first&&[5,10,20,ALL.length].includes(n))setTimeout(()=>{fanfare();rain();talk(n===ALL.length?"You did all the sounds!":"Wow! "+n+" sounds!","dance")},350);
+  else talk('"'+s+'"! '+cheers[Math.floor(Math.random()*cheers.length)]+" "+tapLines[Math.floor(Math.random()*tapLines.length)])}
+update();
+/* surprise me */
+const modal=$("#modal");let spinning=false;
+$("#surprise").onclick=()=>{if(spinning)return;spinning=true;const tiles=$$(".tile"),pending=tiles.filter(t=>!done[t.dataset.s]),pool=pending.length?pending:tiles,target=pool[Math.floor(Math.random()*pool.length)];
+  let steps=16+Math.floor(Math.random()*6),i=0,prev;(function step(){if(prev)prev.classList.remove("spot");const t=i<steps?tiles[Math.floor(Math.random()*tiles.length)]:target;t.classList.add("spot");prev=t;tick();
+    if(i<steps){i++;setTimeout(step,55+i*i*.35)}else setTimeout(()=>{t.classList.remove("spot");spinning=false;const big=$("#mBig");big.textContent=t.dataset.s;big.style.background=getComputedStyle(t).getPropertyValue("--c");big.style.fontSize=t.dataset.s.length>1?"16cqh":"";$("#mGo").href=t.href;modal.classList.add("show");fanfare();act("wow",1600)},450)})()};
+$("#mGo").onclick=()=>{const s=$("#mBig").textContent;modal.classList.remove("show");practise(s,$(`.tile[data-s="${s}"]`))};
+$("#mClose").onclick=()=>modal.classList.remove("show");modal.onclick=e=>{if(e.target===modal)modal.classList.remove("show")};
+/* sound on or off, start again (two taps) */
+const muteBtn=$("#mute"),setMute=()=>muteBtn.innerHTML=muted?'<svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="#1d2547"/><path d="M17 9.5l4 5M21 9.5l-4 5"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="#1d2547"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';setMute();
+muteBtn.onclick=()=>{muted=!muted;try{localStorage.setItem("soundsMuted",muted?"1":"0")}catch(e){}setMute();popSnd();talk(muted?"Sound off.":"Sound on!","thumb")};
+let armed=0;$("#reset").onclick=e=>{const b=e.currentTarget;if(Date.now()-armed<4000){done={};save();try{localStorage.removeItem("enWrite")}catch(x){}$$(".tile.done").forEach(t=>t.classList.remove("done"));update();b.classList.remove("arm");armed=0;talk("Fresh start! Let's go!","thumb");return}
+  armed=Date.now();b.classList.add("arm");talk("Start again? Tap once more.","think");setTimeout(()=>b.classList.remove("arm"),4000)};
+</script>
+<script src="writepad.js"></script>
+<script>
+$("#writeBtn").onclick=()=>{popSnd();WritePad.open({items:ALL.map(x=>x[0]),index:0,lang:"en",rtl:false,font:'"Andika"',yShift:.44,
+  onStar:(it,s)=>{if(s>=2){fanfare();rain();try{const w=JSON.parse(localStorage.getItem("enWrite")||"{}");w[it]=1;localStorage.setItem("enWrite",JSON.stringify(w))}catch(e){}}}})};
+</script>
+</body>
+</html>

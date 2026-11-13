@@ -74,7 +74,7 @@
   window.NAJMA={LEVELS,lv,me,profiles,sections,DEFSEC,settings:Object.assign({},DEF,me||{},{apps:Object.assign({},DEF.apps,(me&&me.apps)||{})}),DEF,
     raw:{get:k=>G.call(localStorage,k),set:(k,v)=>SET.call(localStorage,k,v),remove:k=>RM.call(localStorage,k)}};
   /* name chip next to the home button on every page */
-  if(me&&!/(home\d*|world|parent)\.html$/.test(location.pathname)){document.addEventListener("DOMContentLoaded",()=>{
+  if(me&&!document.documentElement.hasAttribute("data-v2")&&!/(home\d*|world|parent)\.html$/.test(location.pathname)){document.addEventListener("DOMContentLoaded",()=>{
     const c=document.createElement("a");c.href="home.html";
     c.style.cssText=`position:fixed;top:calc(10px + env(safe-area-inset-top));left:70px;z-index:15;height:52px;border-radius:18px;background:${me.color||"#fff"};color:#fff;
       display:flex;align-items:center;gap:6px;padding:0 14px 0 8px;font:800 20px "Baloo Bhaijaan 2","Baloo 2",system-ui,sans-serif;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18);text-shadow:0 2px 0 rgba(0,0,0,.15)`;
@@ -91,7 +91,7 @@
   /* a child's picture: an emoji, or one of the character pictures ("img:k1") */
   window.NAJMA_AV=v=>/^img:k\d$/.test(v||"")?`<img src="img/kids/${v.slice(4)}.webp" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block">`:(v||"⭐");
   /* new look (test only): switched on by the test home page, never on the kids' iPads until published */
-  try{if(!/(home\d*|world|parent|families|guide)\.html$/.test(location.pathname)&&location.pathname.split("/").pop()!==""){
+  try{if(!document.documentElement.hasAttribute("data-v2")&&!/(home\d*|world|parent|families|guide)\.html$/.test(location.pathname)&&location.pathname.split("/").pop()!==""){
     const l=document.createElement("link");l.rel="stylesheet";l.href="theme2.css?v=19";document.head.appendChild(l);const wst=window.scrollTo.bind(window);window.scrollTo=function(){try{const m=document.querySelector("main");if(m&&getComputedStyle(m).position==="fixed"){m.scrollTo.apply(m,arguments);return}}catch(e){}return wst.apply(null,arguments)};
     document.addEventListener("DOMContentLoaded",()=>{let V2=null;try{if(sessionStorage.getItem("najma:v2"))V2="world.html"+(sessionStorage.getItem("najma:v2c")?"#c="+sessionStorage.getItem("najma:v2c"):"")}catch(e){}const H=V2||"home.html";if(V2)document.documentElement.classList.add("v2");
       const bk=document.createElement("a");bk.className="n2back";bk.textContent="➡️ رجوع";bk.href=V2||(document.referrer&&/home\d*\.html/.test(document.referrer)?document.referrer:H);document.body.appendChild(bk);

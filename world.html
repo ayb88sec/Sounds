@@ -248,7 +248,9 @@ function flyTo(k){if(flying)return;flying=true;const wf=$("#wf"),i=ORDER.indexOf
   wf.dataset.busy=1;falcon(wf,"jump");wf.style.left=l;wf.style.bottom=b;
   setTimeout(()=>{bl.classList.add("hit");falcon(wf,"point");hop(wf);sWin();speak(PLACE[k].name,PLACE[k].lang)},950);
   setTimeout(()=>{delete wf.dataset.busy;const L=vis(k);if(L.length===1){open1(k,L[0].href)}else location.hash="c="+k},1900)}
-function open1(k,href){try{sessionStorage.setItem("najma:v2c",k)}catch(e){}location.href=href}
+/* lessons already rebuilt in the new look */
+const NEWL={"index.html":"sounds2.html"};
+function open1(k,href){href=NEWL[href]||href;try{sessionStorage.setItem("najma:v2c",k)}catch(e){}location.href=href}
 
 /* road */
 function drawRoad(k){const s=PLACE[k],L=vis(k).slice(0,21),A=$("#roadarea");document.documentElement.style.setProperty("--ac",s.c);$("#roadbg").src=`${V}${s.bg}.webp`;$("#roadbg").style.objectPosition=k==="hw"?"bottom":"top";$("#roadtitle").textContent=s.name;
