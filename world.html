@@ -230,6 +230,20 @@ svg.road{position:absolute;inset:0;width:100%;height:100%}
 #allgrid .glesson{animation:popup2 .45s var(--bounce) backwards}
 #allgrid .glesson span{width:17cqh;height:17cqh}#allgrid .glesson b{font-size:3.2cqh}
 @keyframes popup2{from{transform:scale(.4);opacity:0}}
+
+/* home in the painted style: your background, buildings on the sand, no signs */
+#map{background:#f6d9a4}#map::before,#map::after{display:none}
+#map .bg{z-index:0}
+.bld.nb>img{width:100%;height:100%;object-fit:contain;object-position:bottom;filter:drop-shadow(0 1.4cqh 1.2cqh rgba(130,80,20,.28))}
+.bld.nb{animation:idle 4s ease-in-out infinite;animation-delay:var(--d)}
+@keyframes idle{50%{transform:translateY(-.8cqh)}}
+.bld.nb.hit{animation:bhit .6s var(--bounce)}
+.bld.nb i.tk{position:absolute;top:8%;right:10%;width:6cqh;height:6cqh;border-radius:50%;background:#1f9d5c;border:.5cqh solid #fff;display:flex;align-items:center;justify-content:center}
+.bld.nb i.tk svg{width:3.4cqh;height:3.4cqh}
+#heroK{bottom:2cqh;height:44cqh}
+#whw{left:calc(50% + 23cqh);bottom:2cqh;width:24cqh;animation:hwb 2.6s ease-in-out infinite}
+#whw img{width:24cqh;height:auto;margin:0;filter:drop-shadow(0 1cqh 1cqh rgba(130,80,20,.28))}
+#whw #hwn{top:0;inset-inline-end:1cqh}
 </style>
 </head>
 <body>
@@ -368,17 +382,15 @@ async function drawBoard(){const o=$("#board"),L=(await boardData()).sort((a,b)=
   o.innerHTML=`<div class="card" id="bcard"><div id="bhead" class="wood">نجوم العائلة</div><button class="pill ic" id="bx" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div id="podium">${pod}</div>${rest?`<div id="brest">${rest}</div>`:""}</div>`;
   $("#bx").onclick=()=>{o.classList.remove("on");clearInterval(boardT)};o.onclick=e=>{if(e.target===o){o.classList.remove("on");clearInterval(boardT)}}}
 /* home */
-const ORDER=["ar","en","deen","math","uae","name"],SPOT=[[88,13,25],[76.5,45,22],[58.5,58,18],[41.5,58,18],[23.5,45,22],[12,13,25]];
+const ORDER=["ar","en","deen","math","uae","name"],SPOT=[[86,6,27],[77,38,24],[60,52,21],[40,52,21],[23,38,24],[14,6,27]];
 const HOME=["calc(50% - 42.5cqh)","1cqh"];let flying=false;
 const perch=i=>[`calc(${SPOT[i][0]}% - ${(SPOT[i][0]>50?1:-1)*SPOT[i][2]*.72+10.5}cqh)`,SPOT[i][1]-1+"cqh"];
+const BLD={ar:"b_fort",en:"b_library",deen:"b_mosque",math:"b_souq",uae:"b_dhow",name:"b_tent"};
 function drawMap(){const M=$("#map"),me=NAJMA.me;
-  let h=`<svg class="path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M12,90 A38,46 0 0 1 88,90" fill="none" vector-effect="non-scaling-stroke" stroke="#e2ad66" style="stroke-width:11cqh" stroke-linecap="round"/><path d="M12,90 A38,46 0 0 1 88,90" fill="none" vector-effect="non-scaling-stroke" stroke="#fbe3b6" style="stroke-width:8.6cqh" stroke-linecap="round"/></svg>`;
-  [[18,5,22,0],[36,14,15,-3],[60,4,20,-5],[78,15,14,-2]].forEach(([x,t,w,dl])=>h+=`<img class="cloud" src="${V}s_cloud.webp" alt="" style="--x:${x}%;--t:${t}%;--s:${w}cqh;--d:${dl}s">`);
-  const dec=(n,x,b,w,sw,dl=0)=>h+=`<img class="decor${sw?" sway":""}" src="${V}${n}.webp" alt="" style="--x:${x}%;--b:${b}cqh;--s:${w}cqh;--d:${dl}s">`;
-  dec("s_palm",50,56,15,1);dec("s_palm",3,50,17,1,-2);dec("s_ghaf",97,50,17,1,-1);dec("s_palm",33,52,12,1,-3);dec("s_ghaf",67,52,12,1,-2);dec("s_flowers",31,3,8);dec("s_rocks",70,30,9);
-  h+=`<div id="heroK"><b>هيا نتعلم!</b></div><button id="whw"><img src="${V}l_task.webp" alt=""><span class="wood">واجب اليوم</span>${hwN?`<i id="hwn">${AD(hwN)}</i>`:""}</button>`;
-  ORDER.forEach((k,i)=>{const [x,b,ht]=SPOT[i],s=PLACE[k],n=Math.round(frac(k)*4),on=vis(k).length;if(!on)return;
-    h+=`<button class="bld" data-k="${k}" style="left:${x}%;bottom:${b}cqh;height:${ht}cqh;width:${ht*1.45}cqh;margin-left:${-ht*.725}cqh" aria-label="${s.name}">${pic(s.p)}</button><button class="post wood" data-k="${k}" style="left:${x}%;bottom:${b-7.6}cqh">${s.name}<i>${[0,1,2,3].map(j=>`<img src="${V}r_star.webp" alt=""${j<n?"":' class="off"'}>`).join("")}</i></button>`});
+  let h=`<img class="bg" src="${V}home_bg.webp" alt="" style="object-position:center top">`;
+  h+=`<div id="heroK"><b>هيا نتعلم!</b></div><button id="whw" aria-label="واجب اليوم"><img src="${V}h_bag.webp" alt="">${hwN?`<i id="hwn">${AD(hwN)}</i>`:""}</button>`;
+  ORDER.forEach((k,i)=>{const [x,b,ht]=SPOT[i],s=PLACE[k],dn=frac(k)>=1;if(!vis(k).length)return;
+    h+=`<button class="bld nb" data-k="${k}" style="left:${x}%;bottom:${b}cqh;height:${ht}cqh;width:${ht*1.3}cqh;margin-left:${-ht*.65}cqh;--d:${(i*.35).toFixed(2)}s" aria-label="${s.name}">${pic(BLD[k])}${dn?`<i class="tk">${TK}</i>`:""}</button>`});
   h+=`<div class="falcon" id="wf" data-f="wave"><img alt=""></div><span class="pill" id="wstars"><img src="${V}r_star.webp" alt=""><span>${stars}</span></span><button class="pill ic" id="wcup" aria-label="نجوم العائلة"><img src="${V}r_trophy.webp" alt=""></button><button class="pill" id="wall" aria-label="كل الألعاب"><svg viewBox="0 0 24 24" width="30" height="30"><g fill="#f5b700" stroke="#c98a00" stroke-width="1.2"><rect x="3" y="3" width="7.5" height="7.5" rx="2.2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2.2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2.2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2.2"/></g></svg>كل الألعاب</button>
     <button class="pill" id="wkid"><span class="av" style="background:${me&&me.color||"#ffd23f"}">${NAJMA_AV(me&&me.avatar)}</span><span dir="auto">${me&&!me.preview?(me.nameAr||me.name):""}</span></button>`;
   M.innerHTML=h;const wf=$("#wf");wf.style.left=HOME[0];wf.style.bottom=HOME[1];falcon(wf,"wave");flying=false;
