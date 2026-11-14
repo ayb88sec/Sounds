@@ -173,7 +173,7 @@ svg.road{position:absolute;inset:0;width:100%;height:100%}
 #road #roadfalcon{width:22cqh;height:22cqh;left:1cqh;bottom:1cqh}
 
 /* objects come on their own woven mats */
-#road .gstop{width:auto;height:30cqh;aspect-ratio:1.3;transform:translate(-50%,-100%)}
+#road .gstop{width:auto;height:24cqh;aspect-ratio:1.3;transform:translate(-50%,-100%)}
 #road .gstop .pad{display:none}
 #road .gstop>img{width:100%;height:100%;object-fit:contain;object-position:bottom;filter:drop-shadow(0 1cqh 1cqh rgba(120,70,15,.25))}
 #road .gstop.cur>img{filter:drop-shadow(0 0 2.6cqh rgba(255,220,90,.95)) drop-shadow(0 1cqh 1cqh rgba(120,70,15,.25))}
@@ -181,6 +181,26 @@ svg.road{position:absolute;inset:0;width:100%;height:100%}
 #road #roadfalcon{width:20cqh;height:20cqh;left:1cqh;bottom:1cqh}
 
 #road #roadtitle{visibility:hidden}
+
+#road .gstop u.st3{position:absolute;top:calc(100% + .6cqh);left:50%;transform:translateX(-50%);display:flex;gap:.5cqh;padding:.5cqh 1.4cqh;border-radius:999px;background:rgba(255,253,247,.85)}
+#road .gstop u.st3 img{width:3.2cqh;height:3.2cqh}#road .gstop u.st3 img.off{filter:grayscale(1) brightness(1.1);opacity:.45}
+#wcup{left:calc(2.5cqh + 22cqh);top:2.5cqh}#wcup img{width:7.5cqh;height:7.5cqh}
+#board{position:absolute;inset:0;z-index:16;background:rgba(29,37,71,.5);display:none;align-items:center;justify-content:center}
+#board.on{display:flex}
+#bcard{position:relative;padding:9cqh 6cqh 4cqh;min-width:90cqh;max-width:94%;animation:popin .45s var(--bounce)}
+#bhead{position:absolute;top:-4.5cqh;left:50%;transform:translateX(-50%);padding:.6cqh 6cqh 1.2cqh;border-radius:3.4cqh;font-size:5.4cqh}
+#bx{position:absolute;top:-4cqh;left:-4cqh}
+#podium{display:flex;align-items:flex-end;justify-content:center;gap:3cqh}
+.pcol{display:flex;flex-direction:column;align-items:center;gap:.8cqh;width:24cqh}
+.pcol b{font-size:3.8cqh;line-height:1.1}
+.bav{width:14cqh;height:14cqh;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:8cqh;border:.7cqh solid #fff;box-shadow:0 1cqh 2cqh rgba(110,70,15,.25)}
+.p1 .bav{width:18cqh;height:18cqh;border-color:var(--gold)}
+.pst{display:flex;align-items:center;gap:.6cqh;font-weight:800;font-size:3.8cqh}.pst img{width:4.4cqh;height:4.4cqh}
+.pblock{width:100%;border-radius:2.4cqh 2.4cqh 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:1.4cqh;color:#fff;font-weight:800;font-size:7cqh;text-shadow:0 .5cqh 0 rgba(0,0,0,.2)}
+.p1 .pblock{height:20cqh;background:linear-gradient(#ffd54a,#e8a800)}.p2 .pblock{height:14cqh;background:linear-gradient(#d9e2ee,#9fb0c6)}.p3 .pblock{height:10cqh;background:linear-gradient(#f0b07a,#c7773a)}
+.pcol.me b,.brow.me b{color:#c2410c}
+#brest{display:flex;flex-wrap:wrap;justify-content:center;gap:1.6cqh 3cqh;margin-top:3cqh;padding-top:2.4cqh;border-top:.4cqh dashed #e8d6b5}
+.brow{display:flex;align-items:center;gap:1.4cqh}.brow i{font-style:normal;font-weight:800;font-size:3.6cqh;color:var(--mute)}.brow .bav{width:9cqh;height:9cqh;font-size:5cqh;border-width:.5cqh}.brow b{font-size:3.4cqh}
 </style>
 </head>
 <body>
@@ -191,7 +211,7 @@ svg.road{position:absolute;inset:0;width:100%;height:100%}
   <div id="roadarea"></div>
   <div class="top"><button class="pill ic" id="rback" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button><div class="title" id="roadtitle"></div><span class="pill"><img src="img/v2/r_star.webp" alt=""><span class="starcount"></span></span></div>
 </section>
-<div id="gov"></div>
+<div id="gov"></div><div id="board"></div>
 <div id="kidsOv"><div class="card" id="kidsBox"></div></div>
 </div>
 <script>
@@ -298,6 +318,21 @@ let AC;function tone(f,d,t=0,type="sine",v=.08){try{AC=AC||new (window.AudioCont
 const sPop=()=>{tone(520,.08,0,"triangle");tone(880,.12,.05,"triangle")},sWin=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.18,i*.09)),sTap=()=>tone(660,.05,0,"triangle",.05);
 function speak(text,lang){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=lang==="en"?"en-GB":"ar-SA";u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
 
+
+/* family stars: every child of the family, live from the database; on a parent's phone, from what is saved here */
+const ALLAPPS=(()=>{const m={};Object.values(CATS).forEach(c=>c.apps.forEach(a=>{if(a.total&&a.key)m[a.key]=Math.max(m[a.key]||0,a.total)}));return m})();
+const starsOf=counts=>Object.entries(ALLAPPS).reduce((t,[k,n])=>t+Math.min(+(counts&&counts[k])||0,n),0);
+async function boardData(){const DEVT=NAJMA.raw.get("najma:dev");
+  if(NAJMA.rpc&&DEVT){try{const L=await NAJMA.rpc("family_board",{tok:DEVT});if(Array.isArray(L)&&L.length)return L.map(c=>({id:c.id,name:c.nameAr||c.name,avatar:c.avatar,color:c.color,stars:starsOf(c.counts)}))}catch(e){}}
+  return NAJMA.profiles.map(p=>{const counts={};Object.keys(ALLAPPS).forEach(k=>{try{counts[k]=Object.keys(JSON.parse(NAJMA.raw.get(`najma:${p.id}:${k}`)||"{}")).length}catch(e){}});return {id:p.id,name:p.nameAr||p.name,avatar:p.avatar,color:p.color,stars:starsOf(counts)}})}
+let boardT=null;
+async function openBoard(){const o=$("#board");o.classList.add("on");await drawBoard();clearInterval(boardT);boardT=setInterval(()=>{if(o.classList.contains("on"))drawBoard();else clearInterval(boardT)},30000)}
+async function drawBoard(){const o=$("#board"),L=(await boardData()).sort((a,b)=>b.stars-a.stars),me=NAJMA.me&&NAJMA.me.id;
+  const av=c=>`<span class="bav" style="background:${c.color||"#ffd23f"}">${NAJMA_AV(c.avatar)}</span>`;
+  const pod=[1,0,2].filter(i=>L[i]).map(i=>{const c=L[i];return `<div class="pcol p${i+1}${c.id===me?" me":""}">${av(c)}<b dir="auto">${c.name||""}</b><span class="pst"><img src="${V}r_star.webp" alt="">${c.stars}</span><div class="pblock">${i+1}</div></div>`}).join("");
+  const rest=L.slice(3).map((c,j)=>`<div class="brow${c.id===me?" me":""}"><i>${j+4}</i>${av(c)}<b dir="auto">${c.name||""}</b><span class="pst"><img src="${V}r_star.webp" alt="">${c.stars}</span></div>`).join("");
+  o.innerHTML=`<div class="card" id="bcard"><div id="bhead" class="wood">نجوم العائلة</div><button class="pill ic" id="bx" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div id="podium">${pod}</div>${rest?`<div id="brest">${rest}</div>`:""}</div>`;
+  $("#bx").onclick=()=>{o.classList.remove("on");clearInterval(boardT)};o.onclick=e=>{if(e.target===o){o.classList.remove("on");clearInterval(boardT)}}}
 /* home */
 const ORDER=["ar","en","deen","math","uae","name"],SPOT=[[88,13,25],[76.5,45,22],[58.5,58,18],[41.5,58,18],[23.5,45,22],[12,13,25]];
 const HOME=["calc(50% - 42.5cqh)","1cqh"];let flying=false;
@@ -310,11 +345,11 @@ function drawMap(){const M=$("#map"),me=NAJMA.me;
   h+=`<div id="heroK"><b>هيا نتعلم!</b></div><button id="whw"><img src="${V}l_task.webp" alt=""><span class="wood">واجب اليوم</span>${hwN?`<i id="hwn">${AD(hwN)}</i>`:""}</button>`;
   ORDER.forEach((k,i)=>{const [x,b,ht]=SPOT[i],s=PLACE[k],n=Math.round(frac(k)*4),on=vis(k).length;if(!on)return;
     h+=`<button class="bld" data-k="${k}" style="left:${x}%;bottom:${b}cqh;height:${ht}cqh;width:${ht*1.45}cqh;margin-left:${-ht*.725}cqh" aria-label="${s.name}">${pic(s.p)}</button><button class="post wood" data-k="${k}" style="left:${x}%;bottom:${b-7.6}cqh">${s.name}<i>${[0,1,2,3].map(j=>`<img src="${V}r_star.webp" alt=""${j<n?"":' class="off"'}>`).join("")}</i></button>`});
-  h+=`<div class="falcon" id="wf" data-f="wave"><img alt=""></div><span class="pill" id="wstars"><img src="${V}r_star.webp" alt=""><span>${stars}</span></span>
+  h+=`<div class="falcon" id="wf" data-f="wave"><img alt=""></div><span class="pill" id="wstars"><img src="${V}r_star.webp" alt=""><span>${stars}</span></span><button class="pill ic" id="wcup" aria-label="نجوم العائلة"><img src="${V}r_trophy.webp" alt=""></button>
     <button class="pill" id="wkid"><span class="av" style="background:${me&&me.color||"#ffd23f"}">${NAJMA_AV(me&&me.avatar)}</span><span dir="auto">${me&&!me.preview?(me.nameAr||me.name):""}</span></button>`;
   M.innerHTML=h;const wf=$("#wf");wf.style.left=HOME[0];wf.style.bottom=HOME[1];falcon(wf,"wave");flying=false;
   wf.onclick=()=>{hop(wf);talk(wf,1200);speak("هلا! شو بنتعلم اليوم؟","ar")};
-  $("#whw").onclick=()=>{sTap();location.hash="c=hw"};$("#wkid").onclick=()=>{sTap();$("#kidsOv").classList.add("on")};
+  $("#wcup").onclick=()=>{sTap();openBoard()};$("#whw").onclick=()=>{sTap();location.hash="c=hw"};$("#wkid").onclick=()=>{sTap();$("#kidsOv").classList.add("on")};
   M.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>flyTo(b.dataset.k))}
 function flyTo(k){if(flying)return;flying=true;const wf=$("#wf"),i=ORDER.indexOf(k),bl=$(`.bld[data-k="${k}"]`),[l,b]=perch(i);sPop();
   wf.dataset.busy=1;falcon(wf,"jump");wf.style.left=l;wf.style.bottom=b;
@@ -360,10 +395,10 @@ function drawRoad(k){const s=PLACE[k],A=$("#roadarea"),R=GROUPS[k];document.docu
     const F=$("#flat");G.forEach(g=>g.L.forEach(a=>F.appendChild(lessonEl(k,a))));F.style.setProperty("--n",Math.min(4,F.children.length));return}
   /* the building on the sand: big lesson pictures standing in neat rows, no road */
   $("#roadbg").src=`${V}pl_${k}.webp`;$("#roadbg").style.objectPosition="center 12%";$("#roadbg").style.display="";
-  const n=G.length,two=n>3,top=two?Math.ceil(n/2):n,P=G.map((g,i)=>{const r=two&&i>=top?1:0,m=r?n-top:top,c=r?i-top:i,span=m>1?Math.min(26,52/(m-1)):0;return [55+((m-1)/2-c)*span,two?(r?95:61):80]});
+  const n=G.length,two=n>3,top=two?Math.ceil(n/2):n,P=G.map((g,i)=>{const r=two&&i>=top?1:0,m=r?n-top:top,c=r?i-top:i,span=m>1?Math.min(24,48/(m-1)):0;return [55+((m-1)/2-c)*span,two?(r?88:57):76]});
   let cur=G.findIndex(g=>!g.chest&&gfrac(g)<1);if(cur<0)cur=G.findIndex(g=>gfrac(g)<1);
   let h="";G.forEach((g,i)=>{const f=gfrac(g),dn=f>=1&&g.L.some(a=>a.total),st=Math.round(f*3),ic=g.ic;
-    h+=`<button class="gstop${i===cur?" cur":""}${g.chest?" chest":""}" data-i="${i}" style="left:${P[i][0]}%;top:${P[i][1]}%" aria-label="${g.name}"><span class="pad"></span>${pic(ic)}${dn?`<i>${TK}</i>`:""}</button>`});
+    h+=`<button class="gstop${i===cur?" cur":""}${g.chest?" chest":""}" data-i="${i}" style="left:${P[i][0]}%;top:${P[i][1]}%" aria-label="${g.name}"><span class="pad"></span>${pic(ic)}${dn?`<i>${TK}</i>`:""}<u class="st3">${[0,1,2].map(j=>`<img src="${V}r_star.webp" alt=""${j<st?"":' class="off"'}>`).join("")}</u></button>`});
   h+=`<div class="falcon" id="roadfalcon"><img alt=""></div>`;
   A.innerHTML=h;falcon($("#roadfalcon"),cur<0?"thumb":"point");
   A.querySelectorAll(".gstop").forEach(el=>el.onclick=()=>{const g=G[+el.dataset.i];sPop();speak(g.name,/[a-z]/i.test(g.name)?"en":"ar");talk($("#roadfalcon"),900);el.classList.remove("go");void el.offsetWidth;el.classList.add("go");
@@ -379,7 +414,7 @@ function openG(k,g){const o=$("#gov");o.innerHTML=`<div class="card" id="gcard">
 function closeG(){const o=$("#gov");if(o)o.classList.remove("on")}
 $("#rback").onclick=()=>{sTap();location.hash=""};
 
-function route(){const m=location.hash.match(/c=(\w+)/),k=m&&PLACE[m[1]]?m[1]:null;$("#map").classList.toggle("on",!k);$("#road").classList.toggle("on",!!k);if(k)drawRoad(k);else drawMap()}
+function route(){const bo=$("#board");if(bo)bo.classList.remove("on");clearInterval(boardT);const m=location.hash.match(/c=(\w+)/),k=m&&PLACE[m[1]]?m[1]:null;$("#map").classList.toggle("on",!k);$("#road").classList.toggle("on",!!k);if(k)drawRoad(k);else drawMap()}
 addEventListener("hashchange",route);addEventListener("pageshow",e=>{if(e.persisted)location.reload()});route();
 
 /* choose the child (not on a child's own iPad), parents' door, progress */
