@@ -122,7 +122,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
   <div class="score" id="sScore"></div>
 </div></div>
 
-<script src="writepad.js"></script>
+<script src="writepad.js"></script><script src="frame.js"></script>
 <script>
 const SID=new URLSearchParams(location.search).get("s")||"spell1";
 const SEC=NAJMA.sections.find(s=>s.id===SID)||NAJMA.sections[0];
@@ -260,5 +260,18 @@ window.NAJMA_PROGRESS=()=>({done:WORDS.filter(w=>done[w]).length,total:WORDS.len
 window.NAJMA_RESET=()=>localStorage.removeItem(KEY);
 </script>
 <script src="extras.js?v=10"></script>
+<script>
+NajmaFrame({say:"#say",tools:[{el:"#spellBtn",icon:"test"},{el:"#writeBtn",icon:"write"},{el:".nx-reset",icon:"again"}]});
+</script>
+<style>
+/* Spelling, new look: big word cards that fill the right side */
+html.nfOn main section{background:none!important;border:0!important;box-shadow:none!important;padding:0!important}
+html.nfOn main section .bar{display:none}
+html.nfOn #grid{grid-template-columns:repeat(auto-fill,minmax(min(230px,40%),1fr))!important;gap:18px!important}
+html.nfOn #grid .tile{min-height:clamp(84px,17vh,130px)!important;font-size:clamp(24px,3.4vw,40px)!important;word-break:normal!important;overflow-wrap:normal!important;white-space:nowrap;border-radius:26px!important;letter-spacing:.01em}
+html.nfOn #grid .tile .st{font-size:0!important}
+@media (max-height:540px){html.nfOn #grid{gap:10px!important}html.nfOn #grid .tile{min-height:64px!important;font-size:24px!important}}
+html.nfOn #grid .tile .st::after{content:"";display:inline-block;width:26px;height:26px;background:url(img/v2/r_star.webp) center/contain no-repeat}
+</style>
 </body>
 </html>

@@ -114,7 +114,7 @@ html.v2 .mascotWrap::after{background-image:url(img/v2/f_thumb.webp)}
 html.v2 body::before{background-image:url(img/v2/bg_calm.webp);background-position:center bottom}
 
 /* ===================== Najma world look for every lesson page (html.v2) ===================== */
-html.v2,html.v2 body{background:#f3cf98!important}
+html.v2{background:#f3cf98!important}html.v2 body{background:transparent!important}
 html.v2 body::before{background:#f3cf98 url(img/v2/home_bg.webp) center 30%/cover no-repeat!important;filter:saturate(.95)}
 html.v2 body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(rgba(255,248,232,0) 0,rgba(255,248,232,.25) 40%,rgba(246,217,164,.55) 100%)}
 /* title: the same wooden sign as the children's sign, no emoji stars */
