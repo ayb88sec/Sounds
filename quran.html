@@ -187,7 +187,7 @@ function drawPath(){const P=$("path");if(!P)return;const n=PATH.length,STEP=96,H
     <path d="${d}" fill="none" stroke="#3fc35a" stroke-width="7" stroke-linecap="round" vector-effect="non-scaling-stroke" pathLength="100" stroke-dasharray="${doneN/n*100} 100"/>
     <path d="${d}" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="2 8" vector-effect="non-scaling-stroke"/></svg>`;
   PATH.forEach((s,i)=>{const b=document.createElement("button"),dn=isDone(s),c=i===cur;b.className="node"+(dn?" done":c?" cur":"");b.style.left=pts[i].x+"%";b.style.top=pts[i].y+"px";
-    b.innerHTML=`<div class="c">${dn?"✅":c?"⭐":AD(i+1)}</div><span class="t">${QK[s].name}</span>`;b.onclick=()=>{pop();location.href="quran.html?n="+s};P.appendChild(b)});
+    b.innerHTML=`<div class="c">${dn?"✓":AD(i+1)}</div><span class="t">${QK[s].name}</span>`;b.onclick=()=>{pop();location.href="quran.html?n="+s};P.appendChild(b)});
   const e=document.createElement("button");e.className="node end"+(cur===-1?"":" lock");e.style.left=end.x+"%";e.style.top=end.y+"px";e.innerHTML=`<div class="c">🏆</div><span class="t" style="font-family:inherit">الجائزة</span>`;
   e.onclick=()=>{if(cur===-1)reward();else{buzz();e.animate([{transform:"translate(-50%,-50%) rotate(-8deg)"},{transform:"translate(-50%,-50%) rotate(8deg)"},{transform:"translate(-50%,-50%)"}],400)}};P.appendChild(e);
   /* the child's character walks to the next stop when a surah is finished */
@@ -353,5 +353,11 @@ if(jobs.length)Promise.all(jobs).then(()=>{if(N&&(tab==="story"||tab==="learn"))
 <script src="extras.js?v=10"></script>
 <script src="hint.js?v=1"></script>
 <script src="frame.js"></script><script>NajmaFrame({tools:[{el:".nx-reset",icon:"again"}]});</script>
+<style>
+html.v2 .node .c{background:#fffaf0!important;color:#7d4a1c!important;border:4px solid #f1d9ae!important;font-weight:800}
+html.v2 .node.done .c{background:#1f9163!important;color:#fff!important;border-color:#fff!important}
+html.v2 .node.cur .c{background:linear-gradient(#d99a52,#b9722f)!important;color:#fff!important;border-color:#7d4a1c!important;box-shadow:0 0 0 5px #fff,0 0 18px 8px rgba(255,214,70,.8)!important}
+html.v2 .node .t{color:#5c3008!important;font-weight:800}
+</style>
 </body>
 </html>

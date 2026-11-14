@@ -182,3 +182,24 @@ html.v2 main h1{top:calc(20px + env(safe-area-inset-top))!important}
 html.v2 .n2back{top:calc(16px + env(safe-area-inset-top))!important}
 @media (max-height:540px){html.v2 main::before{height:calc(60px + env(safe-area-inset-top))!important}html.v2 main h1{top:calc(8px + env(safe-area-inset-top))!important}html.v2 .n2back{top:calc(6px + env(safe-area-inset-top))!important}}
 html.nfOn #av,html.nfOn img.sqh{display:none!important}
+
+/* ===== v2: one style for tabs, pop-up cards and their buttons ===== */
+html.v2 .tabs button,html.v2 #tabs button,html.v2 #lv button,html.v2 .toggle button{background:#fffaf0!important;color:#5c3008!important;border:3px solid #f1d9ae!important;border-radius:999px!important;box-shadow:0 5px 0 rgba(170,115,50,.25)!important;font-weight:800!important;text-shadow:none!important}
+html.v2 .tabs button.on,html.v2 #tabs button.on,html.v2 #lv button.on,html.v2 .toggle button.on{background:linear-gradient(#d99a52,#b9722f)!important;color:#fffdf7!important;border-color:#7d4a1c!important;text-shadow:0 2px 0 #6a3b12!important}
+html.v2 .modal{background:rgba(60,35,10,.45)!important}
+html.v2 .modal .card{background:#fffaf0!important;border:6px solid #f1d9ae!important;border-radius:34px!important;box-shadow:0 14px 0 rgba(170,115,50,.3),0 24px 40px rgba(60,30,5,.3)!important}
+html.v2 .modal .x{width:52px!important;height:52px!important;border-radius:50%!important;background:linear-gradient(#d99a52,#b9722f)!important;color:#fffdf7!important;border:4px solid #7d4a1c!important;box-shadow:0 5px 0 rgba(90,50,10,.35)!important;font-size:22px!important;font-weight:800!important}
+html.v2 .modal .btn,html.v2 .modal .bar button{background:linear-gradient(#d99a52,#b9722f)!important;color:#fffdf7!important;border:4px solid #7d4a1c!important;box-shadow:0 6px 0 rgba(90,50,10,.35)!important;text-shadow:0 2px 0 #6a3b12!important}
+html.v2 .modal .btn.ghost{background:#fffaf0!important;color:#7d4a1c!important;border-color:#d99a52!important;text-shadow:none!important}
+html.v2 .bi-text{background:#fffaf0!important;border:3px solid #d99a52!important;color:#5c3008!important}
+/* days and months: carriages carry the name only */
+html.v2 .car .e{display:none!important}
+html.v2 .car{justify-content:center!important}
+
+/* maths: group names readable, signs without apples */
+html.v2 .grp{color:#5c3008!important;text-shadow:none!important}
+html.v2 .lv button .big{font-size:52px!important;font-weight:800}
+/* duas: coloured cards, the picture sits on the colour */
+html.v2 #all .tile,html.v2 .tile:has(.im){border:4px solid #fff!important;padding-bottom:10px!important}
+html.v2 .tile .im{background:none!important;font-size:58px!important;aspect-ratio:auto!important;padding:16px 0 6px}
+html.v2 .tile .nm{background:none!important;color:#fff!important;font-size:22px!important;margin:0!important;text-shadow:0 2px 0 rgba(0,0,0,.2)}
