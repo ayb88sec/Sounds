@@ -142,3 +142,28 @@ html.v2 .gd img{background:none!important;mix-blend-mode:normal}
 /* worksheets: the paper shows its own title already */
 html.v2 .st{display:none!important}
 html.v2 main{padding-bottom:calc(40px + env(safe-area-inset-bottom))!important}
+
+/* ===== v2 pass 2: same pieces on every page ===== */
+html.v2 .n2back{background:linear-gradient(#d99a52,#b9722f)!important;background-size:100% 100%!important}
+/* progress: a cream strip with a wooden fill, no glossy yellow */
+html.v2 div:has(>.nx-prog){background:#fffaf0!important;border:4px solid #f1d9ae!important;box-shadow:0 8px 0 rgba(170,115,50,.2)!important}
+html.v2 .nx-prog,html.v2 .progress,html.v2 .track{background:#f3e3c4!important;box-shadow:inset 0 3px 4px rgba(120,70,15,.18)!important;border:0!important}
+html.v2 .nx-fill,html.v2 .progress .fill{background:linear-gradient(#e7a95f,#c27a35)!important;box-shadow:inset 0 3px 0 rgba(255,255,255,.3)!important}
+/* every other big button: cream with a wooden edge; the main one stays wood */
+html.v2 .btn.pink,html.v2 .btn.ghost,html.v2 .btn.y,html.v2 .btn.t,html.v2 .btn.b,html.v2 button.big,html.v2 .nx-reset,html.v2 button.go:not(.btn){background:#fffaf0!important;color:#7d4a1c!important;border:4px solid #d99a52!important;
+  box-shadow:0 6px 0 rgba(150,95,30,.35)!important;text-shadow:none!important}
+html.v2 .btn.pink *,html.v2 .btn.ghost *,html.v2 button.big *{color:#7d4a1c!important}
+/* small chips and tabs */
+html.v2 main button.on,html.v2 .lvb.on{background:linear-gradient(#d99a52,#b9722f)!important;color:#fffdf7!important;border-color:#7d4a1c!important;text-shadow:0 2px 0 #6a3b12}
+html.v2 .sub,html.v2 .say,html.v2 .bubble{background:#fffaf0!important;border:3px solid #f1d9ae!important;color:#3b2a14!important;text-shadow:none!important}
+/* titles carry words only */
+html.v2 main h1{max-width:calc(100vw - 150px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* tiles: the six colours of the world places, one after another, like Sound Practice */
+html.v2 main .tile:nth-child(6n+1),html.v2 main button.t:nth-child(6n+1),html.v2 .cols>.col:nth-child(6n+1){background:#2f74d6!important;box-shadow:0 7px 0 #1f52a3!important;border:4px solid #fff!important}
+html.v2 main .tile:nth-child(6n+2),html.v2 main button.t:nth-child(6n+2),html.v2 .cols>.col:nth-child(6n+2){background:#1f9163!important;box-shadow:0 7px 0 #136845!important;border:4px solid #fff!important}
+html.v2 main .tile:nth-child(6n+3),html.v2 main button.t:nth-child(6n+3),html.v2 .cols>.col:nth-child(6n+3){background:#d0611a!important;box-shadow:0 7px 0 #9c440b!important;border:4px solid #fff!important}
+html.v2 main .tile:nth-child(6n+4),html.v2 main button.t:nth-child(6n+4),html.v2 .cols>.col:nth-child(6n+4){background:#7a55c7!important;box-shadow:0 7px 0 #573a99!important;border:4px solid #fff!important}
+html.v2 main .tile:nth-child(6n+5),html.v2 main button.t:nth-child(6n+5),html.v2 .cols>.col:nth-child(6n+5){background:#c13a30!important;box-shadow:0 7px 0 #8f241c!important;border:4px solid #fff!important}
+html.v2 main .tile:nth-child(6n+6),html.v2 main button.t:nth-child(6n+6),html.v2 .cols>.col:nth-child(6n+6){background:#a26c14!important;box-shadow:0 7px 0 #74490a!important;border:4px solid #fff!important}
+html.v2 main .tile *,html.v2 main button.t{color:#fff!important}

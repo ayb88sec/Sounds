@@ -32,7 +32,7 @@
   .nr-end .row a{background:linear-gradient(160deg,#fff,#e9f4ff)}
   .nr-end .row img{width:40px;height:40px}`;
   document.head.appendChild(css);
-  const COL=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
+  const COL=["#2f74d6","#1f9163","#d0611a","#7a55c7","#c13a30","#a26c14"];
 
   window.NajmaRound=function(o){
     /* o: {card, ar, total=6, again(), colors} */

@@ -54,7 +54,7 @@
   @media (max-width:600px){.np-stop{width:120px;height:120px}.np-stop.cur{width:136px;height:136px}.np-stop b{font-size:40px}.np-deco{width:84px;height:84px}.np-card{flex-wrap:wrap}.np-go{width:100%;justify-content:center}}
   @media (prefers-reduced-motion:reduce){.np-stop.cur{animation:none}}`;
   document.head.appendChild(css);
-  const COL=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
+  const COL=["#2f74d6","#1f9163","#d0611a","#7a55c7","#c13a30","#a26c14"];
   const WORLDS=[{en:"Desert",ar:"الصحراء",img:"img/uae/sym_camel.webp",deco:["img/uae/sym_camel.webp","img/uae/sym_palm.webp","img/uae/sym_ghaf.webp"]},
                 {en:"Sea",ar:"البحر",img:"img/uae/em_fu.webp",deco:["img/uae/em_fu.webp","img/uae/em_rk.webp","img/uae/em_uq.webp"]},
                 {en:"City",ar:"المدينة",img:"img/uae/em_du.webp",deco:["img/uae/em_du.webp","img/uae/em_ad.webp","img/uae/em_aj.webp"]}];
@@ -71,7 +71,7 @@
       const doneN=o.stops.filter((_,i)=>o.isDone(i)).length;
       root.innerHTML=`<div class="np-hd"><img src="img/uae/saqoor_wave.webp" alt=""><b>${me.name?t("Hi, "+me.name+"!","هلا "+me.name+"!"):t("Hi!","هلا!")}</b>
         <span><img src="img/home2/nav_star.webp" alt="">${doneN} / ${o.stops.length}</span></div>`+
-        (nW>1?`<div class="np-tabs" style="--n:${nW}">${Array.from({length:nW},(_,w)=>{const W=WORLDS[w%3],a=w*per,b=Math.min(o.stops.length,a+per)-1,lk=a>c;
+        (nW>1?`<div class="np-tabs" style="--n:${nW}">${Array.from({length:nW},(_,w)=>{const W=WORLDS[w%3],a=w*per,b=Math.min(o.stops.length,a+per)-1,lk=false;
           return `<button data-w="${w}" class="${w===world?"on":""}${lk?" lock":""}"><img src="${W.img}" alt=""><span><b>${t(W.en,W.ar)}</b><small>${t(b>a?`Groups ${a+1}–${b+1}`:`Group ${a+1}`,b>a?`المجموعات ${ad(a+1)}–${ad(b+1)}`:`المجموعة ${ad(a+1)}`)}</small></span></button>`}).join("")}</div>`:"")+
         `<div class="np-road"></div><div class="np-card"></div>`;
       root.querySelectorAll(".np-tabs button").forEach(b=>b.onclick=()=>{const w=+b.dataset.w;if(w*per>c){b.classList.add("no");say(t("Finish this world first!","خلّص هذا العالم أولًا!"));return}sel=Math.min(c,w*per+per-1,o.stops.length-1);if(sel<w*per)sel=w*per;o.onSelect&&o.onSelect(sel);draw()});
@@ -83,7 +83,7 @@
       let d=`M${pts[0][0]},${pts[0][1]}`;for(let i=1;i<pts.length;i++){const [x0,y0]=pts[i-1],[x1,y1]=pts[i],m=(y0+y1)/2;d+=` C${x0},${m+30} ${x1},${m-30} ${x1},${y1}`}
       let h=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true"><path d="${d}" fill="none" stroke="#d9a95e" stroke-width="62" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#f6dfae" stroke-width="50" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="16 16" stroke-linecap="round" opacity=".9"/></svg>`;
       const WD=WORLDS[world%3];
-      for(let i=0;i<n;i++){const k=a+i,x=xs(i),y=ys(i),dn=o.isDone(k),isC=k===c,lk=k>c;
+      for(let i=0;i<n;i++){const k=a+i,x=xs(i),y=ys(i),dn=o.isDone(k),isC=k===c,lk=false;
         h+=`<img class="np-deco" src="${WD.deco[i%3]}" alt="" style="left:${W-x+(x>W/2?40:-40)}px;top:${y+20}px;--r:${[-6,5,-4][i%3]}deg">`;
         h+=`<button class="np-stop${isC?" cur":""}${lk?" lock":""}${k===sel?" sel":""}" data-k="${k}" style="left:${x}px;top:${y}px;background:${COL[k%6]}">
           ${dn?`<span class="bd" style="background:#2fbf71">${TICK}</span>`:lk?`<span class="bd" style="background:#8a8299">${LOCK}</span>`:""}
