@@ -171,6 +171,14 @@ svg.road{position:absolute;inset:0;width:100%;height:100%}
 #road .gstop.cur .pad{box-shadow:inset 0 -.7cqh 0 rgba(120,60,15,.35),0 0 4cqh 1.4cqh rgba(255,214,70,.8)}
 #road .gstop i{top:-1cqh;right:1cqh}
 #road #roadfalcon{width:22cqh;height:22cqh;left:1cqh;bottom:1cqh}
+
+/* objects come on their own woven mats */
+#road .gstop{width:auto;height:30cqh;aspect-ratio:1.3;transform:translate(-50%,-100%)}
+#road .gstop .pad{display:none}
+#road .gstop>img{width:100%;height:100%;object-fit:contain;object-position:bottom;filter:drop-shadow(0 1cqh 1cqh rgba(120,70,15,.25))}
+#road .gstop.cur>img{filter:drop-shadow(0 0 2.6cqh rgba(255,220,90,.95)) drop-shadow(0 1cqh 1cqh rgba(120,70,15,.25))}
+#road .gstop i{top:1cqh;right:3cqh}
+#road #roadfalcon{width:20cqh;height:20cqh;left:1cqh;bottom:1cqh}
 </style>
 </head>
 <body>
@@ -317,16 +325,21 @@ function open1(k,href){href=NEWL[href]||href;try{sessionStorage.setItem("najma:v
 /* road */
 /* each road has a few big stops; a stop can hold several lessons; worksheets wait in the chest at the end */
 const GROUPS={
- en:[["Sounds","l_sound",["sounds"]],["Words","l_puzzle",["cvc","sent","s:"]],["Writing","l_write",["writeEn"]],["Numbers & Time","l_clock",["numEn","days","months","clock"]],["Colours & Shapes","l_colors",["colorsEn","shapes"]]],
- ar:[["حروفي","l_blocks",["arabic"]],["كلماتي","l_book",["spell","s:"]],["الأرقام","l_abacus",["numAr"]],["الوقت","l_clock",["daysAr","monthsAr","clockAr"]],["الألوان","l_colors",["colorsAr"]]],
- deen:[["الأركان","l_pillars",["islam","iman"]],["القرآن","l_quran",["quran","s:"]],["أدعية","l_dua",["duas"]],["دروسي","l_mat",["lsAkh","lsTah"]]],
- math:[["الرياضيات","l_dice",["math","s:"]]]};
-const CHEST={en:"Worksheets",ar:"أوراق العمل",deen:"أوراق العمل",math:"Worksheets"};
+ en:[["Sounds","e_sound",["sounds"]],["Words","e_abc",["cvc","sent","s:"]],["Writing","e_write",["writeEn"]],["Days & Months","d_cal",["days","months"]],["Colours","e_palette",["colorsEn"]]],
+ ar:[["حروفي","a_letters",["arabic"]],["كلماتي","a_book",["spell","s:"]],["الأرقام","a_num",["numAr"]],["الوقت","a_time",["daysAr","monthsAr","clockAr"]],["الألوان","a_palette",["colorsAr"]]],
+ deen:[["الأركان","d_pillars",["islam","iman"]],["القرآن","d_quran",["quran","s:"]],["أدعية","d_dua",["duas"]],["دروسي","d_mat",["lsAkh","lsTah"]]],
+ math:[["Numbers","m_123",["numEn"]],["Adding","m_plus",["mathPlus"]],["Taking away","m_minus",["mathMinus"]],["Shapes","m_shapes",["shapes"]],["Clock","m_clock",["clock"]]]};
+const CHEST={en:["Worksheets","e_chest"],ar:["أوراق العمل","a_chest"],deen:["أوراق العمل","d_chest"],math:["Worksheets","m_chest"]};
+/* every visible lesson in the app, plus maths split into adding and taking away */
+function pool(){const seen=new Set(),P=[];Object.keys(CATS).forEach(k=>vis(k).forEach(a=>{if(seen.has(a.id))return;seen.add(a.id);P.push(a)}));
+  const m=P.find(a=>a.id==="math");if(m){const ML=NAJMA.lv("math"),p=ML.includes(0),q=ML.includes(1);
+    P.push(Object.assign({},m,{id:"mathPlus",name:"Adding",href:p?"math.html?l=0":"math.html"}));if(q||p)P.push(Object.assign({},m,{id:"mathMinus",name:"Taking away",href:q?"math.html?l=1":"math.html?l=2"}))}
+  return P}
 function groupsOf(k){const L=vis(k);if(k==="hw"||!GROUPS[k])return L.map(a=>({name:a.name,ic:lpic(a),L:[a]}));
-  const used=new Set(),G=[];
-  GROUPS[k].forEach(([n,ic,ids])=>{const m=L.filter(a=>!used.has(a)&&!a.id.startsWith("ws")&&ids.some(x=>x==="s:"?a.id.startsWith("s:"):a.id===x));m.forEach(a=>used.add(a));if(m.length)G.push({name:n,ic,L:m})});
-  const rest=L.filter(a=>!used.has(a)&&!a.id.startsWith("ws"));if(rest.length)G.push({name:k==="en"||k==="math"?"More":"المزيد",ic:"l_cards",L:rest});
-  const ws=L.filter(a=>a.id.startsWith("ws"));if(ws.length)G.push({name:CHEST[k],ic:"r_chest",L:ws,chest:1});
+  const P=pool(),G=[],used=new Set();Object.values(GROUPS).flat().forEach(g=>g[2].forEach(x=>used.add(x)));used.add("math");
+  GROUPS[k].forEach(([n,ic,ids])=>{const m=P.filter(a=>!a.id.startsWith("ws")&&ids.some(x=>x==="s:"?a.id.startsWith("s:")&&L.includes(a):a.id===x));if(m.length)G.push({name:n,ic,L:m})});
+  const rest=L.filter(a=>!a.id.startsWith("ws")&&!a.id.startsWith("s:")&&!used.has(a.id));if(rest.length)G.push({name:k==="ar"||k==="deen"?"المزيد":"More",ic:"l_cards",L:rest});
+  const ws=L.filter(a=>a.id.startsWith("ws"));if(ws.length)G.push({name:CHEST[k][0],ic:CHEST[k][1],L:ws,chest:1});
   return G}
 const gfrac=g=>{let n=0,t=0;g.L.forEach(a=>{if(a.total){t+=a.total;n+=Math.min(count(a.key),a.total)}});return t?n/t:0};
 /* inside each building: lessons stand on its shelves and tables; [x%, surface y%, height%] of the room picture */
@@ -344,10 +357,10 @@ function drawRoad(k){const s=PLACE[k],A=$("#roadarea"),R=GROUPS[k];document.docu
     A.innerHTML=`<div id="flat"></div><div class="falcon" id="roadfalcon" style="left:14cqh;top:96%"><img alt=""></div>`;falcon($("#roadfalcon"),"point");
     const F=$("#flat");G.forEach(g=>g.L.forEach(a=>F.appendChild(lessonEl(k,a))));F.style.setProperty("--n",Math.min(4,F.children.length));return}
   /* the building on the sand: big lesson pictures standing in neat rows, no road */
-  $("#roadbg").src=`${V}${s.bg}.webp`;$("#roadbg").style.objectPosition="top";$("#roadbg").style.display="";
-  const n=G.length,two=n>3,top=two?Math.ceil(n/2):n,P=G.map((g,i)=>{const r=two&&i>=top?1:0,m=r?n-top:top,c=r?i-top:i,span=m>1?Math.min(29,58/(m-1)):0;return [57+((m-1)/2-c)*span,two?(r?86:59):74]});
+  $("#roadbg").src=`${V}pl_${k}.webp`;$("#roadbg").style.objectPosition="center 12%";$("#roadbg").style.display="";
+  const n=G.length,two=n>3,top=two?Math.ceil(n/2):n,P=G.map((g,i)=>{const r=two&&i>=top?1:0,m=r?n-top:top,c=r?i-top:i,span=m>1?Math.min(26,52/(m-1)):0;return [55+((m-1)/2-c)*span,two?(r?95:61):80]});
   let cur=G.findIndex(g=>!g.chest&&gfrac(g)<1);if(cur<0)cur=G.findIndex(g=>gfrac(g)<1);
-  let h="";G.forEach((g,i)=>{const f=gfrac(g),dn=f>=1&&g.L.some(a=>a.total),st=Math.round(f*3),ic=g.chest?(dn?"r_chestopen":"r_chest"):g.ic;
+  let h="";G.forEach((g,i)=>{const f=gfrac(g),dn=f>=1&&g.L.some(a=>a.total),st=Math.round(f*3),ic=g.ic;
     h+=`<button class="gstop${i===cur?" cur":""}${g.chest?" chest":""}" data-i="${i}" style="left:${P[i][0]}%;top:${P[i][1]}%" aria-label="${g.name}"><span class="pad"></span>${pic(ic)}${dn?`<i>${TK}</i>`:""}</button>`});
   h+=`<div class="falcon" id="roadfalcon"><img alt=""></div>`;
   A.innerHTML=h;falcon($("#roadfalcon"),cur<0?"thumb":"point");
