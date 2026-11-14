@@ -110,6 +110,38 @@ body.rot #app{left:100vw;width:100dvh;height:100vw;transform-origin:0 0;transfor
 #kidsBox button{display:flex;flex-direction:column;align-items:center;gap:1cqh;font-weight:800;font-size:3.8cqh;width:22cqh}
 #kidsBox .av{width:15cqh;height:15cqh;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:8cqh;border:.7cqh solid #fff;box-shadow:0 1cqh 2cqh rgba(110,70,15,.25)}
 #kidsBox button.on .av{border-color:var(--gold)}
+
+/* big stops on one winding road */
+svg.road{position:absolute;inset:0;width:100%;height:100%}
+.gstop{position:absolute;width:21cqh;height:19cqh;transform:translate(-50%,-62%);display:flex;align-items:flex-end;justify-content:center;z-index:2}
+.gstop .pad{position:absolute;left:2%;right:2%;bottom:-2.6cqh;height:7.5cqh;border-radius:50%;background:radial-gradient(ellipse at 50% 40%,#fff4dc 0,#f3cf92 62%,#d9a35c 100%);box-shadow:0 1.2cqh 0 rgba(150,95,30,.35)}
+.gstop>img{position:relative;width:86%;height:100%;object-fit:contain;object-position:bottom;filter:drop-shadow(0 1cqh .8cqh rgba(110,60,10,.28))}
+.gstop.chest>img{width:96%}
+.gstop b{position:absolute;top:calc(100% + 2.6cqh);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;padding:0 2.4cqh .6cqh;border-radius:2.4cqh;font-size:3.3cqh;line-height:1.3;z-index:2}
+.gstop b u{display:flex;gap:.4cqh;margin-top:.1cqh}.gstop b u img{width:2.8cqh;height:2.8cqh}.gstop b u img.off{filter:grayscale(1) brightness(.75);opacity:.55}
+.gstop i{position:absolute;top:0;right:1cqh;width:7cqh;height:7cqh;border-radius:50%;background:#1f9d5c;border:.6cqh solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 .6cqh 0 rgba(0,0,0,.15)}
+.gstop i svg{width:4cqh;height:4cqh}
+.gstop.cur .pad{background:radial-gradient(ellipse at 50% 40%,#fffbe6 0,#ffe48a 55%,#f0b400 100%);box-shadow:0 0 4cqh 1.6cqh rgba(255,206,60,.75),0 1.2cqh 0 rgba(150,95,30,.35)}
+.gstop.cur>img{animation:gb 1.8s ease-in-out infinite}
+@keyframes gb{50%{transform:translateY(-1.8cqh)}}
+.gstop:active>img{transform:scale(.94)}
+.gstop.go>img{animation:bhit .5s var(--bounce)}
+#roadfalcon{width:18cqh;height:18cqh;transform:translate(-50%,-100%);margin:0;pointer-events:none;z-index:3}
+#gov{position:absolute;inset:0;z-index:15;background:rgba(29,37,71,.45);display:none;align-items:center;justify-content:center}
+#gov.on{display:flex;animation:fade .25s}
+#gcard{position:relative;padding:9cqh 5cqh 5cqh;max-width:92%;animation:popin .45s var(--bounce)}
+#ghead{position:absolute;top:-4.5cqh;left:50%;transform:translateX(-50%);padding:.6cqh 6cqh 1.2cqh;border-radius:3.4cqh;font-size:5.4cqh}
+#gx{position:absolute;top:-4cqh;left:-4cqh}
+#glist{display:grid;grid-template-columns:repeat(var(--n),25cqh);gap:3cqh 4cqh;justify-content:center}
+.glesson{display:flex;flex-direction:column;align-items:center;gap:1.4cqh;text-decoration:none;color:var(--ink);transition:transform .12s var(--ease)}
+.glesson:active{transform:scale(.94)}
+.glesson span{position:relative;width:22cqh;height:22cqh;border-radius:50%;background:color-mix(in srgb,var(--ac) 14%,#fff);border:.7cqh solid #fff;box-shadow:0 1.2cqh 0 color-mix(in srgb,var(--ac) 45%,#c9a46a);display:flex;align-items:center;justify-content:center}
+.glesson span img{width:70%;height:70%;object-fit:contain}
+.glesson span i{position:absolute;top:-.6cqh;right:-.6cqh;width:6.4cqh;height:6.4cqh;border-radius:50%;background:#1f9d5c;border:.5cqh solid #fff;display:flex;align-items:center;justify-content:center}
+.glesson span i svg{width:3.6cqh;height:3.6cqh}
+.glesson b{font-size:3.8cqh;line-height:1.2;text-align:center}
+.glesson.go span{animation:bhit .45s var(--bounce)}
+@keyframes popin{from{transform:scale(.6);opacity:0}}
 </style>
 </head>
 <body>
@@ -120,6 +152,7 @@ body.rot #app{left:100vw;width:100dvh;height:100vw;transform-origin:0 0;transfor
   <div id="roadarea"></div>
   <div class="top"><button class="pill ic" id="rback" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button><div class="title" id="roadtitle"></div><span class="pill"><img src="img/v2/r_star.webp" alt=""><span class="starcount"></span></span></div>
 </section>
+<div id="gov"></div>
 <div id="kidsOv"><div class="card" id="kidsBox"></div></div>
 </div>
 <script>
@@ -238,7 +271,7 @@ function drawMap(){const M=$("#map"),me=NAJMA.me;
   h+=`<div id="heroK"><b>هيا نتعلم!</b></div><button id="whw"><img src="${V}l_task.webp" alt=""><span class="wood">واجب اليوم</span>${hwN?`<i id="hwn">${AD(hwN)}</i>`:""}</button>`;
   ORDER.forEach((k,i)=>{const [x,b,ht]=SPOT[i],s=PLACE[k],n=Math.round(frac(k)*4),on=vis(k).length;if(!on)return;
     h+=`<button class="bld" data-k="${k}" style="left:${x}%;bottom:${b}cqh;height:${ht}cqh;width:${ht*1.45}cqh;margin-left:${-ht*.725}cqh" aria-label="${s.name}">${pic(s.p)}</button><button class="post wood" data-k="${k}" style="left:${x}%;bottom:${b-7.6}cqh">${s.name}<i>${[0,1,2,3].map(j=>`<img src="${V}r_star.webp" alt=""${j<n?"":' class="off"'}>`).join("")}</i></button>`});
-  h+=`<div class="falcon" id="wf" data-f="wave"><img alt=""></div><span class="pill" id="wstars"><img src="${V}r_star.webp" alt=""><span>${AD(stars)}</span></span>
+  h+=`<div class="falcon" id="wf" data-f="wave"><img alt=""></div><span class="pill" id="wstars"><img src="${V}r_star.webp" alt=""><span>${stars}</span></span>
     <button class="pill" id="wkid"><span class="av" style="background:${me&&me.color||"#ffd23f"}">${NAJMA_AV(me&&me.avatar)}</span><span dir="auto">${me&&!me.preview?(me.nameAr||me.name):""}</span></button>`;
   M.innerHTML=h;const wf=$("#wf");wf.style.left=HOME[0];wf.style.bottom=HOME[1];falcon(wf,"wave");flying=false;
   wf.onclick=()=>{hop(wf);talk(wf,1200);speak("هلا! شو بنتعلم اليوم؟","ar")};
@@ -253,21 +286,42 @@ const NEWL={"index.html":"sounds2.html"};
 function open1(k,href){href=NEWL[href]||href;try{sessionStorage.setItem("najma:v2c",k)}catch(e){}location.href=href}
 
 /* road */
-function drawRoad(k){const s=PLACE[k],L=vis(k).slice(0,21),A=$("#roadarea");document.documentElement.style.setProperty("--ac",s.c);$("#roadbg").src=`${V}${s.bg}.webp`;$("#roadbg").style.objectPosition=k==="hw"?"bottom":"top";$("#roadtitle").textContent=s.name;
-  $$(".starcount").forEach(e=>e.textContent=AD(stars));
-  if(!L.length){A.innerHTML=`<div class="card" id="empty">${k==="hw"?"لا يوجد واجب اليوم":"لا يوجد شيء هنا بعد"}</div><div class="falcon" id="roadfalcon" style="left:50%;top:48%"><img alt=""></div>`;falcon($("#roadfalcon"),"thumb");return}
-  const per=L.length<=5?L.length:L.length<=12?Math.ceil(L.length/2):7,rows=Math.ceil(L.length/per),Y=rows===1?[68]:rows===2?[53,80]:[46,65,84],sm=rows===3||per>6;
-  const P=L.map((a,i)=>{const r=Math.floor(i/per),c=i%per,n=Math.min(per,L.length-r*per),span=per>1?80/(per-1):0,x0=per===1?50:90-c*span;return [r%2?90-(per-1-c)*span- (per-n)*0:x0,Y[r]]});
-  /* serpentine: odd rows run back the other way */
-  L.forEach((a,i)=>{const r=Math.floor(i/per),c=i%per,span=per>1?80/(per-1):0;P[i]=[per===1?50:(r%2?10+c*span:90-c*span),Y[r]]});
-  let d=`M${P[0][0]},${P[0][1]}`;for(let i=1;i<P.length;i++){const [x0,y0]=P[i-1],[x1,y1]=P[i];if(y0===y1){const m=(x0+x1)/2;d+=` C${m},${y0-5} ${m},${y1+5} ${x1},${y1}`}else{const ex=x0>50?x0+7:x0-7;d+=` C${ex},${y0} ${ex},${y1} ${x1},${y1}`}}
-  let h=`<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" vector-effect="non-scaling-stroke" stroke="#d9a95e" stroke-linecap="round" style="stroke-width:${sm?8:9.6}cqh"/><path d="${d}" fill="none" vector-effect="non-scaling-stroke" stroke="#fbe6bd" stroke-linecap="round" style="stroke-width:${sm?6.2:7.6}cqh"/></svg>`;
-  const cur=L.findIndex(a=>!a.total||count(a.key)<a.total);
-  L.forEach((a,i)=>{const n=a.total?Math.min(count(a.key),a.total):0,pr=a.total?n/a.total:0,dn=a.total&&n>=a.total;
-    h+=`<a class="stop${sm?" sm":""}${i===cur?" cur":""}" href="${a.href}" style="left:${P[i][0]}%;top:${P[i][1]}%" aria-label="${a.name}">${pic(lpic(a))}${pr&&!dn?`<svg class="ring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="${s.c}" stroke-width="6" stroke-linecap="round" pathLength="100" stroke-dasharray="${pr*100} 100"/></svg>`:""}${dn?`<i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>`:""}<small dir="auto">${a.name}</small></a>`});
-  const at=P[cur<0?0:cur];h+=`<div class="falcon" id="roadfalcon" style="left:${at[0]}%;top:calc(${at[1]}% - ${sm?5.5:7}cqh);width:${sm?15:19}cqh;height:${sm?15:19}cqh"><img alt=""></div>`;
-  A.innerHTML=h;falcon($("#roadfalcon"),cur<0?"thumb":"wave");
-  A.querySelectorAll("a.stop").forEach(el=>el.onclick=e=>{e.preventDefault();if(el.dataset.go)return;el.dataset.go=1;sPop();el.classList.add("go");hop($("#roadfalcon"));setTimeout(()=>open1(k,el.getAttribute("href")),380)})}
+/* each road has a few big stops; a stop can hold several lessons; worksheets wait in the chest at the end */
+const GROUPS={
+ en:[["Sounds","l_sound",["sounds"]],["Words","l_puzzle",["cvc","sent","s:"]],["Writing","l_write",["writeEn"]],["Numbers & Time","l_clock",["numEn","days","months","clock"]],["Colours & Shapes","l_colors",["colorsEn","shapes"]]],
+ ar:[["حروفي","l_blocks",["arabic"]],["كلماتي","l_book",["spell","s:"]],["الأرقام","l_abacus",["numAr"]],["الوقت","l_clock",["daysAr","monthsAr","clockAr"]],["الألوان","l_colors",["colorsAr"]]],
+ deen:[["الأركان","l_pillars",["islam","iman"]],["القرآن","l_quran",["quran","s:"]],["أدعية","l_dua",["duas"]],["دروسي","l_mat",["lsAkh","lsTah"]]],
+ math:[["الرياضيات","l_dice",["math","s:"]]]};
+const CHEST={en:"Worksheets",ar:"أوراق العمل",deen:"أوراق العمل",math:"Worksheets"};
+function groupsOf(k){const L=vis(k);if(k==="hw"||!GROUPS[k])return L.map(a=>({name:a.name,ic:lpic(a),L:[a]}));
+  const used=new Set(),G=[];
+  GROUPS[k].forEach(([n,ic,ids])=>{const m=L.filter(a=>!used.has(a)&&!a.id.startsWith("ws")&&ids.some(x=>x==="s:"?a.id.startsWith("s:"):a.id===x));m.forEach(a=>used.add(a));if(m.length)G.push({name:n,ic,L:m})});
+  const rest=L.filter(a=>!used.has(a)&&!a.id.startsWith("ws"));if(rest.length)G.push({name:k==="en"||k==="math"?"More":"المزيد",ic:"l_cards",L:rest});
+  const ws=L.filter(a=>a.id.startsWith("ws"));if(ws.length)G.push({name:CHEST[k],ic:"r_chest",L:ws,chest:1});
+  return G}
+const gfrac=g=>{let n=0,t=0;g.L.forEach(a=>{if(a.total){t+=a.total;n+=Math.min(count(a.key),a.total)}});return t?n/t:0};
+function drawRoad(k){const s=PLACE[k],A=$("#roadarea");document.documentElement.style.setProperty("--ac",s.c);$("#roadbg").src=`${V}${s.bg}.webp`;$("#roadbg").style.objectPosition=k==="hw"?"bottom":"top";$("#roadtitle").textContent=s.name;
+  $$(".starcount").forEach(e=>e.textContent=String(stars));closeG();
+  const G=groupsOf(k).slice(0,8);
+  if(!G.length){A.innerHTML=`<div class="card" id="empty">${k==="hw"?"لا يوجد واجب اليوم":"لا يوجد شيء هنا بعد"}</div><div class="falcon" id="roadfalcon" style="left:50%;top:48%"><img alt=""></div>`;falcon($("#roadfalcon"),"thumb");return}
+  const n=G.length,P=G.map((g,i)=>[n===1?50:86-i*72/(n-1),i%2?79:51]);
+  let d=`M${Math.min(100,P[0][0]+14)},${P[0][1]+6}`;P.forEach(([x,y],i)=>{if(!i){d+=` L${x},${y}`;return}const [x0,y0]=P[i-1],m=(x0+x)/2;d+=` C${m},${y0} ${m},${y} ${x},${y}`});d+=` L${Math.max(0,P[n-1][0]-14)},${P[n-1][1]+(n%2?6:-6)}`;
+  let h=`<svg class="road" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" vector-effect="non-scaling-stroke" stroke="#d29a52" stroke-linecap="round" style="stroke-width:15cqh"/><path d="${d}" fill="none" vector-effect="non-scaling-stroke" stroke="#f9dfae" stroke-linecap="round" style="stroke-width:12cqh"/><path d="${d}" fill="none" vector-effect="non-scaling-stroke" stroke="#fff3da" stroke-dasharray="2 34" stroke-linecap="round" style="stroke-width:3cqh;opacity:.9"/></svg>`;
+  let cur=G.findIndex(g=>!g.chest&&gfrac(g)<1);if(cur<0)cur=G.findIndex(g=>gfrac(g)<1);
+  G.forEach((g,i)=>{const f=gfrac(g),dn=f>=1&&g.L.some(a=>a.total),st=Math.round(f*3),ic=g.chest?(dn?"r_chestopen":"r_chest"):g.ic;
+    h+=`<button class="gstop${i===cur?" cur":""}${g.chest?" chest":""}" data-i="${i}" style="left:${P[i][0]}%;top:${P[i][1]}%" aria-label="${g.name}"><span class="pad"></span>${pic(ic)}${dn?`<i>${TK}</i>`:""}<b class="wood" dir="auto">${g.name}${k==="hw"?"":`<u>${[0,1,2].map(j=>`<img src="${V}r_star.webp" alt=""${j<st?"":' class="off"'}>`).join("")}</u>`}</b></button>`});
+  const at=P[cur<0?0:cur];h+=`<div class="falcon" id="roadfalcon" style="left:calc(${at[0]}% ${at[0]>50?"-":"+"} 13cqh);top:calc(${at[1]}% + 1cqh)"><img alt=""></div>`;
+  A.innerHTML=h;const rf=$("#roadfalcon");falcon(rf,cur<0?"thumb":"point");if(at[0]<=50)rf.querySelector("img").style.transform="scaleX(-1)";
+  A.querySelectorAll(".gstop").forEach(el=>el.onclick=()=>{const g=G[+el.dataset.i];sPop();el.classList.remove("go");void el.offsetWidth;el.classList.add("go");
+    if(g.L.length===1)setTimeout(()=>open1(k,g.L[0].href),380);else openG(k,g)})}
+const TK='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+/* a stop with several lessons opens a card with one big picture per lesson */
+function openG(k,g){const o=$("#gov");o.innerHTML=`<div class="card" id="gcard"><div id="ghead" class="wood" dir="auto">${g.name}</div><button class="pill ic" id="gx" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div id="glist"></div></div>`;
+  const GL=$("#glist");g.L.forEach(a=>{const t=a.total?Math.min(count(a.key),a.total):0,dn=a.total&&t>=a.total,el=document.createElement("a");el.className="glesson";el.href=a.href;
+    el.innerHTML=`<span>${pic(lpic(a))}${dn?`<i>${TK}</i>`:""}</span><b dir="auto">${a.name}</b>`;el.onclick=e=>{e.preventDefault();sPop();el.classList.add("go");setTimeout(()=>open1(k,a.href),300)};GL.appendChild(el)});
+  GL.style.setProperty("--n",Math.min(g.L.length,g.L.length>4?Math.ceil(g.L.length/2):g.L.length));
+  o.classList.add("on");$("#gx").onclick=closeG;o.onclick=e=>{if(e.target===o)closeG()}}
+function closeG(){const o=$("#gov");if(o)o.classList.remove("on")}
 $("#rback").onclick=()=>{sTap();location.hash=""};
 
 function route(){const m=location.hash.match(/c=(\w+)/),k=m&&PLACE[m[1]]?m[1]:null;$("#map").classList.toggle("on",!k);$("#road").classList.toggle("on",!!k);if(k)drawRoad(k);else drawMap()}
