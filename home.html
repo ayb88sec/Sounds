@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
+<script>/* the new Najma world is the home now; the old home stays for My Progress (#c=prog) or ?old=1 */if(!/c=prog/.test(location.hash)&&!/old=1/.test(location.search))location.replace("world.html")</script>
 <script src="supa.js"></script>
 <script src="profile.js"></script><script src="data/kidq.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -399,6 +400,7 @@ function cat(k){document.body.classList.remove("athome");document.documentElemen
   document.getElementById("sec").classList.add("on");setNav(k==="hw"?"hw":"");document.getElementById("bk").style.display=k==="hw"?"none":"";
   document.querySelector("#sec .scr").scrollTop=0;window.scrollTo(0,0);setTimeout(()=>{document.querySelectorAll(".fg").forEach(c=>c.style.strokeDashoffset=c.dataset.off);document.querySelectorAll("#mine .pbar i").forEach(x=>x.style.width=x.dataset.w+"%")},300)}
 function setNav(k){document.querySelectorAll(".bar button").forEach(b=>b.classList.toggle("on",b.dataset.b===k))}
+var PCOL=["linear-gradient(160deg,#fff6c4,#ffdf6e)","linear-gradient(160deg,#dff1ff,#a8d8ff)","linear-gradient(160deg,#dcf8e8,#9fe3c0)","linear-gradient(160deg,#ffe6d6,#ffbe9c)","linear-gradient(160deg,#efe6ff,#c9b5ff)"];
 function route(){document.getElementById("pg").classList.remove("on");const m=location.hash.match(/c=(\w+)/);if(m&&m[1]==="prog"){progress();return}if(m)cat(m[1]);else home()}
 addEventListener("hashchange",route);
 /* never leave a blank screen: coming back to the page, or a picture that did not load */
@@ -410,7 +412,6 @@ document.querySelectorAll(".scene").forEach(sc=>{for(let i=0;i<6;i++){const e=do
 document.getElementById("apps").addEventListener("click",e=>{const a=e.target.closest(".app");if(!a||a.dataset.go)return;e.preventDefault();a.classList.add("wig");a.dataset.go=1;setTimeout(()=>location.href=a.href,380)});
 document.getElementById("bk").onclick=()=>{location.hash=""};
 document.querySelectorAll(".bar button").forEach(b=>b.onclick=()=>{const k=b.dataset.b;if(k==="home")location.hash="";else location.hash="c="+k});
-const PCOL=["linear-gradient(160deg,#fff6c4,#ffdf6e)","linear-gradient(160deg,#dff1ff,#a8d8ff)","linear-gradient(160deg,#dcf8e8,#9fe3c0)","linear-gradient(160deg,#ffe6d6,#ffbe9c)","linear-gradient(160deg,#efe6ff,#c9b5ff)"];
 function progress(){if(location.hash!=="#c=prog"){location.hash="c=prog";return}document.body.classList.remove("athome");document.documentElement.classList.add("lock");const L=document.getElementById("progL");L.innerHTML="";const seen=new Set();let i=0,done=0,tot=0;
   ROWS.forEach(r=>r.apps.filter(a=>visA(a)&&a.total).forEach(a=>{if(seen.has(a.key))return;seen.add(a.key);const n=Math.min(count(a.key),a.total);tot++;if(n>=a.total)done++;
     const d=document.createElement("div");d.className="pcard";d.style.background=PCOL[i%5];d.style.animationDelay=(i*.05)+"s";i++;

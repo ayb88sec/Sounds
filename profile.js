@@ -239,7 +239,7 @@ window.NAJMA.aiSay=function(text,lang,rate){const id=++aiRun;if(aiA){aiA.onended
       for(let i=0;i<localStorage.length;i++){const full=localStorage.key(i);if(full&&full.startsWith(`najma:${kid.id}:`)){const k=full.slice(kid.id.length+8);if(!(k in (js.progress||{})))push(k,G.call(localStorage,full))}}
       /* tell the portal how much space this iPad uses */
       try{if(navigator.storage&&navigator.storage.estimate)navigator.storage.estimate().then(e=>{const mb=Math.round((e.usage||0)/1e5)/10;try{SET.call(localStorage,"najma:spaceMB",String(mb))}catch(x){}push("ipadSpace",JSON.stringify({mb,net:me&&me.net==="online"?"online":"offline",at:Date.now(),v:window.NAJMA.V,host:location.hostname,app:window.NAJMA_APP}))}).catch(()=>{})}catch(e){}
-      if(changed&&/home\.html$/.test(location.pathname)&&!sessionStorage.getItem("najma:reloaded")){sessionStorage.setItem("najma:reloaded","1");location.reload()}else if(!changed)sessionStorage.removeItem("najma:reloaded")})}).catch(e=>{try{SET.call(localStorage,"najma:syncErr",String(e&&e.message||e))}catch(x){}})}
+      if(changed&&/(home|world)\.html$/.test(location.pathname)&&!sessionStorage.getItem("najma:reloaded")){sessionStorage.setItem("najma:reloaded","1");location.reload()}else if(!changed)sessionStorage.removeItem("najma:reloaded")})}).catch(e=>{try{SET.call(localStorage,"najma:syncErr",String(e&&e.message||e))}catch(x){}})}
   /* offline: cache everything once it has been opened online */
   const ONLINE=!!(me&&me.net==="online");window.NAJMA.online=ONLINE;
   if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){addEventListener("load",()=>{
