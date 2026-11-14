@@ -142,6 +142,22 @@ svg.road{position:absolute;inset:0;width:100%;height:100%}
 .glesson b{font-size:3.8cqh;line-height:1.2;text-align:center}
 .glesson.go span{animation:bhit .45s var(--bounce)}
 @keyframes popin{from{transform:scale(.6);opacity:0}}
+
+/* the room fills the screen, cropping the plain left side or the ceiling first */
+#room{position:absolute;right:0;bottom:0;width:max(100cqw,177.7cqh);aspect-ratio:1672/941;container-type:size}
+#room .rbg{position:absolute;inset:0;width:100%;height:100%}
+.obj{position:absolute;aspect-ratio:1;transform:translate(-50%,-100%);display:flex;align-items:flex-end;justify-content:center;z-index:2}
+.obj>img{width:100%;height:100%;object-fit:contain;object-position:bottom;filter:drop-shadow(0 .9cqh .7cqh rgba(90,50,10,.35))}
+.obj.chest{aspect-ratio:1.2}
+.obj b{position:absolute;top:calc(100% + .6cqh);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;padding:0 1.8cqh .4cqh;border-radius:1.8cqh;font-size:2.7cqh;line-height:1.3;border-width:.35cqh;z-index:3}
+.obj b u{display:flex;gap:.3cqh}.obj b u img{width:2.1cqh;height:2.1cqh}.obj b u img.off{filter:grayscale(1) brightness(.75);opacity:.55}
+.obj i{position:absolute;top:-1cqh;right:-1cqh;width:5cqh;height:5cqh;border-radius:50%;background:#1f9d5c;border:.45cqh solid #fff;display:flex;align-items:center;justify-content:center}
+.obj i svg{width:3cqh;height:3cqh}
+.obj.cur>img{animation:gb 1.8s ease-in-out infinite;filter:drop-shadow(0 0 2.2cqh rgba(255,214,70,.95)) drop-shadow(0 .9cqh .7cqh rgba(90,50,10,.35))}
+.obj:active>img{transform:scale(.93)}
+.obj.go>img{animation:bhit .5s var(--bounce)}
+#road #roadfalcon{left:15cqh;bottom:0;top:auto;width:30cqh;height:30cqh;transform:none;z-index:4}
+#flat{position:absolute;left:30cqh;right:4cqh;top:16cqh;bottom:4cqh;display:grid;grid-template-columns:repeat(var(--n),25cqh);gap:4cqh 5cqh;justify-content:center;align-content:center}
 </style>
 </head>
 <body>
@@ -300,25 +316,35 @@ function groupsOf(k){const L=vis(k);if(k==="hw"||!GROUPS[k])return L.map(a=>({na
   const ws=L.filter(a=>a.id.startsWith("ws"));if(ws.length)G.push({name:CHEST[k],ic:"r_chest",L:ws,chest:1});
   return G}
 const gfrac=g=>{let n=0,t=0;g.L.forEach(a=>{if(a.total){t+=a.total;n+=Math.min(count(a.key),a.total)}});return t?n/t:0};
-function drawRoad(k){const s=PLACE[k],A=$("#roadarea");document.documentElement.style.setProperty("--ac",s.c);$("#roadbg").src=`${V}${s.bg}.webp`;$("#roadbg").style.objectPosition=k==="hw"?"bottom":"top";$("#roadtitle").textContent=s.name;
+/* inside each building: lessons stand on its shelves and tables; [x%, surface y%, height%] of the room picture */
+const ROOM={
+ en:{img:"room_library",slots:[[54,50.3,13.5],[66.5,50.3,13.5],[79,50.3,13.5],[55,69.6,15],[77,69.6,15]],chest:[91,95,15]},
+ ar:{img:"room_fort",slots:[[55,41.3,13.5],[67.6,41.3,13.5],[80,41.3,13.5],[57,72.3,15],[79,72.3,15]],chest:[91,95,14]},
+ deen:{img:"room_mosque",slots:[[44.8,53.4,13.5],[66.9,74,16],[88.8,53.4,13.5],[88,91,14]],chest:[50,93,14]},
+ math:{img:"room_souq",slots:[[66,63.5,16]],chest:[47.4,63.5,16]}};
+function drawRoad(k){const s=PLACE[k],A=$("#roadarea"),R=ROOM[k];document.documentElement.style.setProperty("--ac",s.c);$("#roadtitle").textContent=s.name;
   $$(".starcount").forEach(e=>e.textContent=String(stars));closeG();
-  const G=groupsOf(k).slice(0,8);
-  if(!G.length){A.innerHTML=`<div class="card" id="empty">${k==="hw"?"لا يوجد واجب اليوم":"لا يوجد شيء هنا بعد"}</div><div class="falcon" id="roadfalcon" style="left:50%;top:48%"><img alt=""></div>`;falcon($("#roadfalcon"),"thumb");return}
-  const n=G.length,P=G.map((g,i)=>[n===1?50:86-i*72/(n-1),i%2?79:51]);
-  let d=`M${Math.min(100,P[0][0]+14)},${P[0][1]+6}`;P.forEach(([x,y],i)=>{if(!i){d+=` L${x},${y}`;return}const [x0,y0]=P[i-1],m=(x0+x)/2;d+=` C${m},${y0} ${m},${y} ${x},${y}`});d+=` L${Math.max(0,P[n-1][0]-14)},${P[n-1][1]+(n%2?6:-6)}`;
-  let h=`<svg class="road" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" vector-effect="non-scaling-stroke" stroke="#d29a52" stroke-linecap="round" style="stroke-width:15cqh"/><path d="${d}" fill="none" vector-effect="non-scaling-stroke" stroke="#f9dfae" stroke-linecap="round" style="stroke-width:12cqh"/><path d="${d}" fill="none" vector-effect="non-scaling-stroke" stroke="#fff3da" stroke-dasharray="2 34" stroke-linecap="round" style="stroke-width:3cqh;opacity:.9"/></svg>`;
+  const G=groupsOf(k);
+  if(!R){/* homework and anything without a room: the lessons as big pictures */
+    $("#roadbg").src=`${V}${s.bg}.webp`;$("#roadbg").style.objectPosition="bottom";$("#roadbg").style.display="";
+    if(!G.length){A.innerHTML=`<div class="card" id="empty">${k==="hw"?"لا يوجد واجب اليوم":"لا يوجد شيء هنا بعد"}</div><div class="falcon" id="roadfalcon" style="left:50%;top:48%"><img alt=""></div>`;falcon($("#roadfalcon"),"thumb");return}
+    A.innerHTML=`<div id="flat"></div><div class="falcon" id="roadfalcon" style="left:14cqh;top:96%"><img alt=""></div>`;falcon($("#roadfalcon"),"point");
+    const F=$("#flat");G.forEach(g=>g.L.forEach(a=>F.appendChild(lessonEl(k,a))));F.style.setProperty("--n",Math.min(4,F.children.length));return}
+  $("#roadbg").style.display="none";
+  let h=`<div id="room"><img class="rbg" src="${V}${R.img}.webp" alt="">`;
   let cur=G.findIndex(g=>!g.chest&&gfrac(g)<1);if(cur<0)cur=G.findIndex(g=>gfrac(g)<1);
-  G.forEach((g,i)=>{const f=gfrac(g),dn=f>=1&&g.L.some(a=>a.total),st=Math.round(f*3),ic=g.chest?(dn?"r_chestopen":"r_chest"):g.ic;
-    h+=`<button class="gstop${i===cur?" cur":""}${g.chest?" chest":""}" data-i="${i}" style="left:${P[i][0]}%;top:${P[i][1]}%" aria-label="${g.name}"><span class="pad"></span>${pic(ic)}${dn?`<i>${TK}</i>`:""}<b class="wood" dir="auto">${g.name}${k==="hw"?"":`<u>${[0,1,2].map(j=>`<img src="${V}r_star.webp" alt=""${j<st?"":' class="off"'}>`).join("")}</u>`}</b></button>`});
-  const at=P[cur<0?0:cur];h+=`<div class="falcon" id="roadfalcon" style="left:calc(${at[0]}% ${at[0]>50?"-":"+"} 13cqh);top:calc(${at[1]}% + 1cqh)"><img alt=""></div>`;
-  A.innerHTML=h;const rf=$("#roadfalcon");falcon(rf,cur<0?"thumb":"point");if(at[0]<=50)rf.querySelector("img").style.transform="scaleX(-1)";
-  A.querySelectorAll(".gstop").forEach(el=>el.onclick=()=>{const g=G[+el.dataset.i];sPop();el.classList.remove("go");void el.offsetWidth;el.classList.add("go");
+  let si=0;G.forEach((g,i)=>{const p=g.chest?R.chest:R.slots[si++];if(!p)return;const f=gfrac(g),dn=f>=1&&g.L.some(a=>a.total),st=Math.round(f*3),ic=g.chest?(dn?"r_chestopen":"r_chest"):g.ic;
+    h+=`<button class="obj${i===cur?" cur":""}${g.chest?" chest":""}" data-i="${i}" style="left:${p[0]}%;top:${p[1]}%;height:${p[2]}%" aria-label="${g.name}">${pic(ic)}${dn?`<i>${TK}</i>`:""}<b class="wood" dir="auto">${g.name}<u>${[0,1,2].map(j=>`<img src="${V}r_star.webp" alt=""${j<st?"":' class="off"'}>`).join("")}</u></b></button>`});
+  h+=`</div><div class="falcon" id="roadfalcon"><img alt=""></div>`;
+  A.innerHTML=h;falcon($("#roadfalcon"),cur<0?"thumb":"point");
+  A.querySelectorAll(".obj").forEach(el=>el.onclick=()=>{const g=G[+el.dataset.i];sPop();el.classList.remove("go");void el.offsetWidth;el.classList.add("go");
     if(g.L.length===1)setTimeout(()=>open1(k,g.L[0].href),380);else openG(k,g)})}
+function lessonEl(k,a){const t=a.total?Math.min(count(a.key),a.total):0,dn=a.total&&t>=a.total,el=document.createElement("a");el.className="glesson";el.href=a.href;
+  el.innerHTML=`<span>${pic(lpic(a))}${dn?`<i>${TK}</i>`:""}</span><b dir="auto">${a.name}</b>`;el.onclick=e=>{e.preventDefault();sPop();el.classList.add("go");setTimeout(()=>open1(k,a.href),300)};return el}
 const TK='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 /* a stop with several lessons opens a card with one big picture per lesson */
 function openG(k,g){const o=$("#gov");o.innerHTML=`<div class="card" id="gcard"><div id="ghead" class="wood" dir="auto">${g.name}</div><button class="pill ic" id="gx" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div id="glist"></div></div>`;
-  const GL=$("#glist");g.L.forEach(a=>{const t=a.total?Math.min(count(a.key),a.total):0,dn=a.total&&t>=a.total,el=document.createElement("a");el.className="glesson";el.href=a.href;
-    el.innerHTML=`<span>${pic(lpic(a))}${dn?`<i>${TK}</i>`:""}</span><b dir="auto">${a.name}</b>`;el.onclick=e=>{e.preventDefault();sPop();el.classList.add("go");setTimeout(()=>open1(k,a.href),300)};GL.appendChild(el)});
+  const GL=$("#glist");g.L.forEach(a=>GL.appendChild(lessonEl(k,a)));
   GL.style.setProperty("--n",Math.min(g.L.length,g.L.length>4?Math.ceil(g.L.length/2):g.L.length));
   o.classList.add("on");$("#gx").onclick=closeG;o.onclick=e=>{if(e.target===o)closeG()}}
 function closeG(){const o=$("#gov");if(o)o.classList.remove("on")}
