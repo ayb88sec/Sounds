@@ -241,9 +241,36 @@ svg.road{position:absolute;inset:0;width:100%;height:100%}
 .bld.nb i.tk{position:absolute;top:8%;right:10%;width:6cqh;height:6cqh;border-radius:50%;background:#1f9d5c;border:.5cqh solid #fff;display:flex;align-items:center;justify-content:center}
 .bld.nb i.tk svg{width:3.4cqh;height:3.4cqh}
 #heroK{bottom:2cqh;height:44cqh}
-#whw{left:calc(50% + 23cqh);bottom:2cqh;width:24cqh;animation:hwb 2.6s ease-in-out infinite}
-#whw img{width:24cqh;height:auto;margin:0;filter:drop-shadow(0 1cqh 1cqh rgba(130,80,20,.28))}
+#whw{left:calc(50% + 25.5cqh);bottom:4cqh;width:16.5cqh;animation:hwb 2.6s ease-in-out infinite}
+#whw img{width:16.5cqh;height:auto;margin:0;filter:drop-shadow(0 1cqh 1cqh rgba(130,80,20,.28))}
 #whw #hwn{top:0;inset-inline-end:1cqh}
+
+/* names: small cream labels under each building and object */
+.nm{position:absolute;top:calc(100% - 1.2cqh);left:50%;transform:translateX(-50%);white-space:nowrap;padding:.3cqh 2.2cqh .6cqh;border-radius:999px;background:rgba(255,253,247,.94);color:#1d2547;font-weight:800;font-size:3.2cqh;line-height:1.3;box-shadow:0 .7cqh 1.4cqh rgba(120,70,15,.18);pointer-events:none;z-index:3}
+#road .gstop .nm{top:calc(100% + .4cqh);font-size:3.3cqh}
+/* sticker book */
+#wstk2{left:calc(2.5cqh + 36cqh);top:2.5cqh;gap:1cqh;font-size:3.8cqh}#wstk2 img{width:7cqh;height:7cqh}
+#wall{left:calc(2.5cqh + 66cqh)}
+#spage{position:absolute;left:36cqh;right:3cqh;top:15cqh;bottom:21cqh;border-radius:5cqh;overflow:hidden;border:.7cqh solid #fff;box-shadow:0 1.6cqh 3.6cqh rgba(110,70,15,.25);touch-action:none}
+#spage>img.pg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%}
+.stk{position:absolute;width:17cqh;transform:translate(-50%,-50%);touch-action:none;filter:drop-shadow(0 .8cqh .8cqh rgba(0,0,0,.22));transition:transform .15s}
+.stk.drag{transform:translate(-50%,-50%) scale(1.15);z-index:5}
+.stk.new{animation:popin .5s var(--bounce)}
+#stray{position:absolute;left:36cqh;right:3cqh;bottom:2.5cqh;height:16cqh;display:flex;gap:1.8cqh;align-items:center;justify-content:center;padding:0 2cqh;overflow:hidden}
+#stray button,#stray .lockd{flex:none;width:12cqh;height:12cqh}#stray img{width:100%;height:100%;object-fit:contain}
+#stray button{animation:hwb 2.2s ease-in-out infinite}
+#stray .lockd img{filter:grayscale(1) brightness(1.6) opacity(.35)}
+#sfal{left:2cqh;bottom:2cqh;width:30cqh;height:30cqh}
+#ssay{position:absolute;left:3cqh;top:17cqh;width:30cqh;padding:2cqh 2.6cqh;font-weight:800;font-size:3.6cqh;line-height:1.35}
+
+/* names written on the scene like a game, no bubbles */
+.nm{background:none!important;box-shadow:none!important;padding:0!important;color:#fff!important;font-size:3.9cqh!important;letter-spacing:.02em;
+  -webkit-text-stroke:.75cqh #7a4513;paint-order:stroke fill;text-shadow:0 .6cqh 0 #5c3008,0 .9cqh 1.4cqh rgba(60,30,5,.35)}
+#road .gstop .nm{font-size:3.7cqh!important;top:calc(100% + .2cqh)}
+
+/* top buttons in wood, like the children's sign, instead of white bubbles */
+.pill{background:linear-gradient(#d99a52,#b9722f)!important;border:.5cqh solid #7d4a1c!important;color:#fffdf7!important;text-shadow:0 .4cqh 0 #6a3b12;box-shadow:0 .9cqh 0 rgba(90,50,10,.35),inset 0 .5cqh 0 rgba(255,255,255,.25)!important}
+.pill svg path,.pill svg{stroke:#fffdf7}
 </style>
 </head>
 <body>
@@ -258,6 +285,13 @@ svg.road{position:absolute;inset:0;width:100%;height:100%}
   <img class="bg" src="img/v2/bg_calm.webp" alt="" style="object-position:center bottom">
   <div class="top"><button class="pill ic" id="aback" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button><div class="title" style="--ac:#c2410c">كل الألعاب</div><span style="width:11cqh"></span></div>
   <div id="allchips"></div><div id="allgrid"></div>
+</section>
+<section class="scr" id="stk">
+  <img class="bg" src="img/v2/home_bg.webp" alt="" style="object-position:center top;filter:saturate(.9) brightness(1.04)">
+  <div class="top"><button class="pill ic" id="sback" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button><div class="title" style="--ac:#8a5a0c">ملصقاتي</div><span class="pill" id="skn" dir="ltr"></span></div>
+  <div id="spage"><img class="pg" src="img/v2/stickerpage.webp" alt=""></div>
+  <div class="card" id="stray"></div>
+  <div class="falcon" id="sfal"><img alt=""></div><div class="card" id="ssay"></div>
 </section>
 <div id="gov"></div><div id="board"></div><div id="curtain"></div>
 <div id="kidsOv"><div class="card" id="kidsBox"></div></div>
@@ -382,20 +416,20 @@ async function drawBoard(){const o=$("#board"),L=(await boardData()).sort((a,b)=
   o.innerHTML=`<div class="card" id="bcard"><div id="bhead" class="wood">نجوم العائلة</div><button class="pill ic" id="bx" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div id="podium">${pod}</div>${rest?`<div id="brest">${rest}</div>`:""}</div>`;
   $("#bx").onclick=()=>{o.classList.remove("on");clearInterval(boardT)};o.onclick=e=>{if(e.target===o){o.classList.remove("on");clearInterval(boardT)}}}
 /* home */
-const ORDER=["ar","en","deen","math","uae","name"],SPOT=[[86,6,27],[77,38,24],[60,52,21],[40,52,21],[23,38,24],[14,6,27]];
+const ORDER=["ar","en","deen","math","uae","name"],SPOT=[[90.5,6,23],[77,38,24],[60,52,21],[40,52,21],[23,38,24],[11,6,24]];
 const HOME=["calc(50% - 42.5cqh)","1cqh"];let flying=false;
 const perch=i=>[`calc(${SPOT[i][0]}% - ${(SPOT[i][0]>50?1:-1)*SPOT[i][2]*.72+10.5}cqh)`,SPOT[i][1]-1+"cqh"];
 const BLD={ar:"b_fort",en:"b_library",deen:"b_mosque",math:"b_souq",uae:"b_dhow",name:"b_tent"};
 function drawMap(){const M=$("#map"),me=NAJMA.me;
   let h=`<img class="bg" src="${V}home_bg.webp" alt="" style="object-position:center top">`;
-  h+=`<div id="heroK"><b>هيا نتعلم!</b></div><button id="whw" aria-label="واجب اليوم"><img src="${V}h_bag.webp" alt="">${hwN?`<i id="hwn">${AD(hwN)}</i>`:""}</button>`;
+  h+=`<div id="heroK"><b>هيا نتعلم!</b></div><button id="whw" aria-label="واجب اليوم"><img src="${V}h_bag.webp" alt=""><b class="nm">واجب اليوم</b>${hwN?`<i id="hwn">${AD(hwN)}</i>`:""}</button>`;
   ORDER.forEach((k,i)=>{const [x,b,ht]=SPOT[i],s=PLACE[k],dn=frac(k)>=1;if(!vis(k).length)return;
-    h+=`<button class="bld nb" data-k="${k}" style="left:${x}%;bottom:${b}cqh;height:${ht}cqh;width:${ht*1.3}cqh;margin-left:${-ht*.65}cqh;--d:${(i*.35).toFixed(2)}s" aria-label="${s.name}">${pic(BLD[k])}${dn?`<i class="tk">${TK}</i>`:""}</button>`});
-  h+=`<div class="falcon" id="wf" data-f="wave"><img alt=""></div><span class="pill" id="wstars"><img src="${V}r_star.webp" alt=""><span>${stars}</span></span><button class="pill ic" id="wcup" aria-label="نجوم العائلة"><img src="${V}r_trophy.webp" alt=""></button><button class="pill" id="wall" aria-label="كل الألعاب"><svg viewBox="0 0 24 24" width="30" height="30"><g fill="#f5b700" stroke="#c98a00" stroke-width="1.2"><rect x="3" y="3" width="7.5" height="7.5" rx="2.2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2.2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2.2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2.2"/></g></svg>كل الألعاب</button>
+    h+=`<button class="bld nb" data-k="${k}" style="left:${x}%;bottom:${b}cqh;height:${ht}cqh;width:${ht*1.3}cqh;margin-left:${-ht*.65}cqh;--d:${(i*.35).toFixed(2)}s" aria-label="${s.name}">${pic(BLD[k])}${dn?`<i class="tk">${TK}</i>`:""}<b class="nm" dir="auto">${s.name}</b></button>`});
+  h+=`<div class="falcon" id="wf" data-f="wave"><img alt=""></div><span class="pill" id="wstars"><img src="${V}r_star.webp" alt=""><span>${stars}</span></span><button class="pill ic" id="wcup" aria-label="نجوم العائلة"><img src="${V}r_trophy.webp" alt=""></button><button class="pill" id="wstk2" aria-label="ملصقاتي"><img src="${V}k_falcon.webp" alt="">ملصقاتي</button><button class="pill" id="wall" aria-label="كل الألعاب"><svg viewBox="0 0 24 24" width="30" height="30"><g fill="#f5b700" stroke="#c98a00" stroke-width="1.2"><rect x="3" y="3" width="7.5" height="7.5" rx="2.2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2.2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2.2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2.2"/></g></svg>كل الألعاب</button>
     <button class="pill" id="wkid"><span class="av" style="background:${me&&me.color||"#ffd23f"}">${NAJMA_AV(me&&me.avatar)}</span><span dir="auto">${me&&!me.preview?(me.nameAr||me.name):""}</span></button>`;
   M.innerHTML=h;const wf=$("#wf");wf.style.left=HOME[0];wf.style.bottom=HOME[1];falcon(wf,"wave");flying=false;
   wf.onclick=()=>{hop(wf);talk(wf,1200);speak("هلا! شو بنتعلم اليوم؟","ar")};
-  $("#wall").onclick=()=>{sTap();location.hash="c=all"};$("#wcup").onclick=()=>{sTap();openBoard()};$("#whw").onclick=()=>{sTap();location.hash="c=hw"};$("#wkid").onclick=()=>{sTap();$("#kidsOv").classList.add("on")};
+  $("#wstk2").onclick=()=>{sTap();location.hash="c=stk"};$("#wall").onclick=()=>{sTap();location.hash="c=all"};$("#wcup").onclick=()=>{sTap();openBoard()};$("#whw").onclick=()=>{sTap();location.hash="c=hw"};$("#wkid").onclick=()=>{sTap();$("#kidsOv").classList.add("on")};
   M.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>flyTo(b.dataset.k))}
 function flyTo(k){if(flying)return;flying=true;const wf=$("#wf"),i=ORDER.indexOf(k),bl=$(`.bld[data-k="${k}"]`),[l,b]=perch(i);sPop();
   wf.dataset.busy=1;falcon(wf,"jump");wf.style.left=l;wf.style.bottom=b;
@@ -447,7 +481,7 @@ function drawRoad(k){const s=PLACE[k],A=$("#roadarea"),R=GROUPS[k];document.docu
   const n=G.length,two=n>3,top=two?Math.ceil(n/2):n,P=G.map((g,i)=>{const r=two&&i>=top?1:0,m=r?n-top:top,c=r?i-top:i,span=m>1?Math.min(24,48/(m-1)):0;return [55+((m-1)/2-c)*span,two?(r?88:57):76]});
   let cur=G.findIndex(g=>!g.chest&&gfrac(g)<1);if(cur<0)cur=G.findIndex(g=>gfrac(g)<1);
   let h="";G.forEach((g,i)=>{const f=gfrac(g),dn=f>=1&&g.L.some(a=>a.total),st=Math.round(f*3),ic=g.ic;
-    h+=`<button class="gstop${i===cur?" cur":""}${g.chest?" chest":""}" data-i="${i}" style="left:${P[i][0]}%;top:${P[i][1]}%" aria-label="${g.name}"><span class="pad"></span>${pic(ic)}${dn?`<i>${TK}</i>`:""}</button>`});
+    h+=`<button class="gstop${i===cur?" cur":""}${g.chest?" chest":""}" data-i="${i}" style="left:${P[i][0]}%;top:${P[i][1]}%" aria-label="${g.name}"><span class="pad"></span>${pic(ic)}${dn?`<i>${TK}</i>`:""}<b class="nm" dir="auto">${g.name}</b></button>`});
   h+=`<div class="falcon" id="roadfalcon"><img alt=""></div>`;
   A.innerHTML=h;falcon($("#roadfalcon"),cur<0?"thumb":"point");
   A.querySelectorAll(".gstop").forEach(el=>el.onclick=()=>{const g=G[+el.dataset.i];sPop();speak(g.name,/[a-z]/i.test(g.name)?"en":"ar");talk($("#roadfalcon"),900);el.classList.remove("go");void el.offsetWidth;el.classList.add("go");
@@ -461,15 +495,30 @@ function openG(k,g){const o=$("#gov");o.innerHTML=`<div class="card" id="gcard">
   GL.style.setProperty("--n",Math.min(g.L.length,g.L.length>4?Math.ceil(g.L.length/2):g.L.length));
   o.classList.add("on");$("#gx").onclick=closeG;o.onclick=e=>{if(e.target===o)closeG()}}
 function closeG(){const o=$("#gov");if(o)o.classList.remove("on")}
+$("#sback").onclick=()=>{sTap();location.hash=""};
 $("#aback").onclick=()=>{sTap();location.hash=""};
 $("#rback").onclick=()=>{sTap();const R=$("#road");R.classList.add("leave");setTimeout(()=>{R.classList.remove("leave");ENTER="out";location.hash=""},330)};
 
-function route(){const bo=$("#board");if(bo)bo.classList.remove("on");clearInterval(boardT);closeG();const m=location.hash.match(/c=(\w+)/),all=m&&m[1]==="all",k=m&&PLACE[m[1]]?m[1]:null;
+function route(){const bo=$("#board");if(bo)bo.classList.remove("on");clearInterval(boardT);closeG();const m=location.hash.match(/c=(\w+)/),all=m&&m[1]==="all",stk=m&&m[1]==="stk",k=m&&PLACE[m[1]]?m[1]:null;
   const M=$("#map"),R=$("#road"),AL=$("#all");M.classList.remove("zoomin","zoomout");R.classList.remove("enter");
-  M.classList.toggle("on",!k&&!all);R.classList.toggle("on",!!k);AL.classList.toggle("on",!!all);
-  if(all)drawAll();else if(k){drawRoad(k);if(ENTER==="in"){void R.offsetWidth;R.classList.add("enter")}}
+  M.classList.toggle("on",!k&&!all&&!stk);R.classList.toggle("on",!!k);AL.classList.toggle("on",!!all);$("#stk").classList.toggle("on",!!stk);
+  if(stk)drawStk();else if(all)drawAll();else if(k){drawRoad(k);if(ENTER==="in"){void R.offsetWidth;R.classList.add("enter")}}
   else{drawMap();if(ENTER==="out"&&FROM){M.style.transformOrigin=`${FROM[0]}% ${FROM[1]}%`;void M.offsetWidth;M.classList.add("zoomout")}}
   ENTER="";$("#curtain").classList.remove("on")}
+
+/* sticker book: one UAE sticker for every 5 stars, placed anywhere on the child's own page (saved with the child's progress) */
+const STK=["camel","falcon","oryx","fox","gazelle","hoopoe","turtle","dolphin","flamingo","dhow","dallah","dates","palm","fort","mosque","lantern","pearl","tent","flag","windtower"],PER=5;
+const stkGet=()=>{try{return JSON.parse(localStorage.getItem("stickers")||"{}")}catch(e){return {}}},stkSet=o=>{try{localStorage.setItem("stickers",JSON.stringify(o))}catch(e){}};
+function relPt(sx,sy,el){const r=el.getBoundingClientRect();return ROT?[(sy-r.top)/r.height,(r.right-sx)/r.width]:[(sx-r.left)/r.width,(sy-r.top)/r.height]}
+function drawStk(){const P=$("#spage"),T=$("#stray"),D=stkGet(),got=Math.min(STK.length,Math.floor(stars/PER)),own=STK.slice(0,got);
+  P.querySelectorAll(".stk").forEach(x=>x.remove());Object.entries(D).forEach(([k,p])=>{if(own.includes(k))addStk(k,p)});
+  const free=own.filter(k=>!D[k]);T.innerHTML="";free.forEach(k=>{const b=document.createElement("button");b.innerHTML=pic("k_"+k);b.onclick=()=>{sPop();const o=stkGet();o[k]={x:30+Math.random()*40,y:40+Math.random()*30};stkSet(o);drawStk();const el=P.querySelector(`.stk[data-k="${k}"]`);if(el)el.classList.add("new")};T.appendChild(b)});
+  for(let i=got;i<Math.min(STK.length,got+3);i++){const d=document.createElement("span");d.className="lockd";d.innerHTML=pic("k_"+STK[i]);T.appendChild(d)}
+  $("#skn").textContent=`${got} / ${STK.length}`;const left=PER-(stars%PER);
+  const sf=$("#sfal");falcon(sf,free.length?"point":"wave");$("#ssay").textContent=got>=STK.length?"جمعت كل الملصقات!":free.length?"اسحب ملصقك إلى الصفحة!":`باقي ${left} نجوم للملصق الجديد`}
+function addStk(k,p){const P=$("#spage"),im=document.createElement("img");im.src=`${V}k_${k}.webp`;im.className="stk";im.dataset.k=k;im.alt="";im.style.left=p.x+"%";im.style.top=p.y+"%";im.draggable=false;
+  im.onpointerdown=e=>{im.setPointerCapture(e.pointerId);im.classList.add("drag");const mv=ev=>{const [u,v]=relPt(ev.clientX,ev.clientY,P);p.x=Math.max(6,Math.min(94,u*100));p.y=Math.max(10,Math.min(90,v*100));im.style.left=p.x+"%";im.style.top=p.y+"%"};
+    const up=()=>{im.removeEventListener("pointermove",mv);im.classList.remove("drag");const o=stkGet();o[k]={x:+p.x.toFixed(1),y:+p.y.toFixed(1)};stkSet(o);sTap()};im.addEventListener("pointermove",mv);im.addEventListener("pointerup",up,{once:true});im.addEventListener("pointercancel",up,{once:true})};P.appendChild(im)}
 /* every activity in one place, by subject */
 const ALLK=["ar","en","math","deen","uae","name"],ALLIC={ar:"p_fort",en:"p_library",math:"p_souq",deen:"p_mosque",uae:"p_dhow",name:"p_tent"};let allK=null;
 function drawAll(){const ks=ALLK.filter(k=>vis(k).length);if(!allK||!ks.includes(allK))allK=ks[0];
