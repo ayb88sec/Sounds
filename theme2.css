@@ -167,3 +167,17 @@ html.v2 main .tile:nth-child(6n+4),html.v2 main button.t:nth-child(6n+4),html.v2
 html.v2 main .tile:nth-child(6n+5),html.v2 main button.t:nth-child(6n+5),html.v2 .cols>.col:nth-child(6n+5){background:#c13a30!important;box-shadow:0 7px 0 #8f241c!important;border:4px solid #fff!important}
 html.v2 main .tile:nth-child(6n+6),html.v2 main button.t:nth-child(6n+6),html.v2 .cols>.col:nth-child(6n+6){background:#a26c14!important;box-shadow:0 7px 0 #74490a!important;border:4px solid #fff!important}
 html.v2 main .tile *,html.v2 main button.t{color:#fff!important}
+
+/* landscape phones: a short top bar so the lesson gets the screen */
+@media (max-height:540px){
+html.v2 main h1{top:calc(8px + env(safe-area-inset-top))!important;font-size:24px!important;padding:.05em 1.1em .22em!important;border-width:3px!important;box-shadow:0 5px 0 rgba(90,50,10,.35),inset 0 3px 0 rgba(255,255,255,.25)!important}
+html.v2 .n2back{top:calc(6px + env(safe-area-inset-top))!important;width:46px!important;height:46px!important}
+html.v2 .lang{top:calc(8px + env(safe-area-inset-top))!important}
+html.v2 .gd{display:none!important}
+}
+
+/* v2 top band: no old sky picture, a short sand fade under the title */
+html.v2 main::before{height:calc(118px + env(safe-area-inset-top))!important;background:linear-gradient(rgba(243,207,152,.97) 62%,rgba(243,207,152,0))!important;-webkit-mask-image:none!important;mask-image:none!important}
+html.v2 main h1{top:calc(20px + env(safe-area-inset-top))!important}
+html.v2 .n2back{top:calc(16px + env(safe-area-inset-top))!important}
+@media (max-height:540px){html.v2 main::before{height:calc(60px + env(safe-area-inset-top))!important}html.v2 main h1{top:calc(8px + env(safe-area-inset-top))!important}html.v2 .n2back{top:calc(6px + env(safe-area-inset-top))!important}}

@@ -383,7 +383,7 @@ try{sessionStorage.setItem("najma:v2","1")}catch(e){}
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const V="img/v2/",pic=n=>`<img src="${V}${n}.webp" alt="">`,APP=$("#app");
 const AD=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
-let ROT=false;function fit(){ROT=innerHeight>innerWidth;document.body.classList.toggle("rot",ROT)}fit();addEventListener("resize",fit);
+let ROT=false;/* landscape only: held upright, landscape.js asks to turn the device */
 const PLACE={ar:{p:"p_fort",bg:"bg_fort",c:"#177a52",name:"العربية",lang:"ar"},en:{p:"p_library",bg:"bg_library",c:"#2567c9",name:"English",lang:"en"},deen:{p:"p_mosque",bg:"bg_mosque",c:"#8a5a0c",name:"ديني",lang:"ar"},
   math:{p:"p_souq",bg:"bg_souq",c:"#b8500a",name:"الرياضيات",lang:"ar"},uae:{p:"p_dhow",bg:"bg_harbour",c:"#a8281f",name:"بلادي",lang:"ar"},name:{p:"p_tent",bg:"bg_tent",c:"#6a45b8",name:"اسمي",lang:"ar"},hw:{bg:"bg_calm",c:"#c2410c",name:"واجب اليوم",lang:"ar"}};
 /* one matching picture for every lesson */

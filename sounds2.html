@@ -99,7 +99,7 @@ const set2=[
  ["ng","G48aum0u/iWkXwYEb"],["nk","SX5kHdX5/X71urvdO"],["ck","QHSEcTAM/bbKIYLoa"]
 ];
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],V="img/v2/",APP=$("#app");
-let ROT=false;function fit(){ROT=innerHeight>innerWidth;document.body.classList.toggle("rot",ROT)}fit();addEventListener("resize",fit);
+let ROT=false;/* landscape only: held upright, landscape.js asks to turn the device */
 const EL=NAJMA.lv("sounds"),S1=EL.includes(0)?set1:[],S2=EL.includes(1)?set2:[],ALL=[...S1,...S2];
 /* the six colours of the world, one after another */
 const COL=[["#2f74d6","#1f52a3"],["#1f9163","#136845"],["#d0611a","#9c440b"],["#7a55c7","#573a99"],["#c13a30","#8f241c"],["#a26c14","#74490a"]];
