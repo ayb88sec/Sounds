@@ -242,5 +242,6 @@ window.NAJMA_PROGRESS=()=>({done:Object.keys(done).filter(n=>+n<=MAXN).length,to
 window.NAJMA_RESET=()=>{localStorage.removeItem("numDoneEn");localStorage.removeItem("numWriteEn")};
 </script>
 <script src="extras.js?v=10"></script>
+<script src="frame.js"></script><script>NajmaFrame({say:"#say",tools:[{el:"#game",icon:"play"},{el:"#write",icon:"write"},{el:".nx-reset",icon:"again"}]});</script>
 </body>
 </html>

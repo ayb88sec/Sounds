@@ -299,5 +299,6 @@ var PATH=NajmaPath({plain:true,mount:gbox,stops:GROUPS.map((g,i)=>({big:i+1,labe
   onStart:i=>{gi=i;save();drawGroups();drawWords();popSnd();grid.closest("section").scrollIntoView({behavior:"smooth",block:"start"});talk(`${GROUPS[i].n}! Let's read!`)}});
 </script>
 <script src="extras.js?v=1"></script>
+<script src="frame.js"></script><script>NajmaFrame({say:"#say",tools:[{el:"#game",icon:"listen"},{el:"#flash",icon:"cards"},{el:"#mix",icon:"mix"},{el:".nx-reset",icon:"again"}]});</script>
 </body>
 </html>

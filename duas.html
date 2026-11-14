@@ -112,5 +112,6 @@ NAJMA.loadAudio("qp/duas","QPD").then(o=>{Object.assign(PACK,o||{});if(PACK["dua
 Promise.all(LIST.filter(d=>IMG[d.id]).map(d=>NAJMA.decrypt(IMG[d.id]).then(u=>PIC[d.id]=u).catch(()=>{}))).then(()=>draw());
 </script>
 <script src="extras.js?v=10"></script>
+<script src="frame.js"></script><script>NajmaFrame({tools:[{el:".nx-reset",icon:"again"}]});</script>
 </body>
 </html>

@@ -106,5 +106,6 @@ function play(i){const L=LV[i];let k=0,score=0;const res=[],used=new Set();
 const P=new URLSearchParams(location.search).get("l");if(P!=null&&LV[+P])play(+P);else menu();
 </script>
 <script src="hint.js?v=1"></script>
+<script src="frame.js"></script><script>NajmaFrame({tools:[{el:".nx-reset",icon:"again"}]});</script>
 </body>
 </html>

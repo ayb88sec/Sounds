@@ -14,11 +14,13 @@
     const go=()=>{if(!document.documentElement.classList.contains("v2"))return;
       const D=document,A=D.createElement("aside");A.id="nf";
       A.innerHTML=`<div id="nfSay"></div><div id="nfTools"></div><img id="nfFal" src="img/v2/f_wave.webp" alt="">`;D.body.appendChild(A);
-      const say=o.say&&D.querySelector(o.say);if(say){D.getElementById("nfSay").appendChild(say)}else D.getElementById("nfSay").remove();
+      const say=(o.say&&D.querySelector(o.say))||D.querySelector('main .sub, main > p');if(say){D.getElementById("nfSay").appendChild(say)}else D.getElementById("nfSay").remove();
       const T=D.getElementById("nfTools");
-      (o.tools||[]).forEach(t=>{const el=typeof t.el==="string"?D.querySelector(t.el):t.el;if(!el)return;
+      const list=[];(o.tools||[]).forEach(t=>{const els=typeof t.el==="string"?(t.all?[...D.querySelectorAll(t.el)]:[D.querySelector(t.el)]):[t.el];els.forEach((el,i)=>{if(el)list.push([Object.assign({},t,{icon:(t.icons&&t.icons[i])||t.icon,label:(t.labels&&t.labels[i])||t.label}),el])})});
+      list.forEach(([t,el])=>{
         const lab=(el.textContent||"").replace(/[\u{1F000}-\u{1FAFF}\u{2190}-\u{21FF}\u{2300}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu,"").trim();
         el.classList.add("nfBtn");if(t.tab)el.addEventListener("click",()=>{T.querySelectorAll(".nfBtn").forEach(x=>x.classList.toggle("on",x===el))});el.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">${ICON[t.icon]||ICON.play}</svg><b>${t.label||lab}</b>`;T.appendChild(el)});
+      D.querySelectorAll('main .bar,main .center,#ctl').forEach(b=>{if(!b.querySelector('button,a'))b.style.display='none'});
       D.documentElement.classList.add("nfOn");
       const fal=D.getElementById("nfFal");setInterval(()=>{const k=fal.src;fal.src="img/v2/f_blink.webp";setTimeout(()=>fal.src=k,160)},3400);
       fal.onclick=()=>{fal.src="img/v2/f_jump.webp";fal.classList.remove("hop");void fal.offsetWidth;fal.classList.add("hop");setTimeout(()=>fal.src="img/v2/f_wave.webp",900)};
@@ -28,6 +30,8 @@
   const st=document.createElement("style");st.textContent=`
 html.nfOn body::before{background:#f3cf98 url(img/v2/bg_calm.webp) center bottom/cover no-repeat!important}
 html.nfOn main::before{display:none!important}
+html.nfOn main section{background:none!important;border:0!important;box-shadow:none!important}
+html.nfOn main .tabs{justify-content:center}
 html.nfOn main{position:fixed!important;inset:0 0 0 min(30vw,300px)!important;padding:calc(108px + env(safe-area-inset-top)) 18px 16px!important;overflow-y:auto!important}
 html[dir=rtl].nfOn main{inset:0 min(30vw,300px) 0 0!important}
 html.nfOn main h1{left:50%!important}

@@ -181,3 +181,4 @@ html.v2 main::before{height:calc(118px + env(safe-area-inset-top))!important;bac
 html.v2 main h1{top:calc(20px + env(safe-area-inset-top))!important}
 html.v2 .n2back{top:calc(16px + env(safe-area-inset-top))!important}
 @media (max-height:540px){html.v2 main::before{height:calc(60px + env(safe-area-inset-top))!important}html.v2 main h1{top:calc(8px + env(safe-area-inset-top))!important}html.v2 .n2back{top:calc(6px + env(safe-area-inset-top))!important}}
+html.nfOn #av,html.nfOn img.sqh{display:none!important}
