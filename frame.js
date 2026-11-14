@@ -18,7 +18,7 @@
       const T=D.getElementById("nfTools");
       (o.tools||[]).forEach(t=>{const el=typeof t.el==="string"?D.querySelector(t.el):t.el;if(!el)return;
         const lab=(el.textContent||"").replace(/[\u{1F000}-\u{1FAFF}\u{2190}-\u{21FF}\u{2300}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu,"").trim();
-        el.classList.add("nfBtn");el.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">${ICON[t.icon]||ICON.play}</svg><b>${t.label||lab}</b>`;T.appendChild(el)});
+        el.classList.add("nfBtn");if(t.tab)el.addEventListener("click",()=>{T.querySelectorAll(".nfBtn").forEach(x=>x.classList.toggle("on",x===el))});el.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">${ICON[t.icon]||ICON.play}</svg><b>${t.label||lab}</b>`;T.appendChild(el)});
       D.documentElement.classList.add("nfOn");
       const fal=D.getElementById("nfFal");setInterval(()=>{const k=fal.src;fal.src="img/v2/f_blink.webp";setTimeout(()=>fal.src=k,160)},3400);
       fal.onclick=()=>{fal.src="img/v2/f_jump.webp";fal.classList.remove("hop");void fal.offsetWidth;fal.classList.add("hop");setTimeout(()=>fal.src="img/v2/f_wave.webp",900)};
@@ -41,6 +41,7 @@ html[dir=rtl] #nf{left:auto;right:0}
 #nfTools .nfBtn svg{width:clamp(54px,6.4vw,70px);height:clamp(54px,6.4vw,70px);padding:15px;box-sizing:border-box;border-radius:50%;color:#fffdf7!important;stroke:#fffdf7!important;background:linear-gradient(#d99a52,#b9722f);border:4px solid #7d4a1c;box-shadow:0 6px 0 rgba(90,50,10,.35),inset 0 4px 0 rgba(255,255,255,.25);transition:transform .12s}
 #nfTools .nfBtn:active svg{transform:translateY(4px);box-shadow:0 2px 0 rgba(90,50,10,.35)}
 #nfTools .nfBtn b{font-weight:800}
+#nfTools .nfBtn.on svg{background:linear-gradient(#2fa36b,#1f7a4e);border-color:#145236;box-shadow:0 6px 0 rgba(20,82,54,.4),0 0 0 4px #fff,0 0 14px 6px rgba(255,214,70,.7)}
 #nfFal{margin-top:auto;width:min(26vw,230px);max-height:42vh;object-fit:contain;object-position:bottom;filter:drop-shadow(0 10px 8px rgba(110,60,10,.28));cursor:pointer}
 #nfFal.hop{animation:nfHop .6s cubic-bezier(.34,1.56,.64,1)}
 @keyframes nfHop{40%{transform:translateY(-22px) scale(1.04)}}
