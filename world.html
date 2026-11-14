@@ -161,6 +161,16 @@ svg.road{position:absolute;inset:0;width:100%;height:100%}
 
 #road .gstop{width:18cqh;height:16cqh}
 #road .gstop b{font-size:3.2cqh}
+
+/* inside a place: each lesson stands on a woven palm mat on the sand */
+#road .gstop{width:30cqh;height:21cqh;transform:translate(-50%,-78%)}
+#road .gstop .pad{left:-2cqh;right:-2cqh;bottom:-5.5cqh;height:13cqh;border-radius:50%;
+  background:radial-gradient(ellipse at 50% 50%,#e9a868 0 18%,#d98c4c 19% 22%,#eeb57a 23% 34%,#d48748 35% 38%,#efb879 39% 52%,#cf8343 53% 56%,#eab173 57% 70%,#c57a3d 71% 74%,#e2a466 75% 86%,#b86e34 87% 100%);
+  box-shadow:inset 0 -.7cqh 0 rgba(120,60,15,.35),0 1.2cqh 1.4cqh rgba(150,95,30,.3);border:.5cqh solid #c98a4c}
+#road .gstop>img{width:100%;height:100%;filter:drop-shadow(0 1.2cqh 1cqh rgba(110,60,10,.3))}
+#road .gstop.cur .pad{box-shadow:inset 0 -.7cqh 0 rgba(120,60,15,.35),0 0 4cqh 1.4cqh rgba(255,214,70,.8)}
+#road .gstop i{top:-1cqh;right:1cqh}
+#road #roadfalcon{width:22cqh;height:22cqh;left:1cqh;bottom:1cqh}
 </style>
 </head>
 <body>
@@ -335,13 +345,13 @@ function drawRoad(k){const s=PLACE[k],A=$("#roadarea"),R=GROUPS[k];document.docu
     const F=$("#flat");G.forEach(g=>g.L.forEach(a=>F.appendChild(lessonEl(k,a))));F.style.setProperty("--n",Math.min(4,F.children.length));return}
   /* the building on the sand: big lesson pictures standing in neat rows, no road */
   $("#roadbg").src=`${V}${s.bg}.webp`;$("#roadbg").style.objectPosition="top";$("#roadbg").style.display="";
-  const n=G.length,two=n>3,top=two?Math.ceil(n/2):n,P=G.map((g,i)=>{const r=two&&i>=top?1:0,m=r?n-top:top,c=r?i-top:i,span=m>1?Math.min(30,60/(m-1)):0,mid=two?(r?54:62):58;return [mid+((m-1)/2-c)*span,two?(r?80:56):68]});
+  const n=G.length,two=n>3,top=two?Math.ceil(n/2):n,P=G.map((g,i)=>{const r=two&&i>=top?1:0,m=r?n-top:top,c=r?i-top:i,span=m>1?Math.min(29,58/(m-1)):0;return [57+((m-1)/2-c)*span,two?(r?86:59):74]});
   let cur=G.findIndex(g=>!g.chest&&gfrac(g)<1);if(cur<0)cur=G.findIndex(g=>gfrac(g)<1);
   let h="";G.forEach((g,i)=>{const f=gfrac(g),dn=f>=1&&g.L.some(a=>a.total),st=Math.round(f*3),ic=g.chest?(dn?"r_chestopen":"r_chest"):g.ic;
-    h+=`<button class="gstop${i===cur?" cur":""}${g.chest?" chest":""}" data-i="${i}" style="left:${P[i][0]}%;top:${P[i][1]}%" aria-label="${g.name}"><span class="pad"></span>${pic(ic)}${dn?`<i>${TK}</i>`:""}<b class="wood" dir="auto">${g.name}<u>${[0,1,2].map(j=>`<img src="${V}r_star.webp" alt=""${j<st?"":' class="off"'}>`).join("")}</u></b></button>`});
+    h+=`<button class="gstop${i===cur?" cur":""}${g.chest?" chest":""}" data-i="${i}" style="left:${P[i][0]}%;top:${P[i][1]}%" aria-label="${g.name}"><span class="pad"></span>${pic(ic)}${dn?`<i>${TK}</i>`:""}</button>`});
   h+=`<div class="falcon" id="roadfalcon"><img alt=""></div>`;
   A.innerHTML=h;falcon($("#roadfalcon"),cur<0?"thumb":"point");
-  A.querySelectorAll(".gstop").forEach(el=>el.onclick=()=>{const g=G[+el.dataset.i];sPop();el.classList.remove("go");void el.offsetWidth;el.classList.add("go");
+  A.querySelectorAll(".gstop").forEach(el=>el.onclick=()=>{const g=G[+el.dataset.i];sPop();speak(g.name,/[a-z]/i.test(g.name)?"en":"ar");talk($("#roadfalcon"),900);el.classList.remove("go");void el.offsetWidth;el.classList.add("go");
     if(g.L.length===1)setTimeout(()=>open1(k,g.L[0].href),380);else openG(k,g)})}
 function lessonEl(k,a){const t=a.total?Math.min(count(a.key),a.total):0,dn=a.total&&t>=a.total,el=document.createElement("a");el.className="glesson";el.href=a.href;
   el.innerHTML=`<span>${pic(lpic(a))}${dn?`<i>${TK}</i>`:""}</span><b dir="auto">${a.name}</b>`;el.onclick=e=>{e.preventDefault();sPop();el.classList.add("go");setTimeout(()=>open1(k,a.href),300)};return el}
