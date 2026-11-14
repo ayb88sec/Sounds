@@ -293,7 +293,7 @@ window.NAJMA_RESET=()=>{done={};save();drawGroups();drawWords()};
 drawGroups();drawWords();
 /* learning path (kids-app-design): groups become stops on a road */
 gbox.style.display="none";
-var PATH=NajmaPath({mount:gbox,stops:GROUPS.map((g,i)=>({big:i+1,label:g.n,sub:g.w.length+" words",words:g.w})),
+var PATH=NajmaPath({plain:true,mount:gbox,stops:GROUPS.map((g,i)=>({big:i+1,label:g.n,sub:g.w.length+" words",words:g.w})),
   isDone:i=>groupDone(i)===GROUPS[i].w.length,selected:gi,
   onSelect:i=>{gi=i;save();drawGroups();drawWords()},
   onStart:i=>{gi=i;save();drawGroups();drawWords();popSnd();grid.closest("section").scrollIntoView({behavior:"smooth",block:"start"});talk(`${GROUPS[i].n}! Let's read!`)}});

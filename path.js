@@ -69,10 +69,10 @@
     const cur=()=>{for(let i=0;i<o.stops.length;i++)if(!o.isDone(i))return i;return o.stops.length};
     function draw(){const c=cur(),nW=Math.ceil(o.stops.length/per);if(sel>Math.min(c,o.stops.length-1))sel=Math.min(c,o.stops.length-1);world=Math.floor(sel/per);
       const doneN=o.stops.filter((_,i)=>o.isDone(i)).length;
-      root.innerHTML=`<div class="np-hd"><img src="img/uae/saqoor_wave.webp" alt=""><b>${me.name?t("Hi, "+me.name+"!","هلا "+me.name+"!"):t("Hi!","هلا!")}</b>
+      root.innerHTML=`<div class="np-hd">${o.plain?"":`<img src="img/uae/saqoor_wave.webp" alt="">`}<b>${me.name?t("Hi, "+me.name+"!","هلا "+me.name+"!"):t("Hi!","هلا!")}</b>
         <span><img src="img/home2/nav_star.webp" alt="">${doneN} / ${o.stops.length}</span></div>`+
         (nW>1?`<div class="np-tabs" style="--n:${nW}">${Array.from({length:nW},(_,w)=>{const W=WORLDS[w%3],a=w*per,b=Math.min(o.stops.length,a+per)-1,lk=false;
-          return `<button data-w="${w}" class="${w===world?"on":""}${lk?" lock":""}"><img src="${W.img}" alt=""><span><b>${t(W.en,W.ar)}</b><small>${t(b>a?`Groups ${a+1}–${b+1}`:`Group ${a+1}`,b>a?`المجموعات ${ad(a+1)}–${ad(b+1)}`:`المجموعة ${ad(a+1)}`)}</small></span></button>`}).join("")}</div>`:"")+
+          return `<button data-w="${w}" class="${w===world?"on":""}${lk?" lock":""}">${o.plain?"":`<img src="${W.img}" alt="">`}<span><b>${t(W.en,W.ar)}</b><small>${t(b>a?`Groups ${a+1}–${b+1}`:`Group ${a+1}`,b>a?`المجموعات ${ad(a+1)}–${ad(b+1)}`:`المجموعة ${ad(a+1)}`)}</small></span></button>`}).join("")}</div>`:"")+
         `<div class="np-road"></div><div class="np-card"></div>`;
       root.querySelectorAll(".np-tabs button").forEach(b=>b.onclick=()=>{const w=+b.dataset.w;if(w*per>c){b.classList.add("no");say(t("Finish this world first!","خلّص هذا العالم أولًا!"));return}sel=Math.min(c,w*per+per-1,o.stops.length-1);if(sel<w*per)sel=w*per;o.onSelect&&o.onSelect(sel);draw()});
       drawRoad(c);drawCard()}
@@ -84,12 +84,12 @@
       let h=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true"><path d="${d}" fill="none" stroke="#d9a95e" stroke-width="62" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#f6dfae" stroke-width="50" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="16 16" stroke-linecap="round" opacity=".9"/></svg>`;
       const WD=WORLDS[world%3];
       for(let i=0;i<n;i++){const k=a+i,x=xs(i),y=ys(i),dn=o.isDone(k),isC=k===c,lk=false;
-        h+=`<img class="np-deco" src="${WD.deco[i%3]}" alt="" style="left:${W-x+(x>W/2?40:-40)}px;top:${y+20}px;--r:${[-6,5,-4][i%3]}deg">`;
+        if(!o.plain)h+=`<img class="np-deco" src="${WD.deco[i%3]}" alt="" style="left:${W-x+(x>W/2?40:-40)}px;top:${y+20}px;--r:${[-6,5,-4][i%3]}deg">`;
         h+=`<button class="np-stop${isC?" cur":""}${lk?" lock":""}${k===sel?" sel":""}" data-k="${k}" style="left:${x}px;top:${y}px;background:${COL[k%6]}">
           ${dn?`<span class="bd" style="background:#2fbf71">${TICK}</span>`:lk?`<span class="bd" style="background:#8a8299">${LOCK}</span>`:""}
           ${isC?`<span class="tag">${t("Go!","يلا!")}</span>`:""}<b>${o.stops[k].big||k+1}</b><small>${o.stops[k].label}</small></button>`}
       const px=xs(n),py=ys(n),wDone=o.stops.slice(a,b).every((_,i)=>o.isDone(a+i));
-      h+=`<div class="np-prize${wDone?"":" lock"}" style="left:${px}px;top:${py}px"><img src="${o.prize||"img/home2/nav_star.webp"}" alt="">${wDone?t("World done!","أحسنت!"):t("Reward","الجائزة")}</div>`;
+      h+=`<div class="np-prize${wDone?"":" lock"}" style="left:${px}px;top:${py}px">${o.plain?"":`<img src="${o.prize||"img/home2/nav_star.webp"}" alt="">`}${wDone?t("World done!","أحسنت!"):t("Reward","الجائزة")}</div>`;
       road.innerHTML=h;
       road.querySelectorAll(".np-stop").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;
         if(k>c){b.classList.remove("no");void b.offsetWidth;b.classList.add("no");say(t(`Finish ${o.stops[c].label} first!`,`خلّص ${o.stops[c].label} أولًا!`));return}
