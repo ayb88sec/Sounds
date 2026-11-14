@@ -271,6 +271,10 @@ svg.road{position:absolute;inset:0;width:100%;height:100%}
 /* top buttons in wood, like the children's sign, instead of white bubbles */
 .pill{background:linear-gradient(#d99a52,#b9722f)!important;border:.5cqh solid #7d4a1c!important;color:#fffdf7!important;text-shadow:0 .4cqh 0 #6a3b12;box-shadow:0 .9cqh 0 rgba(90,50,10,.35),inset 0 .5cqh 0 rgba(255,255,255,.25)!important}
 .pill svg path,.pill svg{stroke:#fffdf7}
+
+.glesson span{background:none!important;border:0!important;box-shadow:none!important}
+.glesson span img{width:100%!important;height:100%!important;filter:drop-shadow(0 1cqh 1cqh rgba(120,70,15,.25))}
+#gcard{background:#fffaf0!important;border-color:#f1d9ae!important}
 </style>
 </head>
 <body>
@@ -383,7 +387,8 @@ let ROT=false;function fit(){ROT=innerHeight>innerWidth;document.body.classList.
 const PLACE={ar:{p:"p_fort",bg:"bg_fort",c:"#177a52",name:"العربية",lang:"ar"},en:{p:"p_library",bg:"bg_library",c:"#2567c9",name:"English",lang:"en"},deen:{p:"p_mosque",bg:"bg_mosque",c:"#8a5a0c",name:"ديني",lang:"ar"},
   math:{p:"p_souq",bg:"bg_souq",c:"#b8500a",name:"الرياضيات",lang:"ar"},uae:{p:"p_dhow",bg:"bg_harbour",c:"#a8281f",name:"بلادي",lang:"ar"},name:{p:"p_tent",bg:"bg_tent",c:"#6a45b8",name:"اسمي",lang:"ar"},hw:{bg:"bg_calm",c:"#c2410c",name:"واجب اليوم",lang:"ar"}};
 /* one matching picture for every lesson */
-const LI={sounds:"l_sound",cvc:"l_puzzle",sent:"l_cards",writeEn:"l_write",numEn:"l_abacus",numAr:"l_abacus",colorsEn:"l_colors",colorsAr:"l_colors",days:"l_week",daysAr:"l_week",months:"l_month",monthsAr:"l_month",clock:"l_clock",clockAr:"l_clock",shapes:"l_shapes",math:"l_dice",arabic:"l_blocks",spell:"l_book",uae:"l_flag",islam:"l_pillars",iman:"l_lantern",quran:"l_quran",duas:"l_dua",name:"l_name",exam:"l_task",lsAkh:"l_mat",lsTah:"l_mat"};
+const LI={sounds:"e_sound",cvc:"e_abc",sent:"a_book",writeEn:"e_write",numEn:"m_123",numAr:"a_num",colorsEn:"e_palette",colorsAr:"a_palette",days:"d_cal",daysAr:"a_time",months:"d_cal",monthsAr:"a_time",clock:"m_clock",clockAr:"a_time",shapes:"m_shapes",math:"m_plus",arabic:"a_letters",spell:"a_book",uae:"l_flag",islam:"d_pillars",iman:"l_lantern",quran:"d_quran",duas:"d_dua",name:"l_name",exam:"l_task",lsAkh:"d_mat",lsTah:"d_mat",
+ wsFin:"e_write",wsAbc:"e_abc",wsShp:"m_shapes",wsCnt:"m_123",wsNum:"l_abacus",wsMath:"m_plus",wsFinAr:"a_letters",wsArPic:"a_book",wsSens:"l_sight",wsSea:"l_dice",wsFoc:"l_puzzle",wsMaze:"l_cards",wsBwl:"l_colors",wsAkh:"d_dua",wsNium:"d_pillars"};
 const LH=[["quran","l_quran"],["duas","l_dua"],["spell","l_book"],["arabic","l_blocks"],["numbers","l_abacus"],["islam","l_pillars"],["iman","l_lantern"],["index.html","l_sound"],["cvc","l_puzzle"],["sentences","l_cards"],["writing","l_write"],["math","l_dice"],["days","l_week"],["months","l_month"],["clock","l_clock"],["colors","l_colors"],["shapes","l_shapes"],["uae","l_flag"],["name","l_name"],["sight","l_sight"],["sheets","l_crayons"],["exam","l_task"]];
 function lpic(a){if(LI[a.id])return LI[a.id];if(a.id.startsWith("ws"))return "l_crayons";if(a.id.startsWith("s:")){const S=NAJMA.sections.find(x=>"s:"+x.id===a.id)||{},t=S.type||"words";
   if(t==="app"&&S.app){const m=LH.find(x=>(S.app.href||"").includes(x[0]));if(m)return m[1]}return t==="task"||t==="quiz"?"l_task":t==="sent"?"l_cards":t==="pic"?"l_book":"l_sight"}

@@ -112,3 +112,33 @@ html.v2 .n2bar{display:none!important}
 html.v2 main{padding-bottom:calc(40px + env(safe-area-inset-bottom))!important}
 html.v2 .mascotWrap::after{background-image:url(img/v2/f_thumb.webp)}
 html.v2 body::before{background-image:url(img/v2/bg_calm.webp);background-position:center bottom}
+
+/* ===================== Najma world look for every lesson page (html.v2) ===================== */
+html.v2,html.v2 body{background:#f3cf98!important}
+html.v2 body::before{background:#f3cf98 url(img/v2/home_bg.webp) center 30%/cover no-repeat!important;filter:saturate(.95)}
+html.v2 body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(rgba(255,248,232,0) 0,rgba(255,248,232,.25) 40%,rgba(246,217,164,.55) 100%)}
+/* title: the same wooden sign as the children's sign, no emoji stars */
+html.v2 main h1::before,html.v2 main h1::after{display:none!important}
+html.v2 main h1{border-radius:999px!important;padding:.15em 1.2em .3em!important;font-family:"Baloo Bhaijaan 2","Baloo 2",system-ui,sans-serif!important;font-size:clamp(26px,5.4vw,44px)!important;
+  background:linear-gradient(#d99a52,#b9722f)!important;border:4px solid #7d4a1c!important;box-shadow:0 8px 0 rgba(90,50,10,.35),inset 0 4px 0 rgba(255,255,255,.25)!important;text-shadow:0 3px 0 #6a3b12!important}
+html.v2 main h1 img,html.v2 main h1 .emo{display:none!important}
+/* back: a round wooden button with an arrow, like the world */
+html.v2 .n2back{width:clamp(52px,9vw,68px);height:clamp(52px,9vw,68px);padding:0!important;font-size:0!important;border-radius:50%!important;
+  background:linear-gradient(#d99a52,#b9722f) center/58% no-repeat!important;border:4px solid #7d4a1c!important;box-shadow:0 7px 0 rgba(90,50,10,.35),inset 0 4px 0 rgba(255,255,255,.25)!important}
+html.v2 .n2back::after{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fffdf7' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E") center/52% no-repeat}
+html.v2 .n2back *{display:none!important}
+/* cards: warm cream like the sticker of the world, no glassy white */
+html.v2 section,html.v2 .panel,html.v2 .box{background:#fffaf0!important;border:4px solid #f1d9ae!important;box-shadow:0 10px 0 rgba(170,115,50,.22),0 16px 26px rgba(120,80,20,.16)!important}
+html.v2 .bubble{background:#fffaf0!important;border:4px solid #f1d9ae!important}
+/* buttons: wood, white letters */
+html.v2 .btn:not(.ghost):not(.pink),html.v2 .fb,html.v2 button.go,html.v2 .pb.go{background:linear-gradient(#d99a52,#b9722f)!important;color:#fffdf7!important;border:4px solid #7d4a1c!important;
+  box-shadow:0 7px 0 rgba(90,50,10,.35),inset 0 4px 0 rgba(255,255,255,.25)!important;text-shadow:0 2px 0 #6a3b12}
+html.v2 .btn.ghost{background:#fffaf0!important;border:4px solid #d99a52!important;color:#7d4a1c!important}
+/* one falcon, the new one, never on top of the work */
+html.v2 .mascotWrap::after{background-image:url(img/v2/f_wave.webp)!important}
+html.v2 .gd{width:clamp(70px,12vw,110px)!important;bottom:calc(10px + env(safe-area-inset-bottom))!important;inset-inline-end:6px!important;background:none!important}
+html.v2 .gd img{background:none!important;mix-blend-mode:normal}
+@media (max-width:760px){html.v2 .gd{display:none!important}}
+/* worksheets: the paper shows its own title already */
+html.v2 .st{display:none!important}
+html.v2 main{padding-bottom:calc(40px + env(safe-area-inset-bottom))!important}
