@@ -201,6 +201,35 @@ svg.road{position:absolute;inset:0;width:100%;height:100%}
 .pcol.me b,.brow.me b{color:#c2410c}
 #brest{display:flex;flex-wrap:wrap;justify-content:center;gap:1.6cqh 3cqh;margin-top:3cqh;padding-top:2.4cqh;border-top:.4cqh dashed #e8d6b5}
 .brow{display:flex;align-items:center;gap:1.4cqh}.brow i{font-style:normal;font-weight:800;font-size:3.6cqh;color:var(--mute)}.brow .bav{width:9cqh;height:9cqh;font-size:5cqh;border-width:.5cqh}.brow b{font-size:3.4cqh}
+
+/* motion between places */
+#map.zoomin{animation:zin .52s cubic-bezier(.55,0,.75,.25) forwards}
+@keyframes zin{to{transform:scale(2.6);opacity:0;filter:blur(2px)}}
+#map.zoomout{animation:zout .6s var(--ease)}
+@keyframes zout{from{transform:scale(2.4);opacity:0}}
+#road.enter .bg{animation:kb .9s var(--ease)}
+@keyframes kb{from{transform:scale(1.35);opacity:.2}}
+#road.enter .gstop{animation:popup .55s var(--bounce) backwards}
+#road.enter .gstop:nth-of-type(1){animation-delay:.25s}#road.enter .gstop:nth-of-type(2){animation-delay:.32s}#road.enter .gstop:nth-of-type(3){animation-delay:.39s}
+#road.enter .gstop:nth-of-type(4){animation-delay:.46s}#road.enter .gstop:nth-of-type(5){animation-delay:.53s}#road.enter .gstop:nth-of-type(6){animation-delay:.6s}#road.enter .gstop:nth-of-type(7){animation-delay:.67s}
+@keyframes popup{from{transform:translate(-50%,-60%) scale(.3);opacity:0}}
+#road.enter #roadfalcon{animation:fin .7s var(--bounce) .45s backwards}
+@keyframes fin{from{transform:translate(-40cqh,-30cqh) rotate(-20deg);opacity:0}}
+#road.leave{animation:rout .33s ease-in forwards}
+@keyframes rout{to{transform:scale(.85);opacity:0}}
+#curtain{position:absolute;inset:0;z-index:40;pointer-events:none;background:radial-gradient(circle at 50% 50%,#fff7e6,#f6d9a4);opacity:0;transition:opacity .4s ease}
+#curtain.on{opacity:1;pointer-events:auto}
+/* all activities */
+#wall{left:calc(2.5cqh + 36cqh);top:2.5cqh;gap:1cqh;font-size:3.8cqh}#wall svg{width:6cqh;height:6cqh}
+#allchips{position:absolute;top:16cqh;left:3cqh;right:3cqh;display:flex;gap:2cqh;justify-content:center}
+.chip{display:flex;flex-direction:column;align-items:center;width:19cqh;padding:1cqh 0 1.2cqh;border-radius:3cqh;background:rgba(255,253,247,.75);border:.5cqh solid transparent;transition:transform .15s var(--ease)}
+.chip img{width:13cqh;height:9cqh;object-fit:contain}.chip b{font-size:3.2cqh;line-height:1.2}
+.chip.on{background:#fffdf7;border-color:var(--c);box-shadow:0 1cqh 0 var(--c);transform:translateY(-.6cqh)}
+.chip:active{transform:scale(.94)}
+#allgrid{position:absolute;top:36cqh;left:4cqh;right:4cqh;bottom:3cqh;display:grid;grid-template-columns:repeat(auto-fill,20cqh);grid-auto-rows:min-content;gap:3cqh 4cqh;justify-content:center;overflow:auto}
+#allgrid .glesson{animation:popup2 .45s var(--bounce) backwards}
+#allgrid .glesson span{width:17cqh;height:17cqh}#allgrid .glesson b{font-size:3.2cqh}
+@keyframes popup2{from{transform:scale(.4);opacity:0}}
 </style>
 </head>
 <body>
@@ -211,7 +240,12 @@ svg.road{position:absolute;inset:0;width:100%;height:100%}
   <div id="roadarea"></div>
   <div class="top"><button class="pill ic" id="rback" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button><div class="title" id="roadtitle"></div><span class="pill"><img src="img/v2/r_star.webp" alt=""><span class="starcount"></span></span></div>
 </section>
-<div id="gov"></div><div id="board"></div>
+<section class="scr" id="all">
+  <img class="bg" src="img/v2/bg_calm.webp" alt="" style="object-position:center bottom">
+  <div class="top"><button class="pill ic" id="aback" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button><div class="title" style="--ac:#c2410c">كل الألعاب</div><span style="width:11cqh"></span></div>
+  <div id="allchips"></div><div id="allgrid"></div>
+</section>
+<div id="gov"></div><div id="board"></div><div id="curtain"></div>
 <div id="kidsOv"><div class="card" id="kidsBox"></div></div>
 </div>
 <script>
@@ -345,19 +379,22 @@ function drawMap(){const M=$("#map"),me=NAJMA.me;
   h+=`<div id="heroK"><b>هيا نتعلم!</b></div><button id="whw"><img src="${V}l_task.webp" alt=""><span class="wood">واجب اليوم</span>${hwN?`<i id="hwn">${AD(hwN)}</i>`:""}</button>`;
   ORDER.forEach((k,i)=>{const [x,b,ht]=SPOT[i],s=PLACE[k],n=Math.round(frac(k)*4),on=vis(k).length;if(!on)return;
     h+=`<button class="bld" data-k="${k}" style="left:${x}%;bottom:${b}cqh;height:${ht}cqh;width:${ht*1.45}cqh;margin-left:${-ht*.725}cqh" aria-label="${s.name}">${pic(s.p)}</button><button class="post wood" data-k="${k}" style="left:${x}%;bottom:${b-7.6}cqh">${s.name}<i>${[0,1,2,3].map(j=>`<img src="${V}r_star.webp" alt=""${j<n?"":' class="off"'}>`).join("")}</i></button>`});
-  h+=`<div class="falcon" id="wf" data-f="wave"><img alt=""></div><span class="pill" id="wstars"><img src="${V}r_star.webp" alt=""><span>${stars}</span></span><button class="pill ic" id="wcup" aria-label="نجوم العائلة"><img src="${V}r_trophy.webp" alt=""></button>
+  h+=`<div class="falcon" id="wf" data-f="wave"><img alt=""></div><span class="pill" id="wstars"><img src="${V}r_star.webp" alt=""><span>${stars}</span></span><button class="pill ic" id="wcup" aria-label="نجوم العائلة"><img src="${V}r_trophy.webp" alt=""></button><button class="pill" id="wall" aria-label="كل الألعاب"><svg viewBox="0 0 24 24" width="30" height="30"><g fill="#f5b700" stroke="#c98a00" stroke-width="1.2"><rect x="3" y="3" width="7.5" height="7.5" rx="2.2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2.2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2.2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2.2"/></g></svg>كل الألعاب</button>
     <button class="pill" id="wkid"><span class="av" style="background:${me&&me.color||"#ffd23f"}">${NAJMA_AV(me&&me.avatar)}</span><span dir="auto">${me&&!me.preview?(me.nameAr||me.name):""}</span></button>`;
   M.innerHTML=h;const wf=$("#wf");wf.style.left=HOME[0];wf.style.bottom=HOME[1];falcon(wf,"wave");flying=false;
   wf.onclick=()=>{hop(wf);talk(wf,1200);speak("هلا! شو بنتعلم اليوم؟","ar")};
-  $("#wcup").onclick=()=>{sTap();openBoard()};$("#whw").onclick=()=>{sTap();location.hash="c=hw"};$("#wkid").onclick=()=>{sTap();$("#kidsOv").classList.add("on")};
+  $("#wall").onclick=()=>{sTap();location.hash="c=all"};$("#wcup").onclick=()=>{sTap();openBoard()};$("#whw").onclick=()=>{sTap();location.hash="c=hw"};$("#wkid").onclick=()=>{sTap();$("#kidsOv").classList.add("on")};
   M.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>flyTo(b.dataset.k))}
 function flyTo(k){if(flying)return;flying=true;const wf=$("#wf"),i=ORDER.indexOf(k),bl=$(`.bld[data-k="${k}"]`),[l,b]=perch(i);sPop();
   wf.dataset.busy=1;falcon(wf,"jump");wf.style.left=l;wf.style.bottom=b;
   setTimeout(()=>{bl.classList.add("hit");falcon(wf,"point");hop(wf);sWin();speak(PLACE[k].name,PLACE[k].lang)},950);
-  setTimeout(()=>{delete wf.dataset.busy;const L=vis(k);if(L.length===1){open1(k,L[0].href)}else location.hash="c="+k},1900)}
+  setTimeout(()=>{const L=vis(k);zoomTo(bl);setTimeout(()=>{delete wf.dataset.busy;if(L.length===1){open1(k,L[0].href)}else{ENTER="in";location.hash="c="+k}},520)},1500)}
+let ENTER="",FROM=null;
+function zoomTo(el){const M=$("#map"),r=el.getBoundingClientRect(),a=APP.getBoundingClientRect();const [x,y]=ROT?[(r.top+r.height/2-a.top)/a.height,(a.right-r.right+r.width/2)/a.width]:[(r.left+r.width/2-a.left)/a.width,(r.top+r.height/2-a.top)/a.height];
+  FROM=[x*100,y*100];M.style.transformOrigin=`${FROM[0]}% ${FROM[1]}%`;M.classList.add("zoomin")}
 /* lessons already rebuilt in the new look */
 const NEWL={"index.html":"sounds2.html"};
-function open1(k,href){href=NEWL[href]||href;try{sessionStorage.setItem("najma:v2c",k)}catch(e){}location.href=href}
+function open1(k,href){href=NEWL[href]||href;try{sessionStorage.setItem("najma:v2c",k)}catch(e){}const c=$("#curtain");c.classList.add("on");setTimeout(()=>location.href=href,420)}
 
 /* road */
 /* each road has a few big stops; a stop can hold several lessons; worksheets wait in the chest at the end */
@@ -398,7 +435,7 @@ function drawRoad(k){const s=PLACE[k],A=$("#roadarea"),R=GROUPS[k];document.docu
   const n=G.length,two=n>3,top=two?Math.ceil(n/2):n,P=G.map((g,i)=>{const r=two&&i>=top?1:0,m=r?n-top:top,c=r?i-top:i,span=m>1?Math.min(24,48/(m-1)):0;return [55+((m-1)/2-c)*span,two?(r?88:57):76]});
   let cur=G.findIndex(g=>!g.chest&&gfrac(g)<1);if(cur<0)cur=G.findIndex(g=>gfrac(g)<1);
   let h="";G.forEach((g,i)=>{const f=gfrac(g),dn=f>=1&&g.L.some(a=>a.total),st=Math.round(f*3),ic=g.ic;
-    h+=`<button class="gstop${i===cur?" cur":""}${g.chest?" chest":""}" data-i="${i}" style="left:${P[i][0]}%;top:${P[i][1]}%" aria-label="${g.name}"><span class="pad"></span>${pic(ic)}${dn?`<i>${TK}</i>`:""}<u class="st3">${[0,1,2].map(j=>`<img src="${V}r_star.webp" alt=""${j<st?"":' class="off"'}>`).join("")}</u></button>`});
+    h+=`<button class="gstop${i===cur?" cur":""}${g.chest?" chest":""}" data-i="${i}" style="left:${P[i][0]}%;top:${P[i][1]}%" aria-label="${g.name}"><span class="pad"></span>${pic(ic)}${dn?`<i>${TK}</i>`:""}</button>`});
   h+=`<div class="falcon" id="roadfalcon"><img alt=""></div>`;
   A.innerHTML=h;falcon($("#roadfalcon"),cur<0?"thumb":"point");
   A.querySelectorAll(".gstop").forEach(el=>el.onclick=()=>{const g=G[+el.dataset.i];sPop();speak(g.name,/[a-z]/i.test(g.name)?"en":"ar");talk($("#roadfalcon"),900);el.classList.remove("go");void el.offsetWidth;el.classList.add("go");
@@ -412,9 +449,23 @@ function openG(k,g){const o=$("#gov");o.innerHTML=`<div class="card" id="gcard">
   GL.style.setProperty("--n",Math.min(g.L.length,g.L.length>4?Math.ceil(g.L.length/2):g.L.length));
   o.classList.add("on");$("#gx").onclick=closeG;o.onclick=e=>{if(e.target===o)closeG()}}
 function closeG(){const o=$("#gov");if(o)o.classList.remove("on")}
-$("#rback").onclick=()=>{sTap();location.hash=""};
+$("#aback").onclick=()=>{sTap();location.hash=""};
+$("#rback").onclick=()=>{sTap();const R=$("#road");R.classList.add("leave");setTimeout(()=>{R.classList.remove("leave");ENTER="out";location.hash=""},330)};
 
-function route(){const bo=$("#board");if(bo)bo.classList.remove("on");clearInterval(boardT);const m=location.hash.match(/c=(\w+)/),k=m&&PLACE[m[1]]?m[1]:null;$("#map").classList.toggle("on",!k);$("#road").classList.toggle("on",!!k);if(k)drawRoad(k);else drawMap()}
+function route(){const bo=$("#board");if(bo)bo.classList.remove("on");clearInterval(boardT);closeG();const m=location.hash.match(/c=(\w+)/),all=m&&m[1]==="all",k=m&&PLACE[m[1]]?m[1]:null;
+  const M=$("#map"),R=$("#road"),AL=$("#all");M.classList.remove("zoomin","zoomout");R.classList.remove("enter");
+  M.classList.toggle("on",!k&&!all);R.classList.toggle("on",!!k);AL.classList.toggle("on",!!all);
+  if(all)drawAll();else if(k){drawRoad(k);if(ENTER==="in"){void R.offsetWidth;R.classList.add("enter")}}
+  else{drawMap();if(ENTER==="out"&&FROM){M.style.transformOrigin=`${FROM[0]}% ${FROM[1]}%`;void M.offsetWidth;M.classList.add("zoomout")}}
+  ENTER="";$("#curtain").classList.remove("on")}
+/* every activity in one place, by subject */
+const ALLK=["ar","en","math","deen","uae","name"],ALLIC={ar:"p_fort",en:"p_library",math:"p_souq",deen:"p_mosque",uae:"p_dhow",name:"p_tent"};let allK=null;
+function drawAll(){const ks=ALLK.filter(k=>vis(k).length);if(!allK||!ks.includes(allK))allK=ks[0];
+  $("#allchips").innerHTML=ks.map(k=>`<button class="chip${k===allK?" on":""}" data-k="${k}" style="--c:${PLACE[k].c}">${pic(ALLIC[k])}<b dir="auto">${PLACE[k].name}</b></button>`).join("");
+  $$("#allchips .chip").forEach(b=>b.onclick=()=>{sTap();allK=b.dataset.k;drawAll()});
+  const G=$("#allgrid");G.innerHTML="";document.documentElement.style.setProperty("--ac",PLACE[allK].c);
+  groupsOf(allK).forEach(g=>g.L.forEach(a=>{const el=lessonEl(allK,a);el.style.animationDelay=(G.children.length*.03)+"s";G.appendChild(el)}))}
+
 addEventListener("hashchange",route);addEventListener("pageshow",e=>{if(e.persisted)location.reload()});route();
 
 /* choose the child (not on a child's own iPad), parents' door, progress */
