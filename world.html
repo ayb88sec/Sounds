@@ -509,7 +509,7 @@ const HWL=rowBy("📌 الواجب");
 {const me=NAJMA.me||{},nz=v=>String(v||"").replace(/[\u064B-\u0652]/g,"").replace(/ة/g,"ه").trim().toLowerCase();
  if([me.name,me.nameAr,me.nameEn].some(v=>/^(نوره|noura|nora)$/.test(nz(String(v||"").split(/\s+/)[0]))))
   HWL.unshift({id:"exam",href:"exam.html",glyph:"📝",name:"📝 الامتحان: التربية الإسلامية",sub:"مراجعة نهاية الفصل الأول",bg:"linear-gradient(150deg,#a66bff,#ff7eb6)",key:"examG2",total:22})}
-const MATHIDS=["math","wsCnt","wsNum","wsMath"];const CATS={hw:{t:"الواجب",e:"Homework",ic:"nav_hw",apps:HWL},uae:{t:"بلادي الإمارات",e:"My UAE",ic:"ap_uae",apps:rowBy("🔤 العربية").filter(a=>a.id==="uae")},ar:{t:"العربية",e:"Arabic",ic:"cat_ar",apps:rowBy("🔤 العربية").filter(a=>a.id!=="uae")},deen:{t:"ديني",e:"Islam",ic:"cat_deen",apps:rowBy("🕌 ديني")},en:{t:"English",e:"اللغة الإنجليزية",ic:"cat_en",apps:rowBy("🇬🇧 English").concat(rowBy("🔷 Maths").filter(a=>!MATHIDS.includes(a.id)))},math:{t:"Maths",e:"Maths",ic:"cat_num",apps:rowBy("🔷 Maths").filter(a=>MATHIDS.includes(a.id))},name:{t:"اسمي",e:"My Name",ic:"ap_name",apps:rowBy("✏️ اسمي · My name")}};
+const MATHIDS=["math","wsCnt","wsNum","wsMath"];const CATS={hw:{t:"الواجب",e:"Homework",ic:"nav_hw",apps:HWL},uae:{t:"بلادي الإمارات",e:"My UAE",ic:"ap_uae",apps:rowBy("🔤 العربية").filter(a=>a.id==="uae")},ar:{t:"العربية",e:"Arabic",ic:"cat_ar",apps:rowBy("🔤 العربية").filter(a=>a.id!=="uae")},deen:{t:"ديني",e:"Islam",ic:"cat_deen",apps:rowBy("🕌 ديني")},en:{t:"English",e:"اللغة الإنجليزية",ic:"cat_en",apps:rowBy("🇬🇧 English").concat(rowBy("🔷 Maths").filter(a=>!MATHIDS.includes(a.id)))},math:{t:"Maths",e:"Maths",ic:"cat_num",apps:rowBy("🔷 Maths").filter(a=>MATHIDS.includes(a.id))},mathen:{t:"Maths",e:"Maths",ic:"cat_num",apps:rowBy("🔷 Maths").filter(a=>MATHIDS.includes(a.id))},name:{t:"اسمي",e:"My Name",ic:"ap_name",apps:rowBy("✏️ اسمي · My name")}};
 let stars=0,full=0;{const seen=new Set();ROWS.forEach(r=>r.apps.filter(visA).forEach(a=>{const n=a.total?Math.min(count(a.key),a.total):0;if(a.total&&!seen.has(a.key)){seen.add(a.key);stars+=n;if(n>=a.total)full++}}))}
 const hwN=HWL.filter(visA).length;
 /* ===== new look: one world, the falcon guides, every lesson is a stop on its place's road ===== */
@@ -519,7 +519,7 @@ const V="img/v2/",pic=n=>`<img src="${V}${n}.webp" alt="">`,APP=$("#app");
 const AD=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
 let ROT=false;/* landscape only: held upright, landscape.js asks to turn the device */
 const PLACE={ar:{p:"p_fort",bg:"bg_fort",c:"#177a52",name:"العربية",lang:"ar"},en:{p:"p_library",bg:"bg_library",c:"#2567c9",name:"English",lang:"en"},deen:{p:"p_mosque",bg:"bg_mosque",c:"#8a5a0c",name:"ديني",lang:"ar"},
-  math:{p:"p_souq",bg:"bg_souq",c:"#b8500a",name:"الرياضيات",lang:"ar"},uae:{p:"p_dhow",bg:"bg_harbour",c:"#a8281f",name:"بلادي",lang:"ar"},name:{p:"p_tent",bg:"bg_tent",c:"#6a45b8",name:"اسمي",lang:"ar"},hw:{bg:"pl_ar",c:"#c2410c",name:"واجب اليوم",lang:"ar"}};
+  math:{p:"p_souq",bg:"bg_souq",c:"#b8500a",name:"الرياضيات",lang:"ar"},mathen:{p:"p_souq",bg:"bg_souq",c:"#b8500a",name:"Maths",lang:"en"},uae:{p:"p_dhow",bg:"bg_harbour",c:"#a8281f",name:"بلادي",lang:"ar"},name:{p:"p_tent",bg:"bg_tent",c:"#6a45b8",name:"اسمي",lang:"ar"},hw:{bg:"pl_ar",c:"#c2410c",name:"واجب اليوم",lang:"ar"}};
 /* one matching picture for every lesson */
 const LI={sounds:"e_sound",cvc:"e_abc",sent:"a_book",writeEn:"e_write",numEn:"m_123",numAr:"a_num",colorsEn:"e_palette",colorsAr:"a_palette",days:"d_cal",daysAr:"a_time",months:"d_cal",monthsAr:"a_time",clock:"m_clock",clockAr:"a_time",shapes:"m_shapes",math:"m_plus",arabic:"a_letters",spell:"a_book",uae:"l_flag",islam:"d_pillars",iman:"l_lantern",quran:"d_quran",duas:"d_dua",name:"l_name",exam:"l_task",lsAkh:"d_mat",lsTah:"d_mat",
  wsFin:"e_write",wsAbc:"e_abc",wsShp:"m_shapes",wsCnt:"m_123",wsNum:"l_abacus",wsMath:"m_plus",wsFinAr:"a_letters",wsArPic:"a_book",wsSens:"l_sight",wsSea:"l_dice",wsFoc:"l_puzzle",wsMaze:"l_cards",wsBwl:"l_colors",wsAkh:"d_dua",wsNium:"d_pillars"};
@@ -620,24 +620,28 @@ function open1(k,href){href=NEWL[href]||href;try{sessionStorage.setItem("najma:v
 /* each road has a few big stops; a stop can hold several lessons; worksheets wait in the chest at the end */
 const GROUPS={
  /* العربية and English use the same cards in the same order with the same pictures, so kids are not confused (user 2026-11-19) */
- en:[["Letters","a_letters",["sounds","writeEn"]],["Words","a_book",["cvc","sent","s:"]],["Numbers","a_num",["numEnE"]],["Time","a_time",["days","months","clockEn"]],["Colours","a_palette",["colorsEn"]]],
- ar:[["حروفي","a_letters",["arabic"]],["كلماتي","a_book",["spell","s:"]],["الأرقام","a_num",["numAr"]],["الوقت","a_time",["daysAr","monthsAr","clockAr"]],["الألوان","a_palette",["colorsAr"]]],
+ en:[["Letters","a_letters",["sounds","writeEn"]],["Words","a_book",["cvc","sent","s:"]],["Numbers","a_num",["numEnE"]],["Maths","m_plus",["goMathEn"]],["Time","a_time",["days","months","clockEn"]],["Colours","a_palette",["colorsEn"]]],
+ ar:[["حروفي","a_letters",["arabic"]],["كلماتي","a_book",["spell","s:"]],["الأرقام","a_num",["numAr"]],["الرياضيات","m_plus",["goMathAr"]],["الوقت","a_time",["daysAr","monthsAr","clockAr"]],["الألوان","a_palette",["colorsAr"]]],
  deen:[["أركان الإسلام","d_pillars",["islam"]],["أركان الإيمان","d_pillars",["iman"]],["القرآن","d_quran",["quran","s:"]],["أدعية","d_dua",["duas"]],["أحب الخير لأخي","d_mat",["lsAkh"]],["الطهارة والوضوء","d_mat",["lsTah"]]],
+ mathen:[["Numbers","m_123",["numEnE"]],["Adding","m_plus",["mathPlusEn"]],["Taking away","m_minus",["mathMinusEn"]],["Shapes","m_shapes",["shapesEn"]],["Clock","m_clock",["clockEn"]]],
  math:[["الأرقام","m_123",["numEn"]],["الجمع","m_plus",["mathPlus"]],["الطرح","m_minus",["mathMinus"]],["الأشكال","m_shapes",["shapes"]],["الساعة","m_clock",["clock"]]]};
-const CHEST={en:["Worksheets","a_chest"],ar:["أوراق العمل","a_chest"],deen:["أوراق العمل","d_chest"],math:["أوراق العمل","m_chest"]};
+const CHEST={en:["Worksheets","a_chest"],ar:["أوراق العمل","a_chest"],deen:["أوراق العمل","d_chest"],math:["أوراق العمل","m_chest"],mathen:["Worksheets","m_chest"]};
 /* every visible lesson in the app, plus maths split into adding and taking away */
 function pool(){const seen=new Set(),P=[];Object.keys(CATS).forEach(k=>vis(k).forEach(a=>{if(seen.has(a.id))return;seen.add(a.id);P.push(a)}));
   const m=P.find(a=>a.id==="math");if(m){const ML=NAJMA.lv("math"),p=ML.includes(0),q=ML.includes(1);
     P.push(Object.assign({},m,{id:"mathPlus",name:"الجمع",href:p?"math.html?l=0":"math.html"}));if(q||p)P.push(Object.assign({},m,{id:"mathMinus",name:"الطرح",href:q?"math.html?l=1":"math.html?l=2"}))}
-  /* English building: Numbers and the clock in English, matching الأرقام and الوقت in العربية (user 2026-11-19); maths itself stays in الرياضيات */
-  {const en=(id,base,name,href)=>{const b=P.find(a=>a.id===base);if(b)P.push(Object.assign({},b,{id,name,href}))};
-   en("numEnE","numEn","Numbers","numbers-en.html?lang=en");en("clockEn","clock","Clock","clock.html?l=en")}
+  /* English maths (user 2026-11-19: "where is the English math"): the same six maths cards in English, reached from the English building; Arabic maths in الرياضيات / the العربية building */
+  {const en=(id,base,name,href)=>{const b=P.find(a=>a.id===base);if(b)P.push(Object.assign({},b,{id,name,href}))};const ql=h=>h+(h.includes("?")?"&":"?")+"lang=en";
+   const mp=P.find(a=>a.id==="mathPlus"),mm=P.find(a=>a.id==="mathMinus");if(mp)P.push(Object.assign({},mp,{id:"mathPlusEn",name:"Adding",href:ql(mp.href)}));if(mm)P.push(Object.assign({},mm,{id:"mathMinusEn",name:"Taking away",href:ql(mm.href)}));
+   en("numEnE","numEn","Numbers","numbers-en.html?lang=en");en("shapesEn","shapes","Shapes","shapes.html?lang=en");en("clockEn","clock","Clock","clock.html?l=en");
+   en("goMathAr","math","الرياضيات","world.html#c=math&from=ar");en("goMathEn","math","Maths","world.html#c=mathen&from=en")}
   return P}
 function groupsOf(k){const L=vis(k);if(k==="hw"||!GROUPS[k])return L.map(a=>({name:a.name,ic:lpic(a),L:[a]}));
   const P=pool(),G=[],used=new Set();Object.values(GROUPS).flat().forEach(g=>g[2].forEach(x=>used.add(x)));used.add("math");
   GROUPS[k].forEach(([n,ic,ids])=>{const m=P.filter(a=>!a.id.startsWith("ws")&&ids.some(x=>x==="s:"?a.id.startsWith("s:")&&L.includes(a):a.id===x));if(m.length)G.push({name:n,ic,L:m})});
-  const rest=L.filter(a=>!a.id.startsWith("ws")&&!a.id.startsWith("s:")&&!used.has(a.id));if(rest.length)G.push({name:k==="ar"||k==="deen"||k==="math"?"المزيد":"More",ic:"l_cards",L:rest});
-  const ws=L.filter(a=>a.id.startsWith("ws"));if(ws.length)G.push({name:CHEST[k][0],ic:CHEST[k][1],L:ws,chest:1});
+  const rest=L.filter(a=>!a.id.startsWith("ws")&&!a.id.startsWith("s:")&&!used.has(a.id));if(rest.length)G.push({name:PLACE[k]&&PLACE[k].lang==="ar"?"المزيد":"More",ic:"l_cards",L:rest});
+  /* Arabic maths has no Arabic worksheets yet: its chest would show English sheets (language mix, user 2026-11-19); back when the Arabic maths worksheets are made */
+  const ws=L.filter(a=>a.id.startsWith("ws"));if(ws.length&&k!=="math")G.push({name:CHEST[k][0],ic:CHEST[k][1],L:ws,chest:1});
   return G}
 const gfrac=g=>{let n=0,t=0;g.L.forEach(a=>{if(a.total){t+=a.total;n+=Math.min(count(a.key),a.total)}});return t?n/t:0};
 /* inside each building: lessons stand on its shelves and tables; [x%, surface y%, height%] of the room picture */
@@ -681,7 +685,7 @@ function openG(k,g){const o=$("#gov");o.innerHTML=`<div class="card" id="gcard">
 function closeG(){const o=$("#gov");if(o)o.classList.remove("on")}
 $("#sback").onclick=()=>{sTap();location.hash=""};
 $("#aback").onclick=()=>{sTap();location.hash=""};
-$("#rback").onclick=()=>{sTap();const R=$("#road");R.classList.add("leave");setTimeout(()=>{R.classList.remove("leave");ENTER="out";location.hash=""},330)};
+$("#rback").onclick=()=>{sTap();const R=$("#road"),fr=(location.hash.match(/from=(\w+)/)||[])[1];R.classList.add("leave");setTimeout(()=>{R.classList.remove("leave");ENTER="out";location.hash=fr&&PLACE[fr]?"c="+fr:""},330)};
 
 function route(){const bo=$("#board");if(bo)bo.classList.remove("on");clearInterval(boardT);closeG();const m=location.hash.match(/c=(\w+)/),all=m&&m[1]==="all",stk=m&&m[1]==="stk",k=m&&PLACE[m[1]]?m[1]:null;
   /* a place with a single lesson has no menu of its own (the village opens the lesson directly), so coming back lands on the village, not an empty screen (user 2026-11-18) */
