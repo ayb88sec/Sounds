@@ -75,6 +75,9 @@ section{background:rgba(255,255,255,.93);border-radius:30px;padding:16px 14px 20
 canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
 footer{text-align:center;color:#fff;font-size:15px;margin-top:24px}
 footer button{color:#fff;background:none;border:0;font:inherit;text-decoration:underline;cursor:pointer}
+
+/* the building decides the language, not the child (user 2026-11-19) */
+#tAr,#tEn{display:none!important}
 </style>
 </head>
 <body>
@@ -134,7 +137,8 @@ const OBJ=["🍎","🎈","⭐","🐟","🌸","🚗","🧁","🦆","🍓","🐝",
 const COLORS=["#ff5d73","#ffb020","#22c7b8","#4f8bff","#a66bff","#3fc35a"];
 const T={ar:{title:"الأرقام",hi:"اضغط على رقم وعُدّ معي! ⭐",game:"🎈 عُدّ واختر",write:"✏️ اكتب الأرقام",reset:"ابدأ من جديد",q:"كم عددها؟",prev:"➡️ السابق",next:"التالي ⬅️",w:"✏️ اكتبه",praise:["أحسنت!","رائع!","ممتاز!","شاطر!","برافو!"],again:"حاول مرة ثانية 💪",tap:"اضغط على الأشياء وعُدّها"},
          en:{title:"Numbers",hi:"Tap a number and count with me! ⭐",game:"🎈 Count & pick",write:"✏️ Write numbers",reset:"Start again",q:"How many?",prev:"Back",next:"Next",w:"✏️ Write it",praise:["Amazing!","Well done!","Super star!","Brilliant!","You got it!"],again:"Try again 💪",tap:"Tap and count them"}};
-let lang="en",done={},wrote={};try{done=JSON.parse(localStorage.getItem("numDoneEn")||"{}");wrote=JSON.parse(localStorage.getItem("numWriteEn")||"{}")}catch(e){}
+/* Arabic first from maths, shared choice with the other maths pages (user 2026-11-19) */
+let lang=new URLSearchParams(location.search).get("lang")==="en"?"en":"ar",done={},wrote={};try{done=JSON.parse(localStorage.getItem("numDoneEn")||"{}");wrote=JSON.parse(localStorage.getItem("numWriteEn")||"{}")}catch(e){}
 const save=()=>{try{localStorage.setItem("numDoneEn",JSON.stringify(done));localStorage.setItem("numWriteEn",JSON.stringify(wrote))}catch(e){}};
 const disp=n=>lang==="ar"?toAr(n):String(n);
 const rnd=a=>a[Math.floor(Math.random()*a.length)];
@@ -178,7 +182,7 @@ pip.onclick=()=>{popSnd();talk(rnd(T[lang].praise));burstAt(pip)};
 
 /* grid */
 const grid=document.getElementById("grid");
-function draw(){const t=T[lang];document.documentElement.lang=lang;
+function draw(){const t=T[lang];document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";document.title=t.title;
   document.getElementById("title").textContent=t.title;say.textContent=t.hi;
   document.getElementById("game").textContent=t.game;document.getElementById("write").textContent=t.write;
   document.getElementById("reset").textContent=t.reset;

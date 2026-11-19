@@ -19,7 +19,7 @@ h1{color:#fff;font-size:clamp(40px,10vw,58px);margin:10px 0 4px;text-shadow:0 4p
 .lv{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0 4px}
 .lv button{border:0;border-radius:999px;padding:8px 14px;font-family:inherit;font-size:17px;font-weight:700;background:rgba(255,255,255,.55);color:#2b2340;cursor:pointer}
 .lv button.on{background:#fff;box-shadow:0 4px 0 rgba(0,0,0,.15);color:#e8590c}
-.face{position:relative;width:min(84vw,380px);margin:10px auto 0}
+.face{position:relative;width:min(84vw,380px,max(220px,calc(100dvh - 470px)));margin:10px auto 0}
 .clock{width:100%;display:block;filter:drop-shadow(0 10px 0 rgba(0,0,0,.15))}
 .clock .hand{transition:transform .7s cubic-bezier(.3,1.4,.5,1)}
 .clock.tap{cursor:pointer}
@@ -45,9 +45,10 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
 <main><h1 id="ttl"></h1><div class="lv" id="lv"></div><div class="face"><div id="ck"></div></div><div class="say" id="say"></div><div class="stars" id="st"></div><div id="ctl" dir="ltr"></div></main>
 <script>
 const $=id=>document.getElementById(id);
-let AR=new URLSearchParams(location.search).get("l")==="ar";
+/* from the Arabic place (?l=ar): Arabic only. From maths: Arabic first with the English button, choice shared with the other maths pages (user 2026-11-19) */
+const LQ=new URLSearchParams(location.search).get("l");let AR=LQ!=="en";
 /* opened from the Arabic section: no English switch (user 2026-11-16) */
-const AR_ONLY=AR;
+const AR_ONLY=true;
 const HR_AR=["الثانية عشرة","الواحدة","الثانية","الثالثة","الرابعة","الخامسة","السادسة","السابعة","الثامنة","التاسعة","العاشرة","الحادية عشرة","الثانية عشرة"];
 const NUM_EN=["twelve","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve"];
 function words(h,m){const nh=h%12+1;
@@ -133,7 +134,7 @@ function play(){const N=8;let k=0,score=0;const used=new Set();$("lv").innerHTML
     fan();for(let j=0;j<6;j++)setTimeout(()=>burst(Math.random()*innerWidth,innerHeight/3),j*150);
     $("say").textContent=(AR?"🎉 أحسنت! ":"🎉 Well done! ")+"⭐".repeat(Math.max(stars,1));$("st").textContent="";
     $("ctl").innerHTML=`<button class="big pink" id="ag">🔁 ${AR?"مرة ثانية":"Play again"}</button><button class="big" id="bk">⏰ ${AR?"الساعة":"Clock"}</button>`;$("ag").onclick=play;$("bk").onclick=()=>{T=180;learn()}}}
-$("lang").onclick=()=>{AR=!AR;learn()};if(AR_ONLY){$("lang").style.display="none";document.title="الساعة"}
+$("lang").onclick=()=>{AR=!AR;learn()};if(AR_ONLY){$("lang").style.display="none";if(AR)document.title="الساعة"}
 const P=new URLSearchParams(location.search).get("v");if(P!=null&&LV[+P])L=+P;learn();
 </script>
 <script src="hint.js?v=1"></script>

@@ -619,20 +619,24 @@ function open1(k,href){href=NEWL[href]||href;try{sessionStorage.setItem("najma:v
 /* road */
 /* each road has a few big stops; a stop can hold several lessons; worksheets wait in the chest at the end */
 const GROUPS={
- en:[["Sounds","e_sound",["sounds"]],["Words","e_abc",["cvc","sent","s:"]],["Writing","e_write",["writeEn"]],["Days & Months","d_cal",["days","months"]],["Colours","e_palette",["colorsEn"]]],
+ /* العربية and English use the same cards in the same order with the same pictures, so kids are not confused (user 2026-11-19) */
+ en:[["Letters","a_letters",["sounds","writeEn"]],["Words","a_book",["cvc","sent","s:"]],["Numbers","a_num",["numEnE"]],["Time","a_time",["days","months","clockEn"]],["Colours","a_palette",["colorsEn"]]],
  ar:[["حروفي","a_letters",["arabic"]],["كلماتي","a_book",["spell","s:"]],["الأرقام","a_num",["numAr"]],["الوقت","a_time",["daysAr","monthsAr","clockAr"]],["الألوان","a_palette",["colorsAr"]]],
  deen:[["أركان الإسلام","d_pillars",["islam"]],["أركان الإيمان","d_pillars",["iman"]],["القرآن","d_quran",["quran","s:"]],["أدعية","d_dua",["duas"]],["أحب الخير لأخي","d_mat",["lsAkh"]],["الطهارة والوضوء","d_mat",["lsTah"]]],
- math:[["Numbers","m_123",["numEn"]],["Adding","m_plus",["mathPlus"]],["Taking away","m_minus",["mathMinus"]],["Shapes","m_shapes",["shapes"]],["Clock","m_clock",["clock"]]]};
-const CHEST={en:["Worksheets","e_chest"],ar:["أوراق العمل","a_chest"],deen:["أوراق العمل","d_chest"],math:["Worksheets","m_chest"]};
+ math:[["الأرقام","m_123",["numEn"]],["الجمع","m_plus",["mathPlus"]],["الطرح","m_minus",["mathMinus"]],["الأشكال","m_shapes",["shapes"]],["الساعة","m_clock",["clock"]]]};
+const CHEST={en:["Worksheets","a_chest"],ar:["أوراق العمل","a_chest"],deen:["أوراق العمل","d_chest"],math:["أوراق العمل","m_chest"]};
 /* every visible lesson in the app, plus maths split into adding and taking away */
 function pool(){const seen=new Set(),P=[];Object.keys(CATS).forEach(k=>vis(k).forEach(a=>{if(seen.has(a.id))return;seen.add(a.id);P.push(a)}));
   const m=P.find(a=>a.id==="math");if(m){const ML=NAJMA.lv("math"),p=ML.includes(0),q=ML.includes(1);
-    P.push(Object.assign({},m,{id:"mathPlus",name:"Adding",href:p?"math.html?l=0":"math.html"}));if(q||p)P.push(Object.assign({},m,{id:"mathMinus",name:"Taking away",href:q?"math.html?l=1":"math.html?l=2"}))}
+    P.push(Object.assign({},m,{id:"mathPlus",name:"الجمع",href:p?"math.html?l=0":"math.html"}));if(q||p)P.push(Object.assign({},m,{id:"mathMinus",name:"الطرح",href:q?"math.html?l=1":"math.html?l=2"}))}
+  /* English building: Numbers and the clock in English, matching الأرقام and الوقت in العربية (user 2026-11-19); maths itself stays in الرياضيات */
+  {const en=(id,base,name,href)=>{const b=P.find(a=>a.id===base);if(b)P.push(Object.assign({},b,{id,name,href}))};
+   en("numEnE","numEn","Numbers","numbers-en.html?lang=en");en("clockEn","clock","Clock","clock.html?l=en")}
   return P}
 function groupsOf(k){const L=vis(k);if(k==="hw"||!GROUPS[k])return L.map(a=>({name:a.name,ic:lpic(a),L:[a]}));
   const P=pool(),G=[],used=new Set();Object.values(GROUPS).flat().forEach(g=>g[2].forEach(x=>used.add(x)));used.add("math");
   GROUPS[k].forEach(([n,ic,ids])=>{const m=P.filter(a=>!a.id.startsWith("ws")&&ids.some(x=>x==="s:"?a.id.startsWith("s:")&&L.includes(a):a.id===x));if(m.length)G.push({name:n,ic,L:m})});
-  const rest=L.filter(a=>!a.id.startsWith("ws")&&!a.id.startsWith("s:")&&!used.has(a.id));if(rest.length)G.push({name:k==="ar"||k==="deen"?"المزيد":"More",ic:"l_cards",L:rest});
+  const rest=L.filter(a=>!a.id.startsWith("ws")&&!a.id.startsWith("s:")&&!used.has(a.id));if(rest.length)G.push({name:k==="ar"||k==="deen"||k==="math"?"المزيد":"More",ic:"l_cards",L:rest});
   const ws=L.filter(a=>a.id.startsWith("ws"));if(ws.length)G.push({name:CHEST[k][0],ic:CHEST[k][1],L:ws,chest:1});
   return G}
 const gfrac=g=>{let n=0,t=0;g.L.forEach(a=>{if(a.total){t+=a.total;n+=Math.min(count(a.key),a.total)}});return t?n/t:0};

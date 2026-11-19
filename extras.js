@@ -2,7 +2,7 @@
    A page sets window.NAJMA_PROGRESS = () => ({done, total}) and window.NAJMA_RESET = () => {...clear its stars...}. */
 (function(){
   const P=window.NAJMA_PROGRESS;if(!P)return;
-  const ar=document.documentElement.dir==="rtl",main=document.querySelector("main");if(!main)return;
+  const ar=document.documentElement.dir==="rtl",AR=()=>document.documentElement.dir==="rtl",main=document.querySelector("main");if(!main)return;
   const css=document.createElement("style");css.textContent=`
   .nx-prog{background:rgba(255,255,255,.25);border-radius:999px;height:30px;position:relative;margin:${ar?"14px 8px 4px 34px":"14px 34px 4px 8px"};box-shadow:inset 0 3px 0 rgba(0,0,0,.1)}
   .nx-fill{position:absolute;top:0;${ar?"right":"left"}:0;height:100%;border-radius:999px;background:linear-gradient(${ar?270:90}deg,#ffe066,#ffb020,#ff5d73);width:0;transition:width .8s cubic-bezier(.3,1.6,.5,1)}
@@ -18,13 +18,14 @@
   if(!window.NAJMA_HAS_ROCKET){
     const box=document.createElement("div");box.innerHTML=`<div class="nx-prog"><div class="nx-fill"></div><div class="nx-rocket">🚀</div><div class="nx-moon">🌙</div></div><div class="nx-count"></div>`;
     const anchor=main.querySelector("section,.tabs,.toggle,.building,.grid,.card");anchor?anchor.before(box):main.appendChild(box);
-    let last=-1;const tick=()=>{let p;try{p=P()}catch(e){return}if(!p||!p.total)return;const d=Math.min(p.done,p.total);if(d===last)return;last=d;
-      const pct=d/p.total*100;box.querySelector(".nx-fill").style.width=pct+"%";box.querySelector(".nx-rocket").style[ar?"right":"left"]=Math.max(4,Math.min(pct,94))+"%";
-      box.querySelector(".nx-count").textContent=d>=p.total?(ar?"🏆 وصلت إلى القمر!":"🏆 You reached the moon!"):(ar?`⭐ ${d} من ${p.total}`:`⭐ ${d} of ${p.total}`)};
+    let last=-1;const tick=()=>{let p;try{p=P()}catch(e){return}if(!p||!p.total)return;const d=Math.min(p.done,p.total),key=d+(AR()?"a":"e");if(key===last)return;last=key;
+      const pct=d/p.total*100;box.querySelector(".nx-fill").style.width=pct+"%";box.querySelector(".nx-rocket").style[AR()?"right":"left"]=Math.max(4,Math.min(pct,94))+"%";
+      box.querySelector(".nx-count").textContent=d>=p.total?(AR()?"🏆 وصلت إلى القمر!":"🏆 You reached the moon!"):(AR()?`⭐ ${d} من ${p.total}`:`⭐ ${d} of ${p.total}`)};
     tick();setInterval(tick,800)}
   /* old reset buttons were open to the kids; replace them with a parent-only one */
   document.querySelectorAll("#reset").forEach(b=>b.style.display="none");
-  if(window.NAJMA_RESET){const r=document.createElement("button");r.className="nx-reset";const lab=ar?"🔄 ابدأ من جديد":"🔄 Start again";r.textContent=lab;main.appendChild(r);let armed=0;
+  if(window.NAJMA_RESET){const r=document.createElement("button");r.className="nx-reset";/* label follows the page language, also when a page switches عربي/English (2026-11-19) */const labF=()=>AR()?"🔄 ابدأ من جديد":"🔄 Start again";const lab=labF();r.textContent=lab;main.appendChild(r);let armed=0;
+    new MutationObserver(()=>{r.textContent=labF();r.setAttribute("aria-label",labF());r.title=labF()}).observe(document.documentElement,{attributes:true,attributeFilter:["dir"]});
     r.onclick=()=>{if(Date.now()-armed<4000){try{window.NAJMA_RESET()}catch(e){}location.reload();return}
-      armed=Date.now();r.textContent=ar?"⚠️ اضغط مرة ثانية لمسح النجوم":"⚠️ Tap again to clear your stars";setTimeout(()=>{r.textContent=lab},4000)}}
+      armed=Date.now();r.textContent=AR()?"⚠️ اضغط مرة ثانية لمسح النجوم":"⚠️ Tap again to clear your stars";setTimeout(()=>{r.textContent=labF()},4000)}}
 })();

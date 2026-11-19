@@ -109,7 +109,7 @@ function play(){let k=0,score=0;const N=9,order=shuf(ALL).concat(shuf(ALL));cons
     fan();for(let j=0;j<6;j++)setTimeout(()=>burst(Math.random()*innerWidth,innerHeight/3),j*150);$("say").innerHTML=T().end+" "+"⭐".repeat(Math.max(stars,1));$("st").textContent="";
     train((d,b)=>{hop(b);toot();speak(dn(d))});$("ctl").innerHTML=`<button class="big" id="ag">${T().again}</button>`;$("ag").onclick=play}}
 /* calendar board (dmboard.js); opened from the Arabic section: Arabic only, no emoji (user 2026-11-16) */
-if(AR_ONLY){document.title="الأشهر";$("lang").style.display="none";DAYS.forEach(x=>x[2]="")}
+$("lang").style.display="none";/* no language button for kids (user 2026-11-19) */if(AR_ONLY){document.title="الأشهر";DAYS.forEach(x=>x[2]="")}
 $("lang").onclick=()=>{AR=!AR;learn()};learn();
 </script>
 <script src="hint.js?v=1"></script>

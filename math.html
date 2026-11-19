@@ -42,9 +42,18 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
 <body>
 <a href="home.html" aria-label="Home" style="position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;z-index:15;width:52px;height:52px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18)">🏠</a>
 <canvas id="fx"></canvas>
-<main><h1>➕ Maths ➖</h1><p class="sub">Adding and taking away</p><div id="app"></div></main>
+<main><h1 id="mh">➕ Maths ➖</h1><p class="sub" id="ms">Adding and taking away</p><div id="app"></div></main>
 <script>
 const $=id=>document.getElementById(id);
+/* Arabic and English (user 2026-11-19): starts in Arabic, the button switches, the choice is shared by all maths pages */
+/* the building decides, not the child (user 2026-11-19): الرياضيات = Arabic, the English building links ?lang=en; no language button */
+let LANG=new URLSearchParams(location.search).get("lang")==="en"?"en":"ar";const AR=()=>LANG==="ar";
+const AD="٠١٢٣٤٥٦٧٨٩",dg=v=>AR()?String(v).replace(/\d/g,d=>AD[d]):String(v);
+const TX={en:{h:"➕ Maths ➖",sub:"Adding and taking away",kg:"🧸 KG2",g2:"🎒 Grade 2",lv:"⬅ Levels",well:"🎉 Well done!",try:"💪 Good try!",first:"right first time",again:"🔁 Again",levels:"📚 Levels",sw:"عربي"},
+ ar:{h:"➕ الرياضيات ➖",sub:"الجمع والطرح",kg:"🧸 الروضة الثانية",g2:"🎒 الصف الثاني",lv:"المستويات ➡",well:"🎉 أحسنت!",try:"💪 محاولة جميلة!",first:"صحيحة من أول مرة",again:"🔁 مرة ثانية",levels:"📚 المستويات",sw:"English"}};
+const tx=k=>TX[LANG][k];
+const TAR=["الجمع حتى ١٠","الطرح حتى ١٠","الجمع والطرح حتى ١٠","الجمع والطرح حتى ٢٠","الجمع والطرح حتى ١٠٠","العدد الناقص"];
+const SAR=["🍎 + 🍎","🍎 − 🍎","⭐ حتى ١٠","١٢ + ٧","٤٥ + ٣٢ · ٨٠ − ٢٦","؟ + ٨ = ١٥"];
 /* levels: KG2 uses pictures and small numbers, Grade 2 bigger numbers and missing numbers */
 const LV=[
  {g:"KG2",t:"Add up to 10",s:"🍎 + 🍎",max:10,ops:["+"],pic:true,c:"#ff7eb6"},
@@ -68,7 +77,7 @@ const cv=$("fx"),cx=cv.getContext("2d");let parts=[],run=false;function size(){c
 function burst(x,y,n=36){for(let i=0;i<n;i++){const a=Math.random()*6.28,v=3+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:4+Math.random()*7,c:COL[i%6],rot:0,vr:(Math.random()-.5)*.4,life:90})}if(!run){run=true;requestAnimationFrame(loop)}}
 function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.life-->0);for(const p of parts){p.vy+=.25;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);cx.fillStyle=p.c;cx.globalAlpha=Math.min(1,p.life/30);cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);cx.restore()}if(parts.length)requestAnimationFrame(loop);else run=false}
 let voice=null;function pv(){const v=speechSynthesis.getVoices();voice=v.find(x=>/en[-_]GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
-function speak(t){if(NAJMA.vmode("math","mine")==="none")return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.8;speechSynthesis.speak(u)}catch(e){}}
+function speak(t){if(NAJMA.vmode("math","mine")==="none")return;if(AR()){try{NAJMA.aiSay(t)}catch(e){}return}try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-GB";if(voice)u.voice=voice;u.rate=.8;speechSynthesis.speak(u)}catch(e){}}
 
 /* one question */
 /* no "+ 0" or "− 0", answers stay within the level */
@@ -83,26 +92,29 @@ function pic(q,L){if(!L.pic)return"";const e=EMO[rnd(EMO.length)];
 
 const KGPIC=["🍎 + 🍎","🍎 − 🍎","🍎 ± 🍎"];
 function menu(){const A=$("app");A.innerHTML="";let lastG="";
-  ON.forEach(i=>{const L=LV[i];if(L.g!==lastG){lastG=L.g;A.insertAdjacentHTML("beforeend",`<div class="grp">${L.g==="KG2"?"🧸 KG2":"🎒 Grade 2"}</div><div class="lv" id="g_${L.g.replace(/\s/g,"")}"></div>`)}
+  ON.forEach(i=>{const L=LV[i];if(L.g!==lastG){lastG=L.g;A.insertAdjacentHTML("beforeend",`<div class="grp">${L.g==="KG2"?tx("kg"):tx("g2")}</div><div class="lv" id="g_${L.g.replace(/\s/g,"")}"></div>`)}
     const b=document.createElement("button");b.style.background=L.c;const st=Object.keys(done).filter(k=>k.startsWith("L"+i+"r")).length;
-    if(L.pic){b.className="kg";b.innerHTML=`<span class="st">${"⭐".repeat(Math.min(st,3))}</span><span class="big">${KGPIC[i]||L.s}</span>${L.t}`}else b.innerHTML=`<span class="st">${"⭐".repeat(Math.min(st,3))}</span>${L.t}<small>${L.s}</small>`;b.onclick=()=>play(i);$("g_"+L.g.replace(/\s/g,"")).appendChild(b)})}
+    if(L.pic){b.className="kg";b.innerHTML=`<span class="st">${"⭐".repeat(Math.min(st,3))}</span><span class="big">${KGPIC[i]||L.s}</span>${AR()?TAR[i]:L.t}`}else b.innerHTML=`<span class="st">${"⭐".repeat(Math.min(st,3))}</span>${AR()?TAR[i]:L.t}<small>${AR()?SAR[i]:L.s}</small>`;b.onclick=()=>play(i);$("g_"+L.g.replace(/\s/g,"")).appendChild(b)})}
 
 /* never the same sum twice in a round, and not the ones from the last rounds either */
 let recent=[];try{recent=JSON.parse(sessionStorage.getItem("mathRecent")||"[]")}catch(e){}
 function fresh(L,used){let q,key;for(let t=0;t<80;t++){q=make(L);key=q.a+q.op+q.b+(L.miss?"m"+q.hide:"");if(!used.has(key)&&(t>40||!recent.includes(key)))break}used.add(key);recent=[...recent.filter(x=>x!==key),key].slice(-40);try{sessionStorage.setItem("mathRecent",JSON.stringify(recent))}catch(e){}return q}
 function play(i){const L=LV[i];let k=0,score=0;const res=[],used=new Set();
   function next(){if(k>=N)return finish();const q=fresh(L,used),O=opts(q.ans,L.max);
-    const txt=L.miss?(q.hide?`${q.a} ${q.op==="-"?"−":"+"} ? = ${q.r}`:`? ${q.op==="-"?"−":"+"} ${q.b} = ${q.r}`):`${q.a} ${q.op==="-"?"−":"+"} ${q.b} = ?`;
-    $("app").innerHTML=`<div class="top"><button id="back">⬅ Levels</button><span>${k+1} / ${N}</span></div><div class="card"><div class="dots">${Array.from({length:N},(_,j)=>`<i class="${res[j]===1?"ok":res[j]===0?"no":""}"></i>`).join("")}</div>
-      <div class="pic">${pic(q,L)}</div><div class="q">${txt}</div><div class="opts">${O.map((o,j)=>`<button style="background:${COL[(j+i)%6]}" data-v="${o}">${o}</button>`).join("")}</div></div>`;
-    $("back").onclick=menu;speak(txt.replace("?","what").replace("−","minus").replace("+","plus").replace("=","equals"));let first=true;
+    const QM=AR()?"؟":"?",txt=L.miss?(q.hide?`${dg(q.a)} ${q.op==="-"?"−":"+"} ${QM} = ${dg(q.r)}`:`${QM} ${q.op==="-"?"−":"+"} ${dg(q.b)} = ${dg(q.r)}`):`${dg(q.a)} ${q.op==="-"?"−":"+"} ${dg(q.b)} = ${QM}`;
+    $("app").innerHTML=`<div class="top"><button id="back">${tx("lv")}</button><span>${dg(k+1)} / ${dg(N)}</span></div><div class="card"><div class="dots">${Array.from({length:N},(_,j)=>`<i class="${res[j]===1?"ok":res[j]===0?"no":""}"></i>`).join("")}</div>
+      <div class="pic">${pic(q,L)}</div><div class="q" dir="${AR()?"rtl":"ltr"}">${txt}</div><div class="opts">${O.map((o,j)=>`<button style="background:${COL[(j+i)%6]}" data-v="${o}">${dg(o)}</button>`).join("")}</div></div>`;
+    $("back").onclick=menu;speak(AR()?(L.miss?(q.hide?`${q.a} ${q.op==="-"?"ناقص":"زائد"} كم يساوي ${q.r}؟`:`كم ${q.op==="-"?"ناقص":"زائد"} ${q.b} يساوي ${q.r}؟`):`${q.a} ${q.op==="-"?"ناقص":"زائد"} ${q.b} يساوي كم؟`):txt.replace("?","what").replace("−","minus").replace("+","plus").replace("=","equals"));let first=true;
     document.querySelectorAll(".opts button").forEach(b=>b.onclick=()=>{if(+b.dataset.v===q.ans){b.classList.add("right");yay();const r=b.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,24);
         if(first)score++;res[k]=first?1:0;k++;setTimeout(next,800)}else{if(first){first=false}b.classList.add("wrong");buzz();NajmaHint(b,`[data-v="${q.ans}"]`)}})}
   function finish(){const stars=score>=9?3:score>=7?2:score>=5?1:0;if(stars){const n=Object.keys(done).filter(x=>x.startsWith("L"+i+"r")).length;if(n<3){done["L"+i+"r"+(n+1)]=stars;save()}}fan();for(let j=0;j<6;j++)setTimeout(()=>burst(Math.random()*innerWidth,innerHeight/3),j*150);
-    $("app").innerHTML=`<div class="card"><div class="done">${stars?"🎉 Well done!":"💪 Good try!"}</div><div style="font-size:60px">${stars?"⭐".repeat(stars):"🙂"}</div><div style="font-size:24px;margin:10px 0">${score} / ${N} right first time</div>
-      <div class="opts" style="grid-template-columns:1fr 1fr"><button style="background:#3fc35a;font-size:24px" id="again">🔁 Again</button><button style="background:#4f8bff;font-size:24px" id="lv">📚 Levels</button></div></div>`;
+    $("app").innerHTML=`<div class="card"><div class="done">${stars?tx("well"):tx("try")}</div><div style="font-size:60px">${stars?"⭐".repeat(stars):"🙂"}</div><div style="font-size:24px;margin:10px 0">${dg(score)} / ${dg(N)} ${tx("first")}</div>
+      <div class="opts" style="grid-template-columns:1fr 1fr"><button style="background:#3fc35a;font-size:24px" id="again">${tx("again")}</button><button style="background:#4f8bff;font-size:24px" id="lv">${tx("levels")}</button></div></div>`;
     $("again").onclick=()=>play(i);$("lv").onclick=menu}
   next()}
+let CUR=null;const _play=play;play=i=>{CUR=i;_play(i)};const _menu=menu;menu=()=>{CUR=null;_menu()};
+function applyLang(){const a=AR();document.documentElement.lang=LANG;document.documentElement.dir=a?"rtl":"ltr";document.title=a?"الرياضيات":"Maths + −";$("mh").textContent=tx("h");$("ms").textContent=tx("sub");}
+applyLang();
 const P=new URLSearchParams(location.search).get("l");if(P!=null&&LV[+P])play(+P);else menu();
 </script>
 <script src="hint.js?v=1"></script>

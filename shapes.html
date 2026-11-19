@@ -28,7 +28,7 @@ body{background:linear-gradient(160deg,#3fc35a,#22c7b8 50%,#4f8bff)}
 </head>
 <body>
 <main>
-  <h1>2D Shapes</h1>
+  <h1 id="shH">2D Shapes</h1>
   <section><div class="grid" id="grid"></div><div class="bar"><button class="btn pink" id="game">🔍 Find the shape</button><button class="btn teal" id="count">🔢 Count the sides</button></div></section>
 </main>
 <div class="modal" id="sm"><div class="card">
@@ -48,38 +48,48 @@ body{background:linear-gradient(160deg,#3fc35a,#22c7b8 50%,#4f8bff)}
 <script src="kit.js?v=9"></script>
 <script src="round.js?v=2"></script>
 <script>
-const {COLORS,rnd,shuffle,pop,fanfare,buzz,burstAt,say,talk,PRAISE}=KIT;
-KIT.mascot("Tap a shape to learn about it!");
+const {COLORS,rnd,shuffle,pop,fanfare,buzz,burstAt,talk}=KIT;
+/* Arabic and English (user 2026-11-19): starts in Arabic, shared choice with the other maths pages */
+/* the building decides (user 2026-11-19): Arabic, or English with ?lang=en; no language button */
+let LANG=new URLSearchParams(location.search).get("lang")==="en"?"en":"ar";const AR=()=>LANG==="ar";
+const AD="٠١٢٣٤٥٦٧٨٩",dg=v=>AR()?String(v).replace(/\d/g,d=>AD[d]):String(v);
+const say=(t,r)=>{if(AR()){try{NAJMA.aiSay(t)}catch(e){}}else KIT.say(t,r)};
+const PRAISE_AR=["أحسنت!","رائع!","شاطر!","ممتاز!","برافو!"],PR=()=>AR()?PRAISE_AR:KIT.PRAISE;
+const TX={en:{h:"2D Shapes",find:"🔍 Find the shape",count:"🔢 Count the sides",hear:"🔊 Hear it",tap:"Tap a shape to learn about it!",sw:"عربي"},
+ ar:{h:"الأشكال",find:"🔍 ابحث عن الشكل",count:"🔢 عُدّ الأضلاع",hear:"🔊 اسمع",tap:"اضغط على شكل لتتعرّف عليه!",sw:"English"}};
+const tx=k=>TX[LANG][k];
+KIT.mascot(tx("tap"));
 function poly(n,r=40,rot=-90){return Array.from({length:n},(_,i)=>{const a=(rot+i*360/n)*Math.PI/180;return `${(50+r*Math.cos(a)).toFixed(1)},${(52+r*Math.sin(a)).toFixed(1)}`}).join(" ")}
 function star(){return Array.from({length:10},(_,i)=>{const r=i%2?18:42,a=(-90+i*36)*Math.PI/180;return `${(50+r*Math.cos(a)).toFixed(1)},${(53+r*Math.sin(a)).toFixed(1)}`}).join(" ")}
 const SH=[
- {n:"circle",ar:"دائرة",s:0,c:0,ex:"⚽🍪🕐🍩",svg:'<circle class="edge" cx="50" cy="50" r="40"/>'},
- {n:"square",ar:"مربع",s:4,c:4,ex:"🧇🎲🖼️",svg:'<rect class="edge" x="14" y="14" width="72" height="72" rx="2"/>'},
- {n:"triangle",ar:"مثلث",s:3,c:3,ex:"🍕⛺🔺",svg:`<polygon class="edge" points="${poly(3,44,-90)}"/>`},
- {n:"rectangle",ar:"مستطيل",s:4,c:4,ex:"🚪📱📕",svg:'<rect class="edge" x="8" y="26" width="84" height="50" rx="2"/>'},
- {n:"oval",ar:"شكل بيضاوي",s:0,c:0,ex:"🥚🏉🪞",svg:'<ellipse class="edge" cx="50" cy="50" rx="42" ry="28"/>'},
- {n:"star",ar:"نجمة",s:10,c:10,ex:"⭐🌟✨",svg:`<polygon class="edge" points="${star()}"/>`},
- {n:"heart",ar:"قلب",s:0,c:1,ex:"❤️💌🫶",svg:'<path class="edge" d="M50 84 C20 62 8 46 8 32 C8 18 20 10 31 10 C40 10 46 16 50 22 C54 16 60 10 69 10 C80 10 92 18 92 32 C92 46 80 62 50 84Z"/>'},
- {n:"diamond",ar:"معيّن",s:4,c:4,ex:"🪁♦️💎",svg:`<polygon class="edge" points="50,8 84,50 50,92 16,50"/>`},
- {n:"pentagon",ar:"خماسي",s:5,c:5,ex:"🏠⚽",svg:`<polygon class="edge" points="${poly(5,42)}"/>`},
- {n:"hexagon",ar:"سداسي",s:6,c:6,ex:"🐝🍯🔩",svg:`<polygon class="edge" points="${poly(6,42,0)}"/>`}];
+ {n:"circle",ar:"دائرة",al:"الدائرة",s:0,c:0,ex:"⚽🍪🕐🍩",svg:'<circle class="edge" cx="50" cy="50" r="40"/>'},
+ {n:"square",ar:"مربع",al:"المربع",s:4,c:4,ex:"🧇🎲🖼️",svg:'<rect class="edge" x="14" y="14" width="72" height="72" rx="2"/>'},
+ {n:"triangle",ar:"مثلث",al:"المثلث",s:3,c:3,ex:"🍕⛺🔺",svg:`<polygon class="edge" points="${poly(3,44,-90)}"/>`},
+ {n:"rectangle",ar:"مستطيل",al:"المستطيل",s:4,c:4,ex:"🚪📱📕",svg:'<rect class="edge" x="8" y="26" width="84" height="50" rx="2"/>'},
+ {n:"oval",ar:"شكل بيضاوي",al:"الشكل البيضاوي",s:0,c:0,ex:"🥚🏉🪞",svg:'<ellipse class="edge" cx="50" cy="50" rx="42" ry="28"/>'},
+ {n:"star",ar:"نجمة",al:"النجمة",s:10,c:10,ex:"⭐🌟✨",svg:`<polygon class="edge" points="${star()}"/>`},
+ {n:"heart",ar:"قلب",al:"القلب",s:0,c:1,ex:"❤️💌🫶",svg:'<path class="edge" d="M50 84 C20 62 8 46 8 32 C8 18 20 10 31 10 C40 10 46 16 50 22 C54 16 60 10 69 10 C80 10 92 18 92 32 C92 46 80 62 50 84Z"/>'},
+ {n:"diamond",ar:"معيّن",al:"المعيّن",s:4,c:4,ex:"🪁♦️💎",svg:`<polygon class="edge" points="50,8 84,50 50,92 16,50"/>`},
+ {n:"pentagon",ar:"خماسي",al:"الخماسي",s:5,c:5,ex:"🏠⚽",svg:`<polygon class="edge" points="${poly(5,42)}"/>`},
+ {n:"hexagon",ar:"سداسي",al:"السداسي",s:6,c:6,ex:"🐝🍯🔩",svg:`<polygon class="edge" points="${poly(6,42,0)}"/>`}];
 const svg=(s,col)=>`<svg viewBox="0 0 100 100"><g fill="${col}" stroke="#fff" stroke-width="4" stroke-linejoin="round">${s.svg}</g></svg>`;
 const HL=NAJMA.lv("shapes");const lvOf=i=>i<4?0:i<8?1:2;const SHI=SH.map((_,i)=>i).filter(i=>HL.includes(lvOf(i)));
 const prog=KIT.store("shapesDone");
 const grid=document.getElementById("grid");
 function draw(){grid.innerHTML="";SH.forEach((s,i)=>{if(!SHI.includes(i))return;const b=document.createElement("button");b.className="tile"+(prog.d[s.n]?" done":"");b.style.background=COLORS[i%6];b.style.animationDelay=(i*.04)+"s";
-  b.innerHTML=`${svg(s,"rgba(255,255,255,.95)")}<span>${s.n}</span><small>${s.ar}</small>`;b.querySelector("g").setAttribute("stroke",COLORS[i%6]);b.onclick=()=>open(i,b);grid.appendChild(b)})}
+  b.innerHTML=AR()?`${svg(s,"rgba(255,255,255,.95)")}<span>${s.ar}</span>`:`${svg(s,"rgba(255,255,255,.95)")}<span>${s.n}</span>`;b.querySelector("g").setAttribute("stroke",COLORS[i%6]);b.onclick=()=>open(i,b);grid.appendChild(b)})}
 draw();
 function open(i,el){const s=SH[i];pop();if(el)burstAt(el);document.getElementById("sSvg").innerHTML=svg(s,COLORS[i%6]);
-  document.getElementById("sName").textContent=s.n;document.getElementById("sAr").textContent=s.ar;
+  document.getElementById("sName").textContent=AR()?s.ar:s.n;document.getElementById("sAr").textContent="";
   const sd=document.getElementById("sSides"),cn=document.getElementById("sCorners");
-  sd.innerHTML=`<b>${s.s}</b>${s.s===1?"side":"sides"}`;cn.innerHTML=`<b>${s.c}</b>${s.c===1?"corner":"corners"}`;
-  sd.onclick=()=>say(`${s.s} sides`);cn.onclick=()=>say(`${s.c} corners`);
+  if(AR()){sd.innerHTML=`<b>${dg(s.s)}</b>أضلاع`;cn.innerHTML=`<b>${dg(s.c)}</b>زوايا`;sd.onclick=()=>say(`عدد الأضلاع ${s.s}`);cn.onclick=()=>say(`عدد الزوايا ${s.c}`)}
+  else{sd.innerHTML=`<b>${s.s}</b>${s.s===1?"side":"sides"}`;cn.innerHTML=`<b>${s.c}</b>${s.c===1?"corner":"corners"}`;
+  sd.onclick=()=>say(`${s.s} sides`);cn.onclick=()=>say(`${s.c} corners`)}
   document.getElementById("sEx").textContent=s.ex;
-  const line=`This is a ${s.n}. It has ${s.s===0?"no straight sides":s.s+" sides"} and ${s.c===0?"no corners":s.c+(s.c===1?" corner":" corners")}.`;
+  const line=AR()?`هذا ${s.ar}. ${s.s===0?"ليس له أضلاع مستقيمة":"عدد أضلاعه "+s.s}، و${s.c===0?"ليس له زوايا":"عدد زواياه "+s.c}.`:`This is a ${s.n}. It has ${s.s===0?"no straight sides":s.s+" sides"} and ${s.c===0?"no corners":s.c+(s.c===1?" corner":" corners")}.`;
   document.getElementById("sHear").onclick=()=>say(line,.8);
   document.getElementById("sm").classList.add("show");setTimeout(()=>say(line,.8),300);prog.d[s.n]=1;prog.save();
-  draw();talk(`${s.n}! ${rnd(PRAISE)}`)}
+  draw();talk(`${AR()?s.ar:s.n}! ${rnd(PR())}`)}
 /* games */
 let ans,prev,lock=false,mode="find",RD=null;
 /* kids-app-design: rounds of 6, 3 choices, hints that build up, praise that says why */
@@ -89,18 +99,21 @@ function round(){lock=false;RD.question();const box=document.getElementById("gOp
       const fin=RD.hit(key,word,why);setTimeout(()=>{if(fin)RD.finish();else round()},1500)}
     else{buzz();RD.miss(b,rb,replay,hint)}};box.appendChild(b)};
   if(mode==="find"){let pool=shuffle(SHI.map(i=>SH[i]));if(pool[0]===prev)pool.push(pool.shift());const pick=pool.slice(0,Math.min(3,pool.length));ans=prev=pick[0];
-    document.getElementById("gQ").textContent=`Find the ${ans.n}!`;document.getElementById("gSvg").innerHTML="";const ask=()=>say(`Find the ${ans.n}`);ask();
-    const why=ans.s===0?`Yes! A ${ans.n} has no straight sides.`:`Yes! A ${ans.n} has ${ans.s} sides.`,hint=ans.s===0?`Look for the round one: no corners.`:`Look for ${ans.s} sides.`;
+    document.getElementById("gQ").textContent=AR()?`أين ${ans.al}؟`:`Find the ${ans.n}!`;document.getElementById("gSvg").innerHTML="";const ask=()=>say(AR()?`أين ${ans.al}؟`:`Find the ${ans.n}`);ask();
+    const why=AR()?(ans.s===0?`صحيح! ${ans.al} ليس له أضلاع مستقيمة.`:`صحيح! عدد أضلاع ${ans.al} ${ans.s}.`):(ans.s===0?`Yes! A ${ans.n} has no straight sides.`:`Yes! A ${ans.n} has ${ans.s} sides.`),hint=AR()?(ans.s===0?"ابحث عن الشكل المستدير: ليس له زوايا.":`ابحث عن شكل له ${ans.s} أضلاع.`):(ans.s===0?`Look for the round one: no corners.`:`Look for ${ans.s} sides.`);
     shuffle(pick).forEach((sh,k)=>{const b=document.createElement("button");b.innerHTML=svg(sh,"#fff");b.style.background=COLORS[k+1];b.querySelector("g").setAttribute("stroke",COLORS[k+1]);
-      opt(b,sh===ans,"shape:"+ans.n,ans.n,why,hint,ask)})}
+      opt(b,sh===ans,"shape:"+ans.n,AR()?ans.ar:ans.n,why,hint,ask)})}
   else{let pool=SHI.map(i=>SH[i]).filter(x=>[3,4,5,6].includes(x.s));if(!pool.length)pool=SH.filter(x=>[3,4].includes(x.s));ans=rnd(pool);
-    document.getElementById("gQ").textContent="How many sides?";document.getElementById("gSvg").innerHTML=svg(ans,COLORS[Math.floor(Math.random()*6)]);const ask=()=>say("How many sides? Count them.");ask();
-    shuffle([ans.s,...shuffle([3,4,5,6].filter(n=>n!==ans.s)).slice(0,2)]).forEach((n,k)=>{const b=document.createElement("button");b.textContent=n;b.style.background=COLORS[k+1];
-      opt(b,n===ans.s,"sides:"+ans.n,`${n} sides`,`Yes! A ${ans.n} has ${n} sides.`,`Touch each side and count: 1, 2, 3...`,ask)})}}
+    document.getElementById("gQ").textContent=AR()?"كم ضلعًا؟":"How many sides?";document.getElementById("gSvg").innerHTML=svg(ans,COLORS[Math.floor(Math.random()*6)]);const ask=()=>say(AR()?"كم ضلعًا؟ عُدّها.":"How many sides? Count them.");ask();
+    shuffle([ans.s,...shuffle([3,4,5,6].filter(n=>n!==ans.s)).slice(0,2)]).forEach((n,k)=>{const b=document.createElement("button");b.textContent=dg(n);b.style.background=COLORS[k+1];
+      opt(b,n===ans.s,"sides:"+ans.n,AR()?`${n} أضلاع`:`${n} sides`,AR()?`صحيح! عدد أضلاع ${ans.al} ${n}.`:`Yes! A ${ans.n} has ${n} sides.`,AR()?"المس كل ضلع وعُدّ: ١، ٢، ٣...":`Touch each side and count: 1, 2, 3...`,ask)})}}
 function startGame(m){mode=m;RD=RD||NajmaRound({card:document.querySelector("#gm .card"),again:()=>startGame(mode)});
-  document.getElementById("gScore").textContent="";RD.start();RD.say(mode==="find"?"Listen, then tap the shape":"Count the sides, then tap the number");document.getElementById("gm").classList.add("show");round()}
+  document.getElementById("gScore").textContent="";RD.start();RD.say(AR()?(mode==="find"?"استمع، ثم اضغط على الشكل":"عُدّ الأضلاع، ثم اضغط على العدد"):(mode==="find"?"Listen, then tap the shape":"Count the sides, then tap the number"));document.getElementById("gm").classList.add("show");round()}
 document.getElementById("game").onclick=()=>startGame("find");
 document.getElementById("count").onclick=()=>startGame("count");
+function applyLang(){const a=AR();document.documentElement.lang=LANG;document.documentElement.dir=a?"rtl":"ltr";document.title=a?"الأشكال":"2D Shapes";
+  document.getElementById("shH").textContent=tx("h");document.getElementById("game").textContent=tx("find");document.getElementById("count").textContent=tx("count");document.getElementById("sHear").textContent=tx("hear");draw()}
+applyLang();
 </script>
 <script>
 window.NAJMA_PROGRESS=()=>({done:SHI.filter(i=>prog.d[SH[i].n]).length,total:SHI.length});
