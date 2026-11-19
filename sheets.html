@@ -159,6 +159,54 @@ html[dir=rtl] .fc .wd,html[dir=rtl] .ch button{font-family:"Baloo Bhaijaan 2",sa
 /* ✅/❌ pictures stay inside their buttons (user 2026-11-18: the big ✓ covered the ✗) */
 .yn{gap:10px!important}.yn button{width:58px!important;height:58px!important;padding:6px!important;overflow:hidden;display:inline-flex;align-items:center;justify-content:center}
 .yn button img,.yn button .bi{width:100%!important;height:100%!important;max-width:none!important;margin:0!important;object-fit:contain}
+
+/* ===== approved worksheet look (ChatGPT worksheet visuals, approved by the user 2026-11-19): one calm cream sheet with a teal border and gold clip, no scenery ===== */
+.scn,.st{display:none!important}
+.paper{background:linear-gradient(#fffdf6,#fff5df)!important;border:5px solid #12988d!important;border-radius:28px!important;box-shadow:0 0 0 3px #f3dca8 inset,0 10px 0 #d9b77a,0 18px 28px rgba(90,60,20,.22)!important;transform:none!important;padding:26px 18px 18px!important}
+.paper::before{content:""!important;left:50%!important;top:-16px!important;transform:translateX(-50%);width:84px!important;height:26px!important;border-radius:9px!important;background:linear-gradient(#ffe7a6,#f1c25c)!important;box-shadow:0 2px 0 #c99a3a!important;rotate:none!important}
+.paper::after{content:""!important;left:50%!important;top:-6px!important;transform:translateX(-50%);width:34px!important;height:6px!important;border-radius:4px!important;background:#12988d!important;box-shadow:none!important;rotate:none!important}
+.ins{background:#fffaf0!important;border:2px solid #f1d9ae!important;color:#13275a;font-family:"Baloo Bhaijaan 2",system-ui,sans-serif!important;font-weight:700;margin:0 auto 12px!important}
+/* finger line-drawing matching: pictures and answers big and close, dots on the inner edges, lines drawn with the finger */
+.wm{position:relative;display:grid;grid-template-columns:auto minmax(120px,260px) auto;justify-content:center;align-items:stretch;touch-action:none;user-select:none;-webkit-user-select:none;margin:0 auto}
+.wm .col{display:flex;flex-direction:column;justify-content:space-around;gap:var(--g,12px);z-index:2}
+.wm .it{display:flex;align-items:center;gap:10px;cursor:pointer}
+.wm .card{width:var(--s,120px);height:var(--s,120px);border-radius:22px;background:#fff;border:3px solid #f1d9ae;box-shadow:0 5px 0 #e3c48c;display:flex;align-items:center;justify-content:center;font-family:"Baloo Bhaijaan 2","Fredoka",sans-serif;font-weight:800;font-size:calc(var(--s,120px)*.5);color:#13275a;transition:transform .15s}
+.wm .card img{width:86%;height:86%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}
+.wm .it.on .card{transform:scale(1.06);border-color:#12988d}
+.wm .it.ok .card{border-color:#2fae4e;background:#effcf2}
+.wm .dot{width:22px;height:22px;border-radius:50%;background:#13275a;box-shadow:0 0 0 6px rgba(19,39,90,.12);flex:none}
+.wm .it.ok .dot{background:#2fae4e}
+.wm .it.no .card{animation:wmno .4s}@keyframes wmno{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.wm svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible}
+.wm path{fill:none;stroke-width:9;stroke-linecap:round}
+.wm path.tmp{stroke:#12988d;stroke-dasharray:2 14}
+.wm path.ok{stroke:#2fae4e}
+.wm .gap{z-index:0}
+html.v2 main,html body main{padding-bottom:calc(4px + env(safe-area-inset-bottom))!important}
+/* phones (short landscape): pictures in a top row, answers in a bottom row, lines drawn downwards; slim instruction and footer */
+.wm.h{grid-template-columns:none;grid-template-rows:auto minmax(54px,1fr) auto;justify-content:stretch}
+.wm.h .col{flex-direction:row;justify-content:center;gap:var(--g,18px)}
+.wm.h .it{flex-direction:column;gap:6px}
+@media (orientation:landscape) and (max-height:520px){.paper{margin-top:4px!important;padding:16px 10px 8px!important}.ins{display:none!important}.wm.h .dot{width:14px;height:14px;box-shadow:0 0 0 5px rgba(19,39,90,.12)}.wm.h{grid-template-rows:auto minmax(44px,1fr) auto}.cheer:empty{display:none}.cheer{margin-top:2px!important;font-size:17px!important}
+ .foot{position:fixed;bottom:calc(6px + env(safe-area-inset-bottom));inset-inline-start:8px;margin:0!important;z-index:40}.foot .fb{font-size:15px;padding:5px 12px}.wmr{position:absolute;top:4px;inset-inline-end:14px;margin:0!important;font-size:13px}.akc .ph{aspect-ratio:auto!important;height:calc(100dvh - 250px)}.akc b{min-height:0!important;font-size:15px!important}}
+.wm .card .grp{display:grid;width:90%;height:90%;gap:3%;place-items:center}.grp.g1{grid-template-columns:1fr}.grp.g2{grid-template-columns:repeat(2,1fr)}.grp.g3{grid-template-columns:repeat(3,1fr)}.wm .card .grp img{width:100%;height:100%}
+.akc .ph img{width:100%;height:100%;object-fit:contain}
+.fw{display:flex;justify-content:center;gap:16px;flex-wrap:nowrap}.fw .fc{width:calc(var(--s) + 44px);background:#fff;border:3px solid #f1d9ae!important;border-radius:22px;box-shadow:0 5px 0 #e3c48c;padding:8px 6px 10px}.fw .fc.won{border-color:#2fae4e!important;background:#effcf2}.fw .pic{height:var(--s);display:flex;align-items:center;justify-content:center;cursor:pointer}.fw .pic img{max-width:100%;max-height:100%;object-fit:contain}.fw .wd{font-family:"Baloo Bhaijaan 2","Patrick Hand",sans-serif!important;color:#13275a}
+.scn2{position:relative;margin:0 auto;border-radius:20px;overflow:hidden;border:3px solid #f1d9ae;box-shadow:0 5px 0 #e3c48c}.scn2>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.scn2 span{position:absolute;width:13.5%;aspect-ratio:1;cursor:pointer;transform:translate(-50%,-50%)}.scn2 span img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 3px 3px rgba(0,0,0,.25))}
+.scn2 .hs2{width:11.5%}
+.scn2 span.got::after{content:"";position:absolute;inset:-10%;border:4px solid #2fae4e;border-radius:50%;background:rgba(255,255,255,.18)}
+.tally2{display:flex;justify-content:center;gap:12px;margin-top:8px;flex-wrap:nowrap}.tally2 div{display:flex;align-items:center;gap:6px;background:#fff;border:3px solid #f1d9ae;border-radius:18px;padding:4px 10px;font-size:14px;color:#13275a}.tally2 img{width:var(--t,56px);height:var(--t,56px);object-fit:contain}
+.ics{display:inline-flex;flex-wrap:wrap;gap:4px;vertical-align:middle;max-width:300px}.ics img{width:40px;height:40px;object-fit:contain}.grp2{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:2px dashed #f1d9ae}.grp2:last-child{border:0}
+.sec.mf{background:#fff;border:3px solid #f1d9ae!important;border-radius:22px;box-shadow:0 5px 0 #e3c48c;max-width:760px;margin:0 auto}.sec.mf h3 i{background:#12988d!important}.sec.mf{font-size:clamp(20px,4.2vh,36px)}.sec.mf h3{font-size:clamp(18px,3.4vh,28px)!important}.sec.mf .ics img{width:clamp(34px,7vh,66px);height:clamp(34px,7vh,66px)}.sec.mf .ics{max-width:min(520px,60vw)}.sec.mf .box{min-width:clamp(52px,9vh,84px)!important;height:clamp(46px,8vh,72px)!important;font-size:clamp(26px,5vh,42px)!important}.sec.mf .seq .c,.sec.mf .nx3 span{font-size:clamp(26px,5vh,44px)}.sec.mf button{font-size:clamp(24px,4.6vh,40px)!important;min-width:clamp(52px,9vh,84px);min-height:clamp(46px,8vh,72px)}.sec.mf .grp2,.sec.mf .nx3,.sec.mf .bs div,.sec.mf .addr>div{padding:clamp(4px,1.4vh,14px) 0}
+.frow2{display:flex;align-items:center;gap:10px;background:#fff;border:3px solid #f1d9ae;border-radius:20px;padding:6px 10px;margin-bottom:8px;box-shadow:0 4px 0 #e3c48c}.frow2.won{border-color:#2fae4e;background:#effcf2}
+.frow2 .tg{flex:none;width:calc(var(--z) * 1.25);text-align:center;background:#e6f6f3;border-radius:14px;padding:4px}.frow2 .tg img{width:var(--z);height:var(--z);object-fit:contain}.frow2 .ck{display:block;font-size:20px;color:#2fae4e;font-weight:800;min-height:0}
+.frow2 .its{flex:1;display:flex;justify-content:space-around}.frow2 .its button{border:0;background:none;padding:2px;border-radius:50%;cursor:pointer}.frow2 .its img{width:var(--z);height:var(--z);object-fit:contain}.frow2 .its button.hit{box-shadow:0 0 0 4px #2fae4e;background:#effcf2}.frow2 .its button.no{animation:wmno .4s}
+.mzw{justify-content:center!important}.mzs img{width:44px;height:44px;object-fit:contain}.mz{max-height:calc(100dvh - 250px);width:auto!important;aspect-ratio:1;border:3px solid #f1d9ae!important;border-radius:18px!important;background:#bfe9f7!important}
+@media (orientation:landscape) and (max-height:520px){.mz{max-height:calc(100dvh - 92px)}}
+.bwl2{display:flex;justify-content:center;gap:10px}.bw2{position:relative;width:var(--b);height:var(--b);border:0;background:none;padding:0;cursor:pointer}.bw2>img{width:100%;height:100%;object-fit:contain}.bw2 .in2{position:absolute;left:18%;right:18%;bottom:20%;display:flex;flex-wrap:wrap;justify-content:center;gap:2px}.bw2 .in2 img{width:30%;aspect-ratio:1;object-fit:contain}.bw2.shake{animation:wmno .4s}
+.fsh2{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:nowrap}.fsh2 button{width:var(--f);height:var(--f);border-radius:50%;border:3px solid #f1d9ae;background:#fff;padding:3px;cursor:pointer}.fsh2 button img{width:100%;height:100%;object-fit:contain}.fsh2 button.sel{border-color:#12988d;transform:scale(1.12)}.fsh2 button.in{visibility:hidden}
+.wmr{text-align:center;color:#5a6788;font-weight:700;margin-top:6px;font-family:"Baloo Bhaijaan 2",system-ui,sans-serif}
 </style>
 </head>
 <body>
@@ -184,18 +232,20 @@ const at=el=>{const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.
 let done={};try{done=JSON.parse(localStorage.getItem("sheetsDone")||"{}")}catch(e){}
 
 /* number keypad */
-let kpCb=null;function keypad(cb){kpCb=cb;$("kp").classList.add("show");$("kpd").classList.add("show")}
+let kpCb=null;/* the keypad writes in the sheet's language (Arabic digits on Arabic sheets) */
+const curAr=()=>!!((typeof SHEETS!=="undefined"&&SHEETS.find(x=>x.k===cur))||{}).ar,dgA=v=>String(v).replace(/\d/g,c=>"٠١٢٣٤٥٦٧٨٩"[c]),dgx=v=>curAr()?dgA(v):String(v);
+function keypad(cb){kpCb=cb;$("kp").querySelectorAll("button[data-n]").forEach(b=>b.textContent=dgx(b.dataset.n));$("kp").querySelector(".x").textContent=curAr()?"✖ إغلاق":"✖ close";$("kp").classList.add("show");$("kpd").classList.add("show")}
 function kpClose(){$("kp").classList.remove("show");$("kpd").classList.remove("show");kpCb=null}
-$("kp").innerHTML=[...Array(BIG?21:11).keys()].map(n=>`<button style="background:${CR[n%6]}">${n}</button>`).join("")+'<button class="x">✖ close</button>';
-$("kp").querySelectorAll("button").forEach(b=>b.onclick=()=>{if(b.classList.contains("x"))return kpClose();const cb=kpCb;kpClose();cb&&cb(+b.textContent)});$("kpd").onclick=kpClose;
-function askBox(box,ans,onOk){box.onclick=()=>{if(box.classList.contains("ok"))return;keypad(n=>{if(n===ans){box.textContent=n;box.classList.add("ok","crayon");box.style.setProperty("--c",CR[R(6)]);yay();at(box);onOk&&onOk()}else{box.textContent=n;box.classList.add("shake");buzz();setTimeout(()=>{box.classList.remove("shake");box.textContent=""},500)}})}}
+$("kp").innerHTML=[...Array(BIG?21:11).keys()].map(n=>`<button data-n="${n}" style="background:${CR[n%6]}">${n}</button>`).join("")+'<button class="x">✖ close</button>';
+$("kp").querySelectorAll("button").forEach(b=>b.onclick=()=>{if(b.classList.contains("x"))return kpClose();const cb=kpCb;kpClose();cb&&cb(+b.dataset.n)});$("kpd").onclick=kpClose;
+function askBox(box,ans,onOk){box.onclick=()=>{if(box.classList.contains("ok"))return;keypad(n=>{if(n===ans){box.textContent=dgx(n);box.classList.add("ok","crayon");box.style.setProperty("--c",CR[R(6)]);yay();at(box);onOk&&onOk()}else{box.textContent=dgx(n);box.classList.add("shake");buzz();setTimeout(()=>{box.classList.remove("shake");box.textContent=""},500)}})}}
 
 /* ---------- the sheet frame ---------- */
 const today=new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short"});
 let left=0;
 /* the falcon guide: reacts to every answer */
 let gT=0;function guide(m){const g=document.getElementById("gd");if(!g)return;const src={cheer:"saqoor_cheer",think:"saqoor_think",wave:"saqoor_wave",point:"saqoor_point"}[m];
-  g.querySelector("img").src="img/uae/"+src+".webp";g.className="gd "+m;void g.offsetWidth;g.classList.add("go");clearTimeout(gT);gT=setTimeout(()=>{g.className="gd";g.querySelector("img").src="img/uae/saqoor_point.webp"},1400)}
+  g.querySelector("img").src="img/approved/mascot-falcon.webp";g.className="gd "+m;void g.offsetWidth;g.classList.add("go");clearTimeout(gT);gT=setTimeout(()=>{g.className="gd";0},1400)}
 /* a scene behind each sheet */
 const SCN={sea:{bg:"linear-gradient(180deg,#bfe9ff,#7cc8f5 60%,#f6d79a 92%)",fx:["🫧","🫧","🫧","🐟","🫧"],mv:"up"},garden:{bg:"linear-gradient(180deg,#c9f0ff,#e8fbd9 55%,#9fdc7a)",fx:["🦋","🌼","🦋","🌸","🐝"],mv:"fly"},
   sky:{bg:"linear-gradient(180deg,#a8dcff,#e3f4ff 70%,#fff)",fx:["☁️","⭐","☁️","✨","🎈"],mv:"drift"},desert:{bg:"linear-gradient(180deg,#bfe6ff,#fde9be 55%,#f2c77e)",fx:["☀️","🌴","🐪","✨","🌵"],mv:"drift"},
@@ -205,70 +255,103 @@ function sheet(def,body){window.scrollTo(0,0);document.documentElement.dir=def.a
   $("app").innerHTML=`<div class="paper">${scene(def.k)}
    <div class="st">${def.title.split(" ").map((w,i)=>`<span style="animation-delay:${i*.3}s;color:${i%2?"#1d1d2b":CR[(i+def.c)%6]}">${w}</span>`).join(" ")}</div>
    <div class="ins">${def.ins}</div><div id="body"></div><div class="cheer" id="ch"></div></div>
-   <div class="foot"><button class="fb" id="nw">🔄 ${def.ar?"ورقة جديدة":"New sheet"}</button></div><div class="gd" id="gd"><img src="img/uae/saqoor_wave.webp" alt=""></div>`;setTimeout(()=>guide("wave"),300);
+   <div class="foot"><button class="fb" id="nw">🔄 ${def.ar?"ورقة جديدة":"New sheet"}</button></div><div class="gd" id="gd"><img src="img/approved/mascot-falcon.webp" alt=""></div>`;setTimeout(()=>guide("wave"),300);
   $("nw").onclick=()=>open(def.k);body($("body"))}
-function point(n=1){left-=n;const msgs=["Great job!","Super!","Keep going!","Wow!","Brilliant!"];if(left>0){$("ch").textContent="✏️ "+left+" more to go";return}
+function point(n=1){left-=n;const msgs=["Great job!","Super!","Keep going!","Wow!","Brilliant!"];if(left>0){const dd=SHEETS.find(x=>x.k===cur)||{};$("ch").textContent=dd.ar?"✏️ بقي "+String(left).replace(/\d/g,c=>"٠١٢٣٤٥٦٧٨٩"[c]):"✏️ "+left+" more to go";return}
   const d=SHEETS.find(s=>s.k===cur);done[cur]=1;try{localStorage.setItem("sheetsDone",JSON.stringify(done))}catch(e){}
   $("ch").textContent="";fan();rain();guide("cheer");setTimeout(()=>guide("cheer"),1500);const s=document.createElement("div");s.className="stamp";s.innerHTML=(d.ar?"أحسنت!":"Great Job!")+"<small>⭐⭐⭐ "+NAME+"</small>";document.body.appendChild(s);
   (d.ar?sayAr:sayEn)(d.ar?(BOYK?"أَحْسَنْتَ يَا بَطَلُ!":"أَحْسَنْتِ يَا بَطَلَةُ!"):"Great job, "+NAME+"!");setTimeout(()=>s.remove(),2600)}
 
 /* ---------- 1. finish the letters ---------- */
-const EN=[["apple","🍎"],["ball","⚽"],["cat","🐱"],["dog","🐶"],["elephant","🐘"],["fish","🐟"],["hat","👒"],["ice cream","🍦"],["jug","🏺"],["kite","🪁"],["lion","🦁"],["mango","🥭"],["nest","🪺"],["orange","🍊"],["pig","🐷"],["queen","👸"],["rabbit","🐰"],["sun","☀️"],["tree","🌳"],["umbrella","☂️"],["van","🚐"],["watch","⌚"],["yo-yo","🪀"],["zebra","🦓"],["bus","🚌"],["duck","🦆"],["goat","🐐"],["moon","🌙"],["star","⭐"],["teddy","🧸"]];
+const EN=[["apple","apple"],["ball","ball"],["cat","cat"],["dog","dog"],["egg","egg"],["fish","fish"],["goat","goat"],["hat","hat"],["igloo","igloo"],["jam","jam"],["kite","kite"],["lion","lion"],["moon","moon"],["nest","nest"],["orange","orange"],["pen","pen"],["queen","queen"],["rabbit","rabbit"],["sun","sun"],["tiger","tiger"],["umbrella","umbrella"],["van","van"],["watch","watch"],["box","box"],["yo-yo","yoyo"],["zebra","zebra"]];/* English words with an approved picture each (img/approved/ws/en-*) */
 const AR=[["أرنب","🐰"],["بطة","🦆"],["تفاحة","🍎"],["ثعلب","🦊"],["جمل","🐪"],["حصان","🐴"],["خروف","🐑"],["دب","🐻"],["ذرة","🌽"],["زرافة","🦒"],["سمكة","🐟"],["شمس","☀️"],["صقر","🦅"],["ضفدع","🐸"],["طائرة","✈️"],["ظرف","✉️"],["عنب","🍇"],["غيمة","☁️"],["فراشة","🦋"],["قمر","🌙"],["كتاب","📖"],["ليمون","🍋"],["موز","🍌"],["نجمة","⭐"],["هدية","🎁"],["وردة","🌹"],["يد","✋"],["رمان","🍎"]].filter(x=>x[0]!=="رمان");
 const NOJOIN="اأإآدذرزوؤة";
-function finish(ar){return box=>{const L=pick(ar?AR:EN,8),abc=ar?"ابتثجحخدذرزسشصضطظعغفقكلمنهوي":"abcdefghijklmnopqrstuvwxyz";left=L.length;
-  box.innerHTML=`<div class="fl">${L.map(([w,e],i)=>{const f=w[0],rest=w.slice(1),joins=ar&&!NOJOIN.includes(f.replace(/[أإآ]/,"ا"));const base=ar?f.replace(/[أإآ]/,"ا"):f;
+/* finish the word: a big approved picture, the word with its first letter missing, three letters to pick; short rounds so it fits */
+function finish(ar){return box=>{const L=pick(ar?AR:EN,8),abc=ar?"ابتثجحخدذرزسشصضطظعغفقكلمنهوي":"abcdefghijklmnopqrstuvwxyz";left=L.length;const short=innerHeight<520;
+  inRounds(box,L,short?3:4,(L,doneR)=>{let need=L.length;const room=Math.max(150,innerHeight-box.getBoundingClientRect().top-(short?14:175)),s=Math.max(64,Math.min(210,room-(short?104:130),Math.floor(box.offsetWidth/L.length)-60));
+  box.innerHTML=`<div class="fw" style="--s:${s}px">${L.map(([w,e],i)=>{const f=w[0],rest=w.slice(1),joins=ar&&!NOJOIN.includes(f.replace(/[أإآ]/,"ا"));const base=ar?f.replace(/[أإآ]/,"ا"):f;
     const opts=shuf([base,...pick([...abc].filter(c=>c!==base),2)]);
-    return `<div class="fc" data-i="${i}"><span class="n">${i+1}.</span><div class="pic">${e}</div><div class="wd"><span class="blank">&nbsp;</span><span>${joins?"ـ":""}${rest}</span></div><div class="ch">${opts.map(o=>`<button data-o="${o}">${o}</button>`).join("")}</div></div>`}).join("")}</div>`;
+    return `<div class="fc" data-i="${i}"><div class="pic">${ar?arImg(w,e):IMG("en-"+e,w)}</div><div class="wd"><span class="blank">&nbsp;</span><span>${joins?"ـ":""}${rest}</span></div><div class="ch">${opts.map(o=>`<button data-o="${o}">${o}</button>`).join("")}</div></div>`}).join("")}</div>`;
   box.querySelectorAll(".fc").forEach(c=>{const [w,e]=L[+c.dataset.i],base=ar?w[0].replace(/[أإآ]/,"ا"):w[0];
     c.querySelector(".pic").onclick=()=>(ar?sayAr:sayEn)(w);
-    c.querySelectorAll(".ch button").forEach(b=>b.onclick=()=>{if(c.classList.contains("won"))return;if(b.dataset.o===base){const bl=c.querySelector(".blank");bl.textContent=w[0];bl.className="blank crayon";bl.style.setProperty("--c",CR[R(6)]);bl.style.borderColor="transparent";c.classList.add("won");yay();at(bl);(ar?sayAr:sayEn)(w);point()}else{b.classList.add("no");buzz();setTimeout(()=>b.classList.remove("no"),400)}})})}}
+    c.querySelectorAll(".ch button").forEach(b=>b.onclick=()=>{if(c.classList.contains("won"))return;if(b.dataset.o===base){const bl=c.querySelector(".blank");bl.textContent=w[0];bl.className="blank crayon";bl.style.setProperty("--c",CR[R(6)]);bl.style.borderColor="transparent";c.classList.add("won");yay();at(bl);(ar?sayAr:sayEn)(w);point();if(--need===0)doneR()}else{b.classList.add("no");buzz();setTimeout(()=>b.classList.remove("no"),400)}})})})}}
 
 /* ---------- 2. find and count ---------- */
 const KINDS=[["🐶","dogs"],["🐱","cats"],["🐰","bunnies"],["🐤","chicks"],["🦋","butterflies"],["🌸","flowers"],["🌳","trees"],["🐞","ladybugs"],["🐢","turtles"],["🍄","mushrooms"]];
-function count(box){const K=pick(KINDS,BIG?6:4),N=K.map(()=>1+R(BIG?7:5));left=K.length;const items=[];K.forEach((k,i)=>{for(let j=0;j<N[i];j++)items.push(i)});
-  const cells=shuf([...Array(48).keys()]).slice(0,items.length);
-  box.innerHTML=`<div class="scene" id="sc">${items.map((ki,j)=>{const c=cells[j],x=(c%8)*12.2+1+R(4),y=Math.floor(c/8)*16+1+R(5);return `<span data-k="${ki}" style="left:${x}%;top:${y}%;--c:${CR[ki]};transform:rotate(${R(30)-15}deg)">${K[ki][0]}</span>`}).join("")}</div>
-   <div class="tally">${K.map((k,i)=>`<div>${k[0]}<span class="box" data-i="${i}"></span></div>`).join("")}</div>`;
-  box.querySelectorAll(".scene span").forEach(s=>s.onclick=()=>{s.classList.toggle("got");tone(500+R(400),.08)});
-  box.querySelectorAll(".tally .box").forEach(b=>askBox(b,N[+b.dataset.i],()=>{sayEn(N[+b.dataset.i]+" "+K[+b.dataset.i][1]);point()}))}
+const CNT=[["cat","cats","قطط"],["chick","chicks","كتاكيت"],["rabbit","rabbits","أرانب"],["tortoise","tortoises","سلاحف"]];
+/* find and count: animals on the approved courtyard; tap to mark, then write how many (Arabic digits on the Arabic sheet) */
+function count(box){const ar=curAr(),short=innerHeight<520,K=pick(CNT,short?3:4),N=K.map(()=>1+R(BIG?7:5));left=K.length;const items=[];K.forEach((k,i)=>{for(let j=0;j<N[i];j++)items.push(i)});
+  const room=Math.max(160,innerHeight-box.getBoundingClientRect().top-(short?14:175)),th=short?58:84,sh=Math.max(110,room-th-10),sw=Math.min(box.offsetWidth,Math.round(sh*1.6));
+  const cols=7,rows=4,cells=shuf([...Array(cols*rows).keys()]).slice(0,items.length);
+  box.innerHTML=`<div class="scn2" style="width:${sw}px;height:${Math.round(sw/1.6)}px">${IMG("cnt-plate")}${items.map((ki,j)=>{const c=cells[j],x=(c%cols)*(100/cols)+7+R(5),y=38+Math.floor(c/cols)*(56/rows)+R(5);return `<span data-k="${ki}" style="left:${x}%;top:${y}%">${IMG("cnt-"+K[ki][0])}</span>`}).join("")}</div>
+   <div class="tally2" style="--t:${short?40:58}px">${K.map((k,i)=>`<div>${IMG("cnt-"+k[0])}<span class="box" data-i="${i}"></span></div>`).join("")}</div>`;
+  box.querySelectorAll(".scn2 span").forEach(s=>s.onclick=()=>{s.classList.toggle("got");tone(500+R(400),.08)});
+  box.querySelectorAll(".tally2 .box").forEach(b=>askBox(b,N[+b.dataset.i],()=>{const k=K[+b.dataset.i],n=N[+b.dataset.i];ar?sayAr(n+" "+k[2]):sayEn(n+" "+k[1]);point()}))}
 
 /* ---------- 3. match with lines ---------- */
-function matcher(box,pairs,shape){left=pairs.length;const right=shuf(pairs.map((p,i)=>i));
-  box.innerHTML=`<div class="mt" id="mt"><svg id="ln"></svg><div class="col">${pairs.map((p,i)=>`<div class="it"><button class="k" data-l="${i}">${p[0]}</button><span class="dot"></span></div>`).join("")}</div>
-   <div class="col">${right.map(i=>`<div class="it"><span class="dot"></span><button class="k" data-r="${i}">${pairs[i][1]}</button></div>`).join("")}</div></div>`;
-  let sel=null;const mt=$("mt"),svg=$("ln");
-  const line=(a,b,c)=>{const m=mt.getBoundingClientRect(),p=a.getBoundingClientRect(),q=b.getBoundingClientRect(),x1=p.right-m.left+12,y1=p.top+p.height/2-m.top,x2=q.left-m.left-12,y2=q.top+q.height/2-m.top;
-    svg.insertAdjacentHTML("beforeend",`<path stroke="${c}" d="M${x1},${y1} C${(x1+x2)/2},${y1+R(30)-15} ${(x1+x2)/2},${y2+R(30)-15} ${x2},${y2}"/>`)};
-  box.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{if(b.classList.contains("done"))return;box.querySelectorAll("[data-l]").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");sel=b;tone(600,.06);(shape&&shape.say?shape.say:t=>{})(pairs[+b.dataset.l])});
-  box.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{if(!sel||b.classList.contains("done"))return;if(b.dataset.r===sel.dataset.l){const c=CR[R(6)];line(sel,b,c);sel.classList.add("done");b.classList.add("done");sel.classList.remove("sel");yay();at(b);sel=null;point()}else{b.classList.add("shake");buzz();setTimeout(()=>b.classList.remove("shake"),400)}})}
+/* matching = draw a line with the finger from a dot to its partner (user 2026-11-16 / 2026-11-19); tap-tap also works.
+   Rounds of 3 on a phone and 4 on an iPad so everything fits without scrolling; pictures sized from the screen height. */
+function matcher(box,pairs,shape){left=pairs.length;const per=(shape&&shape.per)||(innerHeight<520?3:4),rounds=[];for(let i=0;i<pairs.length;i+=per)rounds.push(pairs.slice(i,i+per));let ri=0;
+  function round(){const P=rounds[ri],idx=P.map((_,i)=>i),rt=shuf(idx);const n=P.length,H=innerHeight<520;
+    const avail=Math.max(160,innerHeight-(box.getBoundingClientRect().top)-(H?14:175)),bw=box.offsetWidth||innerWidth*.8;
+    const s=H?Math.max(60,Math.min(130,Math.floor((avail-44-44)/2),Math.floor((bw-(n-1)*18-20)/n))):Math.max(64,Math.min(150,Math.floor((avail-(n-1)*12)/n)));
+    box.innerHTML=`<div class="wm${H?" h":""}" id="wm" style="--s:${s}px"><svg id="wl"></svg><div class="col">${idx.map(i=>`<div class="it" data-a="${i}"><div class="card">${P[i][0]}</div><span class="dot"></span></div>`).join("")}</div><div class="gap"></div>
+      <div class="col">${rt.map(i=>`<div class="it" data-b="${i}"><span class="dot"></span><div class="card">${P[i][1]}</div></div>`).join("")}</div></div>${rounds.length>1?`<div class="wmr">${"●".repeat(ri+1)}${"○".repeat(rounds.length-ri-1)}</div>`:""}`;
+    const wm=box.querySelector("#wm"),svg=box.querySelector("#wl");let from=null,tmp=null,moved=false,sel=null,need=n;
+    const ctr=it=>{const d=it.querySelector(".dot").getBoundingClientRect(),m=wm.getBoundingClientRect(),z=(wm.getBoundingClientRect().width/wm.offsetWidth)||1;return[(d.left+d.width/2-m.left)/z,(d.top+d.height/2-m.top)/z]};
+    const pt=e=>{const m=wm.getBoundingClientRect(),z=(m.width/wm.offsetWidth)||1;return[(e.clientX-m.left)/z,(e.clientY-m.top)/z]};
+    const curve=(a,b)=>H?`M${a[0]},${a[1]} C${a[0]},${(a[1]+b[1])/2} ${b[0]},${(a[1]+b[1])/2} ${b[0]},${b[1]}`:`M${a[0]},${a[1]} C${(a[0]+b[0])/2},${a[1]} ${(a[0]+b[0])/2},${b[1]} ${b[0]},${b[1]}`;
+    const say=it=>{const i=+(it.dataset.a??it.dataset.b);if(shape&&shape.say)try{shape.say(P[i],it.dataset.a!=null?0:1)}catch(e){}};
+    const near=e=>{let el=document.elementFromPoint(e.clientX,e.clientY);el=el&&el.closest(".it");if(el&&wm.contains(el))return el;let best=null,bd=70;wm.querySelectorAll(".it").forEach(it=>{const d=it.querySelector(".dot").getBoundingClientRect(),dx=d.left+d.width/2-e.clientX,dy=d.top+d.height/2-e.clientY,q=Math.hypot(dx,dy);if(q<bd){bd=q;best=it}});return best};
+    function tryPair(a,b){const A=a.dataset.a!=null?a:b,B=a.dataset.a!=null?b:a;if(A.dataset.a==null||B.dataset.b==null)return false;
+      if(A.dataset.a===B.dataset.b){svg.insertAdjacentHTML("beforeend",`<path class="ok" d="${curve(ctr(A),ctr(B))}"/>`);A.classList.add("ok");B.classList.add("ok");A.classList.remove("on");B.classList.remove("on");yay();at(B.querySelector(".card"));point();
+        if(--need===0){ri++;if(ri<rounds.length)setTimeout(round,900)}return true}
+      [A,B].forEach(x=>{x.classList.add("no");setTimeout(()=>x.classList.remove("no"),400)});buzz();return true}
+    wm.addEventListener("pointerdown",e=>{const it=e.target.closest(".it");if(!it||it.classList.contains("ok"))return;e.preventDefault();from=it;moved=false;it.classList.add("on");try{wm.setPointerCapture(e.pointerId)}catch(_){}
+      svg.insertAdjacentHTML("beforeend",`<path class="tmp" d=""/>`);tmp=svg.lastElementChild;say(it)});
+    wm.addEventListener("pointermove",e=>{if(!from)return;const p=pt(e),c=ctr(from);if(Math.hypot(p[0]-c[0],p[1]-c[1])>14)moved=true;tmp.setAttribute("d",curve(c,p))});
+    const end=e=>{if(!from)return;const a=from;from=null;if(tmp){tmp.remove();tmp=null}
+      if(!moved){/* a tap: pick this one, or pair it with the one picked before */
+        if(sel&&sel!==a&&!sel.classList.contains("ok")&&((sel.dataset.a!=null)!==(a.dataset.a!=null))){const s0=sel;sel=null;s0.classList.remove("on");a.classList.remove("on");tryPair(s0,a);return}
+        if(sel&&sel!==a)sel.classList.remove("on");sel=a;tone(600,.05);return}
+      const b=near(e);a.classList.remove("on");if(sel){sel.classList.remove("on");sel=null}
+      if(b&&b!==a&&!b.classList.contains("ok")&&((b.dataset.a!=null)!==(a.dataset.a!=null)))tryPair(a,b)};
+    wm.addEventListener("pointerup",end);wm.addEventListener("pointercancel",()=>{if(tmp)tmp.remove();tmp=null;if(from)from.classList.remove("on");from=null})}
+  round()}
 function capsmall(box){const L=pick([..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"],6);matcher(box,L.map(c=>[c,c.toLowerCase()]),{say:p=>sayEn(p[0])})}
-function arpic(box){const L=pick(AR,6);matcher(box,L.map(([w,e])=>[e,w[0]]),{say:p=>{}})}
-function nummatch(box){const ems=["🪁","☁️","🧁","✏️","🚂","🎈","🐟","🍦","🚗","⭐"],N=pick([1,2,3,4,5,6,7,8,9].slice(0,BIG?9:6),5);matcher(box,N.map(n=>[n,`<span style="font-size:20px;letter-spacing:0">${ems[R(10)].repeat(n)}</span>`]),{say:p=>sayEn(String(p[0]))})}
+const WS=n=>`img/approved/ws/${n}.webp`;
+const ARPIC={"أرنب":"rabbit","بطة":"duck","تفاحة":"apple","ثعلب":"fox","جمل":"camel","حصان":"horse","خروف":"sheep","دب":"bear","ذرة":"corn","زرافة":"giraffe","سمكة":"fish","شمس":"sun","صقر":"falcon","ضفدع":"frog","طائرة":"airplane","ظرف":"envelope","عنب":"grapes","غيمة":"cloud","فراشة":"butterfly","قمر":"moon","كتاب":"book","ليمون":"lemon","موز":"banana","نجمة":"star","هدية":"gift","وردة":"rose","يد":"hand"};
+const arImg=(w,e)=>ARPIC[w]?`<img src="${WS("pic-"+ARPIC[w])}" alt="${w}">`:e;
+/* picture on the right, its first letter on the left; the picture says its name */
+function arpic(box){const L=pick(AR,innerHeight<520?6:8);matcher(box,L.map(([w,e])=>[arImg(w,e),w[0],w]),{say:(p,side)=>{try{NAJMA.aiSay(side?p[1]:p[2])}catch(e){}}})}
+function nummatch(box){const ar=curAr(),its=["cupcake","date","star","balloon","ball","dhow"],N=pick([1,2,3,4,5,6,7,8,9].slice(0,BIG?9:6),BIG?8:6);
+  matcher(box,N.map(n=>{const it=its[R(its.length)];return [dgx(n),`<span class="grp g${n>4?3:n>1?2:1}">${Array(n).fill(IMG("num-"+it)).join("")}</span>`,n]}),{say:(p,side)=>(ar?sayAr:sayEn)(String(p[2]))})}
 
 /* ---------- 4. shapes ---------- */
 const SH={circle:[`<circle cx="30" cy="30" r="24"/>`,["⚽","🍩","🕐","🍪","🪙","🔵"]],square:[`<rect x="7" y="7" width="46" height="46"/>`,["🎁","🧇","🖼️","🟦","🟩"]],triangle:[`<path d="M30 6 L55 52 L5 52Z"/>`,["🍕","🔺","⛺","🍉","📐"]],rectangle:[`<rect x="3" y="15" width="54" height="30"/>`,["🚪","📱","📺","📕","💵"]],star:[`<path d="M30 4l7 17 18 1-14 11 5 18-16-10-16 10 5-18L5 22l18-1z"/>`,["⭐","🌟","✴️"]],heart:[`<path d="M30 52S6 37 6 21c0-8 6-13 12-13 6 0 10 4 12 8 2-4 6-8 12-8 6 0 12 5 12 13 0 16-24 31-24 31z"/>`,["❤️","💝","💖","🩷"]],oval:[`<ellipse cx="30" cy="30" rx="26" ry="18"/>`,["🥚","🏉","🪞","🥔"]],diamond:[`<path d="M30 4 L55 30 L30 56 L5 30Z"/>`,["🪁","💎","🔷","♦️"]]};
-function shapes(box){const S=pick(Object.keys(SH),BIG?7:5);left=S.length;
-  box.innerHTML=S.map((s,i)=>{const ok=SH[s][1][R(SH[s][1].length)],others=pick(Object.keys(SH).filter(x=>x!==s&&!(s==="square"&&x==="rectangle")&&!(s==="rectangle"&&x==="square")),3).map(x=>SH[x][1][R(SH[x][1].length)]);
-    return `<div class="srow" data-s="${s}"><div class="shp"><svg viewBox="0 0 60 60" fill="#fff" stroke="${CR[i%6]}" stroke-width="4" stroke-linejoin="round">${SH[s][0]}</svg>${s}</div><div class="opt">${shuf([ok,...others]).map(o=>`<button data-ok="${o===ok?1:0}">${o}</button>`).join("")}</div></div>`}).join("");
-  box.querySelectorAll(".srow").forEach(r=>{r.querySelector(".shp").onclick=()=>sayEn(r.dataset.s);r.querySelectorAll(".opt button").forEach(b=>b.onclick=()=>{if(r.dataset.w)return;if(b.dataset.ok==="1"){r.dataset.w=1;b.classList.add("ok");yay();at(b);sayEn(r.dataset.s);point()}else{b.classList.add("no");buzz()}})})}
+const SHOBJ={triangle:"pizza",circle:"clock",square:"window",rectangle:"door",oval:"egg",diamond:"kite",star:"starcookie",heart:"heart"};
+function shapes(box){const S=pick(Object.keys(SHOBJ),BIG?8:6);matcher(box,S.map((k,i)=>[`<svg viewBox="0 0 60 60" style="width:76%;height:76%" fill="${CR[i%6]}" stroke="#fff" stroke-width="3" stroke-linejoin="round">${SH[k][0]}</svg>`,IMG("shp-"+SHOBJ[k],k),k]),{say:p=>sayEn(p[2])})}
 
 /* ---------- 5. math fun ---------- */
-function math(box){const M=BIG?20:10,E=["🎈","🐟","🌙","🍦","🚗","🍎","🦋","⭐","🌞","🐞"];let html="",tasks=[];
-  /* count and write */
-  const cw=pick(E,3).map(e=>[e,1+R(BIG?9:6)]);html+=`<div class="sec"><h3><i>1</i>Count and write</h3>${cw.map(([e,n],i)=>`<div class="grp"><span class="em">${e.repeat(n)}</span><span class="box" data-a="${n}"></span></div>`).join("")}</div>`;
-  /* missing numbers */
-  const st=1+R(M-6),seq=[...Array(6)].map((_,i)=>st+i),hole=pick([1,2,3,4],2);html+=`<div class="sec"><h3><i>2</i>Write the missing numbers</h3><div class="seq">${seq.map((n,i)=>hole.includes(i)?`<span class="box" data-a="${n}"></span>`:`<span class="c">${n}</span>`).join("")}</div></div>`;
-  /* what comes next */
+/* Math Fun / رياضيات ممتعة: five short parts shown one at a time so it fits; approved countables; Arabic sheet in Arabic with Arabic digits */
+function math(box){const ar=curAr(),M=BIG?20:10,E=["cupcake","date","star","balloon","ball","dhow"],ic=(e,n)=>`<span class="ics">${Array(n).fill(IMG("num-"+e)).join("")}</span>`,sep=ar?"، ":", ";
+  const H=ar?["عُدّ واكتب","اكتب الأعداد الناقصة","ماذا يأتي بعدها؟ اختر","اجمع الأشياء","اختر العدد الأكبر"]:["Count and write","Write the missing numbers","What comes next? Circle it","Add the items","Circle the bigger number"];
+  const cw=pick(E,3).map(e=>[e,1+R(BIG?9:6)]);
+  const st=1+R(M-6),seq=[...Array(6)].map((_,i)=>st+i),hole=pick([1,2,3,4],2);
   const nx=[0,1,2].map(()=>{const s=1+R(M-4),step=BIG&&R(2)?2:1;return [s,s+step,s+2*step,s+3*step]});
-  html+=`<div class="sec"><h3><i>3</i>What comes next? Circle it</h3>${nx.map(q=>{const a=q[3],o=shuf([a,a+1,a-1].filter(x=>x>=0));return `<div class="nx3"><span>${q.slice(0,3).join(", ")}, __</span><div class="ops">${o.map(x=>`<button data-ok="${x===a?1:0}">${x}</button>`).join("")}</div></div>`}).join("")}</div>`;
-  /* add the items */
-  const ad=pick(E,3).map(e=>[e,1+R(BIG?6:3),1+R(BIG?5:3)]);html+=`<div class="sec"><h3><i>4</i>Add the items</h3><div class="addr">${ad.map(([e,a,b])=>`<div>${e.repeat(a)} <b>+</b> ${e.repeat(b)}<br><b>=</b> <span class="box" data-a="${a+b}"></span></div>`).join("")}</div></div>`;
-  /* bigger number */
-  const bs=[0,1,2,3].map(()=>{let a=R(M+1),b=R(M+1);while(b===a)b=R(M+1);return [a,b]});html+=`<div class="sec"><h3><i>5</i>Circle the bigger number</h3><div class="bs">${bs.map(([a,b])=>`<div><button data-ok="${a>b?1:0}">${a}</button><button data-ok="${b>a?1:0}">${b}</button></div>`).join("")}</div></div>`;
-  box.innerHTML=html;left=box.querySelectorAll(".box").length+nx.length+bs.length;
-  box.querySelectorAll(".box").forEach(b=>askBox(b,+b.dataset.a,()=>point()));
-  box.querySelectorAll(".nx3 .ops,.bs div").forEach(g=>g.querySelectorAll("button").forEach(b=>b.onclick=()=>{if(g.dataset.w)return;if(b.dataset.ok==="1"){g.dataset.w=1;b.classList.add("ok");yay();at(b);sayEn(b.textContent);point()}else{b.classList.add("no");buzz()}}))}
+  const ad=pick(E,3).map(e=>[e,1+R(BIG?6:3),1+R(BIG?5:3)]);
+  const bs=[0,1,2,3].map(()=>{let a=R(M+1),b=R(M+1);while(b===a)b=R(M+1);return [a,b]});
+  const parts=[
+   `${cw.map(([e,n])=>`<div class="grp2">${ic(e,n)}<span class="box" data-a="${n}"></span></div>`).join("")}`,
+   `<div class="seq">${seq.map((n,i)=>hole.includes(i)?`<span class="box" data-a="${n}"></span>`:`<span class="c">${dgx(n)}</span>`).join("")}</div>`,
+   `${nx.map(q=>{const a=q[3],o=shuf([a,a+1,a-1].filter(x=>x>=0));return `<div class="nx3"><span>${q.slice(0,3).map(dgx).join(sep)}${sep}__</span><div class="ops">${o.map(x=>`<button data-ok="${x===a?1:0}" data-v="${x}">${dgx(x)}</button>`).join("")}</div></div>`}).join("")}`,
+   `<div class="addr">${ad.map(([e,a,b])=>`<div>${ic(e,a)} <b>+</b> ${ic(e,b)}<br><b>=</b> <span class="box" data-a="${a+b}"></span></div>`).join("")}</div>`,
+   `<div class="bs">${bs.map(([a,b])=>`<div><button data-ok="${a>b?1:0}" data-v="${a}">${dgx(a)}</button><button data-ok="${b>a?1:0}" data-v="${b}">${dgx(b)}</button></div>`).join("")}</div>`];
+  left=3+2+3+3+4;
+  inRounds(box,[0,1,2,3,4],1,([k],doneR)=>{box.innerHTML=`<div class="sec mf"><h3><i>${dgx(k+1)}</i>${H[k]}</h3>${parts[k]}</div><div class="wmr">${"●".repeat(k+1)}${"○".repeat(4-k)}</div>`;
+    let need=box.querySelectorAll(".box").length+box.querySelectorAll(".nx3,.bs div").length;const one=()=>{point();if(--need===0)doneR()};
+    box.querySelectorAll(".box").forEach(b=>askBox(b,+b.dataset.a,one));
+    box.querySelectorAll(".nx3 .ops,.bs div").forEach(g=>g.querySelectorAll("button").forEach(b=>b.onclick=()=>{if(g.dataset.w)return;if(b.dataset.ok==="1"){g.dataset.w=1;b.classList.add("ok");yay();at(b);(ar?sayAr:sayEn)(b.dataset.v);one()}else{b.classList.add("no");buzz()}}))})}
 
 /* ---------- the book ---------- */
 /* ---------- Arabic & ديني activities ---------- */
@@ -276,61 +359,73 @@ const BOYK=(ME.gender||(/^img:k\d$/.test(ME.avatar||"")?(+ME.avatar.slice(5)%2?"
 const PD=n=>`<img src="img/deen/${n}.webp" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:14px;display:block">`;
 /* الأخلاق الحميدة أم السيئة */
 function akhlaq(box){const L=shuf([["ak1","المُشَارَكَةُ",1],["ak2","مُسَاعَدَةُ الأَصْدِقَاءِ",1],["ak3","رَمْيُ القُمَامَةِ فِي السَّلَّةِ",1],["ak4","انْتِظَارُ الدَّوْرِ",1],["bk1","الدَّفْعُ",0],["bk2","رَمْيُ القُمَامَةِ عَلَى الأَرْضِ",0],["bk3","الأَخْذُ دُونَ اسْتِئْذَانٍ",0],["bk4","الصُّرَاخُ",0]]);left=L.length;
-  box.innerHTML=`<div class="akg">${L.map(([im,t,g],i)=>`<div class="akc" data-g="${g}" data-t="${t}"><div class="ph">${PD(im)}</div><b>${t}</b><div class="yn"><button data-v="1">✅</button><button data-v="0">❌</button></div></div>`).join("")}</div>`;
+  inRounds(box,L,innerHeight<520?4:8,(L,doneR)=>{let need=L.length;
+  box.innerHTML=`<div class="akg">${L.map(([im,t,g],i)=>`<div class="akc" data-g="${g}" data-t="${t}"><div class="ph">${IMG({ak1:"akh-sharing",ak2:"akh-helping",ak3:"akh-bin",ak4:"akh-waiting",bk1:"akh-pushing",bk2:"akh-litter",bk3:"akh-grabbing",bk4:"akh-shouting"}[im])}</div><b>${t}</b><div class="yn"><button data-v="1">✅</button><button data-v="0">❌</button></div></div>`).join("")}</div>`;
   box.querySelectorAll(".akc").forEach(c=>{c.querySelector(".ph").onclick=()=>sayAr(c.dataset.t);c.querySelectorAll(".yn button").forEach(b=>b.onclick=()=>{if(c.dataset.w)return;
-    if(b.dataset.v===c.dataset.g){c.dataset.w=1;c.classList.add(c.dataset.g==="1"?"good":"bad");yay();at(b);sayAr(c.dataset.t+(c.dataset.g==="1"?"، خُلُقٌ حَمِيدٌ":"، خُلُقٌ سَيِّئٌ"));point()}else{b.classList.add("no");buzz();setTimeout(()=>b.classList.remove("no"),400)}})})}
+    if(b.dataset.v===c.dataset.g){c.dataset.w=1;c.classList.add(c.dataset.g==="1"?"good":"bad");yay();at(b);sayAr(c.dataset.t+(c.dataset.g==="1"?"، خُلُقٌ حَمِيدٌ":"، خُلُقٌ سَيِّئٌ"));point();if(--need===0)doneR()}else{b.classList.add("no");buzz();setTimeout(()=>b.classList.remove("no"),400)}})})})}
 /* شجرة نعم الله */
 function nium(box){const L=[["sn_eye","نِعْمَةُ البَصَرِ"],["sn_ear","نِعْمَةُ السَّمْعِ"],["nm_house","نِعْمَةُ البَيْتِ"],["nm_family","نِعْمَةُ الأُسْرَةِ"],["nm_food","نِعْمَةُ الطَّعَامِ"],["nm_water","نِعْمَةُ المَاءِ"],["nm_health","نِعْمَةُ الصِّحَّةِ"]];left=L.length;
   const pos=[[50,6],[22,16],[78,16],[10,38],[90,38],[30,40],[70,40]];
   box.innerHTML=`<div class="tree"><div class="trunk"></div><div class="crown"></div>${L.map(([im,t],i)=>`<button class="leaf" data-i="${i}" style="left:${pos[i][0]}%;top:${pos[i][1]}%;--d:${i*.4}s"><span class="ph">${PD(im)}</span><small>${t}</small></button>`).join("")}<div class="hrt" id="hrt">💗<br>الحَمْدُ لِلَّهِ<br>عَلَى نِعَمِ اللَّهِ</div></div>`;
   box.querySelectorAll(".leaf").forEach(b=>b.onclick=()=>{const [,t]=L[+b.dataset.i];sayAr(t+". الحَمْدُ لِلَّهِ");if(b.dataset.w)return;b.dataset.w=1;b.classList.add("lit");yay();at(b);point();if(left===0)$("hrt").classList.add("on")})}
 /* الحواس الخمس */
-function senses(box){matcher(box,[[`<span class="snp">${PD("sn_eye")}</span> البَصَرُ`,"🌈"],[`<span class="snp">${PD("sn_ear")}</span> السَّمْعُ`,"🔔"],[`<span class="snp">${PD("sn_nose")}</span> الشَّمُّ`,"🌹"],[`<span class="snp">${PD("sn_tongue")}</span> التَّذَوُّقُ`,"🍦"],[`<span class="snp">${PD("sn_hand")}</span> اللَّمْسُ`,"🧸"]],{say:p=>sayAr(p[0].replace(/<[^>]+>/g,"").trim())})}
+/* show a long sheet in short rounds so it fits without scrolling; render(part,done) calls done() when that part is finished */
+function inRounds(box,items,per,render){let i=0;const nxt=()=>{const part=items.slice(i,i+per);i+=per;render(part,()=>{if(i<items.length)setTimeout(nxt,900)})};nxt()}
+const IMG=(n,alt="")=>`<img src="${WS(n)}" alt="${alt}" draggable="false">`;
+/* الحواس الخمس: the sense on one side, what it notices on the other (approved pictures) */
+function senses(box){const S=[["eye","rainbow","البَصَرُ"],["ear","bell","السَّمْعُ"],["nose","rose","الشَّمُّ"],["tongue","icecream","التَّذَوُّقُ"],["hand","teddy","اللَّمْسُ"]];
+  matcher(box,shuf(S).map(([o,t,n])=>[IMG("sense-"+o,n),IMG("thing-"+t),n]),{per:3,say:(p,side)=>{if(!side)sayAr(p[2])}})}
 /* ابحث وعدّ الحيوانات البحرية */
-const SEA=[["🐠","سَمَكَةٌ",[[17,12],[81,9],[50,29],[11,45]]],["🐙","أُخْطُبُوطٌ",[[33,20],[70,22],[27,37],[88,40],[67,54]]],["🐢","سُلَحْفَاةٌ",[[50,9],[11,27],[90,23],[69,38],[49,45],[32,54]]],["🦀","سَلْطَعُونٌ",[[14,60],[85,61],[39,71],[62,71],[22,82],[71,85]]],["⭐","نَجْمُ البَحْرِ",[[50,60],[23,69],[82,74],[45,84]]]];
-function sea(box){left=SEA.length;
-  box.innerHTML=`<div class="seab"><img src="img/deen/sea.webp" alt="">${SEA.map(([e,n,ps],k)=>ps.map(([x,y])=>`<i class="hs" data-k="${k}" style="left:${x}%;top:${y}%"></i>`).join("")).join("")}</div>
-   <div class="tally">${SEA.map(([e,n,ps],k)=>`<div style="font-size:16px;flex-direction:column;gap:4px"><span style="font-size:34px">${e}</span><b>${n}</b><span class="box" data-k="${k}"></span></div>`).join("")}</div>`;
-  box.querySelectorAll(".hs").forEach(h=>h.onclick=()=>{h.classList.toggle("on");tone(500+(+h.dataset.k)*90,.08);if(h.classList.contains("on"))sayAr(SEA[+h.dataset.k][1])});
-  box.querySelectorAll(".tally .box").forEach(b=>askBox(b,SEA[+b.dataset.k][2].length,()=>{sayAr(String(SEA[+b.dataset.k][2].length));point()}))}
+const SEA=[["fish","سَمَكَةٌ",[[17,12],[81,9],[50,29],[11,45]]],["octopus","أُخْطُبُوطٌ",[[33,20],[70,22],[27,37],[88,40],[67,54]]],["turtle","سُلَحْفَاةٌ",[[50,9],[11,27],[90,23],[69,38],[49,45],[32,54]]],["crab","سَلْطَعُونٌ",[[14,60],[85,61],[39,71],[62,71],[22,82],[71,85]]],["starfish","نَجْمُ البَحْرِ",[[50,60],[23,69],[82,74],[45,84]]]];
+/* ابحث وعدّ: the approved sea animals on the empty sea; tap to mark, then write how many */
+function sea(box){left=SEA.length;const short=innerHeight<520,room=Math.max(160,innerHeight-box.getBoundingClientRect().top-(short?14:175)),th=short?58:84,sh=Math.max(110,room-th-10),sw=Math.min(box.offsetWidth,Math.round(sh*1.6));
+  box.innerHTML=`<div class="scn2" style="width:${sw}px;height:${Math.round(sw/1.6)}px">${IMG("sea-plate")}${SEA.map(([e,n,ps],k)=>ps.map(([x,y])=>`<span class="hs2" data-k="${k}" style="left:${x}%;top:${8+y*.86}%">${IMG("sea-"+e,n)}</span>`).join("")).join("")}</div>
+   <div class="tally2" style="--t:${short?36:52}px">${SEA.map(([e,n,ps],k)=>`<div>${IMG("sea-"+e,n)}<span class="box" data-k="${k}"></span></div>`).join("")}</div>`;
+  box.querySelectorAll(".hs2").forEach(h=>h.onclick=()=>{h.classList.toggle("got");tone(500+(+h.dataset.k)*90,.08);if(h.classList.contains("got"))sayAr(SEA[+h.dataset.k][1])});
+  box.querySelectorAll(".tally2 .box").forEach(b=>askBox(b,SEA[+b.dataset.k][2].length,()=>{sayAr(String(SEA[+b.dataset.k][2].length));point()}))}
 /* نشاط التركيز */
-function focus(box){const S=[["🍎",["🍌","🍊"]],["🚙",["🚗","🚚"]],["⭐",["🌙","☀️"]],["🌸",["🌼","🌷"]],["🐝",["🦋","🐞"]],["⚽",["🏀","🎾"]],["🐱",["🐶","🐰"]],["🍓",["🍒","🍇"]]];
-  const R=pick(S,6);left=R.length;
-  box.innerHTML=R.map(([t,o],k)=>{const row=[...Array(9)].map(()=>Math.random()<.55?t:o[R0(2)]);if(!row.includes(t))row[R0(9)]=t;
-    return `<div class="frow" data-k="${k}" style="--c:${CR[k%6]}"><div class="tg">${t}<span class="ck"></span></div><div class="its">${row.map(x=>`<button data-ok="${x===t?1:0}">${x}</button>`).join("")}</div></div>`}).join("");
-  box.querySelectorAll(".frow").forEach(r=>{const need=r.querySelectorAll('[data-ok="1"]').length;let got=0;r.querySelectorAll(".its button").forEach(b=>b.onclick=()=>{if(b.classList.contains("hit")||r.dataset.w)return;
-    if(b.dataset.ok==="1"){b.classList.add("hit");tone(600+got*80,.08);if(++got===need){r.dataset.w=1;r.querySelector(".ck").textContent="✓";r.classList.add("won");yay();at(r.querySelector(".tg"));point()}}else{b.classList.add("no");buzz();setTimeout(()=>b.classList.remove("no"),400)}})})}
+/* نشاط التركيز: find every picture that is the same as the one on the right (approved look-alike sets), a few rows per round */
+function focus(box){const S=[["apple",["banana","orange"]],["car",["bus","truck"]],["star",["moon","sun"]],["rose",["daisy","tulip"]],["bee",["butterfly","ladybug"]],["football",["basketball","tennisball"]],["cat",["dog","rabbit"]],["strawberry",["cherry","grapes"]]];
+  const short=innerHeight<520,L=pick(S,6);left=L.length;
+  inRounds(box,L,short?2:3,(L,doneR)=>{let need=L.length;const room=Math.max(150,innerHeight-box.getBoundingClientRect().top-(short?14:175)),n=7,
+    sz=Math.max(40,Math.min(110,Math.floor(room/L.length)-22,Math.floor((box.offsetWidth-40)/(n+1.4))-8));
+    box.innerHTML=`<div style="--z:${sz}px">${L.map(([t,o],k)=>{const row=[...Array(n)].map(()=>Math.random()<.5?t:o[R0(2)]);if(!row.includes(t))row[R0(n)]=t;
+      return `<div class="frow2" data-k="${k}"><div class="tg">${IMG("foc-"+t)}<span class="ck"></span></div><div class="its">${row.map(x=>`<button data-ok="${x===t?1:0}">${IMG("foc-"+x)}</button>`).join("")}</div></div>`}).join("")}</div>`;
+    box.querySelectorAll(".frow2").forEach(r=>{const want=r.querySelectorAll('[data-ok="1"]').length;let got=0;r.querySelectorAll(".its button").forEach(b=>b.onclick=()=>{if(b.classList.contains("hit")||r.dataset.w)return;
+      if(b.dataset.ok==="1"){b.classList.add("hit");tone(600+got*80,.08);if(++got===want){r.dataset.w=1;r.querySelector(".ck").textContent="✓";r.classList.add("won");yay();at(r.querySelector(".tg"));point();if(--need===0)doneR()}}else{b.classList.add("no");buzz();setTimeout(()=>b.classList.remove("no"),400)}})})})}
 const R0=n=>Math.floor(Math.random()*n);
 /* ساعد السمكة: a maze traced with the finger */
 function maze(box){left=1;const W=BIG?8:6,H=BIG?8:6,cell=[...Array(W*H)].map(()=>({n:1,e:1,s:1,w:1,v:0}));
   const stack=[0];cell[0].v=1;while(stack.length){const c=stack[stack.length-1],x=c%W,y=Math.floor(c/W),nb=[];
     if(y>0&&!cell[c-W].v)nb.push(["n",c-W,"s"]);if(x<W-1&&!cell[c+1].v)nb.push(["e",c+1,"w"]);if(y<H-1&&!cell[c+W].v)nb.push(["s",c+W,"n"]);if(x>0&&!cell[c-1].v)nb.push(["w",c-1,"e"]);
     if(!nb.length){stack.pop();continue}const [d,n,o]=nb[R0(nb.length)];cell[c][d]=0;cell[n][o]=0;cell[n].v=1;stack.push(n)}
-  const S=46,pad=4;let svg=`<svg viewBox="0 0 ${W*S+pad*2} ${H*S+pad*2}" class="mz" id="mz"><g stroke="#1d4e9e" stroke-width="5" stroke-linecap="round">`;
+  const S=46,pad=4;let svg=`<svg viewBox="0 0 ${W*S+pad*2} ${H*S+pad*2}" class="mz" id="mz"><defs><pattern id="mw" width="${S}" height="${S}" patternUnits="userSpaceOnUse" x="${pad}" y="${pad}"><image href="${WS("maze-water")}" width="${S}" height="${S}"/></pattern></defs><rect x="${pad}" y="${pad}" width="${W*S}" height="${H*S}" rx="8" fill="url(#mw)"/><image href="${WS("maze-goal")}" x="${(W-1)*S+pad+S*.08}" y="${(H-1)*S+pad+S*.08}" width="${S*.84}" height="${S*.84}"/><g stroke="#e0794f" stroke-width="6" stroke-linecap="round">`;
   cell.forEach((c,i)=>{const x=(i%W)*S+pad,y=Math.floor(i/W)*S+pad;if(c.n&&i!==0)svg+=`<line x1="${x}" y1="${y}" x2="${x+S}" y2="${y}"/>`;if(c.w)svg+=`<line x1="${x}" y1="${y}" x2="${x}" y2="${y+S}"/>`;if(c.s&&i!==W*H-1)svg+=`<line x1="${x}" y1="${y+S}" x2="${x+S}" y2="${y+S}"/>`;if(c.e)svg+=`<line x1="${x+S}" y1="${y}" x2="${x+S}" y2="${y+S}"/>`});
-  svg+=`</g><polyline id="pth" fill="none" stroke="#ff9f1c" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity=".7" points=""/><text id="fsh" font-size="34" text-anchor="middle" dominant-baseline="central">🐠</text></svg>`;
-  box.innerHTML=`<div class="mzw"><div class="mzs">🐠<br>ابدأ</div>${svg}<div class="mzs">🌊<br>البحر</div></div>`;
+  svg+=`</g><polyline id="pth" fill="none" stroke="#ff9f1c" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity=".7" points=""/><image id="fsh" href="${WS("maze-fish")}" width="${S*.9}" height="${S*.9}"/></svg>`;
+  box.innerHTML=`<div class="mzw"><div class="mzs">${IMG("maze-fish")}<br>ابدأ</div>${svg}<div class="mzs">${IMG("maze-goal")}<br>البحر</div></div>`;
   const el=$("mz"),fsh=$("fsh"),pth=$("pth");let cur=0,path=[0];const ctr=i=>[(i%W)*S+pad+S/2,Math.floor(i/W)*S+pad+S/2];
-  const draw=()=>{const [x,y]=ctr(cur);fsh.setAttribute("x",x);fsh.setAttribute("y",y);pth.setAttribute("points",path.map(i=>ctr(i).join(",")).join(" "))};draw();
+  const draw=()=>{const [x,y]=ctr(cur);fsh.setAttribute("x",x-S*.45);fsh.setAttribute("y",y-S*.45);pth.setAttribute("points",path.map(i=>ctr(i).join(",")).join(" "))};draw();
   const open=(a,b)=>{const c=cell[a];return (b===a-W&&!c.n)||(b===a+1&&!c.e)||(b===a+W&&!c.s)||(b===a-1&&!c.w)};
   const at2=e=>{const r=el.getBoundingClientRect(),sx=(e.clientX-r.left)/r.width*(W*S+pad*2)-pad,sy=(e.clientY-r.top)/r.height*(H*S+pad*2)-pad;const cx=Math.floor(sx/S),cy=Math.floor(sy/S);return cx<0||cy<0||cx>=W||cy>=H?-1:cy*W+cx};
   let down=false;const mv=e=>{if(!down||!left)return;const t=at2(e);if(t<0||t===cur)return;if(path.length>1&&t===path[path.length-2]){path.pop();cur=t;draw();return}
     if(open(cur,t)){cur=t;path.push(t);tone(400+path.length*12,.05);draw();if(cur===W*H-1){yay();at(el);sayAr(BOYK?"أَحْسَنْتَ! وَصَلَتِ السَّمَكَةُ إِلَى البَحْرِ":"أَحْسَنْتِ! وَصَلَتِ السَّمَكَةُ إِلَى البَحْرِ");point()}}};
   el.style.touchAction="none";el.addEventListener("pointerdown",e=>{down=true;el.setPointerCapture(e.pointerId);mv(e)});el.addEventListener("pointermove",mv);el.addEventListener("pointerup",()=>down=false);el.addEventListener("pointercancel",()=>down=false)}
 /* صنّف السمك بالألوان */
-function bowls(box){const C=[["#ff7eb6","الوَرْدِيُّ"],["#ffd23f","الأَصْفَرُ"],["#4f8bff","الأَزْرَقُ"],["#3fc35a","الأَخْضَرُ"],["#a66bff","البَنَفْسَجِيُّ"]];const F=shuf([0,1,2,3,4,0,1,2,3,4]);left=F.length;let sel=null;
-  box.innerHTML=`<div class="bwl">${C.map(([c,n],i)=>`<button class="bw" data-i="${i}" style="--c:${c}"><span class="fl2"></span><small>${n}</small></button>`).join("")}</div><div class="fsh">${F.map((k,j)=>`<button data-k="${k}" style="--c:${C[k][0]}">🐟</button>`).join("")}</div>`;
-  box.querySelectorAll(".fsh button").forEach(b=>b.onclick=()=>{if(b.classList.contains("in"))return;box.querySelectorAll(".fsh button").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");sel=b;sayAr("سَمَكَةْ "+["وَرْدِيَّةْ","صَفْرَاءْ","زَرْقَاءْ","خَضْرَاءْ","بَنَفْسَجِيَّةْ"][+b.dataset.k])});
-  box.querySelectorAll(".bw").forEach(w=>w.onclick=()=>{if(!sel)return;if(w.dataset.i===sel.dataset.k){sel.classList.add("in");sel.classList.remove("sel");const f=document.createElement("i");f.textContent="🐟";f.style.setProperty("--c",C[+w.dataset.i][0]);w.querySelector(".fl2").appendChild(f);sel=null;yay();at(w);point()}else{w.classList.add("shake");buzz();setTimeout(()=>w.classList.remove("shake"),400)}})}
+/* صنّف السمك بالألوان: tap a fish, then the bowl of its colour (approved bowls and fish) */
+function bowls(box){const C=[["pink","الوَرْدِيُّ"],["yellow","الأَصْفَرُ"],["blue","الأَزْرَقُ"],["green","الأَخْضَرُ"],["purple","البَنَفْسَجِيُّ"]];const F=shuf([0,1,2,3,4,0,1,2,3,4]);left=F.length;let sel=null;
+  const short=innerHeight<520,room=Math.max(150,innerHeight-box.getBoundingClientRect().top-(short?14:175)),bz=Math.max(70,Math.min(170,Math.floor((room-20)*.62),Math.floor((box.offsetWidth-60)/5)-10)),fz=Math.max(44,Math.min(90,Math.floor((room-bz-30)),Math.floor((box.offsetWidth-40)/10)-8));
+  box.innerHTML=`<div class="bwl2" style="--b:${bz}px">${C.map(([c,n],i)=>`<button class="bw2" data-i="${i}">${IMG("bowl-"+c,n)}<span class="in2"></span></button>`).join("")}</div><div class="fsh2" style="--f:${fz}px">${F.map(k=>`<button data-k="${k}">${IMG("fish-"+C[k][0])}</button>`).join("")}</div>`;
+  box.querySelectorAll(".fsh2 button").forEach(b=>b.onclick=()=>{if(b.classList.contains("in"))return;box.querySelectorAll(".fsh2 button").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");sel=b;sayAr("سَمَكَةْ "+["وَرْدِيَّةْ","صَفْرَاءْ","زَرْقَاءْ","خَضْرَاءْ","بَنَفْسَجِيَّةْ"][+b.dataset.k])});
+  box.querySelectorAll(".bw2").forEach(w=>w.onclick=()=>{if(!sel)return;if(w.dataset.i===sel.dataset.k){sel.classList.add("in");sel.classList.remove("sel");w.querySelector(".in2").insertAdjacentHTML("beforeend",IMG("fish-"+C[+w.dataset.i][0]));sel=null;yay();at(w);point()}else{w.classList.add("shake");buzz();setTimeout(()=>w.classList.remove("shake"),400)}})}
 
 const SHEETS=[
  {k:"fin",scene:"garden",title:"Finish the Letters",ins:"Look at the picture. Tap the missing letter to complete the word.",pv:"🍎 _pple",c:0,run:finish(false)},
  {k:"finar",scene:"garden",ar:1,title:"أكمل الحرف الناقص",ins:"انظر إلى الصورة واختر الحرف الناقص لتكمل الكلمة",pv:"🐰 _رنب",c:3,run:finish(true)},
  {k:"cnt",scene:"garden",title:"Find and Count",ins:"Find each animal. Tap them to mark them, then write the number in the box.",pv:"🐶🐱🐰",c:1,run:count},
- {k:"abc",scene:"sky",title:"Match Capital & Small",ins:"Tap a capital letter, then tap its small letter to draw a line.",pv:"A ➝ a",c:2,run:capsmall},
- {k:"arp",scene:"desert",ar:1,title:"صل الصورة بحرفها",ins:"اضغط على الصورة ثم على الحرف الذي تبدأ به",pv:"🐪 ➝ ج",c:4,run:arpic},
- {k:"shp",scene:"sky",title:"Shapes Matching",ins:"Look at the shape. Tap the object that has the same shape.",pv:"🔺 🍕",c:5,run:shapes},
- {k:"num",scene:"sky",title:"Match the Number",ins:"Tap a number, then tap the group with that many things.",pv:"3 ➝ 🧁🧁🧁",c:0,run:nummatch},
+ {k:"abc",scene:"sky",title:"Match Capital & Small",ins:"Draw a line with your finger from each capital letter to its small letter.",pv:"A ➝ a",c:2,run:capsmall},
+ {k:"arp",scene:"desert",ar:1,title:"صل الصورة بحرفها",ins:"ارسم خطًا بإصبعك من الصورة إلى الحرف الذي تبدأ به",pv:"🐪 ➝ ج",c:4,run:arpic},
+ {k:"shp",scene:"sky",title:"Shapes Matching",ins:"Draw a line with your finger from each shape to the thing with the same shape.",pv:"🔺 🍕",c:5,run:shapes},
+ {k:"num",scene:"sky",title:"Match the Number",ins:"Draw a line with your finger from each number to the group with that many things.",pv:"3 ➝ 🧁🧁🧁",c:0,run:nummatch},
  {k:"akh",scene:"garden",ar:1,title:"الأخلاق الحميدة والسيئة",ins:"انظر إلى كل صورة: ✅ خلق حميد أم ❌ خلق سيئ؟",pv:"✅ ❌",c:2,run:akhlaq},
  {k:"nium",scene:"garden",ar:1,title:"شجرة نعم الله",ins:"اضغط على كل ورقة وقل: الحمد لله",pv:"🌳💗",c:3,run:nium},
  {k:"sens",scene:"sky",ar:1,title:"الحواس الخمس",ins:"اضغط على الحاسة ثم على الشيء الذي نعرفه بها",pv:"👁️ ➝ 🌈",c:4,run:senses},
@@ -338,7 +433,10 @@ const SHEETS=[
  {k:"foc",scene:"garden",ar:1,title:"نشاط التركيز",ins:"ابحث عن الشكل المطلوب في كل صف واضغط عليه كله",pv:"🍎🍌🍎",c:5,run:focus},
  {k:"maze",scene:"sea",ar:1,title:"ساعد السمكة",ins:"حرّك السمكة بإصبعك لتصل إلى البحر",pv:"🐠 ➝ 🌊",c:2,run:maze},
  {k:"bwl",scene:"sea",ar:1,title:"صنّف السمك بالألوان",ins:"اضغط على السمكة ثم على الحوض الذي بلونها",pv:"🐟 🫙",c:0,run:bowls},
- {k:"math",scene:"night",title:"Math Fun",ins:"Count, add and solve! Tap a box to write your answer.",pv:"2 + 1 = ?",c:1,run:math}];
+ {k:"math",scene:"night",title:"Math Fun",ins:"Count, add and solve! Tap a box to write your answer.",pv:"2 + 1 = ?",c:1,run:math},
+ {k:"cntar",scene:"garden",ar:1,title:"عُدّ الحيوانات",ins:"اضغط على كل حيوان لتعلّمه، ثم اكتب العدد في المربع",pv:"🐱🐤🐰",c:1,run:count},
+ {k:"numar",scene:"sky",ar:1,title:"صِل العدد بالمجموعة",ins:"ارسم خطًا بإصبعك من كل عدد إلى المجموعة التي فيها هذا العدد",pv:"٣ ➝ 🧁🧁🧁",c:0,run:nummatch},
+ {k:"mathar",scene:"night",ar:1,title:"رياضيات ممتعة",ins:"عُدّ واجمع وحُلّ! اضغط على المربع لتكتب الجواب",pv:"٢ + ١ = ؟",c:1,run:math}];
 let cur=null;
 function open(k){cur=k;const d=SHEETS.find(s=>s.k===k);sheet(d,d.run)}
 function hub(){cur=null;document.documentElement.dir="ltr";$("ttl").textContent="📒 Activity Book";window.scrollTo(0,0);
@@ -352,8 +450,8 @@ function hub(){cur=null;document.documentElement.dir="ltr";$("ttl").textContent=
    never below 60% so targets stay big; drawing/tapping keep working because zoom changes the real layout */
 (function(){const MIN=.6;let busy=false;
   function fit(){const p=document.querySelector(".paper");if(!p||busy)return;busy=true;p.style.zoom="";p.style.width="";p.style.marginInline="";
-    const r=p.getBoundingClientRect(),m=document.querySelector("main"),st=(m&&m.scrollTop)||0,top=r.top+st,after=90,w0=p.offsetWidth,h0=p.offsetHeight;
-    const z=Math.max(MIN,Math.min(1,(innerHeight-Math.max(top,60)-after)/h0));
+    const r=p.getBoundingClientRect(),m=document.querySelector("main"),st=(m&&m.scrollTop)||0,top=r.top+st,after=(innerHeight<520&&innerWidth>innerHeight)?8:90,w0=p.offsetWidth,h0=p.offsetHeight;
+    const z=Math.max(MIN,Math.min(1,(innerHeight-Math.max(top,60)-after-6)/h0));
     /* keep its normal width while zoomed, so it shrinks as a whole instead of reflowing wider */
     if(z<.995){p.style.width=w0+"px";p.style.zoom=z.toFixed(3);p.style.marginInline="auto"}busy=false}
   let t;const later=()=>{clearTimeout(t);t=setTimeout(fit,120)};
