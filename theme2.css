@@ -110,7 +110,7 @@ button.wrong{box-shadow:0 0 0 6px #ff9f43!important}
 /* ===== opened from the new world: the new falcon, no bottom bar ===== */
 html.v2 .n2bar{display:none!important}
 html.v2 main{padding-bottom:calc(40px + env(safe-area-inset-bottom))!important}
-html.v2 .mascotWrap::after{background-image:url(img/v2/f_thumb.webp)}
+html.v2 .mascotWrap::after{background-image:url(img/approved/mascot-falcon.webp)}
 html.v2 body::before{background-image:url(img/v2/bg_calm.webp);background-position:center bottom}
 
 /* ===================== Najma world look for every lesson page (html.v2) ===================== */
@@ -135,7 +135,7 @@ html.v2 .btn:not(.ghost):not(.pink),html.v2 .fb,html.v2 button.go,html.v2 .pb.go
   box-shadow:0 7px 0 rgba(90,50,10,.35),inset 0 4px 0 rgba(255,255,255,.25)!important;text-shadow:0 2px 0 #6a3b12}
 html.v2 .btn.ghost{background:#fffaf0!important;border:4px solid #d99a52!important;color:#7d4a1c!important}
 /* one falcon, the new one, never on top of the work */
-html.v2 .mascotWrap::after{background-image:url(img/v2/f_wave.webp)!important}
+html.v2 .mascotWrap::after{background-image:url(img/approved/mascot-falcon.webp)!important}
 html.v2 .gd{width:clamp(70px,12vw,110px)!important;bottom:calc(10px + env(safe-area-inset-bottom))!important;inset-inline-end:6px!important;background:none!important}
 html.v2 .gd img{background:none!important;mix-blend-mode:normal}
 @media (max-width:760px){html.v2 .gd{display:none!important}}
@@ -203,3 +203,100 @@ html.v2 .lv button .big{font-size:52px!important;font-weight:800}
 html.v2 #all .tile,html.v2 .tile:has(.im){border:4px solid #fff!important;padding-bottom:10px!important}
 html.v2 .tile .im{background:none!important;font-size:58px!important;aspect-ratio:auto!important;padding:16px 0 6px}
 html.v2 .tile .nm{background:none!important;color:#fff!important;font-size:22px!important;margin:0!important;text-shadow:0 2px 0 rgba(0,0,0,.2)}
+
+/* =====================================================================
+   Najma calm look (Nov 2026): warm sand, cream, teal and blue, navy text.
+   Lesson screens stay quiet and spacious; this layer only restyles,
+   it never changes what a page teaches or saves.
+   ===================================================================== */
+:root{--nj-sand:#f3d6a4;--nj-cream:#fffaf0;--nj-cream2:#fbeccb;--nj-edge:#e6c993;--nj-navy:#1d2a5c;--nj-teal:#2a9d8f;--nj-teal2:#1f7f74;--nj-blue:#2f86d6;--nj-blue2:#1f66ad;--nj-gold:#e9b43c;--nj-gold2:#c08a1e}
+.btn.pink{background:linear-gradient(160deg,#e3f6f3,#8fd3c9)!important}
+/* a quiet backdrop: the calm sand scene, softened so the lesson stands out */
+html.v2{background:var(--nj-sand)!important}
+html.v2 body::before{background:var(--nj-sand) url(img/v2/bg_calm.webp) center bottom/cover no-repeat!important;filter:saturate(.85)!important}
+html.v2 body::after{background:linear-gradient(rgba(255,250,240,.35),rgba(255,250,240,.15) 45%,rgba(243,214,164,.35))!important}
+html.v2 body{color:var(--nj-navy)!important}
+html.v2 main::before{background:linear-gradient(rgba(250,234,206,.96) 62%,rgba(250,234,206,0))!important}
+/* title: a cream sign with a teal ring and navy letters */
+html.v2 main h1{background:linear-gradient(#fffdf6,var(--nj-cream2))!important;color:var(--nj-navy)!important;-webkit-text-fill-color:var(--nj-navy)!important;text-shadow:none!important;
+  border:4px solid var(--nj-teal)!important;box-shadow:0 0 0 5px var(--nj-cream),0 0 0 7px var(--nj-edge),0 10px 18px rgba(120,80,20,.22)!important}
+/* back: a round cream button with a navy arrow */
+html.v2 .n2back{background:linear-gradient(#fffdf6,var(--nj-cream2))!important;border:3px solid #fff!important;box-shadow:0 5px 0 var(--nj-edge),0 8px 14px rgba(120,80,20,.2)!important}
+html.v2 .n2back::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231d2a5c' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E")!important}
+html.v2 .lang{border:3px solid #fff!important;box-shadow:0 5px 0 var(--nj-edge)!important;color:var(--nj-navy)!important}
+/* cards and speech: cream, soft edge */
+html.v2 section,html.v2 .panel,html.v2 .box{background:rgba(255,250,240,.94)!important;border:3px solid #fff!important;box-shadow:0 8px 0 var(--nj-edge),0 14px 24px rgba(120,80,20,.14)!important}
+html.v2 .sub,html.v2 .say,html.v2 .bubble{background:var(--nj-cream)!important;border:3px solid #fff!important;box-shadow:0 5px 0 var(--nj-edge)!important;color:var(--nj-navy)!important}
+html.v2 main>p,html.v2 .hint,html.v2 .count,html.v2 .nx-count,html.v2 .grp{color:var(--nj-navy)!important}
+/* the main action: teal; every other button: cream with navy words */
+html.v2 .btn:not(.ghost):not(.pink),html.v2 .fb,html.v2 button.go,html.v2 .pb.go,html.v2 .modal .btn,html.v2 .modal .bar button,html.v2 .nx-gate button.go{
+  background:linear-gradient(#3fb5a6,var(--nj-teal2))!important;color:#fff!important;border:3px solid #fff!important;text-shadow:0 2px 0 rgba(15,80,72,.45)!important;
+  box-shadow:0 6px 0 #17665d,0 10px 16px rgba(20,90,80,.22)!important}
+html.v2 .btn.pink,html.v2 .btn.ghost,html.v2 .btn.y,html.v2 .btn.t,html.v2 .btn.b,html.v2 button.big,html.v2 .nx-reset,html.v2 button.go:not(.btn),html.v2 .modal .btn.ghost,html.v2 .bi-text{
+  background:linear-gradient(#fffdf6,var(--nj-cream2))!important;color:var(--nj-navy)!important;border:3px solid #fff!important;text-shadow:none!important;box-shadow:0 6px 0 var(--nj-edge),0 9px 14px rgba(120,80,20,.14)!important}
+html.v2 .btn.pink *,html.v2 .btn.ghost *,html.v2 button.big *{color:var(--nj-navy)!important}
+/* tabs and chips: cream, the chosen one teal */
+html.v2 .tabs button,html.v2 #tabs button,html.v2 #lv button,html.v2 .toggle button{background:linear-gradient(#fffdf6,var(--nj-cream2))!important;color:var(--nj-navy)!important;border:3px solid #fff!important;box-shadow:0 5px 0 var(--nj-edge)!important}
+html.v2 main button.on,html.v2 .lvb.on,html.v2 .tabs button.on,html.v2 #tabs button.on,html.v2 #lv button.on,html.v2 .toggle button.on{background:linear-gradient(#3fb5a6,var(--nj-teal2))!important;color:#fff!important;border-color:#fff!important;text-shadow:0 2px 0 rgba(15,80,72,.45)!important;box-shadow:0 5px 0 #17665d!important}
+/* progress: cream strip, teal fill */
+html.v2 div:has(>.nx-prog){background:var(--nj-cream)!important;border:3px solid #fff!important;box-shadow:0 6px 0 var(--nj-edge)!important}
+html.v2 .nx-prog,html.v2 .progress,html.v2 .track{background:#efe2c6!important}
+html.v2 .nx-fill,html.v2 .progress .fill{background:linear-gradient(#4cc2b2,var(--nj-teal2))!important}
+/* pop-ups */
+html.v2 .modal{background:rgba(29,42,92,.38)!important}
+html.v2 .modal .card,html.v2 .pm .pc,html.v2 .nx-gate div{background:var(--nj-cream)!important;border:5px solid #fff!important;box-shadow:0 10px 0 var(--nj-edge),0 22px 40px rgba(29,42,92,.25)!important;color:var(--nj-navy)!important}
+html.v2 .modal .x{background:linear-gradient(#fffdf6,var(--nj-cream2))!important;color:var(--nj-navy)!important;border:3px solid #fff!important;box-shadow:0 5px 0 var(--nj-edge)!important}
+/* answer tiles: calm cream cards with navy letters; a thin coloured base tells them apart */
+html.v2 main .tile,html.v2 main button.t,html.v2 .cols>.col{background:linear-gradient(#fffdf6,var(--nj-cream2))!important;border:3px solid #fff!important;color:var(--nj-navy)!important}
+html.v2 main .tile:nth-child(3n+1),html.v2 main button.t:nth-child(3n+1),html.v2 .cols>.col:nth-child(3n+1){box-shadow:0 7px 0 var(--nj-teal),0 12px 18px rgba(120,80,20,.14)!important}
+html.v2 main .tile:nth-child(3n+2),html.v2 main button.t:nth-child(3n+2),html.v2 .cols>.col:nth-child(3n+2){box-shadow:0 7px 0 var(--nj-blue),0 12px 18px rgba(120,80,20,.14)!important}
+html.v2 main .tile:nth-child(3n+3),html.v2 main button.t:nth-child(3n+3),html.v2 .cols>.col:nth-child(3n+3){box-shadow:0 7px 0 var(--nj-gold),0 12px 18px rgba(120,80,20,.14)!important}
+html.v2 main .tile *,html.v2 main button.t,html.v2 main button.t *,html.v2 .tile .nm{color:var(--nj-navy)!important;text-shadow:none!important}
+/* a missed answer: soft sand ring, never red or pink */
+html.v2 button.wrong{box-shadow:0 0 0 6px #f0b15a!important}
+/* learning path stops (letters, numbers…): cream cards with navy letters, a coloured base */
+html.v2 .np-stop:not(.lock){background:linear-gradient(#fffdf6,#fbeccb)!important;color:var(--nj-navy)!important;border:3px solid #fff!important;text-shadow:none!important}
+html.v2 .np-stop *{color:var(--nj-navy)!important;text-shadow:none!important}
+html.v2 .np-stop:nth-of-type(3n+1){box-shadow:0 8px 0 var(--nj-teal),0 14px 20px rgba(120,80,20,.16)!important}
+html.v2 .np-stop:nth-of-type(3n+2){box-shadow:0 8px 0 var(--nj-blue),0 14px 20px rgba(120,80,20,.16)!important}
+html.v2 .np-stop:nth-of-type(3n+3){box-shadow:0 8px 0 var(--nj-gold),0 14px 20px rgba(120,80,20,.16)!important}
+html.v2 .np-stop.cur{box-shadow:0 0 0 6px var(--nj-teal),0 0 0 12px rgba(63,181,166,.25),0 10px 18px rgba(120,80,20,.2)!important}
+html.v2 .np-stop.lock{background:#ece3d2!important;opacity:.75}
+html.v2 .np-stop .tag{background:var(--nj-teal2)!important;color:#fff!important}
+html.v2 .np-stop .tag *{color:#fff!important}
+/* tiles: win over the older six-colour rules (same weight + later) */
+html.v2 main .tile:nth-child(n),html.v2 main button.t:nth-child(n),html.v2 .cols>.col:nth-child(n){background:linear-gradient(#fffdf6,#fbeccb)!important;border:3px solid #fff!important;color:var(--nj-navy)!important}
+html.v2 main .tile.done:nth-child(n){background:linear-gradient(#eaf7f4,#cdeee8)!important}
+/* the start button on a learning path: teal, white words */
+html.v2 .np-go{background:linear-gradient(#3fb5a6,var(--nj-teal2))!important;color:#fff!important;border:3px solid #fff!important;box-shadow:0 6px 0 #17665d,0 10px 16px rgba(20,90,80,.22)!important;text-shadow:0 2px 0 rgba(15,80,72,.45)!important}
+html.v2 .np-go *{color:#fff!important}
+
+/* ===== approved look (Nov 2026): each lesson sits in its place's 3D room, softened so the task leads ===== */
+html.v2 body::before{background:#f3d6a4 url(img/v2/room_fort.webp) center bottom/cover no-repeat!important;filter:saturate(1.05) blur(1.5px)!important;transform:scale(1.02)}
+html.v2[data-place=en] body::before{background-image:url(img/v2/room_library.webp)!important}
+html.v2[data-place=deen] body::before{background-image:url(img/v2/room_mosque.webp)!important}
+html.v2[data-place=math] body::before{background-image:url(img/v2/room_souq.webp)!important}
+html.v2 body::after{display:block!important;content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse 70% 75% at 55% 58%,rgba(255,250,240,.62),rgba(255,250,240,.28) 65%,rgba(255,250,240,.05))!important}
+html.v2 main::before{background:none!important}
+/* the title sign is opaque so content scrolling under it never shows through */
+html.v2 main h1{background:linear-gradient(#fffdf6,#fbeccb)!important}
+/* group labels sitting on a scene get a cream pill */
+html.v2 .grp{display:inline-flex!important;align-items:center;gap:6px;background:linear-gradient(#fffdf6,#fbeccb)!important;border:3px solid #fff;border-radius:999px;padding:2px 14px!important;box-shadow:0 4px 0 var(--nj-edge)}
+
+/* ===== approved lesson look (production artwork pack): the subject's scene plate behind every lesson, softened slightly so the task leads; title plaque like the approved screens ===== */
+html.v2 body::before,html.v2[data-place] body::before{background:#f3d6a4 var(--scene,url(img/approved/background-lesson.webp)) center/cover no-repeat!important;filter:saturate(1.05) blur(1px)!important;transform:scale(1.02)}
+html.nfOn body::before{background-position:center!important}
+html.v2 body::after{display:block!important;content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 70% 72% at 56% 58%,rgba(255,250,240,.5),rgba(255,250,240,.18) 65%,rgba(255,250,240,0))!important}
+html.v2 main h1{background:linear-gradient(#fff9e9,#ffedc7)!important;color:#13275a!important;-webkit-text-fill-color:#13275a!important;border:4px solid #dca84f!important;outline:3px solid #07988f;outline-offset:3px;border-radius:24px!important;box-shadow:0 5px 0 #aa743b!important;text-shadow:none!important}
+#nfFal{filter:drop-shadow(0 10px 8px rgba(90,45,5,.25))!important}
+/* lesson title plaques stay still (an old "wave" animation shifted them sideways) */
+html.v2 main h1,html.v2 main h1 span{animation:none!important}
+/* calmer learning-path map (user 2026-11-16): no pictures beside the road, the current stop stays still (its glow ring still marks it) */
+.np-deco{display:none!important}
+.np-stop.cur{animation:none!important}
+/* learning-path stops: one consistent cream card style, soft gold edge; current stop: teal ring (user 2026-11-16) */
+html.v2 .np-stop:not(.cur){box-shadow:0 6px 0 #d8b06a,0 12px 18px rgba(110,62,15,.18)!important}
+html.v2 .np-stop{border:4px solid #fffdf6!important}
+html.v2 .np-stop small{font-weight:800!important;opacity:.85}
+html.v2 .np-stop .bd{box-shadow:0 3px 0 rgba(0,0,0,.15)}

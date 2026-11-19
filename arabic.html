@@ -71,7 +71,23 @@ section{background:rgba(255,255,255,.93);border-radius:30px;padding:16px 14px 20
 .say{border:0;background:#eef4ff;border-radius:50%;width:46px;height:46px;font-size:22px;cursor:pointer;box-shadow:0 4px 0 #c8d6ff}
 .say:active{transform:translateY(3px);box-shadow:0 1px 0 #c8d6ff}
 .lbl{font-size:16px;color:#7a7090;margin:12px 0 6px}
-.harakat{display:flex;gap:10px;justify-content:center}
+.harakat{display:flex;gap:12px;justify-content:center}
+.harakat .hcol{display:flex;flex-direction:column;gap:8px}
+.harakat button.long{height:70px;font-size:36px;filter:saturate(.85) brightness(1.08);box-shadow:inset 0 0 0 3px rgba(255,255,255,.55),0 5px 0 rgba(0,0,0,.18)}
+/* landscape: the letter card is wide, two columns (letter + word | sounds + forms) */
+@media (orientation:landscape){
+  #letterModal{z-index:40}
+  #letterModal .name{margin:2px 0 12px}
+  #letterModal .name .say{width:48px!important;height:48px!important;min-height:0!important;padding:0!important;font-size:22px!important;flex:none}
+  #letterModal .bar{margin:6px 0 4px!important}
+  #letterModal .say img{width:100%!important;height:100%!important;max-width:none!important;margin:0!important;object-fit:contain;display:block}
+  #letterModal .card{max-width:min(940px,94vw);display:flex;gap:22px;align-items:stretch;text-align:center;padding:18px 22px}
+  #letterModal .lcA,#letterModal .lcB{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
+  #letterModal .big{font-size:min(110px,16vh);margin:30px 0 4px}
+  #letterModal .word .emo{font-size:min(90px,13vh)}#letterModal .word .w{font-size:min(44px,7vh)}
+  #letterModal .harakat button{width:min(96px,13vh);height:min(84px,12vh);font-size:min(44px,6.5vh)}
+  #letterModal .harakat button.long{height:min(72px,10vh);font-size:min(38px,5.5vh)}
+}
 .harakat button{font-family:inherit;font-size:44px;font-weight:700;border:0;border-radius:20px;width:84px;height:84px;cursor:pointer;color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.18)}
 .harakat button:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
 .forms{display:flex;gap:8px;justify-content:center}
@@ -112,6 +128,16 @@ h2 small{font-size:16px;font-weight:500;color:#7a7090}
 canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:30}
 footer{text-align:center;color:#fff;opacity:.95;font-size:15px;margin-top:26px}
 footer a,#reset{color:#fff;background:none;border:0;font:inherit;text-decoration:underline;cursor:pointer}
+/* landscape: all 28 letters (4 rows of 7) fit below the fixed title, and scrolling stops with the whole section in view */
+@media (orientation:landscape){
+  main{scroll-snap-type:y proximity}
+  main section{--top:104px;scroll-snap-align:start;scroll-margin-top:var(--top)}
+  #grid{--t:min(104px,calc((100dvh - var(--top) - 128px)/4 - 9px));grid-template-columns:repeat(7,var(--t));justify-content:center;gap:12px}
+  #grid .tile{border-radius:calc(var(--t)*.26)}
+  #grid .tile b{font-size:calc(var(--t)*.56);margin-top:0}
+  #grid .tile small{font-size:max(11px,calc(var(--t)*.15))}
+}
+@media (orientation:landscape) and (max-height:540px){main section{--top:60px}main section h2{font-size:20px;margin-bottom:6px}#grid{gap:8px}}
 </style>
 </head>
 <body>
@@ -144,22 +170,25 @@ footer a,#reset{color:#fff;background:none;border:0;font:inherit;text-decoration
   <section><h2>الحروف</h2><div class="grid" id="grid"></div></section>
   <section><h2>الكلمات البصرية <small>المجموعة الأولى</small></h2><div class="grid words" id="wgrid"></div><div style="text-align:center;margin-top:16px"><button class="btn ghost" id="mixW">🔀 اخلط الكلمات</button></div></section>
 
-    <footer><a href="index.html">English sounds 🔤</a> · <button id="reset">ابدأ من جديد</button></footer>
+    <footer><button id="reset">ابدأ من جديد</button></footer>
 </main>
 
 <div class="modal" id="letterModal">
   <div class="card">
     <button class="x" data-close>✕</button>
+    <div class="lcA">
     <div class="big" id="lBig"></div>
     <div class="name"><span id="lName"></span><button class="say" id="lSay">🔊</button></div>
     <div class="bar" style="margin:4px 0"><button class="btn" id="lWrite" style="background:#22c7b8;box-shadow:0 6px 0 #149488;color:#fff">✏️ اكتب الحرف</button></div>
-    <div class="lbl">اضغط واسمع الحركات</div>
+    <div class="lbl">كلمة تبدأ بالحرف</div>
+    <div class="word" id="lWord"></div>
+    </div><div class="lcB">
+    <div class="lbl">اضغط واسمع: قصير وطويل</div>
     <div class="harakat" id="lHar"></div>
     <div class="lbl">أشكال الحرف</div>
     <div class="forms" id="lForms"></div>
-    <div class="lbl">كلمة تبدأ بالحرف</div>
-    <div class="word" id="lWord"></div>
 <div class="practice" data-p></div>
+    </div>
   </div>
 </div>
 
@@ -245,6 +274,21 @@ const HAVE={has:k=>!!(window.AUDIO&&window.AUDIO[k])};const pad=n=>String(n).pad
 function fileFor(key){
   if(key.startsWith("w:")){const i=W.findIndex(x=>"w:"+x[0]===key);return i>=0&&HAVE.has("w"+pad(i))?window.AUDIO["w"+pad(i)]:null}
   const [ch,s]=key.split("|"),i=L.findIndex(x=>x[0]===ch),f="l"+pad(i)+"-"+s;return HAVE.has(f)?window.AUDIO[f]:null}
+/* long sounds (با بو بي): the parent's recording first, then the approved child voice (voice/long, girls Fatima / boys Hamdan), then the device voice */
+let LV={},LM={};fetch("voice/long/index.json").then(r=>r.ok?r.json():{}).then(j=>LV=j||{}).catch(()=>{});
+/* recordings made on the long-sounds review page, locked with the family code */
+fetch("voice/long/mine.json").then(r=>r.ok?r.json():{}).then(j=>LM=j||{}).catch(()=>{});
+/* her كلماتي recordings include the long sounds of 10 letters (keys gNN-a/i/u, same letter order as here) */
+window.SPL={};try{NAJMA.loadAudio("spell","SPL")}catch(e){}
+let LVS={};try{NAJMA.voiceSet("long").then(v=>LVS=v||{})}catch(e){}
+async function playLong(key,text,rate){if(muted)return;if(fileFor(key))return play(key,text,rate);
+  const say=u=>{if(hasTTS)speechSynthesis.cancel();if(curAudio)curAudio.pause();curAudio=new Audio(u);curAudio.play()};
+  /* portal choice (🎙️ كل الجمل العربية): Fatima/Hamdan chosen → that voice; her portal recording → it */
+  {let v=null;try{v=NAJMA.voiceURL("long",text,LV,LVS)}catch(e){}if(v&&(v.pick==="f"||v.pick==="m")&&v.clip)return say(v.clip);if(v&&v.mine)return say(v.mine)}
+  if(LM[text]){try{say(await NAJMA.decrypt(LM[text]));return}catch(e){}}
+  {const [ch,lk]=key.split("|"),gi=L.findIndex(x=>x[0]===ch),gk="g"+pad(gi)+"-"+({a:"a",o:"u",i:"i"}[lk]);if(window.SPL&&SPL[gk]){try{say(SPL[gk]);return}catch(e){}}}
+  const c=LV[text],g=(window.NAJMA&&NAJMA.me&&NAJMA.me.gender)==="m"?"m":"f",f=c&&(c[g]||c.f);
+  if(!f)return play(key,text,rate);try{if(hasTTS)speechSynthesis.cancel();if(curAudio)curAudio.pause();curAudio=new Audio("voice/long/"+f);curAudio.play()}catch(e){}}
 function play(key,text,rate){
   if(muted)return;
   const src=fileFor(key);
@@ -332,8 +376,12 @@ function openLetter(i,el){
   document.getElementById("lName").textContent=name;
   document.getElementById("lSay").onclick=()=>play(ch+"|n",vName);
   const har=document.getElementById("lHar");har.innerHTML="";
-  [["َ","فتحة"],["ِ","كسرة"],["ُ","ضمة"]].forEach(([m,t],k)=>{const b=document.createElement("button");b.textContent=h+m;b.title=t;
-    b.style.background=COLORS[(i+k+1)%6];b.onclick=()=>{play(ch+"|"+k,h+m,.6)};har.appendChild(b)});
+  /* short sound above its long sound: بَ با / بُ بو / بِ بي (user 2026-11-16) */
+  const LONG=ch==="ا"?["آ","أُو","إِي"]:[h+"َا",h+"ُو",h+"ِي"];
+  [["َ","فتحة",0,"a"],["ُ","ضمة",2,"o"],["ِ","كسرة",1,"i"]].forEach(([m,t,k,lk],n)=>{const col=document.createElement("div");col.className="hcol";
+    const b=document.createElement("button");b.textContent=h+m;b.title=t;b.style.background=COLORS[(i+n+1)%6];b.onclick=()=>{play(ch+"|"+k,h+m,.6)};
+    const l=document.createElement("button");l.className="long";l.textContent=LONG[n];l.title="مد";l.style.background=COLORS[(i+n+1)%6];l.onclick=()=>{playLong(ch+"|"+lk,LONG[n],.6)};
+    col.append(b,l);har.appendChild(col)});
   const j=!NOJOIN.includes(ch);
   document.getElementById("lForms").innerHTML=[["أول",j?ch+"ـ":ch],["وسط","ـ"+ch+(j?"ـ":"")],["آخر","ـ"+ch]]
     .map(([t,f])=>`<div><b>${f}</b><span>${t}</span></div>`).join("");

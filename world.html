@@ -275,6 +275,140 @@ svg.road{position:absolute;inset:0;width:100%;height:100%}
 .glesson span{background:none!important;border:0!important;box-shadow:none!important}
 .glesson span img{width:100%!important;height:100%!important;filter:drop-shadow(0 1cqh 1cqh rgba(120,70,15,.25))}
 #gcard{background:#fffaf0!important;border-color:#f1d9ae!important}
+
+/* ===== calm look (Nov 2026): cream pills, navy words, teal rings; the village keeps its art ===== */
+:root{--nj-cream:#fffaf0;--nj-cream2:#fbeccb;--nj-edge:#e6c993;--nj-navy:#1d2a5c;--nj-teal:#2a9d8f;--nj-teal2:#1f7f74}
+.pill{background:linear-gradient(#fffdf6,var(--nj-cream2))!important;border:.45cqh solid #fff!important;color:var(--nj-navy)!important;text-shadow:none!important;box-shadow:0 .8cqh 0 var(--nj-edge),0 1.4cqh 2.4cqh rgba(120,80,20,.18)!important}
+.pill svg path,.pill svg{stroke:var(--nj-navy)}
+/* place names: cream pills under each building, like the reference */
+.nm{background:linear-gradient(#fffdf6,var(--nj-cream2))!important;color:var(--nj-navy)!important;-webkit-text-stroke:0!important;text-shadow:none!important;
+  padding:.4cqh 3cqh .8cqh!important;border-radius:999px!important;border:.4cqh solid #fff;box-shadow:0 .7cqh 0 var(--nj-edge),0 1.2cqh 2cqh rgba(120,80,20,.18)!important;font-size:3.6cqh!important}
+#road .gstop .nm{font-size:3.4cqh!important}
+/* the question over the village */
+#wq{left:50%;top:15cqh;transform:translateX(-50%);margin:0;white-space:nowrap;font-weight:800;font-size:6cqh;line-height:1.2;color:var(--nj-navy);text-shadow:0 .4cqh 0 rgba(255,255,255,.75);pointer-events:none;z-index:5}
+/* titles inside a place: a cream sign with a teal ring */
+#road #roadtitle{visibility:visible}
+.title,.wood{background:linear-gradient(#fffdf6,var(--nj-cream2))!important;color:var(--nj-navy)!important;text-shadow:none!important;border:.55cqh solid var(--nj-teal)!important;
+  box-shadow:0 0 0 .7cqh var(--nj-cream),0 0 0 1cqh var(--nj-edge),0 1.6cqh 2.6cqh rgba(120,80,20,.2)!important}
+.title{line-height:9.4cqh}
+.btn{background:linear-gradient(#3fb5a6,var(--nj-teal2))!important;border-color:#fff!important;box-shadow:0 1.1cqh 0 #17665d!important}
+.btn.ghost{background:linear-gradient(#fffdf6,var(--nj-cream2))!important;color:var(--nj-navy)!important;box-shadow:0 1cqh 0 var(--nj-edge)!important}
+/* top bar like the approved village: stars, sticker album, homework, then family stars and all games */
+#wbar{left:2.5cqh;top:2.5cqh;direction:ltr;display:flex;align-items:center;gap:1.8cqh;z-index:6}
+#wbar>*{direction:rtl}
+#wbar .pill{height:10cqh;padding:0 2.6cqh;font-size:4cqh;gap:1cqh}#wbar .pill img{width:6cqh;height:6cqh}
+#wbar2{right:2.5cqh;top:15cqh;display:flex;gap:1.6cqh;z-index:6}#wbar2>*{position:relative!important;left:auto!important;top:auto!important}#wbar2 .pill.ic{width:10cqh;height:10cqh}#wbar2 .pill img{width:6.4cqh;height:6.4cqh}#wbar2 svg{width:5.6cqh;height:5.6cqh}
+#wkid{max-width:46cqh}#wkid span[dir]{overflow:hidden;text-overflow:ellipsis}
+#wbar #whw{display:flex!important;flex-direction:row!important;height:11cqh;width:auto!important;animation:none!important}
+#wbar>*{position:relative!important;left:auto!important;top:auto!important;bottom:auto!important;width:auto;animation:none;margin:0}
+#wbar .pill.ic{width:11cqh}
+#wbar #whw img{width:7cqh;height:7cqh;margin:0}
+#wbar #whw #hwn{position:absolute;top:-1.4cqh;inset-inline-end:-1cqh}
+#wkid{top:2.5cqh}
+#wq{top:14.5cqh;font-size:6.4cqh}
+/* narrow or square screens (preview panes, split view): the top bar keeps icons only so nothing overlaps */
+@container (max-aspect-ratio: 13/10){
+  #wbar #wstk2,#wbar #whw{font-size:0;width:10cqh;padding:0;justify-content:center}
+  #wkid{max-width:34cqh}
+  #wq{top:14cqh;font-size:5cqh}
+}
+@container (max-aspect-ratio: 23/20){
+  #wkid span[dir]{display:none}#wkid{padding:0 1cqh}
+  #wq{font-size:4.4cqh}
+}
+/* the falcon stands beside the sign with the children */
+/* ===== the approved village (01-approved-village.png), built from the separate production-assets files ===== */
+#app{--u:min(1cqh,calc(100cqw / 177.7))}
+#map .bg{object-position:center 40%}
+/* the background is pinned to the same 16:9 stage as the artwork, so sea, dunes and buildings line up exactly as in the mockup; extra screen area shows a soft blurred copy */
+/* beyond the 16:9 scene the background continues from its own edge pixels: the top sky row stretched upward, the left sea/sand and right sand columns stretched sideways, each mirrored so the seam is invisible */
+#map .fill{position:absolute;z-index:0;background:url(img/approved/background-village-v2.webp) no-repeat;pointer-events:none}
+#map #fillT{left:50%;width:calc(var(--u)*177.7);top:0;height:calc(100% - var(--u)*100 + 1px);transform:translateX(-50%) scaleY(-1);background-size:100% 20000%;background-position:center top}
+#map #fillB{display:none}
+#map #fillL{top:calc(100% - var(--u)*100);height:calc(var(--u)*100);left:0;right:calc(50% + var(--u)*88.85 - 1px);transform:scaleX(-1);background-size:20000% 100%;background-position:left center}
+#map #fillR{top:calc(100% - var(--u)*100);height:calc(var(--u)*100);right:0;left:calc(50% + var(--u)*88.85 - 1px);transform:scaleX(-1);background-size:20000% 100%;background-position:right center}
+/* buildings stay still; only the dhow rocks gently on the water. A tap still gives a short bounce */
+#stage .bld.mk{animation:none}
+#stage .bld.mk.hit{animation:bhit .6s var(--bounce)}
+#stage .bld.mk img[src$="dhow.webp"]{transform-origin:50% 90%;animation:rock 3.2s ease-in-out infinite alternate}
+@keyframes rock{from{transform:rotate(-1.2deg) translateY(0)}to{transform:rotate(1.2deg) translateY(-.4cqh)}}
+#map #stagebg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center bottom;transform:none;z-index:0}
+#map #wf,#wbar2{display:none!important}
+/* sticker book and family board in the approved look */
+#spage{border:.6cqh solid #fff9e9!important;outline:.5cqh solid #dca84f;box-shadow:0 1.2cqh 0 #aa743b,0 2.4cqh 4cqh rgba(90,50,10,.3)!important}
+#stray,#ssay,#bcard,#kidsBox,#gcard{background:linear-gradient(#fffaf0,#fbe6c0)!important;border:.45cqh solid #fffdf5!important;box-shadow:0 1cqh 0 #e0bf86,0 2cqh 3cqh rgba(110,70,15,.28)!important;color:#13275a}
+#ghead,#bhead{background:linear-gradient(#fff9e9,#ffedc7)!important;color:#13275a!important;border:.45cqh solid #dca84f!important;outline:.35cqh solid #07988f;outline-offset:.35cqh;border-radius:3cqh!important;box-shadow:0 .6cqh 0 #aa743b!important;text-shadow:none!important}
+#sfal img{object-fit:contain}
+/* ===== place screens, homework, all games: approved scene plates, the pack falcon, cream cards with 3D objects (02/03-approved screens) ===== */
+#road .bg,#all .bg,#stk .bg{object-fit:cover;object-position:center;filter:none!important}
+#road .apfal{position:absolute;left:1.5cqh;bottom:1cqh;width:calc(var(--u)*40);z-index:4;transform-origin:50% 100%}
+#road .apfal img{width:100%;display:block;filter:drop-shadow(0 1.2cqh 1cqh rgba(90,45,5,.25))}
+.apfal.hop{animation:hhop .55s var(--bounce)}
+#road #cards{position:absolute;left:calc(var(--u)*40);right:3cqh;top:18cqh;bottom:5cqh;display:grid;grid-template-columns:repeat(var(--n),minmax(0,calc(var(--u)*30)));gap:3cqh 3cqh;justify-content:center;align-content:center;z-index:3}
+.gcard{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;aspect-ratio:1/1.05;padding:2.2cqh 1.6cqh 2.4cqh;border-radius:4cqh;
+  background:linear-gradient(#fffaf0,#fbe6c0);border:.45cqh solid #fffdf5;box-shadow:0 1cqh 0 #e0bf86,0 2cqh 3cqh rgba(110,70,15,.28),inset 0 .4cqh 0 #fff;color:#13275a;animation:popup2 .45s var(--bounce) backwards}
+#cards .gcard:nth-child(3){animation-delay:.05s}#cards .gcard:nth-child(4){animation-delay:.1s}#cards .gcard:nth-child(5){animation-delay:.15s}#cards .gcard:nth-child(6){animation-delay:.2s}#cards .gcard:nth-child(7){animation-delay:.25s}
+.gcard .ic{flex:1;width:100%;min-height:0;display:flex;align-items:center;justify-content:center}
+.gcard .ic img{max-width:92%;max-height:100%;object-fit:contain;filter:drop-shadow(0 .9cqh .8cqh rgba(110,60,10,.25))}
+.gcard b{font-weight:800;font-size:calc(var(--u)*4.2);line-height:1.15;text-align:center;margin-top:1cqh}
+.gcard.cur{box-shadow:0 0 0 .6cqh #2a9d8f,0 1cqh 0 #e0bf86,0 2cqh 3cqh rgba(110,70,15,.28)}
+.gcard:active{transform:scale(.95)}.gcard.go{animation:bhit .45s var(--bounce)}
+.gcard .tk{position:absolute;top:-1.4cqh;inset-inline-end:-1.4cqh;width:6.4cqh;height:6.4cqh;border-radius:50%;background:#1f9d5c;border:.5cqh solid #fff;display:flex;align-items:center;justify-content:center}
+.gcard .tk svg{width:3.6cqh;height:3.6cqh}
+.gcard .pg{position:absolute;left:12%;right:12%;bottom:1cqh;height:1.2cqh;border-radius:99px;background:#eed3a3;overflow:hidden;text-decoration:none}
+.gcard .pg s{display:block;height:100%;background:linear-gradient(#12c5b1,#08948b);border-radius:99px}
+#road #empty{left:calc(50% + var(--u)*8)!important;top:55%!important}
+#road .top,#all .top,#stk .top{top:2.5cqh}
+#road #roadtitle{background:linear-gradient(#fff9e9,#ffedc7)!important;color:#13275a!important;border:.45cqh solid #dca84f!important;outline:.35cqh solid #07988f;outline-offset:.35cqh;border-radius:3cqh!important;box-shadow:0 .6cqh 0 #aa743b!important;font-size:5.6cqh;height:10cqh;line-height:9cqh;padding:0 6cqh}
+/* lesson cards in homework, all games and multi-lesson pop-ups use the same cream card */
+.glesson span{border-radius:3cqh!important;background:linear-gradient(#fffaf0,#fbe6c0)!important;border:.4cqh solid #fffdf5!important;box-shadow:0 .8cqh 0 #e0bf86!important}
+.glesson span img{width:78%!important;height:78%!important}
+.chip img{object-fit:contain}
+#stage{position:absolute;inset:0;z-index:1}
+#stage>*{position:absolute;margin:0}
+#stage .dec{pointer-events:none;z-index:1}
+#stage .bld.mk{display:block;padding:0;z-index:2;transform-origin:50% 100%}
+#stage .bld.mk img{position:absolute;max-width:none;max-height:none;object-fit:fill;filter:none}
+#stage .lab{z-index:4;display:flex;align-items:center;justify-content:center;border-radius:999px;font-weight:800;font-size:calc(var(--u)*3.9);line-height:1;color:var(--nj-navy);
+  background:linear-gradient(#fffaf0,#fbeacb);border:calc(var(--u)*.3) solid #fffdf5;box-shadow:0 calc(var(--u)*.6) calc(var(--u)*1.4) rgba(120,80,20,.22),inset 0 calc(var(--u)*.3) 0 #fff;white-space:nowrap}
+#stage .lab:active{transform:scale(.95)}
+#map #stage #wq{left:50.2%!important;top:11.4%!important;transform:translateX(-50%);font-size:calc(var(--u)*6.9)!important;line-height:1.1;font-weight:800;color:#13275a;text-shadow:none!important;white-space:nowrap;z-index:5}
+#stage #hero{z-index:3;transform-origin:50% 100%}
+#stage #hero>img{position:absolute;display:block;max-width:none;object-fit:contain}
+#stage #hero>.hs{left:19.7%;top:51.5%;width:59%;height:46%;z-index:2}
+#stage #hero>.hf{left:32.5%;top:1.2%;width:32%;height:58%;z-index:3}
+#stage #hero>.hk{top:8.4%;height:90%;z-index:1}
+#stage #hero>.hk-f{left:0;width:31.2%}
+#stage #hero>.hk-m{left:67.7%;width:32.3%}
+#stage #hero>b{position:absolute;z-index:4;left:24.4%;top:56.5%;width:49.6%;height:23%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:calc(var(--u)*8.6);line-height:1;color:#13275a;white-space:nowrap;pointer-events:none}
+#stage #hfal{position:absolute;z-index:5;left:32.5%;top:0;width:32%;height:54%;border-radius:45%}
+#stage #hero.hop{animation:hhop .55s var(--bounce)}
+@keyframes hhop{40%{transform:translateY(-2cqh)}}
+/* top bar exactly as in the mockup */
+#map #wbar{top:calc(var(--u)*2.55)!important;left:calc(var(--u)*2.98)!important;gap:calc(var(--u)*1.6)!important;z-index:6}
+#map #wbar .pill,#map #wkid{height:calc(var(--u)*6.8)!important;font-size:calc(var(--u)*3.2)!important;gap:calc(var(--u)*1.4)!important;padding:0 calc(var(--u)*2.4)!important;
+  background:linear-gradient(#fffaf0,#fbeacb)!important;border:calc(var(--u)*.3) solid #fffdf5!important;box-shadow:0 calc(var(--u)*.6) calc(var(--u)*1.4) rgba(120,80,20,.22),inset 0 calc(var(--u)*.3) 0 #fff!important;color:#13275a!important}
+#map #wbar #wstars{width:calc(var(--u)*15.2);justify-content:space-between;padding:0 calc(var(--u)*3.4) 0 calc(var(--u)*1.6)!important}
+#map #wbar #wstk2{width:calc(var(--u)*28.9);justify-content:center}
+#map #wbar #whw{width:calc(var(--u)*23.3)!important;justify-content:center}
+#map #wbar #wstars img{width:calc(var(--u)*5.4)!important;height:auto!important;margin:0}
+#map #wbar #wstk2 img{width:calc(var(--u)*6.6)!important;height:auto!important;margin:0}
+#map #wbar #whw img{width:calc(var(--u)*6.8)!important;height:auto!important;margin:0}
+#map #wkid{top:calc(var(--u)*2.55)!important;right:calc(var(--u)*3)!important;width:calc(var(--u)*36);justify-content:flex-start;padding:0 calc(var(--u)*1.6) 0 calc(var(--u)*3.4)!important;max-width:none!important}
+#map #wkid .av{order:-1;width:calc(var(--u)*9.4)!important;height:calc(var(--u)*9.4)!important;margin:calc(var(--u)*-1.3) calc(var(--u)*-1.7) calc(var(--u)*-1.3) auto;border:0;box-shadow:none;background:none!important;overflow:visible}
+#map #wkid .av img{width:100%;height:100%;object-fit:contain}
+#map #wkid>span[dir]{margin-inline-end:auto}
+#wbar2 #wall{height:10cqh;padding:0 2.6cqh;font-size:3.6cqh}
+/* lesson cards (homework, all games, a stop with several lessons): cream 3D cards like the approved screens */
+#flat .glesson,#allgrid .glesson,#glist .glesson{padding:2cqh 1.6cqh 2.2cqh;border-radius:4cqh;background:linear-gradient(#fffdf6,var(--nj-cream2));border:.5cqh solid #fff;box-shadow:0 1.1cqh 0 var(--nj-edge),0 2cqh 3cqh rgba(120,80,20,.2)}
+#flat .glesson b,#allgrid .glesson b,#glist .glesson b{color:var(--nj-navy)}
+#allgrid{grid-template-columns:repeat(auto-fill,22cqh)!important}
+#allgrid .glesson b{font-size:3cqh!important}
+.chip{background:linear-gradient(#fffdf6,var(--nj-cream2))!important;border:.45cqh solid #fff!important;box-shadow:0 .8cqh 0 var(--nj-edge)!important;color:var(--nj-navy)}
+.chip.on{border-color:var(--nj-teal)!important;box-shadow:0 .8cqh 0 var(--nj-teal2)!important}
+#road #empty{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+#empty{padding:4cqh 6cqh;font-size:4.4cqh;font-weight:800;color:var(--nj-navy)}
+#wf{z-index:4}
 </style>
 </head>
 <body>
@@ -283,17 +417,17 @@ svg.road{position:absolute;inset:0;width:100%;height:100%}
 <section class="scr" id="road">
   <img class="bg" id="roadbg" alt="">
   <div id="roadarea"></div>
-  <div class="top"><button class="pill ic" id="rback" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button><div class="title" id="roadtitle"></div><span class="pill"><img src="img/v2/r_star.webp" alt=""><span class="starcount"></span></span></div>
+  <div class="top"><button class="pill ic" id="rback" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button><div class="title" id="roadtitle"></div><span class="pill"><img src="img/approved/reward-star.webp" alt=""><span class="starcount"></span></span></div>
 </section>
 <section class="scr" id="all">
-  <img class="bg" src="img/v2/bg_calm.webp" alt="" style="object-position:center bottom">
+  <img class="bg" src="img/approved/background-village-v2.webp" alt="">
   <div class="top"><button class="pill ic" id="aback" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button><div class="title" style="--ac:#c2410c">كل الألعاب</div><span style="width:11cqh"></span></div>
   <div id="allchips"></div><div id="allgrid"></div>
 </section>
 <section class="scr" id="stk">
-  <img class="bg" src="img/v2/home_bg.webp" alt="" style="object-position:center top;filter:saturate(.9) brightness(1.04)">
+  <img class="bg" src="img/approved/background-village-v2.webp" alt="">
   <div class="top"><button class="pill ic" id="sback" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button><div class="title" style="--ac:#8a5a0c">ملصقاتي</div><span class="pill" id="skn" dir="ltr"></span></div>
-  <div id="spage"><img class="pg" src="img/v2/stickerpage.webp" alt=""></div>
+  <div id="spage"><img class="pg" src="img/approved/background-village-v2.webp" alt=""></div>
   <div class="card" id="stray"></div>
   <div class="falcon" id="sfal"><img alt=""></div><div class="card" id="ssay"></div>
 </section>
@@ -385,7 +519,7 @@ const V="img/v2/",pic=n=>`<img src="${V}${n}.webp" alt="">`,APP=$("#app");
 const AD=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
 let ROT=false;/* landscape only: held upright, landscape.js asks to turn the device */
 const PLACE={ar:{p:"p_fort",bg:"bg_fort",c:"#177a52",name:"العربية",lang:"ar"},en:{p:"p_library",bg:"bg_library",c:"#2567c9",name:"English",lang:"en"},deen:{p:"p_mosque",bg:"bg_mosque",c:"#8a5a0c",name:"ديني",lang:"ar"},
-  math:{p:"p_souq",bg:"bg_souq",c:"#b8500a",name:"الرياضيات",lang:"ar"},uae:{p:"p_dhow",bg:"bg_harbour",c:"#a8281f",name:"بلادي",lang:"ar"},name:{p:"p_tent",bg:"bg_tent",c:"#6a45b8",name:"اسمي",lang:"ar"},hw:{bg:"bg_calm",c:"#c2410c",name:"واجب اليوم",lang:"ar"}};
+  math:{p:"p_souq",bg:"bg_souq",c:"#b8500a",name:"الرياضيات",lang:"ar"},uae:{p:"p_dhow",bg:"bg_harbour",c:"#a8281f",name:"بلادي",lang:"ar"},name:{p:"p_tent",bg:"bg_tent",c:"#6a45b8",name:"اسمي",lang:"ar"},hw:{bg:"pl_ar",c:"#c2410c",name:"واجب اليوم",lang:"ar"}};
 /* one matching picture for every lesson */
 const LI={sounds:"e_sound",cvc:"e_abc",sent:"a_book",writeEn:"e_write",numEn:"m_123",numAr:"a_num",colorsEn:"e_palette",colorsAr:"a_palette",days:"d_cal",daysAr:"a_time",months:"d_cal",monthsAr:"a_time",clock:"m_clock",clockAr:"a_time",shapes:"m_shapes",math:"m_plus",arabic:"a_letters",spell:"a_book",uae:"l_flag",islam:"d_pillars",iman:"l_lantern",quran:"d_quran",duas:"d_dua",name:"l_name",exam:"l_task",lsAkh:"d_mat",lsTah:"d_mat",
  wsFin:"e_write",wsAbc:"e_abc",wsShp:"m_shapes",wsCnt:"m_123",wsNum:"l_abacus",wsMath:"m_plus",wsFinAr:"a_letters",wsArPic:"a_book",wsSens:"l_sight",wsSea:"l_dice",wsFoc:"l_puzzle",wsMaze:"l_cards",wsBwl:"l_colors",wsAkh:"d_dua",wsNium:"d_pillars"};
@@ -396,22 +530,41 @@ function lpic(a){if(LI[a.id])return LI[a.id];if(a.id.startsWith("ws"))return "l_
 const vis=k=>(CATS[k]?CATS[k].apps:[]).filter(visA);
 function frac(k){let n=0,t=0;vis(k).forEach(a=>{if(a.total){t+=a.total;n+=Math.min(count(a.key),a.total)}});return t?n/t:0}
 /* the falcon */
-function falcon(el,frame){el.querySelector("img").src=`${V}f_${frame}.webp`;el.dataset.f=frame}
+function falcon(el,frame){/* the approved falcon everywhere in the village */el.querySelector("img").src="img/approved/mascot-falcon.webp";el.dataset.f=frame}
 function hop(el){el.classList.remove("hop");void el.offsetWidth;el.classList.add("hop")}
 setInterval(()=>$$(".falcon").forEach(el=>{if(!el.offsetParent||el.dataset.busy)return;const im=el.querySelector("img"),keep=im.src;im.src=V+"f_blink.webp";setTimeout(()=>{if(!el.dataset.busy)im.src=keep},160)}),3200);
 function talk(el,ms){el.dataset.busy=1;let k=0;const t=setInterval(()=>falcon(el,k++%2?"talk1":"talk2"),150);setTimeout(()=>{clearInterval(t);delete el.dataset.busy;falcon(el,"wave")},ms||900)}
 let AC;function tone(f,d,t=0,type="sine",v=.08){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;
   g.gain.setValueAtTime(v,AC.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+t+d);o.connect(g).connect(AC.destination);o.start(AC.currentTime+t);o.stop(AC.currentTime+t+d)}catch(e){}}
 const sPop=()=>{tone(520,.08,0,"triangle");tone(880,.12,.05,"triangle")},sWin=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.18,i*.09)),sTap=()=>tone(660,.05,0,"triangle",.05);
-function speak(text,lang){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=lang==="en"?"en-GB":"ar-SA";u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
+/* the falcon's voice: Emirati clips made by tools/make-falcon-voice.py (voice/falcon), device voice for anything without a clip */
+let FV={},fvA=null;fetch("voice/falcon/index.json").then(r=>r.ok?r.json():{}).then(j=>FV=j||{}).catch(()=>{});
+function speakTTS(text,lang){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=lang==="en"?"en-GB":"ar-SA";u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
+/* girls hear Fatima, boys hear Hamdan (child's boy/girl from the parent portal or their picture) */
+const fvG=()=>((window.NAJMA&&NAJMA.me&&NAJMA.me.gender)==="m"?"m":"f");
+/* the parent's choice per sentence (portal → 🎙️ كل الجمل العربية): her recording, Fatima or Hamdan */
+let FVS={};try{NAJMA.voiceSet("falcon").then(v=>FVS=v||{})}catch(e){}
+function speak(text,lang){try{speechSynthesis.cancel()}catch(e){}if(fvA){fvA.pause();fvA=null}
+  let u=null;try{const v=NAJMA.voiceURL("falcon",text,FV,FVS);u=v.mine||v.clip}catch(e){const c=FV[String(text).trim()],f=c&&(c[fvG()]||c.f||c.m);u=f?"voice/falcon/"+f:null}
+  if(!u)return speakTTS(text,lang);fvA=new Audio(u);fvA.play().catch(()=>speakTTS(text,lang))}
 
 
 /* family stars: every child of the family, live from the database; on a parent's phone, from what is saved here */
 const ALLAPPS=(()=>{const m={};Object.values(CATS).forEach(c=>c.apps.forEach(a=>{if(a.total&&a.key)m[a.key]=Math.max(m[a.key]||0,a.total)}));return m})();
 const starsOf=counts=>Object.entries(ALLAPPS).reduce((t,[k,n])=>t+Math.min(+(counts&&counts[k])||0,n),0);
-async function boardData(){const DEVT=NAJMA.raw.get("najma:dev");
-  if(NAJMA.rpc&&DEVT){try{const L=await NAJMA.rpc("family_board",{tok:DEVT});if(Array.isArray(L)&&L.length)return L.map(c=>({id:c.id,name:c.nameAr||c.name,avatar:c.avatar,color:c.color,stars:starsOf(c.counts)}))}catch(e){}}
-  return NAJMA.profiles.map(p=>{const counts={};Object.keys(ALLAPPS).forEach(k=>{try{counts[k]=Object.keys(JSON.parse(NAJMA.raw.get(`najma:${p.id}:${k}`)||"{}")).length}catch(e){}});return {id:p.id,name:p.nameAr||p.name,avatar:p.avatar,color:p.color,stars:starsOf(counts)}})}
+/* family stars: every child in the family. The server (family_board) knows all brothers and sisters; a child's iPad only stores its own child,
+   so the last full family list is remembered on the device and used whenever the server can't be reached. The device's own children always use their live local stars. */
+async function boardData(){const DEVT=NAJMA.raw.get("najma:dev"),KEY="najma:board";
+  const local=NAJMA.profiles.map(p=>{const counts={};Object.keys(ALLAPPS).forEach(k=>{try{counts[k]=Object.keys(JSON.parse(NAJMA.raw.get(`najma:${p.id}:${k}`)||"{}")).length}catch(e){}});return {id:p.id,name:p.nameAr||p.name,avatar:p.avatar,color:p.color,stars:starsOf(counts)}});
+  let fam=null;
+  if(NAJMA.rpc&&DEVT){try{const L=await NAJMA.rpc("family_board",{tok:DEVT});if(Array.isArray(L)&&L.length){fam=L.map(c=>({id:c.id,name:c.nameAr||c.name,avatar:c.avatar,color:c.color,stars:starsOf(c.counts)}));try{NAJMA.raw.set(KEY,JSON.stringify(fam))}catch(e){}}
+    else console.warn("family_board returned no children for this device")}catch(e){console.warn("family_board failed:",e&&e.message)}}
+  else if(!DEVT)console.warn("family_board skipped: this device has no child-device link (najma:dev)");
+  if(!fam){try{fam=JSON.parse(NAJMA.raw.get(KEY)||"null")}catch(e){fam=null}}
+  if(!Array.isArray(fam)||!fam.length)return local;
+  /* merge: everyone from the family list, with this device's own children taking their up-to-date local stars */
+  const out=fam.map(c=>{const l=local.find(x=>x.id===c.id);return l?Object.assign({},c,{stars:Math.max(c.stars||0,l.stars||0)}):c});
+  local.forEach(l=>{if(!out.some(c=>c.id===l.id))out.push(l)});return out}
 let boardT=null;
 async function openBoard(){const o=$("#board");o.classList.add("on");await drawBoard();clearInterval(boardT);boardT=setInterval(()=>{if(o.classList.contains("on"))drawBoard();else clearInterval(boardT)},30000)}
 async function drawBoard(){const o=$("#board"),L=(await boardData()).sort((a,b)=>b.stars-a.stars),me=NAJMA.me&&NAJMA.me.id;
@@ -422,24 +575,40 @@ async function drawBoard(){const o=$("#board"),L=(await boardData()).sort((a,b)=
   $("#bx").onclick=()=>{o.classList.remove("on");clearInterval(boardT)};o.onclick=e=>{if(e.target===o){o.classList.remove("on");clearInterval(boardT)}}}
 /* home */
 const ORDER=["ar","en","deen","math","uae","name"],SPOT=[[90.5,6,23],[77,38,24],[60,52,21],[40,52,21],[23,38,24],[11,6,24]];
-const HOME=["calc(50% - 42.5cqh)","1cqh"];let flying=false;
+const HOME=["calc(50% + 19cqh)","2cqh"];let flying=false;
 const perch=i=>[`calc(${SPOT[i][0]}% - ${(SPOT[i][0]>50?1:-1)*SPOT[i][2]*.72+10.5}cqh)`,SPOT[i][1]-1+"cqh"];
 const BLD={ar:"b_fort",en:"b_library",deen:"b_mosque",math:"b_souq",uae:"b_dhow",name:"b_tent"};
-function drawMap(){const M=$("#map"),me=NAJMA.me;
-  let h=`<img class="bg" src="${V}home_bg.webp" alt="" style="object-position:center top">`;
-  h+=`<div id="heroK"><b>هيا نتعلم!</b></div><button id="whw" aria-label="واجب اليوم"><img src="${V}h_bag.webp" alt=""><b class="nm">واجب اليوم</b>${hwN?`<i id="hwn">${AD(hwN)}</i>`:""}</button>`;
-  ORDER.forEach((k,i)=>{const [x,b,ht]=SPOT[i],s=PLACE[k],dn=frac(k)>=1;if(!vis(k).length)return;
-    h+=`<button class="bld nb" data-k="${k}" style="left:${x}%;bottom:${b}cqh;height:${ht}cqh;width:${ht*1.3}cqh;margin-left:${-ht*.65}cqh;--d:${(i*.35).toFixed(2)}s" aria-label="${s.name}">${pic(BLD[k])}${dn?`<i class="tk">${TK}</i>`:""}<b class="nm" dir="auto">${s.name}</b></button>`});
-  h+=`<div class="falcon" id="wf" data-f="wave"><img alt=""></div><span class="pill" id="wstars"><img src="${V}r_star.webp" alt=""><span>${stars}</span></span><button class="pill ic" id="wcup" aria-label="نجوم العائلة"><img src="${V}r_trophy.webp" alt=""></button><button class="pill" id="wstk2" aria-label="ملصقاتي"><img src="${V}k_falcon.webp" alt="">ملصقاتي</button><button class="pill" id="wall" aria-label="كل الألعاب"><svg viewBox="0 0 24 24" width="30" height="30"><g fill="#f5b700" stroke="#c98a00" stroke-width="1.2"><rect x="3" y="3" width="7.5" height="7.5" rx="2.2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2.2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2.2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2.2"/></g></svg>كل الألعاب</button>
-    <button class="pill" id="wkid"><span class="av" style="background:${me&&me.color||"#ffd23f"}">${NAJMA_AV(me&&me.avatar)}</span><span dir="auto">${me&&!me.preview?(me.nameAr||me.name):""}</span></button>`;
+function drawMap(){const M=$("#map"),me=NAJMA.me,A="img/approved/",R=A+"mockup/";
+  /* exact replica of 01-approved-village.png: every piece is placed at its own rectangle in the 1672x941 design (x, y, w, h in design pixels) */
+  /* each piece keeps its centre (x) and its ground line (bottom) relative to the screen, and its size in u, so the scene fills any screen without cropping or stretching */
+  const box=(x,y,w,h)=>`left:calc(${((x+w/2)/16.72).toFixed(3)}% - var(--u)*${(w/18.82).toFixed(3)});bottom:${((941-y-h)/9.41).toFixed(3)}%;width:calc(var(--u)*${(w/9.41).toFixed(3)});height:calc(var(--u)*${(h/9.41).toFixed(3)})`;
+  /* separate approved village files (production-assets), placed where 01-approved-village.png shows them; never stretched or cropped */
+  const PL={uae:{r:[15,165,365,280],p:"village-dhow",l:[125,421,170,53]},
+    math:{r:[300,180,455,250],p:"village-souq",l:[446,418,191,53]},
+    deen:{r:[650,118,470,276],p:"village-mosque",l:[787,379,177,53]},
+    en:{r:[1035,205,525,240],p:"village-library",l:[1170,407,199,55]},
+    name:{r:[0,455,505,270],p:"village-majlis",l:[150,710,202,60]},
+    ar:{r:[1175,380,497,330],p:"village-fort",l:[1344,710,213,60]}};
+  let h=`<img class="bg" id="stagebg" src="${A}background-village-v2.webp" alt=""><div id="stage">`;
+  ORDER.forEach((k,i)=>{const P=PL[k],s=PLACE[k],dn=frac(k)>=1;if(!vis(k).length)return;const [rx,ry,rw,rh]=P.r;
+    h+=`<button class="bld nb mk" data-k="${k}" style="${box(rx,ry,rw,rh)};--d:${(i*.35).toFixed(2)}s" aria-label="${s.name}">`+
+      `<img src="${A}${P.p}.webp" alt="" style="left:0;top:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%">`+
+      `${dn?`<i class="tk">${TK}</i>`:""}</button><button class="lab" data-k="${k}" dir="auto" style="${box(...P.l)}">${s.name}</button>`});
+  /* hero: separate approved pieces. Only the selected child stands with the falcon (girl left, boy right) */
+  const kid=heroKid();
+  h+=`<div id="hero" style="${box(490,473,712,452)}">${kid?`<img class="hk hk-${kid}" src="img/approved/character-${kid==="m"?"boy":"girl"}.webp" alt="">`:""}<img class="hs" src="img/approved/welcome-sign.webp" alt=""><img class="hf" src="img/approved/mascot-falcon.webp" alt=""><b>هيا نتعلم</b><button id="hfal" aria-label="الصقر"></button></div></div>`;
+  h+=`<div class="falcon" id="wf" data-f="wave"><img alt=""></div><div id="wbar"><span class="pill" id="wstars"><img src="${A}reward-star.webp" alt=""><span>${stars}</span></span><button class="pill" id="wstk2" aria-label="ألبوم الملصقات"><img src="${A}icon-rewards.webp" alt="">ألبوم الملصقات</button><button class="pill" id="whw" aria-label="الواجبات"><img src="${A}icon-homework.webp" alt="">الواجبات${hwN?`<i id="hwn">${AD(hwN)}</i>`:""}</button></div>
+    <button class="pill" id="wkid"><span dir="auto">${me&&!me.preview?(me.nameAr||me.name):"مستكشف صغير"}</span>${me&&!me.preview&&me.avatar?`<span class="av" style="background:${me.color||"#ffd23f"}">${NAJMA_AV(me.avatar)}</span>`:`<span class="av avmk"><img src="${A}mascot-falcon.webp" alt=""></span>`}</button>`;
   M.innerHTML=h;const wf=$("#wf");wf.style.left=HOME[0];wf.style.bottom=HOME[1];falcon(wf,"wave");flying=false;
-  wf.onclick=()=>{hop(wf);talk(wf,1200);speak("هلا! شو بنتعلم اليوم؟","ar")};
-  $("#wstk2").onclick=()=>{sTap();location.hash="c=stk"};$("#wall").onclick=()=>{sTap();location.hash="c=all"};$("#wcup").onclick=()=>{sTap();openBoard()};$("#whw").onclick=()=>{sTap();location.hash="c=hw"};$("#wkid").onclick=()=>{sTap();$("#kidsOv").classList.add("on")};
+  $("#hfal").onclick=()=>{const g=$("#hero");g.classList.remove("hop");void g.offsetWidth;g.classList.add("hop");speak("هلا! شو بنتعلم اليوم؟","ar")};
+  $("#wstk2").onclick=()=>{sTap();location.hash="c=stk"};$("#whw").onclick=()=>{sTap();location.hash="c=hw"};$("#wkid").onclick=()=>{sTap();$("#kidsOv").classList.add("on")};
   M.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>flyTo(b.dataset.k))}
+/* the selected child's character: the parent's boy/girl choice or the child's character picture (profile.js); never guessed from the name */
+function heroKid(){const me=window.NAJMA&&NAJMA.me;const g=me&&!me.preview&&me.gender;return g==="m"||g==="f"?g:""}
 function flyTo(k){if(flying)return;flying=true;const wf=$("#wf"),i=ORDER.indexOf(k),bl=$(`.bld[data-k="${k}"]`),[l,b]=perch(i);sPop();
   wf.dataset.busy=1;falcon(wf,"jump");wf.style.left=l;wf.style.bottom=b;
-  setTimeout(()=>{bl.classList.add("hit");falcon(wf,"point");hop(wf);sWin();speak(PLACE[k].name,PLACE[k].lang)},950);
-  setTimeout(()=>{const L=vis(k);zoomTo(bl);setTimeout(()=>{delete wf.dataset.busy;if(L.length===1){open1(k,L[0].href)}else{ENTER="in";location.hash="c="+k}},520)},1500)}
+  setTimeout(()=>{bl.classList.add("hit");falcon(wf,"point");hop(wf);sWin();speak(PLACE[k].name,PLACE[k].lang)},120);
+  setTimeout(()=>{const L=vis(k);zoomTo(bl);setTimeout(()=>{delete wf.dataset.busy;if(L.length===1){open1(k,L[0].href)}else{ENTER="in";location.hash="c="+k}},520)},800)}
 let ENTER="",FROM=null;
 function zoomTo(el){const M=$("#map"),r=el.getBoundingClientRect(),a=APP.getBoundingClientRect();const [x,y]=ROT?[(r.top+r.height/2-a.top)/a.height,(a.right-r.right+r.width/2)/a.width]:[(r.left+r.width/2-a.left)/a.width,(r.top+r.height/2-a.top)/a.height];
   FROM=[x*100,y*100];M.style.transformOrigin=`${FROM[0]}% ${FROM[1]}%`;M.classList.add("zoomin")}
@@ -452,7 +621,7 @@ function open1(k,href){href=NEWL[href]||href;try{sessionStorage.setItem("najma:v
 const GROUPS={
  en:[["Sounds","e_sound",["sounds"]],["Words","e_abc",["cvc","sent","s:"]],["Writing","e_write",["writeEn"]],["Days & Months","d_cal",["days","months"]],["Colours","e_palette",["colorsEn"]]],
  ar:[["حروفي","a_letters",["arabic"]],["كلماتي","a_book",["spell","s:"]],["الأرقام","a_num",["numAr"]],["الوقت","a_time",["daysAr","monthsAr","clockAr"]],["الألوان","a_palette",["colorsAr"]]],
- deen:[["الأركان","d_pillars",["islam","iman"]],["القرآن","d_quran",["quran","s:"]],["أدعية","d_dua",["duas"]],["دروسي","d_mat",["lsAkh","lsTah"]]],
+ deen:[["أركان الإسلام","d_pillars",["islam"]],["أركان الإيمان","d_pillars",["iman"]],["القرآن","d_quran",["quran","s:"]],["أدعية","d_dua",["duas"]],["أحب الخير لأخي","d_mat",["lsAkh"]],["الطهارة والوضوء","d_mat",["lsTah"]]],
  math:[["Numbers","m_123",["numEn"]],["Adding","m_plus",["mathPlus"]],["Taking away","m_minus",["mathMinus"]],["Shapes","m_shapes",["shapes"]],["Clock","m_clock",["clock"]]]};
 const CHEST={en:["Worksheets","e_chest"],ar:["أوراق العمل","a_chest"],deen:["أوراق العمل","d_chest"],math:["Worksheets","m_chest"]};
 /* every visible lesson in the app, plus maths split into adding and taking away */
@@ -473,26 +642,32 @@ const ROOM={
  ar:{img:"room_fort",slots:[[55,41.3,13.5],[67.6,41.3,13.5],[80,41.3,13.5],[57,72.3,15],[79,72.3,15]],chest:[91,95,14]},
  deen:{img:"room_mosque",slots:[[44.8,53.4,13.5],[66.9,74,16],[88.8,53.4,13.5],[88,91,14]],chest:[50,93,14]},
  math:{img:"room_souq",slots:[[66,63.5,16]],chest:[47.4,63.5,16]}};
+/* approved artwork for every menu picture (img/approved); anything without a matching pack object keeps its old picture and is listed in COMPLETE-REVAMP-CHECKLIST.md */
+const APM={a_letters:"learning-book",l_blocks:"learning-book",a_book:"learning-writing",l_book:"learning-book",e_sound:"learning-book",l_sound:"learning-book",e_abc:"object-cat",l_puzzle:"object-cat",l_cards:"learning-book",l_sight:"learning-book",
+  e_write:"learning-writing",l_write:"learning-writing",l_name:"learning-writing",l_crayons:"learning-worksheet",l_task:"learning-worksheet",a_chest:"learning-worksheet",e_chest:"learning-worksheet",d_chest:"learning-worksheet",m_chest:"learning-worksheet",
+  m_123:"learning-abacus",a_num:"learning-abacus",l_abacus:"learning-abacus",l_dice:"learning-abacus",m_plus:"object-apple",m_minus:"object-apple",m_shapes:"learning-worksheet",l_shapes:"learning-worksheet",
+  e_palette:"object-duck",a_palette:"object-duck",l_colors:"object-duck",d_cal:"learning-calendar",l_week:"learning-calendar",l_month:"learning-calendar",a_time:"learning-clock",m_clock:"learning-clock",l_clock:"learning-clock",
+  d_pillars:"learning-lantern",l_pillars:"learning-lantern",l_lantern:"learning-lantern",d_quran:"learning-quran",l_quran:"learning-quran",d_dua:"learning-dua",l_dua:"learning-dua",d_mat:"learning-book",l_flag:"village-dhow"};
+const apic=n=>APM[n]?`<img src="img/approved/${APM[n]}.webp" alt="">`:pic(n);
+/* each place's own scene plate */
+const SCN={ar:"scene-arabic-fort",en:"scene-english-library",deen:"scene-islam-mosque",math:"scene-maths-souq",uae:"scene-uae-harbour",name:"scene-name-majlis",hw:"scene-arabic-fort"};
 function drawRoad(k){const s=PLACE[k],A=$("#roadarea"),R=GROUPS[k];document.documentElement.style.setProperty("--ac",s.c);$("#roadtitle").textContent=s.name;
   $$(".starcount").forEach(e=>e.textContent=String(stars));closeG();
-  const G=groupsOf(k);
-  if(!R){/* homework and anything without a room: the lessons as big pictures */
-    $("#roadbg").src=`${V}${s.bg}.webp`;$("#roadbg").style.objectPosition="bottom";$("#roadbg").style.display="";
-    if(!G.length){A.innerHTML=`<div class="card" id="empty">${k==="hw"?"لا يوجد واجب اليوم":"لا يوجد شيء هنا بعد"}</div><div class="falcon" id="roadfalcon" style="left:50%;top:48%"><img alt=""></div>`;falcon($("#roadfalcon"),"thumb");return}
-    A.innerHTML=`<div id="flat"></div><div class="falcon" id="roadfalcon" style="left:14cqh;top:96%"><img alt=""></div>`;falcon($("#roadfalcon"),"point");
-    const F=$("#flat");G.forEach(g=>g.L.forEach(a=>F.appendChild(lessonEl(k,a))));F.style.setProperty("--n",Math.min(4,F.children.length));return}
-  /* the building on the sand: big lesson pictures standing in neat rows, no road */
-  $("#roadbg").src=`${V}pl_${k}.webp`;$("#roadbg").style.objectPosition="center 12%";$("#roadbg").style.display="";
-  const n=G.length,two=n>3,top=two?Math.ceil(n/2):n,P=G.map((g,i)=>{const r=two&&i>=top?1:0,m=r?n-top:top,c=r?i-top:i,span=m>1?Math.min(24,48/(m-1)):0;return [55+((m-1)/2-c)*span,two?(r?88:57):76]});
-  let cur=G.findIndex(g=>!g.chest&&gfrac(g)<1);if(cur<0)cur=G.findIndex(g=>gfrac(g)<1);
-  let h="";G.forEach((g,i)=>{const f=gfrac(g),dn=f>=1&&g.L.some(a=>a.total),st=Math.round(f*3),ic=g.ic;
-    h+=`<button class="gstop${i===cur?" cur":""}${g.chest?" chest":""}" data-i="${i}" style="left:${P[i][0]}%;top:${P[i][1]}%" aria-label="${g.name}"><span class="pad"></span>${pic(ic)}${dn?`<i>${TK}</i>`:""}<b class="nm" dir="auto">${g.name}</b></button>`});
-  h+=`<div class="falcon" id="roadfalcon"><img alt=""></div>`;
-  A.innerHTML=h;falcon($("#roadfalcon"),cur<0?"thumb":"point");
-  A.querySelectorAll(".gstop").forEach(el=>el.onclick=()=>{const g=G[+el.dataset.i];sPop();speak(g.name,/[a-z]/i.test(g.name)?"en":"ar");talk($("#roadfalcon"),900);el.classList.remove("go");void el.offsetWidth;el.classList.add("go");
-    if(g.L.length===1)setTimeout(()=>open1(k,g.L[0].href),380);else openG(k,g)})}
+  const G=groupsOf(k),bg=$("#roadbg");bg.src=`img/approved/${SCN[k]||"background-lesson"}.webp`;bg.style.objectPosition="center";bg.style.display="";
+  const FAL=`<button class="apfal" id="roadfal" aria-label="الصقر"><img src="img/approved/mascot-falcon.webp" alt=""></button>`;
+  const hopF=()=>{const f=$("#roadfal");if(!f)return;f.classList.remove("hop");void f.offsetWidth;f.classList.add("hop")};
+  if(!G.length){A.innerHTML=`${FAL}<div class="card" id="empty">${k==="hw"?"لا يوجد واجب اليوم":"لا يوجد شيء هنا بعد"}</div>`;$("#roadfal").onclick=hopF;return}
+  /* homework and places without groups: one card per lesson */
+  const items=R?G.map((g,i)=>({i,name:g.name,ic:g.ic,g})):G.flatMap(g=>g.L).map((a,i)=>({i,name:a.name,ic:lpic(a),a}));
+  const cur=R?G.findIndex(g=>!g.chest&&gfrac(g)<1):-1;
+  let h=`${FAL}<div id="cards" style="--n:${Math.min(items.length,items.length>4?Math.ceil(items.length/2):items.length)}">`;
+  items.forEach(it=>{const f=it.g?gfrac(it.g):(it.a.total?Math.min(count(it.a.key),it.a.total)/it.a.total:0),dn=f>=1&&(it.g?it.g.L.some(a=>a.total):true);
+    h+=`<button class="gcard${it.i===cur?" cur":""}" data-i="${it.i}" aria-label="${it.name}"><span class="ic">${apic(it.ic)}</span><b dir="auto">${it.name}</b>${dn?`<i class="tk">${TK}</i>`:""}${f>0&&f<1?`<u class="pg"><s style="width:${Math.round(f*100)}%"></s></u>`:""}</button>`});
+  A.innerHTML=h+`</div>`;$("#roadfal").onclick=()=>{hopF();speak(s.name,s.lang)};
+  A.querySelectorAll(".gcard").forEach(el=>el.onclick=()=>{const it=items[+el.dataset.i];sPop();speak(it.name,/[a-z]/i.test(it.name)?"en":"ar");hopF();el.classList.remove("go");void el.offsetWidth;el.classList.add("go");
+    if(it.a)setTimeout(()=>open1(k,it.a.href),300);else if(it.g.L.length===1)setTimeout(()=>open1(k,it.g.L[0].href),300);else openG(k,it.g)})}
 function lessonEl(k,a){const t=a.total?Math.min(count(a.key),a.total):0,dn=a.total&&t>=a.total,el=document.createElement("a");el.className="glesson";el.href=a.href;
-  el.innerHTML=`<span>${pic(lpic(a))}${dn?`<i>${TK}</i>`:""}</span><b dir="auto">${a.name}</b>`;el.onclick=e=>{e.preventDefault();sPop();el.classList.add("go");setTimeout(()=>open1(k,a.href),300)};return el}
+  el.innerHTML=`<span>${apic(lpic(a))}${dn?`<i>${TK}</i>`:""}</span><b dir="auto">${a.name}</b>`;el.onclick=e=>{e.preventDefault();sPop();el.classList.add("go");setTimeout(()=>open1(k,a.href),300)};return el}
 const TK='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 /* a stop with several lessons opens a card with one big picture per lesson */
 function openG(k,g){const o=$("#gov");o.innerHTML=`<div class="card" id="gcard"><div id="ghead" class="wood" dir="auto">${g.name}</div><button class="pill ic" id="gx" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div id="glist"></div></div>`;
@@ -505,6 +680,8 @@ $("#aback").onclick=()=>{sTap();location.hash=""};
 $("#rback").onclick=()=>{sTap();const R=$("#road");R.classList.add("leave");setTimeout(()=>{R.classList.remove("leave");ENTER="out";location.hash=""},330)};
 
 function route(){const bo=$("#board");if(bo)bo.classList.remove("on");clearInterval(boardT);closeG();const m=location.hash.match(/c=(\w+)/),all=m&&m[1]==="all",stk=m&&m[1]==="stk",k=m&&PLACE[m[1]]?m[1]:null;
+  /* a place with a single lesson has no menu of its own (the village opens the lesson directly), so coming back lands on the village, not an empty screen (user 2026-11-18) */
+  if(k&&k!=="hw"&&vis(k).length===1){try{sessionStorage.removeItem("najma:v2c")}catch(e){}history.replaceState(null,"",location.pathname);return route()}
   const M=$("#map"),R=$("#road"),AL=$("#all");M.classList.remove("zoomin","zoomout");R.classList.remove("enter");
   M.classList.toggle("on",!k&&!all&&!stk);R.classList.toggle("on",!!k);AL.classList.toggle("on",!!all);$("#stk").classList.toggle("on",!!stk);
   if(stk)drawStk();else if(all)drawAll();else if(k){drawRoad(k);if(ENTER==="in"){void R.offsetWidth;R.classList.add("enter")}}
@@ -525,9 +702,9 @@ function addStk(k,p){const P=$("#spage"),im=document.createElement("img");im.src
   im.onpointerdown=e=>{im.setPointerCapture(e.pointerId);im.classList.add("drag");const mv=ev=>{const [u,v]=relPt(ev.clientX,ev.clientY,P);p.x=Math.max(6,Math.min(94,u*100));p.y=Math.max(10,Math.min(90,v*100));im.style.left=p.x+"%";im.style.top=p.y+"%"};
     const up=()=>{im.removeEventListener("pointermove",mv);im.classList.remove("drag");const o=stkGet();o[k]={x:+p.x.toFixed(1),y:+p.y.toFixed(1)};stkSet(o);sTap()};im.addEventListener("pointermove",mv);im.addEventListener("pointerup",up,{once:true});im.addEventListener("pointercancel",up,{once:true})};P.appendChild(im)}
 /* every activity in one place, by subject */
-const ALLK=["ar","en","math","deen","uae","name"],ALLIC={ar:"p_fort",en:"p_library",math:"p_souq",deen:"p_mosque",uae:"p_dhow",name:"p_tent"};let allK=null;
+const ALLK=["ar","en","math","deen","uae","name"],ALLV={ar:"village-fort",en:"village-library",math:"village-souq",deen:"village-mosque",uae:"village-dhow",name:"village-majlis"},ALLIC={ar:"p_fort",en:"p_library",math:"p_souq",deen:"p_mosque",uae:"p_dhow",name:"p_tent"};let allK=null;
 function drawAll(){const ks=ALLK.filter(k=>vis(k).length);if(!allK||!ks.includes(allK))allK=ks[0];
-  $("#allchips").innerHTML=ks.map(k=>`<button class="chip${k===allK?" on":""}" data-k="${k}" style="--c:${PLACE[k].c}">${pic(ALLIC[k])}<b dir="auto">${PLACE[k].name}</b></button>`).join("");
+  $("#allchips").innerHTML=ks.map(k=>`<button class="chip${k===allK?" on":""}" data-k="${k}" style="--c:${PLACE[k].c}"><img src="img/approved/${ALLV[k]}.webp" alt=""><b dir="auto">${PLACE[k].name}</b></button>`).join("");
   $$("#allchips .chip").forEach(b=>b.onclick=()=>{sTap();allK=b.dataset.k;drawAll()});
   const G=$("#allgrid");G.innerHTML="";document.documentElement.style.setProperty("--ac",PLACE[allK].c);
   groupsOf(allK).forEach(g=>g.L.forEach(a=>{const el=lessonEl(allK,a);el.style.animationDelay=(G.children.length*.03)+"s";G.appendChild(el)}))}
@@ -537,8 +714,11 @@ addEventListener("hashchange",route);addEventListener("pageshow",e=>{if(e.persis
 /* choose the child (not on a child's own iPad), parents' door, progress */
 {const B=$("#kidsBox"),R=NAJMA.raw,use=id=>{R.set("najma:cur",id);location.reload()},add=(av,bg,name,on,fn)=>{const b=document.createElement("button");b.className=on?"on":"";b.innerHTML=`<span class="av" style="background:${bg}">${av}</span><span dir="auto">${name}</span>`;b.onclick=fn;B.appendChild(b)};
   NAJMA.profiles.filter(p=>!NAJMA.lock||p.id===NAJMA.lock).forEach(p=>add(NAJMA_AV(p.avatar),p.color,p.name,NAJMA.me&&NAJMA.me.id===p.id,()=>{if(NAJMA.me&&NAJMA.me.id===p.id)$("#kidsOv").classList.remove("on");else use(p.id)}));
-  add("🏆","#fff6c4","تقدّمي",false,()=>location.href="home.html#c=prog");
-  if(!NAJMA.lock)add("👨‍👩‍👧","#e9f4ff","للوالدين",false,()=>location.href="parent.html");
+  const AI=n=>`<img src="img/approved/${n}.webp" alt="" style="width:100%;height:100%;object-fit:contain">`;
+  add(AI("reward-star"),"#fff0cf","نجوم العائلة",false,()=>{$("#kidsOv").classList.remove("on");openBoard()});
+  add(AI("learning-book"),"#fff0cf","كل الألعاب",false,()=>{$("#kidsOv").classList.remove("on");location.hash="c=all"});
+  add(AI("reward-trophy"),"#fff0cf","تقدّمي",false,()=>location.href="home.html#c=prog");
+  if(!NAJMA.lock)add(AI("mascot-falcon"),"#fff0cf","للوالدين",false,()=>location.href="parent.html");
   $("#kidsOv").onclick=e=>{if(e.target.id==="kidsOv")e.currentTarget.classList.remove("on")}}
 </script>
 </body>

@@ -214,7 +214,8 @@ function openN(n,el){cur=n;const t=T[lang];popSnd();if(el)burstAt(el);
 function openWrite(n){const items=[];for(let i=1;i<=MAXN;i++)items.push(disp(i));
   WritePad.open({items,index:n-1,lang,rtl:lang==="ar",font:lang==="ar"?'"Baloo Bhaijaan 2"':'"Andika"',
     onSay:it=>{const i=items.indexOf(it)+1;sayN(i)},
-    onStar:(it,s,res)=>{const i=items.indexOf(it)+1;if(s>=2){wrote[lang+i]=1;save();const tl=grid.children[i-1];if(tl)tl.classList.add("wrote");fanfare();burstAt(res)}else buzz()}})}
+    /* writing says the number: after a good write (with the fanfare) and after a miss, so the child hears it again (user 2026-11-16: writing was silent) */
+    onStar:(it,s,res)=>{const i=items.indexOf(it)+1;if(s>=2){wrote[lang+i]=1;save();const tl=grid.children[i-1];if(tl)tl.classList.add("wrote");fanfare();burstAt(res);setTimeout(()=>sayN(i),650)}else{buzz();setTimeout(()=>sayN(i),450)}}})}
 document.getElementById("write").onclick=()=>openWrite(1);
 
 /* count & pick game */

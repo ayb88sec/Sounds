@@ -63,6 +63,15 @@ h1{font-weight:800;font-size:clamp(40px,10vw,64px);margin:0;line-height:1.15;col
 .modal{position:fixed;inset:0;background:rgba(15,25,70,.55);display:none;align-items:center;justify-content:center;z-index:20;padding:14px}
 .modal.show{display:flex}
 .card{background:#fff;border-radius:34px;padding:20px 18px;text-align:center;max-width:420px;width:100%;max-height:96vh;overflow:auto;animation:zoom .45s cubic-bezier(.3,1.6,.5,1);position:relative}
+/* pillar card fits the screen (user 2026-11-19: no scrolling): picture + name beside the words on wide screens */
+#cardModal .cemo img{max-height:24vh;width:auto;max-width:100%}
+@media (orientation:landscape){#cardModal .card{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);column-gap:20px;align-items:center;max-width:min(980px,96vw)}
+#cardModal .cside{grid-column:1;grid-row:1/span 6}#cardModal .card>*:not(.cside):not(.x){grid-column:2}
+#cardModal .cemo img{max-height:46vh}#cardModal .cname{font-size:36px}}
+@media (orientation:portrait){#cardModal .cside{display:grid;grid-template-columns:auto auto;justify-content:center;align-items:center;column-gap:16px}#cardModal .cemo{grid-row:1/3;grid-column:1}#cardModal .cemo img{max-height:20vh}#cardModal .badge{grid-column:2;margin:0 auto}#cardModal .cname{grid-column:2}}
+/* keep the card clear of the falcon side panel (frame.js #nf, left) */
+html.nfOn #cardModal{padding-left:calc(min(30vw,300px) + 10px)}
+@media (orientation:landscape) and (max-height:500px){#cardModal .card{padding:8px 14px}#cardModal .cname{font-size:26px}#cardModal .phrase{font-size:19px;line-height:1.5;margin:4px 0;padding:6px 10px}#cardModal .explain{font-size:15px;line-height:1.4;padding:6px 10px;margin:4px 0}#cardModal .cemo img{max-height:40vh}#cardModal .badge{width:44px;height:44px;font-size:24px;margin-top:0}#cardModal .mesay{font-size:15px;line-height:1.45;padding:6px 10px;margin:4px 0}#cardModal .lbl{display:none}#cardModal .pbtn{font-size:17px;padding:7px 14px}#cardModal #practice{margin:4px 0}#cardModal .navrow{margin:4px 0 0}#cardModal .navrow .btn{padding:6px 14px;font-size:16px}}
 @keyframes zoom{from{transform:scale(.3) rotate(10deg);opacity:0}}
 .x{position:absolute;top:10px;left:12px;border:0;background:#f0edf7;border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer}
 .badge{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;color:#fff;font-size:36px;font-weight:800;margin-top:10px}
@@ -131,9 +140,11 @@ footer a,#reset{color:#fff;background:none;border:0;font:inherit;text-decoration
 <div class="modal" id="cardModal">
   <div class="card">
     <button class="x" data-close>✕</button>
-    <div class="badge" id="cNum"></div>
-    <div class="cemo" id="cEmo"></div>
-    <div class="cname" id="cName"></div>
+    <div class="cside">
+      <div class="badge" id="cNum"></div>
+      <div class="cemo" id="cEmo"></div>
+      <div class="cname" id="cName"></div>
+    </div>
     <div class="phrase" id="cPhrase"></div>
     <div class="explain"><b>💡 يعني:</b> <span id="cExp"></span> <button class="say" id="cExpPlay">🔊</button></div>
     <div class="bar" id="cPlayBar"><button class="btn" id="cPlay">🔊 اسمع</button></div><div class="bar" id="cLesson" style="display:none"><a class="btn" href="exam.html?l=rusl" style="text-decoration:none;background:linear-gradient(160deg,#fff6c4,#ffd84a);color:#16204a">👩‍🏫 درس الرسل مع المعلمة</a></div>
@@ -267,6 +278,6 @@ window.NAJMA_RESET=()=>localStorage.removeItem("imanDone");
 </script>
 <script src="extras.js?v=10"></script><script src="pillars2.js?v=1"></script>
 <script src="hint.js?v=1"></script>
-<script src="frame.js"></script><script>NajmaFrame({say:"#say",tools:[{el:"#introBtn",icon:"sound"},{el:"#game",icon:"cards"},{el:"main .bar .btn.bi-text",icon:"play"},{el:".nx-reset",icon:"again"}]});</script>
+<script src="pavilion.js"></script><script src="frame.js"></script><script>NajmaFrame({say:"#say",tools:[{el:"#introBtn",icon:"sound"},{el:"#game",icon:"cards"},{el:"main .bar .btn.bi-text",icon:"play"},{el:".nx-reset",icon:"again"}]});</script>
 </body>
 </html>

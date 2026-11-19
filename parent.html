@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <script src="supa.js"></script>
-<script src="profile.js"></script><link rel="stylesheet" href="portal2.css?v=4"><script src="data/kidq.js"></script><script src="data/qk.js"></script><script src="data/qnames.js"></script><script src="data/base.js"></script>
+<script src="profile.js"></script><link rel="stylesheet" href="portal2.css?v=6"><script src="data/kidq.js"></script><script src="data/qk.js"></script><script src="data/qnames.js"></script><script src="data/base.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -143,6 +143,9 @@ setTimeout(function(){var g=document.getElementById("gate");if(g&&getComputedSty
   <div class="panel" id="base"><button class="b back" data-back style="margin-bottom:10px">➡️ رجوع إلى المحتوى</button><h3 class="dh sub-t" style="margin-top:0"></h3>
     <div class="note">🧩 <b>التطبيقات الأساسية</b>: هنا تسجّل صوتك بالعربي لأي شيء في التطبيقات الجاهزة. اضغط ▶️ لتسمع الصوت الحالي، و🎤 لتسجّل صوتك مكانه، و↩️ للرجوع إلى الأصلي.</div>
     <div class="chips" id="bApp" style="display:none"></div><input type="file" id="uaeFile" accept="image/*" style="display:none"><div id="bVoice"></div><div class="chips" id="bGrp" style="margin-bottom:8px"></div><div id="bList"></div></div>
+  <div class="panel" id="allv"><button class="b back" data-back style="margin-bottom:10px">➡️ رجوع إلى المحتوى</button><h3 class="dh sub-t" style="margin-top:0"></h3>
+    <div class="note">🎙️ <b>كل الجمل العربية</b> في مكان واحد. لكل جملة: اضغطي <b>🎤</b> لتسجّلي صوتك، أو اختاري <b>👧 فاطمة</b> أو <b>👦 حمدان</b>. <b>تلقائي</b> = صوتك إن سجّلتِ، وإلا فاطمة للبنات وحمدان للأولاد.</div>
+    <div class="chips" id="avSet" style="margin-bottom:8px"></div><div id="avList"></div></div>
   <div class="panel" id="admin">
     <div class="note">🛡️ <b>الإدارة</b>: أنتِ فقط ترين هذه الصفحة. شاركي محتواك مع كل العائلات، وراجعي اقتراحاتهم، واحذفي أي عائلة أو شخص أو طفل.</div>
     <div class="qbox"><b>🧪 الميزات الجديدة</b><div class="note" style="margin:6px 0">الميزة الجديدة تظهر لكِ أولًا. اختاري متى تظهر لباقي العائلات.</div><div id="adFeat"></div></div>
@@ -346,6 +349,7 @@ function hubRow(icon,title,sub,go){const d=document.createElement("div");d.class
 function drawHub(){const RL=$("relList"),AL=$("readyList");if(!RL)return;RL.innerHTML="";AL.innerHTML="";
   RL.appendChild(hubRow("📖","قصص القرآن","السور، الشرح، الصور، وصوتك",()=>{document.querySelector('#relTabs [data-r="rQ"]').click();openSub("quran","📖 قصص القرآن")}));
   RL.appendChild(hubRow("📿","الأدعية","سجّلي صوتك أو أضيفي دعاءً",()=>{document.querySelector('#relTabs [data-r="rD"]').click();openSub("quran","📿 الأدعية")}));
+  AL.appendChild(hubRow("🎙️","كل الجمل العربية","سجّلي صوتك أو اختاري فاطمة / حمدان لكل جملة",()=>{openSub("allv","🎙️ كل الجمل العربية");drawAllV()}));
   if(!window.BASE)return;if(!BASE.uaepics)BASE.uaepics={t:"🇦🇪 بلادي: صورة زايد والحكّام",groups:[]};
   Object.keys(BASE).forEach(k=>{const t=BASE[k].t,m=t.match(/^(\S+)\s+(.*)$/);const icon=m&&!/[a-zA-Z\u0600-\u06FF]/.test(m[1])?m[1]:"🧩",name=m&&icon!=="🧩"?m[2]:t;
     AL.appendChild(hubRow(icon,name,k==="uaepics"?"صور الحكّام والشيخ زايد":"سجّلي صوتك بدل الصوت الأصلي",()=>{bApp=k;bG=0;openSub("base",t);drawBase()}))})}
@@ -704,7 +708,41 @@ async function drawBase(){if(!window.BASE)return;if(!BASE.uaepics)BASE.uaepics={
     if(say&&!lab.includes(say)){const t=document.createElement("div");t.dir="rtl";t.style.cssText="flex-basis:100%;font-size:16px;color:#5a5070;line-height:1.7";t.textContent=say;r.appendChild(t)}
     r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{bStore(bApp)[key]=u.enc;qPlain["b"+bApp+key]=u.url;setTimeout(drawBase,50)},(say&&!lab.includes(say)?lab+"\n\n"+say:lab).replace(/^💡 شرح: /,"💡 "));
     if(v)r.querySelector(".rs").onclick=()=>{delete bStore(bApp)[key];delete qPlain["b"+bApp+key];saveS();drawBase()};L.appendChild(r)})}
+/* 🎙️ every Arabic sentence (voice sets in voice/<set>): record or choose Fatima / Hamdan. Same storage as the 🧩 re-recordings (qimg section, locked) */
+const AV_SETS=[["falcon","🦅 الصقر والقرية"],["long","🔤 حروفي: الأصوات الطويلة"],["clock","⏰ الساعة"],["daymonth","📅 الأيام والأشهر"]];
+let avSet="falcon",avIdx={},avA=null,avTodo=true;
+const avPlay=u=>{if(!u)return;if(avA)avA.pause();avA=new Audio(u);avA.play().catch(()=>{})};
+async function drawAllV(){
+  chips("avSet",AV_SETS.map(x=>x[1]).concat(Object.keys(window.BASE||{}).filter(k=>k!=="uaepics").map(k=>BASE[k].t+" ↗")),(x,k)=>AV_SETS[k]&&AV_SETS[k][0]===avSet,(x,k)=>{
+    if(AV_SETS[k]){avSet=AV_SETS[k][0];drawAllV()}else{const app=Object.keys(BASE).filter(a=>a!=="uaepics")[k-AV_SETS.length];bApp=app;bG=0;openSub("base",BASE[app].t);drawBase()}});
+  const L=$("avList");L.innerHTML='<div class="note">⏳</div>';
+  if(!NAJMA.hasKey()){L.innerHTML='<div class="note" style="background:#ffe1e1">🔑 لازم تكتبين <b>رمز العائلة</b> في تبويب <b>☁️ الاتصال</b> أولًا.</div>';return}
+  if(!avIdx[avSet]){try{avIdx[avSet]=await (await fetch("voice/"+avSet+"/index.json",{cache:"no-store"})).json()}catch(e){avIdx[avSet]={}}}
+  const IDX=avIdx[avSet],Q=ownQ()||{},OV=((Q.ov||{})["v:"+avSet])||{},VP=Q.vpick||{};L.innerHTML="";
+  /* Arabic sentences only (days/months also have English clips since 2026-11-19); "record when I have time": show what still needs her voice first, with a count */
+  const allT=Object.keys(IDX).filter(t=>/[\u0600-\u06FF]/.test(t));if(!allT.length){L.innerHTML='<div class="note">لا توجد جمل.</div>';return}
+  const doneN=allT.filter(t=>OV[t]).length,texts=avTodo?allT.filter(t=>!OV[t]):allT;
+  const hd=document.createElement("div");hd.className="note";hd.style.cssText="display:flex;gap:8px;align-items:center;flex-wrap:wrap";
+  hd.innerHTML=`<b style="font-size:18px">🎙️ سجّلتِ ${doneN} من ${allT.length}</b><span style="flex:1"></span><button class="b ch${avTodo?" on":""}" data-f="1">🔴 الناقص فقط</button><button class="b ch${avTodo?"":" on"}" data-f="0">📋 الكل</button>`;
+  hd.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{avTodo=b.dataset.f==="1";drawAllV()});L.appendChild(hd);
+  if(!texts.length){const z=document.createElement("div");z.className="note";z.style.background="#e3f7ea";z.textContent="🎉 سجّلتِ كل جمل هذا القسم!";L.appendChild(z);return}
+  texts.forEach(t=>{const has=!!OV[t],pick=VP[avSet+"|"+t]||"",r=document.createElement("div");r.className="rrow";r.style.flexWrap="wrap";
+    const on=v=>(pick||"")===v?" on":"";
+    r.innerHTML=`<b dir="rtl" style="font-size:20px;flex-basis:100%">${esc(t)}</b>
+      <button class="b vr">${has?"🔁 أعيدي التسجيل":"🎤 سجّلي"}</button>${has?'<button class="b pm">▶️ صوتي</button><button class="b rs" title="حذف تسجيلي">↩️</button>':""}
+      <span style="flex:1"></span>
+      <button class="b ch${on("")}" data-v="">تلقائي</button>${has?`<button class="b ch${on("mine")}" data-v="mine">🎤 صوتي</button>`:""}<button class="b ch${on("f")}" data-v="f">👧 فاطمة</button><button class="b ch${on("m")}" data-v="m">👦 حمدان</button>`;
+    const clip=g=>{const c=IDX[t];return c&&c[g]?"voice/"+avSet+"/"+c[g]:null};
+    r.querySelectorAll(".ch").forEach(b=>b.onclick=async()=>{const v=b.dataset.v,QQ=qSec();QQ.vpick=QQ.vpick||{};if(v)QQ.vpick[avSet+"|"+t]=v;else delete QQ.vpick[avSet+"|"+t];saveS();
+      if(v==="f"||v==="m")avPlay(clip(v));else if(v==="mine"&&OV[t])avPlay(await qDec("v"+avSet+t,OV[t]));drawAllV()});
+    const pm=r.querySelector(".pm");if(pm)pm.onclick=async()=>avPlay(await qDec("v"+avSet+t,OV[t]));
+    r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{const QQ=qSec();QQ.ov=QQ.ov||{};QQ.ov["v:"+avSet]=QQ.ov["v:"+avSet]||{};QQ.ov["v:"+avSet][t]=u.enc;qPlain["v"+avSet+t]=u.url;
+      QQ.vpick=QQ.vpick||{};delete QQ.vpick[avSet+"|"+t];setTimeout(drawAllV,50)},t);
+    const rs=r.querySelector(".rs");if(rs)rs.onclick=()=>{if(!confirm("حذف تسجيلك لهذه الجملة؟"))return;const QQ=qSec();if(QQ.ov&&QQ.ov["v:"+avSet])delete QQ.ov["v:"+avSet][t];delete qPlain["v"+avSet+t];saveS();drawAllV()};
+    L.appendChild(r)})}
 document.querySelector('nav [data-t="secs"]').addEventListener("click",()=>drawSecs());
+/* parent.html#rec: open "كل الجمل العربية" straight away (her recording page, 2026-11-19) */
+if(location.hash==="#rec"){let tries=0;const goRec=()=>{const n=document.querySelector('nav [data-t="secs"]');if(n&&n.offsetParent&&typeof FID!=="undefined"&&FID){n.click();openSub("allv","🎙️ سجّلي صوتك");drawAllV()}else if(tries++<360)setTimeout(goRec,500)};setTimeout(goRec,800)}
 {const _d=drawSecs;drawSecs=function(){_d();if($("base").classList.contains("on"))drawBase()}}
 if(window.QK){qList();const _dsq=drawSecs;drawSecs=function(){_dsq();qList()}}
 /* cloud: save to config.json in GitHub so every iPad updates by itself */

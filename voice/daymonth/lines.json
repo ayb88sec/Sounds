@@ -1,0 +1,570 @@
+[
+{
+"text": "الاثنين",
+"lang": "ar"
+},
+{
+"text": "وين الاثنين؟",
+"lang": "ar"
+},
+{
+"text": "الثلاثاء",
+"lang": "ar"
+},
+{
+"text": "وين الثلاثاء؟",
+"lang": "ar"
+},
+{
+"text": "الأربعاء",
+"lang": "ar"
+},
+{
+"text": "وين الأربعاء؟",
+"lang": "ar"
+},
+{
+"text": "الخميس",
+"lang": "ar"
+},
+{
+"text": "وين الخميس؟",
+"lang": "ar"
+},
+{
+"text": "الجمعة",
+"lang": "ar"
+},
+{
+"text": "وين الجمعة؟",
+"lang": "ar"
+},
+{
+"text": "السبت",
+"lang": "ar"
+},
+{
+"text": "وين السبت؟",
+"lang": "ar"
+},
+{
+"text": "الأحد",
+"lang": "ar"
+},
+{
+"text": "وين الأحد؟",
+"lang": "ar"
+},
+{
+"text": "أي يوم ناقص؟",
+"lang": "ar"
+},
+{
+"text": "يناير",
+"lang": "ar"
+},
+{
+"text": "وين شهر يناير؟",
+"lang": "ar"
+},
+{
+"text": "فبراير",
+"lang": "ar"
+},
+{
+"text": "وين شهر فبراير؟",
+"lang": "ar"
+},
+{
+"text": "مارس",
+"lang": "ar"
+},
+{
+"text": "وين شهر مارس؟",
+"lang": "ar"
+},
+{
+"text": "أبريل",
+"lang": "ar"
+},
+{
+"text": "وين شهر أبريل؟",
+"lang": "ar"
+},
+{
+"text": "مايو",
+"lang": "ar"
+},
+{
+"text": "وين شهر مايو؟",
+"lang": "ar"
+},
+{
+"text": "يونيو",
+"lang": "ar"
+},
+{
+"text": "وين شهر يونيو؟",
+"lang": "ar"
+},
+{
+"text": "يوليو",
+"lang": "ar"
+},
+{
+"text": "وين شهر يوليو؟",
+"lang": "ar"
+},
+{
+"text": "أغسطس",
+"lang": "ar"
+},
+{
+"text": "وين شهر أغسطس؟",
+"lang": "ar"
+},
+{
+"text": "سبتمبر",
+"lang": "ar"
+},
+{
+"text": "وين شهر سبتمبر؟",
+"lang": "ar"
+},
+{
+"text": "أكتوبر",
+"lang": "ar"
+},
+{
+"text": "وين شهر أكتوبر؟",
+"lang": "ar"
+},
+{
+"text": "نوفمبر",
+"lang": "ar"
+},
+{
+"text": "وين شهر نوفمبر؟",
+"lang": "ar"
+},
+{
+"text": "ديسمبر",
+"lang": "ar"
+},
+{
+"text": "وين شهر ديسمبر؟",
+"lang": "ar"
+},
+{
+"text": "أي شهر ناقص؟",
+"lang": "ar"
+},
+{
+"text": "أي شهر يأتي بعد يناير؟",
+"lang": "ar"
+},
+{
+"text": "أي شهر يأتي بعد فبراير؟",
+"lang": "ar"
+},
+{
+"text": "أي شهر يأتي بعد مارس؟",
+"lang": "ar"
+},
+{
+"text": "أي شهر يأتي بعد أبريل؟",
+"lang": "ar"
+},
+{
+"text": "أي شهر يأتي بعد مايو؟",
+"lang": "ar"
+},
+{
+"text": "أي شهر يأتي بعد يونيو؟",
+"lang": "ar"
+},
+{
+"text": "أي شهر يأتي بعد يوليو؟",
+"lang": "ar"
+},
+{
+"text": "أي شهر يأتي بعد أغسطس؟",
+"lang": "ar"
+},
+{
+"text": "أي شهر يأتي بعد سبتمبر؟",
+"lang": "ar"
+},
+{
+"text": "أي شهر يأتي بعد أكتوبر؟",
+"lang": "ar"
+},
+{
+"text": "أي شهر يأتي بعد نوفمبر؟",
+"lang": "ar"
+},
+{
+"text": "أي شهر يأتي بعد ديسمبر؟",
+"lang": "ar"
+},
+{
+"text": "اليوم الاثنين! اضغط على أي يوم",
+"lang": "ar"
+},
+{
+"text": "اليوم الثلاثاء! اضغط على أي يوم",
+"lang": "ar"
+},
+{
+"text": "اليوم الأربعاء! اضغط على أي يوم",
+"lang": "ar"
+},
+{
+"text": "اليوم الخميس! اضغط على أي يوم",
+"lang": "ar"
+},
+{
+"text": "اليوم الجمعة! اضغط على أي يوم",
+"lang": "ar"
+},
+{
+"text": "اليوم السبت! اضغط على أي يوم",
+"lang": "ar"
+},
+{
+"text": "اليوم الأحد! اضغط على أي يوم",
+"lang": "ar"
+},
+{
+"text": "نحن في شهر يناير! اضغط على أي شهر",
+"lang": "ar"
+},
+{
+"text": "نحن في شهر فبراير! اضغط على أي شهر",
+"lang": "ar"
+},
+{
+"text": "نحن في شهر مارس! اضغط على أي شهر",
+"lang": "ar"
+},
+{
+"text": "نحن في شهر أبريل! اضغط على أي شهر",
+"lang": "ar"
+},
+{
+"text": "نحن في شهر مايو! اضغط على أي شهر",
+"lang": "ar"
+},
+{
+"text": "نحن في شهر يونيو! اضغط على أي شهر",
+"lang": "ar"
+},
+{
+"text": "نحن في شهر يوليو! اضغط على أي شهر",
+"lang": "ar"
+},
+{
+"text": "نحن في شهر أغسطس! اضغط على أي شهر",
+"lang": "ar"
+},
+{
+"text": "نحن في شهر سبتمبر! اضغط على أي شهر",
+"lang": "ar"
+},
+{
+"text": "نحن في شهر أكتوبر! اضغط على أي شهر",
+"lang": "ar"
+},
+{
+"text": "نحن في شهر نوفمبر! اضغط على أي شهر",
+"lang": "ar"
+},
+{
+"text": "نحن في شهر ديسمبر! اضغط على أي شهر",
+"lang": "ar"
+},
+{
+"text": "Monday",
+"lang": "en"
+},
+{
+"text": "Where is Monday?",
+"lang": "en"
+},
+{
+"text": "Today is Monday! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "Tuesday",
+"lang": "en"
+},
+{
+"text": "Where is Tuesday?",
+"lang": "en"
+},
+{
+"text": "Today is Tuesday! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "Wednesday",
+"lang": "en"
+},
+{
+"text": "Where is Wednesday?",
+"lang": "en"
+},
+{
+"text": "Today is Wednesday! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "Thursday",
+"lang": "en"
+},
+{
+"text": "Where is Thursday?",
+"lang": "en"
+},
+{
+"text": "Today is Thursday! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "Friday",
+"lang": "en"
+},
+{
+"text": "Where is Friday?",
+"lang": "en"
+},
+{
+"text": "Today is Friday! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "Saturday",
+"lang": "en"
+},
+{
+"text": "Where is Saturday?",
+"lang": "en"
+},
+{
+"text": "Today is Saturday! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "Sunday",
+"lang": "en"
+},
+{
+"text": "Where is Sunday?",
+"lang": "en"
+},
+{
+"text": "Today is Sunday! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "Which day goes in the",
+"lang": "en"
+},
+{
+"text": "January",
+"lang": "en"
+},
+{
+"text": "Where is January?",
+"lang": "en"
+},
+{
+"text": "Which month comes after January?",
+"lang": "en"
+},
+{
+"text": "This month is January! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "February",
+"lang": "en"
+},
+{
+"text": "Where is February?",
+"lang": "en"
+},
+{
+"text": "Which month comes after February?",
+"lang": "en"
+},
+{
+"text": "This month is February! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "March",
+"lang": "en"
+},
+{
+"text": "Where is March?",
+"lang": "en"
+},
+{
+"text": "Which month comes after March?",
+"lang": "en"
+},
+{
+"text": "This month is March! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "April",
+"lang": "en"
+},
+{
+"text": "Where is April?",
+"lang": "en"
+},
+{
+"text": "Which month comes after April?",
+"lang": "en"
+},
+{
+"text": "This month is April! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "May",
+"lang": "en"
+},
+{
+"text": "Where is May?",
+"lang": "en"
+},
+{
+"text": "Which month comes after May?",
+"lang": "en"
+},
+{
+"text": "This month is May! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "June",
+"lang": "en"
+},
+{
+"text": "Where is June?",
+"lang": "en"
+},
+{
+"text": "Which month comes after June?",
+"lang": "en"
+},
+{
+"text": "This month is June! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "July",
+"lang": "en"
+},
+{
+"text": "Where is July?",
+"lang": "en"
+},
+{
+"text": "Which month comes after July?",
+"lang": "en"
+},
+{
+"text": "This month is July! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "August",
+"lang": "en"
+},
+{
+"text": "Where is August?",
+"lang": "en"
+},
+{
+"text": "Which month comes after August?",
+"lang": "en"
+},
+{
+"text": "This month is August! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "September",
+"lang": "en"
+},
+{
+"text": "Where is September?",
+"lang": "en"
+},
+{
+"text": "Which month comes after September?",
+"lang": "en"
+},
+{
+"text": "This month is September! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "October",
+"lang": "en"
+},
+{
+"text": "Where is October?",
+"lang": "en"
+},
+{
+"text": "Which month comes after October?",
+"lang": "en"
+},
+{
+"text": "This month is October! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "November",
+"lang": "en"
+},
+{
+"text": "Where is November?",
+"lang": "en"
+},
+{
+"text": "Which month comes after November?",
+"lang": "en"
+},
+{
+"text": "This month is November! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "December",
+"lang": "en"
+},
+{
+"text": "Where is December?",
+"lang": "en"
+},
+{
+"text": "Which month comes after December?",
+"lang": "en"
+},
+{
+"text": "This month is December! Tap a carriage",
+"lang": "en"
+},
+{
+"text": "Which month goes in the",
+"lang": "en"
+}
+]

@@ -68,7 +68,6 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
 <canvas id="fx"></canvas>
 <main>
   <h1>🧩 كلماتي الأولى</h1>
-  <p class="sub">حروفي وكلماتي الأولى</p>
   <div class="tabs" id="tabs"></div>
   <div class="hint" id="hint" style="display:none"></div>
   <div id="pane"></div>
@@ -77,7 +76,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
 <script>
 const $=id=>document.getElementById(id),S=window.SPELL;
 const PH=["الطويل والقصير","أ ب د س م","ل ن ف ق ر","المقاطع ١","المقاطع ٢"];
-const ON=NAJMA.lv("spell");
+const ON=NAJMA.lv("spell").filter(i=>i!==1&&i!==2);/* 02 and 03 removed (user 2026-11-16): they repeat حروفي; their long sounds are on the حروفي letter card. Parent level numbers unchanged */
 let done={};try{done=JSON.parse(localStorage.getItem("spellDone")||"{}")}catch(e){}
 const mark=k=>{if(done[k])return;done[k]=1;try{localStorage.setItem("spellDone",JSON.stringify(done))}catch(e){}};
 const shuf=a=>[...a].sort(()=>Math.random()-.5),rnd=a=>a[Math.floor(Math.random()*a.length)];
@@ -109,7 +108,7 @@ M.addEventListener("click",e=>{if(e.target===M||e.target.hasAttribute("data-clos
 
 /* tabs: only the phases switched on for this child */
 let cur=+(new URLSearchParams(location.search).get("p")??localStorage.getItem("spellTab")??ON[0]);if(!ON.includes(cur))cur=ON[0];
-function tabs(){$("tabs").innerHTML="";ON.forEach(i=>{const b=document.createElement("button");b.textContent="١٢٣٤٥"[i]+" · "+PH[i];if(i===cur)b.className="on";
+function tabs(){$("tabs").innerHTML="";ON.forEach((i,n)=>{const b=document.createElement("button");b.textContent="١٢٣٤٥"[n]+" · "+PH[i];if(i===cur)b.className="on";
   b.onclick=()=>{cur=i;try{localStorage.setItem("spellTab",i)}catch(e){}tabs();draw()};$("tabs").appendChild(b)})}
 const missing=()=>VM==="mine"&&Object.keys(SP).length===0;
 function draw(){const P=$("pane");P.innerHTML="";window.scrollTo(0,0);

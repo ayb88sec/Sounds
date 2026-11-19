@@ -48,7 +48,7 @@ body.rot #app{left:100vw;width:100dvh;height:100vw;transform-origin:0 0;transfor
 .tile{position:relative;display:flex;align-items:center;justify-content:center;border-radius:3.6cqh;background:var(--c);border:.5cqh solid #fff;box-shadow:0 1.1cqh 0 var(--d);color:#fff;font-family:Andika,sans-serif;font-weight:700;font-size:8.6cqh;line-height:1;text-decoration:none;transition:transform .12s var(--ease),box-shadow .12s;animation:enter .45s var(--bounce) backwards;padding-bottom:1cqh}
 .tile.two{font-size:7cqh}
 .tile:active{transform:translateY(.8cqh);box-shadow:0 .3cqh 0 var(--d)}
-.tile.done::after{content:"";position:absolute;top:-1.6cqh;right:-1.6cqh;width:5.6cqh;height:5.6cqh;background:url(img/v2/r_star.webp) center/contain no-repeat;animation:spinIn .5s var(--bounce)}
+.tile.done::after{content:"";position:absolute;top:-1.6cqh;right:-1.6cqh;width:5.6cqh;height:5.6cqh;background:url(img/approved/reward-star.webp) center/contain no-repeat;animation:spinIn .5s var(--bounce)}
 .tile.spot{transform:scale(1.14);box-shadow:0 0 0 .8cqh #fff,0 0 0 1.8cqh var(--gold);z-index:2}
 @keyframes enter{from{transform:scale(0);opacity:0}}
 @keyframes spinIn{from{transform:scale(0) rotate(-180deg)}}
@@ -66,11 +66,11 @@ body.rot #app{left:100vw;width:100dvh;height:100vw;transform-origin:0 0;transfor
 </head>
 <body>
 <div id="app">
-  <img class="bg" src="img/v2/bg_calm.webp" alt="">
+  <img class="bg" src="img/approved/bg-lesson-english.webp" alt="">
   <div class="top">
     <a class="pill ic" id="back" href="world.html#c=en" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="#1d2547" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></a>
     <div class="title">Sounds</div>
-    <span class="pill"><img src="img/v2/r_star.webp" alt=""><span id="count">0 / 32</span></span>
+    <span class="pill"><img src="img/approved/reward-star.webp" alt=""><span id="count">0 / 32</span></span>
   </div>
   <div class="card" id="say">Tap a sound and say it with me!</div>
   <div id="tools">
@@ -112,14 +112,14 @@ const save=()=>{try{localStorage.setItem("soundsDone",JSON.stringify(done))}catc
 let ac;function tone(freq,dur,type="sine",when=0,vol=.16){if(muted)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.setValueAtTime(freq,ac.currentTime+when);
   g.gain.setValueAtTime(vol,ac.currentTime+when);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+when+dur);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+when);o.stop(ac.currentTime+when+dur+.02)}catch(e){}}
 const popSnd=()=>{tone(520,.12,"triangle");tone(880,.14,"triangle",.07)},tick=()=>tone(700+Math.random()*300,.05,"square",0,.05),fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",i*.12,.14));
-function rain(){for(let i=0;i<10;i++){const c=document.createElement("img");c.src=V+"g_confetti.webp";c.className="conf";c.alt="";c.style.left=(3+Math.random()*90)+"%";c.style.animationDelay=(Math.random()*.9)+"s";APP.appendChild(c);setTimeout(()=>c.remove(),3500)}}
+function rain(){for(let i=0;i<10;i++){const c=document.createElement("img");c.src="img/approved/reward-star.webp";c.className="conf";c.alt="";c.style.left=(3+Math.random()*90)+"%";c.style.animationDelay=(Math.random()*.9)+"s";APP.appendChild(c);setTimeout(()=>c.remove(),3500)}}
 /* the falcon */
 const pf=$("#pf"),say=$("#say");let sayT,busyT;
-function frame(f){pf.querySelector("img").src=V+"f_"+f+".webp";pf.dataset.f=f}
+function frame(f){pf.querySelector("img").src="img/approved/mascot-falcon.webp";pf.dataset.f=f}
 function hop(){pf.classList.remove("hop");void pf.offsetWidth;pf.classList.add("hop")}
 function act(f,ms){clearTimeout(busyT);pf.dataset.busy=1;frame(f);hop();busyT=setTimeout(()=>{delete pf.dataset.busy;frame("talk1")},ms||1400)}
 function talk(t,f){say.textContent=t;say.classList.remove("pop");void say.offsetWidth;say.classList.add("pop");act(f||"jump");clearTimeout(sayT);sayT=setTimeout(()=>say.textContent="Tap a sound and say it with me!",6000)}
-frame("wave");setInterval(()=>{if(pf.dataset.busy)return;const im=pf.querySelector("img"),k=im.src;im.src=V+"f_blink.webp";setTimeout(()=>{if(!pf.dataset.busy)im.src=k},160)},3200);
+frame("wave");
 pf.onclick=()=>{popSnd();talk(["Tee-hee, that tickles!","I love sounds!","Pick a sound for me!"][Math.floor(Math.random()*3)],"thumb")};
 /* tiles: each one opens the school's video for that sound */
 const board=$("#board");

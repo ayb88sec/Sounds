@@ -1,0 +1,323 @@
+{
+  "هلا! شو بنتعلم اليوم؟": {
+    "say": "هلا! شُُوْوْ بَنْْتْعَلَمْ اليُوْمْ؟",
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "حروفي": {
+    "say": "حروفيْ",
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "كلماتي الأولى": {
+    "say": "كلماتي الأولىَ",
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "الأرقام": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "بلادي الإمارات": {
+    "ok": {
+      "m": true,
+      "f": true
+    }
+  },
+  "الأيام": {
+    "ok": {
+      "f": true,
+      "m": true
+    },
+    "say": "الأيامْ"
+  },
+  "أكمل الحرف الناقص": {
+    "say": "أَكمِلْْ الحرفْ الناقصْ",
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "صل الصورة بحرفها": {
+    "say": "صِلْْ الصورَ بحرفها",
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "الحواس الخمس": {
+    "say": "الحواسْ الخمس",
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "ابحث وعدّ": {
+    "say": "ابحث وعُدّ",
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "نشاط التركيز": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "ساعد السمكة": {
+    "ok": {
+      "m": true,
+      "f": true
+    }
+  },
+  "صنّف السمك بالألوان": {
+    "ok": {
+      "f": true,
+      "m": true
+    },
+    "say": "صَنِّّفْ السَمَكْ بالألوان",
+    "speed": -8
+  },
+  "الأشهر": {
+    "say": "الأشّهُرْ",
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "الساعة": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "الألوان": {
+    "ok": {
+      "m": true,
+      "f": true
+    }
+  },
+  "أركان الإسلام": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "أركان الإيمان": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "قصص القرآن": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "أحب الخير لأخي": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "الطهارة ونواقض الوضوء": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "الأخلاق الحميدة والسيئة": {
+    "ok": {
+      "m": true,
+      "f": true
+    }
+  },
+  "أدعية": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "شجرة نعم الله": {
+    "ok": {
+      "m": true,
+      "f": true
+    }
+  },
+  "Sounds": {
+    "ok": {
+      "m": true,
+      "f": true
+    }
+  },
+  "Word Time": {
+    "ok": {
+      "m": true,
+      "f": true
+    }
+  },
+  "Sentences": {
+    "ok": {
+      "m": true,
+      "f": true
+    }
+  },
+  "Handwriting": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "Maths + −": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "Find and Count": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "Match the Number": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "Math Fun": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "Days": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "Finish the Letters": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "Capital & Small": {
+    "ok": {
+      "m": true,
+      "f": true
+    }
+  },
+  "Shapes Matching": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "Months": {
+    "ok": {
+      "m": true,
+      "f": true
+    }
+  },
+  "Clock": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "Numbers": {
+    "ok": {
+      "m": true,
+      "f": true
+    }
+  },
+  "Colours": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "2D Shapes": {
+    "ok": {
+      "m": true,
+      "f": true
+    }
+  },
+  "اسمي": {
+    "say": "ِاِسمي",
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "📝 الامتحان: التربية الإسلامية": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "العربية": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "English": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "ديني": {
+    "say": "دينِِي",
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "الرياضيات": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "بلادي": {
+    "say": "بِلاادي",
+    "speed": -8,
+    "ok": {
+      "m": true,
+      "f": true
+    }
+  },
+  "واجب اليوم": {
+    "ok": {
+      "m": true,
+      "f": true
+    }
+  },
+  "Adding": {
+    "ok": {
+      "f": true,
+      "m": true
+    }
+  },
+  "Taking away": {
+    "ok": {
+      "m": true,
+      "f": true
+    }
+  }
+}

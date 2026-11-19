@@ -1,0 +1,30 @@
+{
+  "f": {
+    "ar": {
+      "voice": "ar-AE-FatimaNeural",
+      "rate": "-22%",
+      "pitch": "+0Hz",
+      "shift": 1.15
+    },
+    "en": {
+      "voice": "en-GB-MaisieNeural",
+      "rate": "-8%",
+      "pitch": "+0Hz"
+    }
+  },
+  "m": {
+    "ar": {
+      "voice": "ar-AE-HamdanNeural",
+      "rate": "-25%",
+      "pitch": "+20Hz",
+      "shift": 1.22
+    },
+    "en": {
+      "voice": "en-GB-RyanNeural",
+      "rate": "-25%",
+      "pitch": "+20Hz",
+      "shift": 1.22
+    }
+  },
+  "format": "audio-24khz-48kbitrate-mono-mp3"
+}

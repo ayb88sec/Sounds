@@ -40,10 +40,21 @@ main{max-width:720px;margin:0 auto;padding:16px 12px 60px}
 .tile{border:3px dashed var(--c);border-radius:24px;background:#fff;padding:0;overflow:hidden;cursor:pointer;font-family:inherit;color:#2b2340;box-shadow:0 6px 0 rgba(0,0,0,.08);text-align:center}
 .tile:active{transform:translateY(4px)}
 .tile .im{aspect-ratio:16/11;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#fff4d6,#ffe0ec);font-size:64px}.tile .im img{width:100%;height:100%;object-fit:cover}
+/* approved duaa pictures (2026-11-19): all six cards fit the screen, three per row in landscape */
+.tile .im img{width:auto;max-width:88%;height:max(70px,calc((100dvh - 460px) / 2));object-fit:contain;filter:drop-shadow(0 6px 6px rgba(110,60,10,.2))}
+@media (orientation:landscape){.all{grid-template-columns:repeat(3,1fr)}}
+.card .pic{aspect-ratio:auto!important;padding:8px 0;background:linear-gradient(160deg,#fffaf0,#fbeacb)!important}.card .pic img{width:auto!important;max-width:80%;height:auto;max-height:max(110px,calc(100dvh - 560px));object-fit:contain;display:block;margin:0 auto}
+/* one duaa fits the screen in landscape (user 2026-11-19: kids must not scroll): picture beside the words, text sized to the screen height */
+@media (orientation:landscape){.card{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);align-items:center}.card .pic{grid-row:1/span 3;height:100%;padding:10px}.card .pic img{max-height:min(46dvh,300px)}.card .pill{margin:10px auto 0}.card .txt{font-size:clamp(20px,3.6dvh,32px);line-height:1.7;padding:6px 12px 2px}.card .btns{padding:4px 10px 12px}.card .b{font-size:17px;padding:8px 14px}.nav{margin-top:8px}}
+/* phones in landscape: all six cards in one row; a duaa, its picture and buttons in one screen (the star count already shows at the top) */
+@media (orientation:landscape) and (max-height:500px){.all{grid-template-columns:repeat(6,1fr);gap:8px}.tile .im{padding:8px 0 2px!important}.tile .im img{height:max(60px,calc(100dvh - 300px))}.tile .nm{font-size:14px}.score{display:none}.card .txt{font-size:18px;line-height:1.55}.card .pic img{max-height:38dvh}.card .pill{font-size:16px;padding:2px 14px}.card .b{font-size:15px;padding:6px 12px}.card .btns{gap:6px;padding:2px 8px 8px}.nav{margin-top:4px}.nav button{padding:4px 12px}}
+@media (orientation:portrait){.tile .im img{height:max(90px,calc((100dvh - 420px) / 3))}}
 .tile .nm{display:inline-block;margin:-16px 0 8px;position:relative;background:var(--c);color:#fff;border-radius:999px;padding:2px 14px;font-size:17px;font-weight:800}
 .tile .ok{position:absolute}
 .score{text-align:center;color:#7a7090;font-weight:700;margin-top:8px}
 canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+/* the duaa-name row at the top repeated the cards below (user 2026-11-18) */
+#tabs{display:none!important}
 </style>
 </head>
 <body>
@@ -62,6 +73,9 @@ const COL=["#ff5d8f","#4f8bff","#3fc35a","#ffb020","#a66bff","#22a8d6"];
 const D=((NAJMA.sections.find(s=>s.type==="qimg")||{}).duas)||{};
 const LIST=(D.list||(window.KID_DUAS||[])).filter(d=>d&&d.t);
 const VM=NAJMA.vmode("duas","mine");const REC=D.rec||{},IMG=D.img||{},PACK={},PIC={};
+/* approved UAE-style pictures for the six default duas (ChatGPT, approved by the user 2026-11-19); matched by name so a parent's own list keeps its own pictures. A parent photo still wins. */
+const ART={"الخروج من المنزل":"leaving-home","الركوب والسفر":"travel","الأكل":"eating","دخول الحمّام":"bathroom","النوم":"sleeping","الاستيقاظ من النوم":"waking"};
+const art=d=>ART[d.w]?`img/approved/duas/dua-${ART[d.w]}.webp`:null;
 const KEY="sec_duas";let done={};try{done=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}};
 let cur=-1;
@@ -86,10 +100,10 @@ function go(i){if(aud)aud.pause();cur=i<0?-1:(i+LIST.length)%LIST.length;draw();
 function draw(){if(!LIST.length){$("view").innerHTML='<div class="score">لا توجد أدعية بعد.</div>';return}
   tabs();
   if(cur<0){$("view").innerHTML='<div class="all" id="all"></div>';
-    LIST.forEach((d,i)=>{const c=COL[i%COL.length],pic=PIC[d.id]||PACK["duas:"+d.id],b=document.createElement("button");b.className="tile";b.style.setProperty("--c",c);
+    LIST.forEach((d,i)=>{const c=COL[i%COL.length],pic=PIC[d.id]||art(d)||PACK["duas:"+d.id],b=document.createElement("button");b.className="tile";b.style.setProperty("--c",c);
       b.innerHTML=`<div class="im">${pic?`<img src="${pic}" alt="">`:esc(d.e||"🤲")}</div><span class="nm">${esc(d.w||"دعاء")} ${done[d.t]?"✅":""}</span>`;b.onclick=()=>{pop();go(i)};$("all").appendChild(b)});
     const n=LIST.filter(x=>done[x.t]).length;$("score").textContent=`⭐ حفظت ${n} من ${LIST.length} · اختر دعاءً`;return}
-  const d=LIST[cur],c=COL[cur%COL.length],pic=PIC[d.id]||PACK["duas:"+d.id],k="dua:"+d.id;
+  const d=LIST[cur],c=COL[cur%COL.length],pic=PIC[d.id]||art(d)||PACK["duas:"+d.id],k="dua:"+d.id;
   $("view").innerHTML=`<div class="card" style="--c:${c}"><div class="pic">${pic?`<img src="${pic}" alt="">`:`<span class="em">${esc(d.e||"🤲")}</span>`}</div>
     <span class="pill">دعاء ${esc(d.w||"")}</span><div class="txt" id="tx">${esc(d.t)}</div>
     <div class="btns">${VM==="ai"||(VM==="mine"&&REC[d.id])?'<button class="b" id="mum">🔊 استمع للدعاء</button>':""}<button class="b r" id="mic">🎤 سجّل صوتي</button><button class="b t" id="me"${kid[k]?"":" disabled"}>▶️ صوتي</button><button class="b y" id="got">${done[d.t]?"⭐ حفظته":"✅ حفظته"}</button></div></div>

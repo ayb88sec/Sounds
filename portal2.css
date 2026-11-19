@@ -30,3 +30,40 @@ nav button.on{background:radial-gradient(circle at 50% 35%,#fff4a8,#ffd23f 75%)!
 .gate .in{background:#fff!important;border:3px solid #f1d58a!important;border-radius:18px!important}
 .gate .b{border-radius:999px!important}
 .gate .b:not(.go){background:linear-gradient(#ffffff,#eef6ff)!important;color:#16204a!important;box-shadow:0 5px 0 #d6c48f!important}
+
+/* ===== approved look (Nov 2026): rich 3D scene, cream panels, navy words, teal accents; no purple or pink ===== */
+:root{--nj-cream:#fffaf0;--nj-cream2:#fbeccb;--nj-edge:#e6c993;--nj-navy:#1d2a5c;--nj-teal:#2a9d8f;--nj-teal2:#1f7f74}
+html{background:#f3d6a4!important}
+body{color:var(--nj-navy)!important}
+body::before{background:#f3d6a4 url(img/approved/background-village.webp) center bottom/cover no-repeat!important}
+header h1{background:linear-gradient(#fffdf6,var(--nj-cream2))!important;color:var(--nj-navy)!important;text-shadow:none!important;border:4px solid var(--nj-teal)!important;border-radius:999px!important;
+  box-shadow:0 0 0 5px var(--nj-cream),0 0 0 7px var(--nj-edge),0 10px 18px rgba(120,80,20,.22)!important}
+header a{border:3px solid #fff;box-shadow:0 5px 0 var(--nj-edge)!important}
+nav button{background:linear-gradient(#fffdf6,var(--nj-cream2))!important;color:var(--nj-navy)!important;border:3px solid #fff!important;box-shadow:0 5px 0 var(--nj-edge)!important}
+nav button.on{background:linear-gradient(#3fb5a6,var(--nj-teal2))!important;color:#fff!important;box-shadow:0 5px 0 #17665d!important}
+.panel{background:rgba(255,250,240,.96)!important;box-shadow:0 10px 0 var(--nj-edge),0 18px 30px rgba(120,80,20,.2)!important}
+.row,.qbox,.rrow,.dk,.mst,.stats3 div,.stats3 div:nth-child(n){background:linear-gradient(#fffdf6,var(--nj-cream2))!important;border:3px solid #fff!important;box-shadow:0 5px 0 var(--nj-edge)!important}
+.stats3 b{color:var(--nj-teal2)!important}
+.row .info small,.dk .nm small,.stats3 span,.pr .lv,.devnote,label{color:#6b6450!important}
+.bars span{background:#efe2c6!important}
+.b{background:linear-gradient(#fffdf6,var(--nj-cream2));color:var(--nj-navy);border:2px solid #fff;box-shadow:0 4px 0 var(--nj-edge)!important}
+.b.go,.b.add,.qa .ck.on,.rrow .b.on{background:linear-gradient(#3fb5a6,var(--nj-teal2))!important;color:#fff!important;box-shadow:0 5px 0 #17665d!important}
+.b.del{background:#fbe3cf!important;color:#a8471a!important}
+.chips button{background:#f6ecd7!important;color:var(--nj-navy)!important}
+.chips button.on{background:var(--nj-teal)!important;border-color:var(--nj-teal)!important;color:#fff!important}
+.chips .sw.on{border-color:var(--nj-navy)!important}
+.in,textarea,select{border-color:#ead9b6!important;color:var(--nj-navy)}
+.in:focus,textarea:focus,select:focus{border-color:var(--nj-teal)!important}
+.pr .bar{background:#efe2c6!important}
+.pr .bar i{background:linear-gradient(90deg,#4cc2b2,var(--nj-teal2))!important}
+.link{background:#f6ecd7!important}
+.sheet{background:rgba(29,42,92,.45)!important}
+/* sign-in and parent gate */
+.gate{background:#f3d6a4 url(img/approved/background-village.webp) center bottom/cover no-repeat!important}
+.gate .box{background:var(--nj-cream)!important;border:4px solid var(--nj-teal)!important;box-shadow:0 0 0 6px var(--nj-cream),0 0 0 8px var(--nj-edge),0 22px 34px rgba(120,80,20,.28)!important}
+.gate .in{border-color:#ead9b6!important}
+.gate .b:not(.go){background:linear-gradient(#fffdf6,var(--nj-cream2))!important;box-shadow:0 5px 0 var(--nj-edge)!important}
+/* approved artwork pack: the village scene behind the portal, the falcon on the sign-in card */
+body::before{background-position:center 35%!important}
+.gate .box>div:first-child{background:url(img/approved/mascot-falcon.webp) center/contain no-repeat!important;box-shadow:none!important;border-radius:0!important}
+header h1{border:4px solid #dca84f!important;outline:3px solid #07988f;outline-offset:3px;border-radius:24px!important;box-shadow:0 5px 0 #aa743b!important}

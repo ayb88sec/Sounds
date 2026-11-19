@@ -12,6 +12,6 @@
 #najTurn small{font-size:20px;font-weight:800;color:#5c3008}`;
   (document.head||document.documentElement).appendChild(st);
   const add=()=>{if(document.getElementById("najTurn"))return;const d=document.createElement("div");d.id="najTurn";
-    d.innerHTML=`<img src="img/v2/f_point.webp" alt=""><div class="ph"></div><b>لفّ الجهاز</b><small>Turn your iPad sideways</small>`;document.body.appendChild(d)};
+    d.innerHTML=`<img src="img/approved/mascot-falcon.webp" alt=""><div class="ph"></div><b>لفّ الجهاز</b><small>Turn your iPad sideways</small>`;document.body.appendChild(d)};
   if(document.body)add();else document.addEventListener("DOMContentLoaded",add);
 })();

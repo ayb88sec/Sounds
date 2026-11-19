@@ -66,6 +66,9 @@ function block(name,isAr){const c=document.createElement("div");c.className="car
   main.appendChild(c)}
 if(ar)block(ar,true);
 if(en)block(en,false);
+/* always offer English (user 2026-11-18): when the profile has no English name yet, say where the parent adds it */
+else if(ar){const d=document.createElement("div");d.className="card";d.innerHTML=`<h2>My name in English</h2><div class="nm en" style="font-size:26px;opacity:.8">?</div>
+  <p dir="rtl" style="font-size:18px;margin:6px 0 0">اطلب من ماما أو بابا كتابة اسمك بالإنجليزي:<br><b>بوابة الوالدين ← الأطفال ← تعديل ← Name in English</b></p>`;main.appendChild(d)}
 if(!ar&&!en){const d=document.createElement("div");d.className="empty";d.textContent="اطلب من ماما أو بابا إضافة اسمك من صفحة الوالدين ⚙️";main.appendChild(d)}
 </script>
 <script src="frame.js"></script><script>NajmaFrame({tools:[{el:"main .card .btn.bi-text:not(.b)",icon:"write"},{el:"main .card .btn.b",icon:"cards"}]});</script>

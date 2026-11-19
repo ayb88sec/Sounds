@@ -19,7 +19,7 @@ main{max-width:860px;margin:0 auto;padding:16px 12px 60px}
 h1{color:#fff;text-align:center;font-size:clamp(38px,9.5vw,58px);margin:10px 0 0;text-shadow:0 4px 0 rgba(0,0,0,.2)}
 .sub{text-align:center;color:#fff;font-weight:800;font-size:18px;margin:0 0 12px;text-shadow:0 2px 0 rgba(0,0,0,.15)}
 .dunes{position:fixed;bottom:0;left:0;right:0;height:120px;pointer-events:none;z-index:-1;background:radial-gradient(60% 100% at 20% 100%,#e2b35e 60%,transparent 61%),radial-gradient(50% 90% at 75% 100%,#d9a24b 60%,transparent 61%)}
-.camel{position:fixed;bottom:58px;font-size:46px;animation:walk 38s linear infinite;pointer-events:none;z-index:-1}@keyframes walk{from{left:-60px}to{left:105%}}
+.camel{position:fixed;bottom:58px;font-size:46px;animation:walk 38s linear infinite;pointer-events:none;z-index:-1}@keyframes walk{from{left:105%}to{left:-60px}}/* walks the way it faces (user 2026-11-18: it moved backwards) */
 .hub{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
 .tile{border:0;border-radius:30px;padding:16px;min-height:150px;color:#fff;font-family:inherit;font-weight:800;font-size:26px;cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative}
 .tile .e{font-size:60px;line-height:1}.tile .ic{width:120px;height:120px;filter:drop-shadow(0 6px 6px rgba(0,0,0,.25))}
@@ -35,7 +35,9 @@ h1{color:#fff;text-align:center;font-size:clamp(38px,9.5vw,58px);margin:10px 0 0
 .btn:active{transform:translateY(5px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
 .red{background:#c8102e}.green{background:#00843d}.black{background:#2b2b2b}.blue{background:#2f7bff}.gold{background:#e0a100}
 /* the flag to paint */
-.flagbox{position:relative;width:min(88vw,520px);margin:10px auto}
+.flagbox{position:relative;width:min(88vw,520px,max(220px,calc((100dvh - 250px) * 2)));margin:10px auto}
+/* short landscape screens (phones): flag on one side, colours + button on the other, so the whole step fits */
+@media (orientation:landscape) and (max-height:500px){.fl-learn{display:grid;grid-template-columns:auto auto;align-items:center;justify-content:center;column-gap:22px;row-gap:6px;padding:10px 14px}.fl-learn .say{grid-column:1/-1;font-size:20px;margin:0}.fl-learn .flagbox{grid-row:2/4;width:min(300px,max(200px,calc((100dvh - 200px) * 2)));margin:0}.fl-learn .pal{display:grid;grid-template-columns:auto auto;gap:8px;margin:0}.fl-learn .pal button{height:44px;font-size:17px!important}.fl-learn #paint{margin:0}.fl-paint{display:grid;grid-template-columns:auto auto;align-items:center;justify-content:center;column-gap:22px;row-gap:6px;padding:10px 14px}.fl-paint .say{grid-column:1/-1;font-size:20px;margin:0}.fl-paint .flagbox{grid-column:1;grid-row:2/4;width:min(300px,max(200px,calc((100dvh - 200px) * 2)));margin:0}.fl-paint .pal{grid-column:2;grid-row:2;display:grid;grid-template-columns:auto auto;gap:10px;margin:0}.fl-paint #fx2{grid-column:2;grid-row:3}.fl-paint #fx2 .btn{margin:0}.fl-paint .pal button{width:52px;height:52px}}
 .flag{width:100%;display:block;border-radius:10px;box-shadow:0 8px 0 rgba(0,0,0,.15)}
 .flag.wave{animation:wave 1.6s ease-in-out infinite;transform-origin:left center}@keyframes wave{50%{transform:skewY(-3deg) scaleX(.98)}}
 .flag rect{cursor:pointer;stroke:#2b2340;stroke-width:3;stroke-dasharray:10 8}
@@ -81,12 +83,17 @@ h1{color:#fff;text-align:center;font-size:clamp(38px,9.5vw,58px);margin:10px 0 0
 .rpic{flex:none;width:86px;height:86px;border-radius:50%;border:5px solid;display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden;cursor:pointer}.rpic img{width:100%;height:100%;object-fit:cover}
 .pres .rpic{width:104px;height:104px}.rn{font-size:20px;font-weight:800;line-height:1.5}.rr{font-size:16px;font-weight:800}.re{font-size:14px;color:#7a7090;font-weight:700}
 canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+#lnames{gap:12px;flex-wrap:wrap;justify-content:center}#lnames button{width:auto!important;height:auto!important;min-width:110px;min-height:56px;border-radius:999px!important;padding:8px 20px!important;font-size:22px!important;font-weight:800;box-shadow:0 5px 0 rgba(0,0,0,.2)}
+/* flag paint buttons keep their real colour when picked (user 2026-11-18: they turned blue/orange/grey); picked = thick navy ring */
+#pal button[data-c="red"]{background:#c8102e!important}#pal button[data-c="green"]{background:#00843d!important}
+#pal button[data-c="white"]{background:#ffffff!important;border:2px solid #d8d2c4!important}#pal button[data-c="black"]{background:#2b2b2b!important}
+#pal button{background-image:none!important}#pal button.on{box-shadow:0 0 0 5px #fffaf0,0 0 0 9px #13275a!important;transform:scale(1.08)}
 </style>
 </head>
 <body>
 <a href="home.html" aria-label="Home" style="position:fixed;top:calc(10px + env(safe-area-inset-top));left:10px;z-index:15;width:52px;height:52px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 5px 0 rgba(0,0,0,.18)">🏠</a>
 
-<div class="dunes"></div><div class="camel">🐪</div>
+<div class="dunes"></div>
 <canvas id="fx"></canvas>
 <main><h1 id="ttl"></h1><p class="sub" id="sub"></p><div id="app"></div></main>
 <script>
@@ -166,7 +173,7 @@ const rnd=n=>Math.floor(Math.random()*n),shuf=a=>[...a].sort(()=>Math.random()-.
 const head=()=>`<div class="top"><button id="back">${t("⬅ رجوع","⬅ Back")}</button></div>`;
 const backTo=f=>{$("back").onclick=f};
 function setLang(){document.documentElement.lang=EN?"en":"ar";document.documentElement.dir=EN?"ltr":"rtl";document.body.classList.toggle("en",EN);
-  $("ttl").textContent=t("🇦🇪 بلادي الإمارات","🇦🇪 My UAE");$("sub").textContent=t("تعرّف على بلادك الجميلة","Discover our beautiful country")}
+  $("ttl").textContent=t("🇦🇪 بلادي الإمارات","🇦🇪 My UAE");{const sb=$("sub");if(sb)sb.remove()}/* the subtitle in the falcon's bubble meant nothing (user 2026-11-18) */}
 
 /* next special day, counted from today */
 function nextDay(){const now=new Date();now.setHours(0,0,0,0);return DAYS.map(d=>{let dt=new Date(now.getFullYear(),d[3]-1,d[4]);if(dt<now)dt=new Date(now.getFullYear()+1,d[3]-1,d[4]);return [d,Math.round((dt-now)/864e5)]}).sort((a,b)=>a[1]-b[1])[0]}
@@ -180,11 +187,20 @@ function hub(){window.scrollTo(0,0);
    ["rulers","👑","حُكّامُنا","الرئيس وحكّام الإمارات","#a66bff",done.rulers],
    ["quiz","🏆",t("مسابقة","Quiz"),t("كم تعرف عن بلادك؟","How much do you know?"),"#2b2b2b",done.q1]];
   $("app").innerHTML=`<img class="sqh" src="${IMG("saqoor_wave")}" alt=""><div class="hub">${T.map(x=>`<button class="tile" data-k="${x[0]}" style="background:${x[4]}"><span class="ok">${x[5]?"⭐":""}</span><img class="ic" src="${IMG("icon_"+x[0])}" alt="">${x[2]}<small>${x[3]}</small></button>`).join("")}</div>`;
-  document.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{pop();({flag,map,zayed,syms,rulers,quiz})[b.dataset.k]()})}
+  document.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{pop();({flag:flagLearn,map,zayed,syms,rulers,quiz})[b.dataset.k]()})}
 
-/* ---------- 1. paint the flag, then raise it ---------- */
+/* ---------- 1. learn the flag colours (user 2026-11-18: show the colours first), then paint it, then raise it ---------- */
+function flagLearn(){const B=[["p_r","#c8102e",t("الأحمر","red")],["p_g","#00843d",t("الأخضر","green")],["p_w","#ffffff",t("الأبيض","white")],["p_b","#2b2b2b",t("الأسود","black")]];
+  $("app").innerHTML=head()+`<div class="card fl-learn"><div class="say" id="ls">${t("هذا علم الإمارات. ألوانه أربعة: الأحمر والأخضر والأبيض والأسود","This is the UAE flag. It has four colours: red, green, white and black")}</div>
+    <div class="flagbox"><svg class="flag" id="lf" viewBox="0 0 400 200"><rect id="p_r" x="2" y="2" width="96" height="196" fill="#c8102e"/><rect id="p_g" x="100" y="2" width="298" height="64" fill="#00843d"/><rect id="p_w" x="100" y="68" width="298" height="64" fill="#ffffff" stroke="#ddd"/><rect id="p_b" x="100" y="134" width="298" height="64" fill="#2b2b2b"/></svg></div>
+    <div class="pal" id="lnames">${B.map(([id,c,n])=>`<button data-id="${id}" style="background:${c};color:${c==="#ffffff"?"#13275a":"#fff"};width:auto;padding:0 18px;font:800 20px inherit;border-radius:999px">${n}</button>`).join("")}</div>
+    <button class="btn green" id="paint">🎨 ${t("يلا نلوّن العلم","Let's paint the flag")}</button></div>`;
+  backTo(hub);const lit=id=>{const r=$(id);r.animate([{opacity:1},{opacity:.35},{opacity:1}],{duration:700})};
+  B.forEach(([id,c,n])=>{const say=()=>{lit(id);speak(n)};$(id).onclick=say;document.querySelector(`#lnames [data-id="${id}"]`).onclick=say});
+  speak($("ls").textContent);$("paint").onclick=()=>{pop();flag()}}
+/* ---------- paint the flag, then raise it ---------- */
 function flag(){const C={red:"#c8102e",green:"#00843d",white:"#ffffff",black:"#2b2b2b"},want={r:"red",g:"green",w:"white",b:"black"};let brush="red";const got={};
-  $("app").innerHTML=head()+`<div class="card"><div class="say" id="fs">${t("لوّن العلم! اختر لونًا ثم اضغط على مكانه","Paint the flag! Pick a colour, then tap where it goes")}</div>
+  $("app").innerHTML=head()+`<div class="card fl-paint"><div class="say" id="fs">${t("لوّن العلم! اختر لونًا ثم اضغط على مكانه","Paint the flag! Pick a colour, then tap where it goes")}</div>
     <div class="pal" id="pal">${Object.keys(C).map(k=>`<button data-c="${k}" style="background:${C[k]}"></button>`).join("")}</div>
     <div class="flagbox"><svg class="flag" id="fl" viewBox="0 0 400 200"><rect id="p_r" x="2" y="2" width="96" height="196" fill="#fafafa"/><rect id="p_g" x="100" y="2" width="298" height="64" fill="#fafafa"/><rect id="p_w" x="100" y="68" width="298" height="64" fill="#fafafa"/><rect id="p_b" x="100" y="134" width="298" height="64" fill="#fafafa"/></svg></div>
     <div id="fx2"></div></div>`;

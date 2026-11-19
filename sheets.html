@@ -156,6 +156,9 @@ html[dir=rtl] .fc .wd,html[dir=rtl] .ch button{font-family:"Baloo Bhaijaan 2",sa
 .box.ok{animation:pop .4s,glw2 1.2s}.mt .k.done{animation:pop .4s}
 #fsh{transition:x .15s,y .15s}
 .st span{margin:0 .14em}
+/* ✅/❌ pictures stay inside their buttons (user 2026-11-18: the big ✓ covered the ✗) */
+.yn{gap:10px!important}.yn button{width:58px!important;height:58px!important;padding:6px!important;overflow:hidden;display:inline-flex;align-items:center;justify-content:center}
+.yn button img,.yn button .bi{width:100%!important;height:100%!important;max-width:none!important;margin:0!important;object-fit:contain}
 </style>
 </head>
 <body>
@@ -343,6 +346,23 @@ function hub(){cur=null;document.documentElement.dir="ltr";$("ttl").textContent=
    <div class="book">${SHEETS.map((s,i)=>`<button class="sh" data-k="${s.k}" style="animation-delay:${i*.06}s">${done[s.k]?'<span class="done">⭐</span>':""}<div class="pv" ${s.ar?'dir="rtl"':""}>${s.pv}</div><b ${s.ar?'dir="rtl"':""}>${s.title}</b><small>${s.ar?"عربي":"English"}</small></button>`).join("")}</div>`;
   document.querySelectorAll(".sh").forEach(b=>b.onclick=()=>{tone(700,.06);open(b.dataset.k)})}
 {const k=new URLSearchParams(location.search).get("s");if(k&&SHEETS.some(x=>x.k===k))open(k);else hub()}
+</script>
+<script>
+/* every worksheet fits the screen (user 2026-11-16: sheets did not fit in the box): the paper shrinks to the space under the title,
+   never below 60% so targets stay big; drawing/tapping keep working because zoom changes the real layout */
+(function(){const MIN=.6;let busy=false;
+  function fit(){const p=document.querySelector(".paper");if(!p||busy)return;busy=true;p.style.zoom="";p.style.width="";p.style.marginInline="";
+    const r=p.getBoundingClientRect(),m=document.querySelector("main"),st=(m&&m.scrollTop)||0,top=r.top+st,after=90,w0=p.offsetWidth,h0=p.offsetHeight;
+    const z=Math.max(MIN,Math.min(1,(innerHeight-Math.max(top,60)-after)/h0));
+    /* keep its normal width while zoomed, so it shrinks as a whole instead of reflowing wider */
+    if(z<.995){p.style.width=w0+"px";p.style.zoom=z.toFixed(3);p.style.marginInline="auto"}busy=false}
+  let t;const later=()=>{clearTimeout(t);t=setTimeout(fit,120)};
+  let down=false;addEventListener("pointerdown",()=>down=true,true);addEventListener("pointerup",()=>{down=false},true);addEventListener("pointercancel",()=>{down=false},true);
+  const safe=()=>{if(down)return later();fit()};const later2=()=>{clearTimeout(t);t=setTimeout(safe,150)};
+  addEventListener("resize",later2);addEventListener("load",later2);
+  /* only when a new sheet is drawn (direct children of the sheet body/app change), not while lines are drawn inside it */
+  const watch=()=>["app","body"].forEach(id=>{const el=document.getElementById(id);if(el&&!el._fitObs){el._fitObs=1;new MutationObserver(later2).observe(el,{childList:true})}});
+  watch();setTimeout(watch,500);later2()})();
 </script>
 </body>
 </html>

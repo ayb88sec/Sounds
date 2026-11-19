@@ -10,6 +10,7 @@
   .np-hd b{flex:1;font-size:26px;color:#16204a}
   .np-hd span{display:flex;align-items:center;gap:6px;background:#fff;border-radius:999px;padding:4px 14px 4px 6px;font-weight:800;font-size:22px;color:#16204a}
   .np-hd span img{width:34px;height:34px;background:none}
+  .np .np-tabs{display:none!important}
   .np-tabs{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:10px;margin:14px 0 0}
   .np-tabs button{display:flex;align-items:center;gap:8px;min-height:72px;border:4px solid rgba(255,255,255,.7);border-radius:22px 22px 10px 10px;background:rgba(255,253,245,.85);
     padding:4px 10px;font-family:inherit;color:#16204a;box-shadow:0 6px 0 rgba(120,80,20,.18);cursor:pointer;text-align:start}
@@ -25,6 +26,19 @@
   .np-stop.lock{background:#b9b3c4!important}
   .np-stop.cur{width:170px;height:170px;box-shadow:0 0 0 8px #ffe066,0 0 30px 10px rgba(255,214,74,.9),0 10px 0 rgba(0,0,0,.18);animation:npBob 1.6s ease-in-out infinite}
   .np-stop.sel:not(.cur){box-shadow:0 0 0 6px #16204a,0 10px 0 rgba(0,0,0,.18)}
+  .np.hz .np-stop{width:var(--sw,170px);height:calc(var(--sw,170px)*.64);border-radius:24px}
+  .np.hz .np-stop.cur{width:calc(var(--sw,170px)*1.08);height:calc(var(--sw,170px)*.7)}
+  .np.hz .np-stop b{font-size:clamp(30px,3.8vw,46px)}.np.hz .np-stop small{font-size:clamp(17px,2vw,25px);max-width:94%;opacity:1;letter-spacing:.06em;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.18)}
+  .np-stop small{font-size:22px;opacity:1}
+  /* tapping a stop starts it: no start card under the road (user 2026-11-16) */
+  .np .np-card{display:none!important}
+  .np.hz .np-stop .tag{top:auto;bottom:-40px;font-size:20px}
+  @media (orientation:landscape) and (max-height:540px){
+    .np.hz .np-hd{padding:2px 12px 2px 2px;border-width:3px}.np.hz .np-hd img{width:34px;height:34px}.np.hz .np-hd b{font-size:18px}
+    .np.hz .np-hd span{font-size:16px;padding:2px 10px 2px 4px}.np.hz .np-hd span img{width:22px;height:22px}
+    .np.hz .np-tabs{margin-top:6px;gap:6px}.np.hz .np-tabs button{min-height:44px;padding:2px 8px;border-width:3px}
+    .np.hz .np-tabs img{width:28px;height:28px}.np.hz .np-tabs b{font-size:15px}.np.hz .np-tabs small{font-size:12px}
+    .np.hz .np-road{margin-top:0}}
   @keyframes npBob{50%{transform:translate(-50%,calc(-50% - 8px))}}
   .np-stop .bd{position:absolute;top:-14px;inset-inline-end:-14px;width:48px;height:48px;border-radius:50%;border:4px solid #fff;display:flex;align-items:center;justify-content:center}
   .np-stop .tag{position:absolute;top:-56px;left:50%;transform:translateX(-50%);background:#16204a;color:#fff;font-weight:800;font-size:24px;padding:4px 18px;border-radius:999px;white-space:nowrap;box-shadow:0 5px 0 rgba(0,0,0,.18)}
@@ -33,7 +47,7 @@
   .np-deco{position:absolute;width:112px;height:112px;border-radius:24px;border:5px solid #fff;box-shadow:0 8px 16px rgba(120,80,20,.25);object-fit:cover;transform:translate(-50%,-50%) rotate(var(--r));pointer-events:none}
   .np-prize{position:absolute;width:140px;text-align:center;transform:translate(-50%,-50%);font-weight:800;font-size:20px;color:#16204a}
   .np-prize img{width:130px;height:130px;object-fit:contain;display:block;margin:0 auto -4px}
-  .np-prize.lock img{filter:grayscale(.7);opacity:.75}
+  .np-prize.lock img{filter:none;opacity:1} /* full colour even before it is won (user 2026-11-16: too pale) */
   .np-card{display:flex;align-items:center;gap:14px;margin-top:6px;background:rgba(255,253,245,.94);border:4px solid #fff;border-radius:30px;padding:12px 18px;box-shadow:0 12px 24px rgba(120,80,20,.22)}
   .np-card>img{width:110px;height:110px;object-fit:contain;flex:none}
   .np-card .tx{flex:1;min-width:0}.np-card .tx b{display:block;font-size:28px;color:#16204a}
@@ -66,6 +80,8 @@
     const ar=!!o.ar,t=(e,a)=>ar?a:e,ad=x=>String(x).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]),per=o.perWorld||3,me=(window.NAJMA&&NAJMA.me)||{};
     const root=document.createElement("div");root.className="np";o.mount.before(root);
     let sel=0,world=0;
+    /* no world tabs (user 2026-11-16): the road opens on the group the child is working on */
+    {let c0=0;while(c0<o.stops.length&&o.isDone(c0))c0++;sel=Math.min(c0,o.stops.length-1)}
     const cur=()=>{for(let i=0;i<o.stops.length;i++)if(!o.isDone(i))return i;return o.stops.length};
     function draw(){const c=cur(),nW=Math.ceil(o.stops.length/per);if(sel>Math.min(c,o.stops.length-1))sel=Math.min(c,o.stops.length-1);world=Math.floor(sel/per);
       const doneN=o.stops.filter((_,i)=>o.isDone(i)).length;
@@ -76,12 +92,26 @@
         `<div class="np-road"></div><div class="np-card"></div>`;
       root.querySelectorAll(".np-tabs button").forEach(b=>b.onclick=()=>{const w=+b.dataset.w;if(w*per>c){b.classList.add("no");say(t("Finish this world first!","خلّص هذا العالم أولًا!"));return}sel=Math.min(c,w*per+per-1,o.stops.length-1);if(sel<w*per)sel=w*per;o.onSelect&&o.onSelect(sel);draw()});
       drawRoad(c);drawCard()}
-    function drawRoad(c){const road=root.querySelector(".np-road"),W=road.clientWidth||700,a=world*per,b=Math.min(o.stops.length,a+per),n=b-a,
-        last=b===o.stops.length||true,STEP=150,H=(n+1)*STEP+20;road.style.height=H+"px";
-      const xs=i=>{const p=[.68,.28,.7,.32][i%4];return (ar?1-p:p)*W},ys=i=>95+i*STEP;
+    function drawRoad(c){const road=root.querySelector(".np-road"),W=road.clientWidth||700;lastW=road.clientWidth;const a=world*per,b=Math.min(o.stops.length,a+per),n=b-a,
+        last=b===o.stops.length||true,STEP=150,HZ=innerWidth>innerHeight;root.classList.toggle("hz",HZ);
+      /* landscape: the road runs across the screen (right to left in Arabic) with wide cards; portrait: it winds downward */
+      const H=HZ?Math.round(Math.min(280,Math.max(160,innerHeight*.32))):(n+1)*STEP+20;road.style.height=H+"px";
+      const pad=Math.min(110,W*.1),sx=(W-2*pad)/n;road.style.setProperty("--sw",Math.round(Math.min(200,sx*.6))+"px");
+      const xs=HZ?(i=>ar?W-pad-i*sx:pad+i*sx):(i=>{const p=[.68,.28,.7,.32][i%4];return (ar?1-p:p)*W}),
+        ys=HZ?(i=>H*[.4,.66][i%2]):(i=>95+i*STEP);
       const pts=[];for(let i=0;i<=n;i++)pts.push([xs(i),ys(i)]);
-      let d=`M${pts[0][0]},${pts[0][1]}`;for(let i=1;i<pts.length;i++){const [x0,y0]=pts[i-1],[x1,y1]=pts[i],m=(y0+y1)/2;d+=` C${x0},${m+30} ${x1},${m-30} ${x1},${y1}`}
-      let h=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true"><path d="${d}" fill="none" stroke="#d9a95e" stroke-width="62" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#f6dfae" stroke-width="50" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="16 16" stroke-linecap="round" opacity=".9"/></svg>`;
+      let d=`M${pts[0][0]},${pts[0][1]}`;for(let i=1;i<pts.length;i++){const [x0,y0]=pts[i-1],[x1,y1]=pts[i],m=(y0+y1)/2,mx=(x0+x1)/2;
+        d+=HZ?` C${mx},${y0} ${mx},${y1} ${x1},${y1}`:` C${x0},${m+30} ${x1},${m-30} ${x1},${y1}`}
+      /* a raised sandstone road: soft shadow, darker rim, warm surface with a light top edge, and a line of small gold dots (user 2026-11-16: make it look professional) */
+      const rw=HZ?Math.round(Math.max(30,Math.min(54,H*.2))):56,dot=Math.max(5,Math.round(rw*.16));
+      let h=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" style="overflow:visible">
+        <defs><linearGradient id="npRd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbe8bd"/><stop offset="1" stop-color="#ecc888"/></linearGradient>
+        <filter id="npSh" x="-10%" y="-30%" width="120%" height="160%"><feGaussianBlur stdDeviation="${Math.round(rw*.18)}"/></filter></defs>
+        <path d="${d}" fill="none" stroke="rgba(110,62,15,.28)" stroke-width="${rw+8}" stroke-linecap="round" filter="url(#npSh)" transform="translate(0 ${Math.round(rw*.22)})"/>
+        <path d="${d}" fill="none" stroke="#b9834a" stroke-width="${rw+8}" stroke-linecap="round"/>
+        <path d="${d}" fill="none" stroke="url(#npRd)" stroke-width="${rw}" stroke-linecap="round"/>
+        <path d="${d}" fill="none" stroke="rgba(255,250,235,.7)" stroke-width="${Math.max(2,Math.round(rw*.1))}" stroke-linecap="round" transform="translate(0 ${-Math.round(rw*.3)})"/>
+        <path d="${d}" fill="none" stroke="#d79a2c" stroke-width="${dot}" stroke-linecap="round" stroke-dasharray="0 ${Math.round(rw*.62)}"/></svg>`;
       const WD=WORLDS[world%3];
       for(let i=0;i<n;i++){const k=a+i,x=xs(i),y=ys(i),dn=o.isDone(k),isC=k===c,lk=false;
         if(!o.plain)h+=`<img class="np-deco" src="${WD.deco[i%3]}" alt="" style="left:${W-x+(x>W/2?40:-40)}px;top:${y+20}px;--r:${[-6,5,-4][i%3]}deg">`;
@@ -93,7 +123,10 @@
       road.innerHTML=h;
       road.querySelectorAll(".np-stop").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;
         if(k>c){b.classList.remove("no");void b.offsetWidth;b.classList.add("no");say(t(`Finish ${o.stops[c].label} first!`,`خلّص ${o.stops[c].label} أولًا!`));return}
-        sel=k;o.onSelect&&o.onSelect(k);drawRoad(c);drawCard()})}
+        sel=k;o.onSelect&&o.onSelect(k);drawRoad(c);drawCard();o.onStart(k)})}
+    /* redraw when the road's width changes (device turned, side panel placed after the first draw) */
+    let rz,lastW=0;const redraw=()=>{clearTimeout(rz);rz=setTimeout(()=>{const rd=root.isConnected&&root.querySelector(".np-road");if(rd&&(rd.clientWidth!==lastW||(innerWidth>innerHeight)!==root.classList.contains("hz")))drawRoad(cur())},120)};
+    addEventListener("resize",redraw);if(window.ResizeObserver)new ResizeObserver(redraw).observe(root);
     function drawCard(){const s=o.stops[sel],card=root.querySelector(".np-card");
       card.innerHTML=`<img src="img/uae/saqoor_point.webp" alt=""><div class="tx"><b>${s.label}${s.sub?" · "+s.sub:""}</b><div class="ws">${(s.words||[]).slice(0,5).map((w,i)=>`<span style="background:${COL[(i+sel)%6]}">${w}</span>`).join("")}</div></div>
         <button class="np-go" type="button"><img src="img/btn/next.webp" alt="">${o.isDone(sel)?t("Again","مرة ثانية"):t("Start","ابدأ")}</button>`;
