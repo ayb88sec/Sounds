@@ -709,7 +709,7 @@ async function drawBase(){if(!window.BASE)return;if(!BASE.uaepics)BASE.uaepics={
     r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{bStore(bApp)[key]=u.enc;qPlain["b"+bApp+key]=u.url;setTimeout(drawBase,50)},(say&&!lab.includes(say)?lab+"\n\n"+say:lab).replace(/^💡 شرح: /,"💡 "));
     if(v)r.querySelector(".rs").onclick=()=>{delete bStore(bApp)[key];delete qPlain["b"+bApp+key];saveS();drawBase()};L.appendChild(r)})}
 /* 🎙️ every Arabic sentence (voice sets in voice/<set>): record or choose Fatima / Hamdan. Same storage as the 🧩 re-recordings (qimg section, locked) */
-const AV_SETS=[["falcon","🦅 الصقر والقرية"],["long","🔤 حروفي: الأصوات الطويلة"],["clock","⏰ الساعة"],["daymonth","📅 الأيام والأشهر"]];
+const AV_SETS=[["falcon","🦅 الصقر والقرية"],["long","🔤 حروفي: الأصوات الطويلة"],["clock","⏰ الساعة"],["daymonth","📅 الأيام والأشهر"],["shukr","🤲 شكر نعم الله"]];
 let avSet="falcon",avIdx={},avA=null,avTodo=true;
 const avPlay=u=>{if(!u)return;if(avA)avA.pause();avA=new Audio(u);avA.play().catch(()=>{})};
 async function drawAllV(){

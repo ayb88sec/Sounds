@@ -53,7 +53,10 @@ const B=[
  ["nimah-eyes-ears","نِعْمَةُ السَّمْعِ وَالبَصَرِ","أَعْطَانَا اللهُ عُيُونًا نَرَى بِهَا، وَآذَانًا نَسْمَعُ بِهَا."]];
 const KEY="shukrDone";let done={};try{done=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}};
-const say=t=>{try{NAJMA.aiSay(t)}catch(e){}};
+/* children's voices (voice/shukr: Fatima for girls, Hamdan for boys); her own recording from the portal wins; the device voice only if a line has no clip */
+let SV={},SS={},sA=null;fetch("voice/shukr/index.json").then(r=>r.ok?r.json():{}).then(j=>SV=j||{}).catch(()=>{});try{NAJMA.voiceSet("shukr").then(v=>SS=v||{})}catch(e){}
+const say=t=>{let f=null;try{const v=NAJMA.voiceURL("shukr",t,SV,SS);f=v.mine||v.clip}catch(e){}
+  if(f){try{NAJMA.aiStop&&NAJMA.aiStop()}catch(e){}if(sA)sA.pause();sA=new Audio(f);sA.play().catch(()=>{try{NAJMA.aiSay(t)}catch(e){}});return}try{NAJMA.aiSay(t)}catch(e){}};
 /* sounds + confetti */
 let ac;function tone(f,d,w=0){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type="triangle";o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(.15,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d)}catch(e){}}
 const fan=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12)),COL=["#12988d","#f1c25c","#2fae4e","#4f8bff","#ff8c1a"];
