@@ -50,6 +50,17 @@ h1 span{display:inline-block;animation:hue 6s linear infinite}
 .mix{display:flex;align-items:center;justify-content:center;gap:10px;margin:24px 0 6px;font-size:40px;font-weight:800}
 .mix i{display:inline-block;width:80px;height:80px;border-radius:50%;box-shadow:0 5px 0 rgba(0,0,0,.12)}
 canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+
+/* colour shelf and pots (approved pictures, 2026-11-19) */
+.shelf{position:relative;display:block!important;margin:0 auto;aspect-ratio:2.5;width:min(100%,calc((100dvh - 250px) * 2.5));background:url(img/approved/v4/colour-shelf.webp) center/100% 100% no-repeat}
+@media (orientation:landscape) and (max-height:520px){.shelf{width:min(100%,calc((100dvh - 128px) * 2.5))}}
+.pot{position:absolute;transform:translate(-50%,-50%);width:13.5%;height:31%;border:0;background:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;animation:pop .4s backwards}
+.pot img{width:100%;height:76%;object-fit:contain;filter:drop-shadow(0 4px 4px rgba(90,50,10,.25))}.pot:active{transform:translate(-50%,-50%) scale(.94)}
+.pot .nm{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif;font-weight:800;font-size:clamp(11px,1.5vw,18px);line-height:1.1;color:#13275a;background:#fffaf0;border-radius:99px;padding:1px 8px;box-shadow:0 2px 0 #e3c48c;white-space:nowrap}
+.pot .st{position:absolute;top:-4%;font-size:clamp(9px,1.1vw,14px)}
+.blob2 img{width:min(34vh,220px);height:min(34vh,220px);object-fit:contain;cursor:pointer}.objs2 img{width:min(26vh,170px);height:min(26vh,170px);object-fit:contain}
+.potb{background:none!important;box-shadow:none!important;border:0!important}.potb img{width:100%;height:100%;object-fit:contain}
+img.mini{width:30px;height:30px;object-fit:contain;vertical-align:middle}.mix2{display:flex;align-items:center;justify-content:center;gap:10px;font-size:40px;font-weight:800}.mix2 img{width:min(18vh,110px);height:min(18vh,110px);object-fit:contain}
 </style>
 </head>
 <body>
@@ -99,12 +110,16 @@ const rain=()=>{for(let i=0;i<110;i++)setTimeout(()=>burst(Math.random()*innerWi
 const M=$("m"),open=h=>{$("mb").innerHTML=h;M.classList.add("show")},close=()=>{M.classList.remove("show");runId++};let runId=0;
 M.addEventListener("click",e=>{if(e.target===M||e.target.hasAttribute("data-close"))close()});
 const fg=c=>["yellow","white"].includes(c[0])?"#2b2340":"#fff";
+/* approved colour pictures (ChatGPT colors-ar, approved by the user 2026-11-19): paint pots on the colour shelf, one object per colour (red = the production apple) */
+const POT=k=>`img/approved/v4/paint-${k}.webp`,OBJ=k=>k==="red"?"img/approved/object-apple.webp":`img/approved/v4/obj-${k}.webp`,pimg=(k,cl="")=>`<img class="${cl}" src="${POT(k)}" alt="" draggable="false">`;
+const SLOT=[[86.4,29],[71.7,29],[57.2,29],[42.8,29],[28.3,29],[13.6,29],[84.7,69],[66.9,69],[49.7,69],[32.5,69],[15,69]];
 /* learn */
-function draw(){const G=$("grid");G.innerHTML="";
-  C.forEach((c,i)=>{const b=document.createElement("button");b.className="sw";b.style.background=c[1];b.style.animationDelay=(i*.04)+"s";if(c[0]==="white")b.style.boxShadow="0 8px 0 rgba(0,0,0,.18),inset 0 0 0 3px #eee";
-    b.innerHTML=`<span class="ob">${seg(c[4])[0]}</span><span class="nm">${nm(c)}</span><span class="st">${done[c[0]]?"⭐".repeat(done[c[0]]):""}</span>`;b.onclick=()=>{pop();burstAt(b,c[1]);openC(i)};G.appendChild(b)})}
+/* the colour shelf: 6 pots on top, 5 below, right to left in Arabic (left to right in English); names are live text */
+function draw(){const G=$("grid");G.innerHTML="";G.className="shelf";
+  C.forEach((c,i)=>{const b=document.createElement("button");b.className="pot";const [x,y]=SLOT[i];b.style.left=(EN?100-x:x)+"%";b.style.top=y+"%";b.style.animationDelay=(i*.04)+"s";
+    b.innerHTML=`${pimg(c[0])}<span class="nm">${nm(c)}</span><span class="st">${done[c[0]]?"⭐".repeat(done[c[0]]):""}</span>`;b.onclick=()=>{pop();burstAt(b,c[1]);openC(i)};G.appendChild(b)})}
 function openC(i){const c=C[i];star(c[0],1);
-  open(`<div class="blob" id="bl" style="background:${c[1]}"></div><p class="big" style="color:${c[0]==="white"?"#b8b8b8":c[1]}">${nm(c)}</p><div class="alt">${other(c)}</div><div class="objs">${c[4]}</div>
+  open(`<div class="blob2" id="bl">${pimg(c[0])}</div><p class="big" style="color:${["white","yellow"].includes(c[0])?"#13275a":c[1]}">${nm(c)}</p><div class="objs2"><img src="${OBJ(c[0])}" alt=""></div>
     <div class="bar">${VM!=="none"?'<button class="btn" id="sy">🔊</button>':""}<button class="btn g" id="pv">${EN?"⬅️":"➡️"}</button><button class="btn g" id="nx">${EN?"➡️":"⬅️"}</button></div>`);
   if($("sy"))$("sy").onclick=()=>say(c);$("bl").onclick=e=>{burstAt(e.target,c[1]);say(c)};
   $("pv").onclick=()=>openC((i+C.length-1)%C.length);$("nx").onclick=()=>openC((i+1)%C.length);setTimeout(()=>say(c),250);draw()}
@@ -114,21 +129,21 @@ function findGame(){const L=shuf(C).slice(0,8);let k=0,score=0;const id=++runId;
     const c=L[k],opts=shuf([c,...shuf(C.filter(x=>x!==c)).slice(0,2)]);let miss=0;
     open(`<div class="q">${T.q} <span style="color:${c[0]==="white"?"#999":c[1]}">${nm(c)}</span></div>${VM!=="none"?'<button class="btn g" id="sy">🔊</button>':""}<div class="opts" id="op"></div><div class="score">${k+1} / ${L.length}</div>`);
     if($("sy"))$("sy").onclick=()=>say(c);say(c);
-    opts.forEach(o=>{const b=document.createElement("button");b.style.background=o[1];if(o[0]==="white")b.style.boxShadow="0 6px 0 rgba(0,0,0,.15),inset 0 0 0 3px #ddd";
+    opts.forEach(o=>{const b=document.createElement("button");b.className="potb";b.innerHTML=pimg(o[0]);
       b.onclick=()=>{if(o===c){b.classList.add("right");const s=miss?1:3;score+=s;star(c[0],s);fan();burstAt(b,c[1]);k++;setTimeout(step,1000)}else{miss++;b.classList.add("wrong");buzz();NajmaHint(b)}};if(o===c)b.dataset.ok=1;$("op").appendChild(b)})};step()}
 /* game: what colour is this thing? */
 function objGame(){const L=shuf(C).slice(0,8);let k=0,score=0;const id=++runId;
   const step=()=>{if(id!==runId)return;if(k>=L.length){fan();rain();open(`<div class="q">${T.done}</div><div class="big">⭐ ${score}</div>`);return}
-    const c=L[k],ob=rnd(seg(c[4])),opts=shuf([c,...shuf(C.filter(x=>x!==c)).slice(0,2)]);let miss=0;
-    open(`<div class="q">${T.q2} ${EN?"this":"هذا"}؟</div><div style="font-size:110px;line-height:1.2">${ob}</div><div class="opts words" id="op"></div><div class="score">${k+1} / ${L.length}</div>`);
-    opts.forEach(o=>{const b=document.createElement("button");b.innerHTML=`<span style="display:inline-block;width:26px;height:26px;border-radius:50%;background:${o[1]};vertical-align:middle;box-shadow:inset 0 0 0 2px rgba(0,0,0,.12)"></span> ${nm(o)}`;
+    const c=L[k],opts=shuf([c,...shuf(C.filter(x=>x!==c)).slice(0,2)]);let miss=0;
+    open(`<div class="q">${T.q2} ${EN?"this":"هذا"}؟</div><div class="objs2"><img src="${OBJ(c[0])}" alt=""></div><div class="opts words" id="op"></div><div class="score">${k+1} / ${L.length}</div>`);
+    opts.forEach(o=>{const b=document.createElement("button");b.innerHTML=`${pimg(o[0],"mini")} ${nm(o)}`;
       b.onclick=()=>{if(o===c){b.classList.add("right");const s=miss?1:3;score+=s;star(c[0],s);say(c);fan();burstAt(b,c[1]);k++;setTimeout(step,1100)}else{miss++;b.classList.add("wrong");buzz();NajmaHint(b)}};if(o===c)b.dataset.ok=1;$("op").appendChild(b)})};step()}
 /* game: mixing colours */
 function mixGame(){const L=shuf(MIX);let k=0,score=0;const id=++runId;
   const step=()=>{if(id!==runId)return;if(k>=L.length){fan();rain();open(`<div class="q">${T.done}</div><div class="big">⭐ ${score}</div>`);return}
     const [a,b2,r]=L[k].map(byId),opts=shuf([r,...shuf(C.filter(x=>x!==r&&x!==a&&x!==b2)).slice(0,2)]);let miss=0;
-    open(`<div class="mix"><i style="background:${a[1]}"></i>+<i style="background:${b2[1]};${b2[0]==="white"?"box-shadow:inset 0 0 0 3px #ddd":""}"></i>=❓</div><div class="q" style="margin-top:4px">${T.mixq}</div><div class="opts words" id="op"></div><div class="score">${k+1} / ${L.length}</div>`);
-    opts.forEach(o=>{const b=document.createElement("button");b.innerHTML=`<span style="display:inline-block;width:26px;height:26px;border-radius:50%;background:${o[1]};vertical-align:middle;box-shadow:inset 0 0 0 2px rgba(0,0,0,.12)"></span> ${nm(o)}`;
+    open(`<div class="mix2">${pimg(a[0])}<b>+</b>${pimg(b2[0])}<b>=</b><b>❓</b></div><div class="q" style="margin-top:4px">${T.mixq}</div><div class="opts words" id="op"></div><div class="score">${k+1} / ${L.length}</div>`);
+    opts.forEach(o=>{const b=document.createElement("button");b.innerHTML=`${pimg(o[0],"mini")} ${nm(o)}`;
       b.onclick=()=>{if(o===r){b.classList.add("right");const s=miss?1:3;score+=s;say(r);fan();burstAt(b,r[1]);k++;setTimeout(step,1200)}else{miss++;b.classList.add("wrong");buzz();NajmaHint(b)}};if(o===r)b.dataset.ok=1;$("op").appendChild(b)})};step()}
 const bar=$("bar");[[T.find,"",findGame],[T.obj,"t",objGame],[T.mix,"y",mixGame]].forEach(([t,c,f])=>{const b=document.createElement("button");b.className="btn "+c;b.textContent=t;b.onclick=f;bar.appendChild(b)});
 draw();

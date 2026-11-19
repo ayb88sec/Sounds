@@ -459,7 +459,8 @@ const ROWS=[
   {id:"lsAkh",href:"exam.html?l=akh",glyph:"🤝",name:"أحب الخير لأخي",sub:"درس مع المعلمة",bg:"linear-gradient(150deg,#4f8bff,#22c7b8)",key:"examG2",total:0},
   {id:"lsTah",href:"exam.html?l=tah",glyph:"💧",name:"الطهارة ونواقض الوضوء",sub:"درس مع المعلمة",bg:"linear-gradient(150deg,#22c7b8,#3fc35a)",key:"examG2",total:0},
   {id:"wsAkh",href:"sheets.html?s=akh",glyph:"🌟",name:"الأخلاق الحميدة والسيئة",sub:"ورقة نشاط",bg:"linear-gradient(150deg,#3fc35a,#22c7b8)",key:"sheetsDone",total:0},
-  {id:"wsNium",href:"sheets.html?s=nium",glyph:"🌳",name:"شجرة نعم الله",sub:"ورقة نشاط",bg:"linear-gradient(150deg,#ff7eb6,#3fc35a)",key:"sheetsDone",total:0},
+  /* شكر نعم الله: a lesson replaces the "tree of blessings" worksheet (user 2026-11-18; approved pictures 2026-11-19) */
+  {id:"lsShukr",href:"thanks.html",glyph:"🤲",name:"شكر نعم الله",sub:"درس",bg:"linear-gradient(150deg,#22c7b8,#3fc35a)",key:"shukrDone",total:6},
   {id:"duas",href:"duas.html",glyph:"📿",name:"أدعية",sub:"أدعية يومية",bg:"linear-gradient(150deg,#ffb020,#ff6f91)",key:"sec_duas",total:(((NAJMA.sections.find(s=>s.type==="qimg")||{}).duas||{}).list||window.KID_DUAS||[]).length}]},
  {t:"🇬🇧 English",apps:[
   {id:"sounds",href:"index.html",glyph:"🔤",name:"Sounds",sub:"Phonics",bg:"linear-gradient(150deg,#ff7eb6,#a66bff)",key:"soundsDone",total:32},
@@ -624,7 +625,7 @@ const GROUPS={
  /* العربية and English use the same cards in the same order with the same pictures, so kids are not confused (user 2026-11-19) */
  en:[["Letters","a_letters",["sounds","writeEn"]],["Words","a_book",["cvc","sent","s:"]],["Numbers","a_num",["numEnE"]],["Maths","m_plus",["goMathEn"]],["Time","a_time",["days","months","clockEn"]],["Colours","a_palette",["colorsEn"]]],
  ar:[["حروفي","a_letters",["arabic"]],["كلماتي","a_book",["spell","s:"]],["الأرقام","a_num",["numAr"]],["الرياضيات","m_plus",["goMathAr"]],["الوقت","a_time",["daysAr","monthsAr","clockAr"]],["الألوان","a_palette",["colorsAr"]]],
- deen:[["أركان الإسلام","d_pillars",["islam"]],["أركان الإيمان","d_pillars",["iman"]],["القرآن","d_quran",["quran","s:"]],["أدعية","d_dua",["duas"]],["أحب الخير لأخي","d_mat",["lsAkh"]],["الطهارة والوضوء","d_mat",["lsTah"]]],
+ deen:[["أركان الإسلام","d_pillars",["islam"]],["أركان الإيمان","d_pillars",["iman"]],["القرآن","d_quran",["quran","s:"]],["أدعية","d_dua",["duas"]],["أحب الخير لأخي","d_mat",["lsAkh"]],["الطهارة والوضوء","d_mat",["lsTah"]],["شكر نعم الله","d_dua",["lsShukr"]]],
  mathen:[["Numbers","m_123",["numEnE"]],["Adding","m_plus",["mathPlusEn"]],["Taking away","m_minus",["mathMinusEn"]],["Shapes","m_shapes",["shapesEn"]],["Clock","m_clock",["clockEn"]]],
  math:[["الأرقام","m_123",["numEn"]],["الجمع","m_plus",["mathPlus"]],["الطرح","m_minus",["mathMinus"]],["الأشكال","m_shapes",["shapes"]],["الساعة","m_clock",["clock"]]]};
 const CHEST={en:["Worksheets","a_chest"],ar:["أوراق العمل","a_chest"],deen:["أوراق العمل","d_chest"],math:["أوراق العمل","m_chest"],mathen:["Worksheets","m_chest"]};

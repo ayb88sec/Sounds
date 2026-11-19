@@ -3,7 +3,9 @@
 (function(){
 const ISL=/islam\.html/.test(location.pathname),K=ISL?"is":"im";
 const BOY=((window.NAJMA&&NAJMA.me)||{}).gender==="m";
-const IMG=i=>`img/deen/${K}${i+1}.webp`;
+/* approved pillar pictures (ChatGPT islam-iman-pillars, approved by the user 2026-11-19); old children pictures kept only as a fallback */
+const NEWP=ISL?["pillar-shahada","pillar-salah","pillar-zakah","pillar-sawm","pillar-hajj"]:["iman-allah","iman-angels","iman-books","iman-messengers","iman-lastday","iman-qadr"];
+const IMG=i=>NEWP[i]?`img/approved/v4/${NEWP[i]}.webp`:`img/deen/${K}${i+1}.webp`;
 const ME=ISL?[
  ["أَعْتَقِدُ بِقَلْبِي وَأَقُولُ بِلِسَانِي: لَا إِلَهَ إِلَّا اللَّهُ، مُحَمَّدٌ رَسُولُ اللَّهِ.","أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ"],
  ["أُصَلِّي خَمْسَ مَرَّاتٍ فِي اليَوْمِ وَاللَّيْلَةِ، فَهِيَ صِلَةٌ بَيْنِي وَبَيْنَ رَبِّي.","أُقِيمُ الصَّلَاةَ فِي أَوْقَاتِهَا"],

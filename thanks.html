@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<script src="supa.js"></script>
+<script src="profile.js"></script><script src="landscape.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon-n.png"><link rel="icon" href="icon-n.png">
+<title>شكر نعم الله</title><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#2f9cfc">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&display=swap">
+<style>
+/* شكر نعم الله: a short lesson that replaces the "tree of blessings" worksheet (user 2026-11-18/19).
+   One blessing per screen (approved ChatGPT pictures, thankful-lesson), its live Arabic name, a sentence, then the child says الحمد لله.
+   Ends with the closing picture of the selected child (girl or boy). Fits the screen without scrolling. */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0}
+body{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif;color:#13275a;min-height:100vh}
+main{max-width:980px;margin:0 auto;padding:16px 12px 20px}
+.head{text-align:center;margin:4px 0 10px}.head h1{display:inline-block;margin:0;font-size:30px}
+.card{background:linear-gradient(#fffdf6,#fff4d6);border:5px solid #fffdf5;border-radius:32px;box-shadow:0 10px 0 #e0bf86,0 18px 30px rgba(110,70,15,.22);display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);align-items:center;gap:10px;padding:14px;animation:in .35s ease}
+@keyframes in{from{transform:translateY(12px);opacity:0}}
+.pic{display:flex;align-items:center;justify-content:center;cursor:pointer}
+.pic img{width:100%;max-height:min(52dvh,380px);object-fit:contain;filter:drop-shadow(0 8px 8px rgba(110,60,10,.22));animation:float 3.2s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-6px)}}
+.side{text-align:center}
+.nm{display:inline-block;background:#12988d;color:#fff;border-radius:999px;padding:4px 24px;font-size:clamp(20px,3.6dvh,30px);font-weight:800;box-shadow:0 4px 0 #0b6e66}
+.tx{font-size:clamp(20px,4dvh,32px);font-weight:700;line-height:1.7;margin:12px 6px;cursor:pointer}
+.hm{font-family:inherit;font-size:clamp(22px,4.4dvh,34px);font-weight:800;border:0;border-radius:999px;padding:10px 28px;cursor:pointer;color:#13275a;background:linear-gradient(#ffe7a6,#f1c25c);box-shadow:0 6px 0 #c99a3a}
+.hm:active{transform:translateY(4px);box-shadow:0 2px 0 #c99a3a}.hm.ok{background:linear-gradient(#7fe0a0,#2fae4e);color:#fff;box-shadow:0 6px 0 #1d7a35}
+.dots{display:flex;gap:8px;justify-content:center;margin-top:14px}.dots i{width:14px;height:14px;border-radius:50%;background:#ead9b4}.dots i.on{background:#12988d}.dots i.ok{background:#2fae4e}
+.nav{display:flex;justify-content:space-between;margin-top:10px}
+.nav button{font-family:inherit;font-size:18px;font-weight:800;border:0;border-radius:999px;padding:8px 18px;background:#fffaf0;color:#13275a;box-shadow:0 4px 0 #e3c48c;cursor:pointer}
+.nav button:disabled{opacity:.35}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+@media (orientation:portrait){.card{grid-template-columns:1fr}.pic img{max-height:36dvh}}
+@media (orientation:landscape) and (max-height:520px){main{padding:6px 8px 4px}.card{padding:8px;border-radius:22px;gap:6px}.pic img{max-height:calc(100dvh - 200px)}.side .tx{margin:4px}.tx{font-size:17px;margin:6px 4px;line-height:1.5}.nm{font-size:18px;padding:2px 16px}.hm{font-size:20px;padding:6px 18px}.dots{margin-top:6px}.dots i{width:10px;height:10px}.nav{margin-top:4px}.nav button{padding:4px 12px;font-size:15px}}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<main><div class="head" id="head"><h1>🤲 شكر نعم الله</h1></div><section id="app"></section></main>
+<script>
+const $=id=>document.getElementById(id),W=n=>`img/approved/v4/${n}.webp`;
+const BOY=((window.NAJMA&&NAJMA.me)||{}).gender==="m";
+/* the six blessings in the order ChatGPT's layout advice gives; text is live Arabic, simple for ages 4-6 */
+const B=[
+ ["nimah-family","نِعْمَةُ الأُسْرَةِ","أَعْطَانَا اللهُ أُسْرَةً تُحِبُّنَا وَتَرْعَانَا."],
+ ["nimah-food","نِعْمَةُ الطَّعَامِ","أَعْطَانَا اللهُ طَعَامًا طَيِّبًا نَأْكُلُهُ."],
+ ["nimah-water","نِعْمَةُ المَاءِ","أَعْطَانَا اللهُ مَاءً نَظِيفًا نَشْرَبُهُ."],
+ ["nimah-home","نِعْمَةُ البَيْتِ","أَعْطَانَا اللهُ بَيْتًا نَعِيشُ فِيهِ بِأَمَانٍ."],
+ ["nimah-health","نِعْمَةُ الصِّحَّةِ","أَعْطَانَا اللهُ صِحَّةً نَلْعَبُ وَنَتَعَلَّمُ بِهَا."],
+ ["nimah-eyes-ears","نِعْمَةُ السَّمْعِ وَالبَصَرِ","أَعْطَانَا اللهُ عُيُونًا نَرَى بِهَا، وَآذَانًا نَسْمَعُ بِهَا."]];
+const KEY="shukrDone";let done={};try{done=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}};
+const say=t=>{try{NAJMA.aiSay(t)}catch(e){}};
+/* sounds + confetti */
+let ac;function tone(f,d,w=0){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type="triangle";o.frequency.setValueAtTime(f,ac.currentTime+w);g.gain.setValueAtTime(.15,ac.currentTime+w);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+w+d);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+w);o.stop(ac.currentTime+w+d)}catch(e){}}
+const fan=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,i*.12)),COL=["#12988d","#f1c25c","#2fae4e","#4f8bff","#ff8c1a"];
+const cv=$("fx"),cx=cv.getContext("2d");let parts=[],run=false;function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}size();addEventListener("resize",size);
+function burst(x,y,n=40){for(let i=0;i<n;i++){const a=Math.random()*6.28,v=3+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:4+Math.random()*6,c:COL[i%5],life:90})}if(!run){run=true;requestAnimationFrame(loop)}}
+function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.life-->0);for(const p of parts){p.vy+=.25;p.x+=p.vx;p.y+=p.vy;cx.fillStyle=p.c;cx.globalAlpha=Math.min(1,p.life/30);cx.fillRect(p.x,p.y,p.r,p.r/2)}if(parts.length)requestAnimationFrame(loop);else run=false}
+const burstAt=el=>{const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2)};
+let cur=0;
+function dots(){return `<div class="dots">${B.map((_,i)=>`<i class="${done[i]?"ok":i===cur?"on":""}"></i>`).join("")}<i class="${cur===B.length?"on":""}"></i></div>`}
+function draw(){if(cur>=B.length)return closing();const [im,nm,tx]=B[cur];
+  $("app").innerHTML=`<div class="card"><div class="pic" id="pc"><img src="${W(im)}" alt="${nm}"></div><div class="side"><span class="nm">${nm}</span><div class="tx" id="tx">${tx}</div>
+    <button class="hm${done[cur]?" ok":""}" id="hm">🤲 الحَمْدُ لِلَّهِ</button>${dots()}
+    <div class="nav"><button id="pv" ${cur?"":"disabled"}>➡️ السابق</button><button id="nx">التالي ⬅️</button></div></div></div>`;
+  const tell=()=>say(nm+". "+tx+" نَقُولُ: الحَمْدُ لِلَّهِ");$("pc").onclick=tell;$("tx").onclick=tell;setTimeout(tell,350);
+  $("hm").onclick=e=>{say("الحَمْدُ لِلَّهِ");if(!done[cur]){done[cur]=1;save()}e.target.classList.add("ok");fan();burstAt(e.target);setTimeout(()=>{cur++;draw()},1300)};
+  $("pv").onclick=()=>{if(cur){cur--;draw()}};$("nx").onclick=()=>{cur++;draw()}}
+function closing(){const all=B.every((_,i)=>done[i]);
+  $("app").innerHTML=`<div class="card"><div class="pic" id="pc"><img src="${W(BOY?"nimah-closing-boy":"nimah-closing-girl")}" alt=""></div><div class="side"><span class="nm">نَشْكُرُ اللهَ</span>
+    <div class="tx" id="tx">نَشْكُرُ اللهَ عَلَى نِعَمِهِ الكَثِيرَةِ، وَنَقُولُ دَائِمًا: الحَمْدُ لِلَّهِ.</div><button class="hm ok" id="hm">🤲 الحَمْدُ لِلَّهِ</button>${dots()}
+    <div class="nav"><button id="pv">➡️ السابق</button><button id="ag">🔁 من البداية</button></div></div></div>`;
+  const tell=()=>say($("tx").textContent);$("pc").onclick=tell;$("tx").onclick=tell;setTimeout(tell,350);
+  $("hm").onclick=e=>{say("الحَمْدُ لِلَّهِ");fan();burstAt(e.target)};$("pv").onclick=()=>{cur=B.length-1;draw()};$("ag").onclick=()=>{cur=0;draw()};
+  if(all){fan();setTimeout(()=>burst(innerWidth/2,innerHeight/3,80),300)}}
+window.NAJMA_PROGRESS=()=>({done:B.filter((_,i)=>done[i]).length,total:B.length});
+window.NAJMA_RESET=()=>{localStorage.removeItem(KEY);done={};cur=0;draw()};
+draw();
+</script>
+<script src="extras.js?v=10"></script>
+<script src="frame.js"></script><script>NajmaFrame({tools:[{el:".nx-reset",icon:"again"}]});</script>
+</body>
+</html>
