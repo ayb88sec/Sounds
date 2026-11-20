@@ -649,6 +649,13 @@ GROUPS.ar.splice(2,0,["المشاعر",GIRL?"../x/feg0":"x_feel",["p_feelL"]]);G
 GROUPS.deen=[["أركاني","d_pillars",["islam","iman","p_islam","p_aqeeda"]],["صلاتي","x_pray",["p_wudu","p_salah","p_five","lsTah"]],["القرآن","d_quran",["quran","s:"]],["أدعية","d_dua",["duas"]],["أخلاقي","x_manners",["p_akhlaq","lsAkh","lsShukr"]],["نبيي ﷺ","x_tree",["p_nasab"]]];
 /* عالمي: every activity as its own icon on the first page, writing the name first (user 2026-11-20) */
 delete GROUPS.name;
+/* distinct pictures from ChatGPT (2026-11-20): no card repeats another card's picture */
+{const I=(g,n,ic)=>{const x=(GROUPS[g]||[]).find(z=>z[0]===n);if(x)x[1]=ic};
+ I("ar","الرياضيات","n_maths");I("en","Maths","n_maths");I("ar","الوقت","n_time");I("en","Time","n_time");I("ar","الألوان","n_colours");I("en","Colours","n_colours");
+ I("math","العدّ","n_counting");I("math","الجمع","n_adding");I("math","الطرح","n_takeaway");I("math","أكثر وأقل","n_moreless");I("math","الساعة","n_clock");
+ I("mathen","Adding","n_adding");I("mathen","Taking away","n_takeaway");I("mathen","Clock","n_clock");
+ I("deen","أركاني","n_pillars_islam");I("deen","صلاتي","n_salah");I("deen","أخلاقي","n_akhlaq");I("deen","نبيي ﷺ","n_nabi")}
+Object.assign(LI,{islam:"n_pillars_islam",iman:"n_pillars_iman",lsShukr:"n_thanks",lsAkh:"n_lsAkh",lsTah:"n_lsTah",name:"n_name",clock:"n_clock",clockAr:"n_clock",clockEn:"n_clock",mathPlus:"n_adding",mathMinus:"n_takeaway",mathPlusEn:"n_adding",mathMinusEn:"n_takeaway"});
 const CHEST={en:["Worksheets","a_chest"],ar:["أوراق العمل","a_chest"],deen:["أوراق العمل","d_chest"],math:["أوراق العمل","m_chest"],mathen:["Worksheets","m_chest"]};
 /* every visible lesson in the app, plus maths split into adding and taking away */
 function pool(){const seen=new Set(),P=[];Object.keys(CATS).forEach(k=>vis(k).forEach(a=>{if(seen.has(a.id))return;seen.add(a.id);P.push(a)}));
@@ -677,12 +684,12 @@ const ROOM={
 /* approved artwork for every menu picture (img/approved); anything without a matching pack object keeps its old picture and is listed in COMPLETE-REVAMP-CHECKLIST.md */
 const APM={a_letters:"learning-book",l_blocks:"learning-book",a_book:"learning-writing",l_book:"learning-book",e_sound:"learning-book",l_sound:"learning-book",e_abc:"object-cat",l_puzzle:"object-cat",l_cards:"learning-book",l_sight:"learning-book",
   e_write:"learning-writing",l_write:"learning-writing",l_name:"learning-writing",l_crayons:"learning-worksheet",l_task:"learning-worksheet",a_chest:"learning-worksheet",e_chest:"learning-worksheet",d_chest:"learning-worksheet",m_chest:"learning-worksheet",
-  m_123:"learning-abacus",a_num:"learning-abacus",l_abacus:"learning-abacus",l_dice:"learning-abacus",m_plus:"object-apple",m_minus:"object-apple",m_shapes:"learning-worksheet",l_shapes:"learning-worksheet",
+  m_123:"learning-abacus",a_num:"learning-abacus",l_abacus:"learning-abacus",l_dice:"learning-abacus",m_plus:"object-apple",m_minus:"object-apple",
   e_palette:"object-duck",a_palette:"object-duck",l_colors:"object-duck",d_cal:"learning-calendar",l_week:"learning-calendar",l_month:"learning-calendar",a_time:"learning-clock",m_clock:"learning-clock",l_clock:"learning-clock",
   d_pillars:"learning-lantern",l_pillars:"learning-lantern",l_lantern:"learning-lantern",d_quran:"learning-quran",l_quran:"learning-quran",d_dua:"learning-dua",l_dua:"learning-dua",d_mat:"learning-book",l_flag:"village-dhow"};
 const apic=n=>APM[n]?`<img src="img/approved/${APM[n]}.webp" alt="">`:pic(n);
 /* each place's own scene plate */
-const SCN={ar:"scene-arabic-fort",en:"scene-english-library",deen:"scene-islam-mosque",math:"scene-maths-souq",uae:"scene-uae-harbour",name:"scene-name-majlis",hw:"scene-arabic-fort"};
+const SCN={mathen:"scene-english-maths",ar:"scene-arabic-fort",en:"scene-english-library",deen:"scene-islam-mosque",math:"scene-maths-souq",uae:"scene-uae-harbour",name:"scene-name-majlis",hw:"scene-arabic-fort"};
 function drawRoad(k){const s=PLACE[k],A=$("#roadarea"),R=GROUPS[k];document.documentElement.style.setProperty("--ac",s.c);$("#roadtitle").textContent=s.name;
   $$(".starcount").forEach(e=>e.textContent=String(stars));closeG();
   const G=groupsOf(k),bg=$("#roadbg");bg.src=`img/approved/${SCN[k]||"background-lesson"}.webp`;bg.style.objectPosition="center";bg.style.display="";
