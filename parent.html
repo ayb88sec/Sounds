@@ -113,7 +113,7 @@ setTimeout(function(){var g=document.getElementById("gate");if(g&&getComputedSty
   <div style="margin:12px 0 6px;color:#7a7090">أو</div><input class="in" id="fCode" dir="ltr" placeholder="رمز الدعوة" style="text-transform:uppercase;margin-bottom:8px"><button class="b" id="fJoin" style="width:100%">🔗 انضمام</button></div>
   <div id="aMsg" style="margin-top:10px;color:#c93a50;font-weight:700;min-height:1em"></div></div></div>
 <header><img src="icon.png" alt=""><h1>بوابة الوالدين</h1><a href="guide.html" style="margin-inline-end:6px">📘 الدليل</a><a href="home.html?preview=1">🏠 التطبيق</a></header>
-<nav><button data-t="dash" class="on">📊 اللوحة</button><button data-t="kids">👧 الأطفال</button><button data-t="secs">📚 المحتوى</button><button data-t="parents" id="navParents" style="display:none">👨‍👩‍👧 الوالدين</button><button data-t="admin" id="navAdmin" style="display:none">🛡️ الإدارة</button><button data-t="cloud">☁️ الاتصال</button></nav>
+<nav><button data-t="dash" class="on">📊 اللوحة</button><button data-t="kids">👧 الأطفال</button><button data-t="secs">📚 المحتوى</button><button data-t="voice">🎙️ صوتي</button><button data-t="parents" id="navParents" style="display:none">👨‍👩‍👧 الوالدين</button><button data-t="admin" id="navAdmin" style="display:none">🛡️ الإدارة</button><button data-t="cloud">☁️ الاتصال</button></nav>
 <main>
   <div class="panel on" id="dash">
     <div class="stats3" id="dStats"></div>
@@ -130,6 +130,7 @@ setTimeout(function(){var g=document.getElementById("gate");if(g&&getComputedSty
     <h3 class="dh">🕌 ديني</h3><div id="relList"></div>
     <h3 class="dh">🧩 التطبيقات الجاهزة</h3><div id="readyList"></div>
 </div>
+  <div class="panel" id="voice"><div class="note">🎙️ <b>سجّلي صوتك</b>: اختاري التطبيق، ثم اضغطي 🎤 بجانب أي صوت أو جملة. صوتك يحل محل الصوت الأصلي عند أطفالك.</div><div id="voiceList"></div></div>
   <div class="panel" id="quran"><button class="b back" data-back style="margin-bottom:10px">➡️ رجوع إلى المحتوى</button><h3 class="dh sub-t" style="margin-top:0"></h3>
     <div class="chips" id="relTabs" style="display:none"><button class="on" data-r="rQ" style="font-size:19px">📖 القرآن</button><button data-r="rD" style="font-size:19px">📿 الأدعية</button></div>
     <div id="rD" style="display:none"><div id="dVoice"></div><div class="note">📿 <b>الأدعية</b>: تظهر للأطفال في «ديني». سجّل صوتك لكل دعاء بـ 🎤، وغيّر الصورة بـ 📷، أو أضف دعاءً جديدًا.</div>
@@ -342,8 +343,17 @@ function drawSecs(){const L=$("secList"),HL=$("hwList");L.innerHTML="";HL.innerH
     if(!mine&&!IS_ADMIN){const b=d.querySelector("button:last-child");b.textContent="👀 من عائلة أخرى";b.disabled=true;b.style.opacity=.6}else d.querySelector("button:last-child").onclick=()=>editSec(s);(s.hw?HL:L).appendChild(d)});
   $("gHw").style.display=(HL.children.length||$("hwPack").children.length||feat("homework"))?"":"none";if(!L.children.length)L.innerHTML='<div class="note">لا توجد أقسام بعد. اضغط «➕ قسم جديد».</div>'}
 /* one place for everything: religion and the ready apps open their editors from here */
-function openSub(panel,title){document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));$(panel).classList.add("on");$(panel).querySelector(".sub-t").textContent=title;if(panel==="quran"){if($("rD").style.display==="none")vPick("qVoice","quran","mine");else vPick("dVoice","duas","mine")}window.scrollTo(0,0)}
-document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));$("secs").classList.add("on");drawSecs();window.scrollTo(0,0)});
+function openSub(panel,title){{const fromV=document.querySelector('nav [data-t="voice"]').classList.contains("on");document.querySelectorAll("[data-back]").forEach(b=>b.textContent=fromV?"➡️ رجوع إلى صوتي":"➡️ رجوع إلى المحتوى")}document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));$(panel).classList.add("on");$(panel).querySelector(".sub-t").textContent=title;if(panel==="quran"){if($("rD").style.display==="none")vPick("qVoice","quran","mine");else vPick("dVoice","duas","mine")}window.scrollTo(0,0)}
+document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));if(document.querySelector('nav [data-t="voice"]').classList.contains("on")){$("voice").classList.add("on");drawVoice()}else{$("secs").classList.add("on");drawSecs()}window.scrollTo(0,0)});
+/* 🎙️ صوتي: every place the parent can record her voice, in its own tab (user 2026-11-20) */
+function drawVoice(){const V=$("voiceList");if(!V)return;V.innerHTML="";const rec="سجّلي صوتك بدل الصوت الأصلي";
+  const app=k=>{if(!window.BASE||!BASE[k])return;const t=BASE[k].t,m=t.match(/^(\S+)\s+(.*)$/);const icon=m&&!/[a-zA-Z\u0600-\u06FF]/.test(m[1])?m[1]:"🧩",name=m&&icon!=="🧩"?m[2]:t;V.appendChild(hubRow(icon,name,rec,()=>{bApp=k;bG=0;openSub("base",t);drawBase()}))};
+  app("clips");
+  V.appendChild(hubRow("🔤","حروف المد","تسجيلاتك للمدود (من كلماتي الأولى)",()=>{bApp="spell";bG=1;openSub("base","🔤 حروف المد");drawBase()}));
+  V.appendChild(hubRow("🎙️","كل الجمل العربية","سجّلي صوتك أو اختاري فاطمة / حمدان لكل جملة",()=>{openSub("allv","🎙️ كل الجمل العربية");drawAllV()}));
+  V.appendChild(hubRow("📖","قصص القرآن","سجّلي شرحك بصوتك",()=>{document.querySelector('#relTabs [data-r="rQ"]').click();openSub("quran","📖 قصص القرآن")}));
+  V.appendChild(hubRow("📿","الأدعية","سجّلي صوتك لكل دعاء",()=>{document.querySelector('#relTabs [data-r="rD"]').click();openSub("quran","📿 الأدعية")}));
+  if(window.BASE)Object.keys(BASE).forEach(k=>{if(k!=="clips"&&k!=="uaepics")app(k)})}
 function hubRow(icon,title,sub,go){const d=document.createElement("div");d.className="row";d.style.cursor="pointer";
   d.innerHTML=`<div class="av" style="background:#efe9ff">${icon}</div><div class="info"><b>${title}</b><small>${sub}</small></div><button class="b">✏️ فتح</button>`;d.onclick=go;return d}
 function drawHub(){const RL=$("relList"),AL=$("readyList");if(!RL)return;RL.innerHTML="";AL.innerHTML="";
@@ -740,7 +750,7 @@ async function drawAllV(){
       QQ.vpick=QQ.vpick||{};delete QQ.vpick[avSet+"|"+t];setTimeout(drawAllV,50)},t);
     const rs=r.querySelector(".rs");if(rs)rs.onclick=()=>{if(!confirm("حذف تسجيلك لهذه الجملة؟"))return;const QQ=qSec();if(QQ.ov&&QQ.ov["v:"+avSet])delete QQ.ov["v:"+avSet][t];delete qPlain["v"+avSet+t];saveS();drawAllV()};
     L.appendChild(r)})}
-document.querySelector('nav [data-t="secs"]').addEventListener("click",()=>drawSecs());
+document.querySelector('nav [data-t="secs"]').addEventListener("click",()=>drawSecs());document.querySelector('nav [data-t="voice"]').addEventListener("click",()=>drawVoice());
 /* parent.html#rec: open "كل الجمل العربية" straight away (her recording page, 2026-11-19) */
 if(location.hash==="#rec"){let tries=0;const goRec=()=>{const n=document.querySelector('nav [data-t="secs"]');if(n&&n.offsetParent&&typeof FID!=="undefined"&&FID){n.click();openSub("allv","🎙️ سجّلي صوتك");drawAllV()}else if(tries++<360)setTimeout(goRec,500)};setTimeout(goRec,800)}
 {const _d=drawSecs;drawSecs=function(){_d();if($("base").classList.contains("on"))drawBase()}}

@@ -244,7 +244,7 @@ function makeDrag(el,onDrop){el.addEventListener("pointerdown",e=>{if(dragging||
 const stage=$("#stage");let CUR=null,RUN=null;
 function view(html){stage.innerHTML=`<div class="view">${html}</div>`;return stage.firstChild}
 /* a game = sequence of rounds; each round fn(root,next,miss) */
-const SCN={math:"bg-lesson-maths",en:"bg-lesson-english",ar:"bg-lesson-arabic",disc:"bg-lesson-name",lsn:"bg-lesson-islam"};
+const SCN={math:"bg-lesson-maths",mathen:"bg-lesson-maths",en:"bg-lesson-english",ar:"bg-lesson-arabic",disc:"bg-lesson-name",lsn:"bg-lesson-islam"};
 function scene(n){$(".bgsc").style.backgroundImage=`url(img/approved/${n}.webp)`}
 function play(act){CUR=act;scene(act.scene||SCN[act.sec]);$("#ttl").textContent=act.name;$("#ttl").dir=act.en?"ltr":"rtl";$("#end").classList.remove("on");location.hash=act.id;
  const rounds=act.rounds();let i=0,miss=0;setProg(rounds.length,0);
@@ -335,6 +335,31 @@ act({id:"bees",sec:"en",en:1,name:"Bee Letters",sub:"Capital and small",pv:"bee"
  dragRound({q:"Match the small letter to the big letter",lang:"en",hideDock:1,itemW:96,itemH:96,targets:ls.map(c=>({k:c,w:200,h:260,say:c,html:`<div style="display:flex;flex-direction:column;align-items:center"><div class="sign lt" style="min-width:110px;height:84px;padding:0 14px;background:linear-gradient(#d39b5a,#a8692c);border:4px solid #7c4a1a;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:60px;color:#fff;text-shadow:0 3px 0 #7c4a1a">${c}</div><div style="width:6px;height:18px;background:#7c4a1a"></div><img src="${A("bee")}" style="width:150px"></div>`})),
   items:ls.map(c=>({k:c,html:`<div class="lt" style="width:90px;height:90px;clip-path:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%);background:linear-gradient(#ffe066,#f5b700);display:grid;place-items:center;font-size:56px;color:#5a3300">${c.toLowerCase()}</div>`,say:c})),
   onGood:(el,t)=>{const s=t.querySelector(".sign");s.innerHTML=`${t.dataset.k}<span style="color:#ffe066">${t.dataset.k.toLowerCase()}</span>`;s.style.animation="pop .35s var(--pop)"}})})}});
+/* ===== GRADE 1 (school worksheets, 2026-11-20) ===== */
+/* Inflectional Endings "Presto Chango!": the same 10 base words; drag the right -ed and -ing spellings into the two boxes (answers from the school key) */
+const ENDW=[["push","pushed","pushing","pushd","pusing"],["hop","hopped","hopping","hoped","hoping"],["jump","jumped","jumping","jumpd","jumpping"],["grab","grabbed","grabbing","grabed","grabing"],["talk","talked","talking","talkd","talkking"],
+ ["walk","walked","walking","walkked","walkin"],["faint","fainted","fainting","faintd","faintting"],["play","played","playing","plaied","plaing"],["watch","watched","watching","wached","watcing"],["cook","cooked","cooking","cookd","coking"]];
+const wcard=(w,c)=>`<div class="lt" style="width:100%;height:100%;display:grid;place-items:center;border-radius:22px;background:${c||"#fffaf0"};border:3px solid #fff;box-shadow:0 5px 0 #d9b77a;font-size:34px;color:#13275a">${w}</div>`;
+act({id:"endings",sec:"en",en:1,g1:1,name:"Presto Chango! -ed and -ing",sub:"Inflectional endings",pv:null,pvh:wcard("hop<span style='color:#e8590c'>ped</span>"),rounds:()=>shuf(ENDW).slice(0,6).map(([b,ed,ing,x1,x2])=>()=>{
+ const dbl=ed.length-b.length===3;
+ dragRound({q:`Add -ed and -ing to "${b}"`,lang:"en",hideDock:1,itemW:210,itemH:84,need:2,
+  targets:[["ed","-ed: happened in the past","#2567c9"],["ing","-ing: happening now","#2f9a57"]].map(([k,l,c])=>({k,w:330,h:230,cls:"bin",bc:c,say:k==="ed"?"happened in the past":"happening now",
+   html:`<div style="display:flex;flex-direction:column;align-items:center;gap:10px"><b class="lt" style="font-size:44px;color:#13275a">${b}<span style="color:${c}"> + ${k==="ed"?"ed":"ing"}</span></b><span style="font-size:20px;font-weight:800;color:${c}">${l.split(": ")[1]}</span><div class="ans" style="width:240px;height:78px;border:3px dashed ${c};border-radius:20px"></div></div>`})),
+  items:[{k:"ed",html:wcard(ed),praise:"Yes! "+ed,lang:"en"},{k:"ing",html:wcard(ing),praise:"Yes! "+ing,lang:"en"},{k:"x",html:wcard(x1),say:x1},{k:"x",html:wcard(x2),say:x2}],
+  onGood:(el,t)=>{const a=t.querySelector(".ans");a.innerHTML=wcard(t.dataset.k==="ed"?ed:ing,"#fff4d6");a.style.border="0";say(t.dataset.k==="ed"?ed:ing,"en")}});
+ if(dbl)setTimeout(()=>fal("point","Short vowel: double the last letter! "+b+" → "+ed,"en"),2600)})});
+/* Lesson 5-2 "Count back to subtract": the six questions of the sheet on a 5 to 20 number line; the child hops back one number at a time */
+function lineRound(a,b,demo){const v=view(`<div class="q"></div><div class="big" style="flex-direction:column;gap:18px"><div class="lt" dir="ltr" style="font-size:64px;color:#13275a" id="eq">${a} − ${b} = ?</div>
+  <div id="nl" style="position:relative;display:flex;gap:6px;direction:ltr;padding-top:90px"></div><div id="cnt" dir="ltr" style="font-size:28px;font-weight:800;color:#2567c9;min-height:40px"></div></div><div class="ops row" style="padding-bottom:12px"></div>`);
+ ask(demo?`Watch: start at ${a} and count back ${b}.`:`Start at ${a}. Count back ${b}. Tap each number.`,"en");
+ const NL=v.querySelector("#nl"),bt={};for(let n=5;n<=20;n++){const d=document.createElement("button");d.className="opt";d.style.cssText="width:58px;height:66px;font-size:30px;font-weight:800;color:#13275a;padding:0";d.textContent=n;bt[n]=d;NL.appendChild(d)}
+ const mk=document.createElement("img");mk.src=A("duck");mk.style.cssText="position:absolute;top:6px;width:70px;transition:left .45s var(--pop);pointer-events:none";NL.appendChild(mk);
+ const at=n=>{mk.style.left=(bt[n].offsetLeft-6)+"px"};requestAnimationFrame(()=>at(a));bt[a].style.background="#ffe066";
+ let cur=a,c=0;const end=()=>{const r=a-b;v.querySelector("#eq").textContent=`${a} − ${b} = ${r}`;bt[r].style.background="#b2f2bb";good(`${a} take away ${b} is ${r}!`,"en");setTimeout(RUN.next,demo?2200:1800)};
+ const step=()=>{cur--;c++;at(cur);bt[cur].style.background="#d0ebff";tone(500+c*60,.1,0,"triangle");v.querySelector("#cnt").textContent=Array.from({length:c},(_,i)=>i+1).join(", ");say(String(c),"en");if(c===b)setTimeout(end,500)};
+ if(demo){let k=0;const T=setInterval(()=>{if(k++>=b-1)clearInterval(T);step()},900);return}
+ let miss=0;Object.keys(bt).forEach(n=>{bt[n].onclick=()=>{n=+n;if(c>=b)return;if(n===cur-1){step()}else{bad();bt[n].classList.add("wob");setTimeout(()=>bt[n].classList.remove("wob"),340);if(++miss>=2)bt[cur-1].classList.add("hint");setTimeout(()=>bt[cur-1].classList.remove("hint"),1400)}}})}
+act({id:"countback",sec:"mathen",en:1,g1:1,name:"Count Back to Subtract",sub:"Number line",pv:null,pvh:`<div class="lt" style="font-size:56px;color:#13275a">13 − 6</div>`,rounds:()=>[()=>lineRound(10,4,1),...[[8,2],[13,6],[11,3],[16,7],[15,8],[14,2]].map(([a,b])=>()=>lineRound(a,b))]});
 act({id:"balloonsEn",sec:"en",en:1,name:"Colour the Balloons",sub:"Read the colour word",pv:null,pvh:balloon("#e03131"),rounds:()=>pickN(COL,5).map(c=>()=>{const o=pickN(COL.filter(x=>x!==c),2);
  pickRound({q:"Paint the balloon "+c[0],lang:"en",top:`<div style="display:flex;flex-direction:column;align-items:center"><div id="bl" style="height:min(40vh,300px);aspect-ratio:.7">${balloon()}</div><b class="lt" style="font-size:52px">${c[0]}</b></div>`,w:120,h:120,
   opts:[{bg:c[2],html:" ",ok:1},...o.map(x=>({bg:x[2],html:" ",say:x[0]}))],praise:"Yes! "+c[0]+"!",after:()=>{$("#bl").innerHTML=balloon(c[2]);$("#bl").style.animation="pop .4s var(--pop)"}})})});
@@ -484,7 +509,7 @@ function hub(sec){scene("home_bg");sec=sec||store.get("sec","disc");store.set("s
  const L=ACTS.filter(a=>a.sec===sec);v.querySelector("#grid").innerHTML=L.map((a,i)=>`<button class="tile" data-id="${a.id}" style="--c:${s[3]};animation-delay:${i*.04}s"><div class="pv${a.pvs?" sil":""}">${a.pvh?`<div style="height:104px;width:76px">${a.pvh}</div>`:`<img src="${A(a.pv)}">`}</div><b dir="auto">${a.name}</b>${done[a.id]?`<img class="dn" src="${A("r_star")}">`:""}</button>`).join("");
  v.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{sTap();const a=ACTS.find(x=>x.id===b.dataset.id);fal("point");play(a)});
  fal("wave",sec==="lsn"?"اختار درس":"اختار لعبة!")}
-const BACKSEC={math:"math",en:"en",ar:"ar",disc:"name",lsn:"deen"};const goBack=()=>{try{speechSynthesis.cancel()}catch(e){}location.href="world.html#c="+BACKSEC[(CUR&&CUR.sec)||"disc"]};
+const BACKSEC={math:"math",mathen:"mathen",en:"en",ar:"ar",disc:"name",lsn:"deen"};const goBack=()=>{try{speechSynthesis.cancel()}catch(e){}location.href="world.html#c="+BACKSEC[(CUR&&CUR.sec)||"disc"]};
 $("#home").onclick=()=>{sTap();goBack()};
 document.querySelectorAll("#gender button").forEach(b=>{b.classList.toggle("on",b.dataset.g===G);b.onclick=()=>{sTap();G=b.dataset.g;store.set("g",G);document.querySelectorAll("#gender button").forEach(z=>z.classList.toggle("on",z===b));if(CUR)play(CUR)}});
 $("#go").onclick=()=>{tone(1,.01);try{speechSynthesis.speak(new SpeechSynthesisUtterance(""))}catch(e){}$("#start").remove();sWin();const h=location.hash.slice(1),a=ACTS.find(x=>x.id===h);if(a)play(a);else goBack()};
