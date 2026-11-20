@@ -37,6 +37,18 @@ h1{color:#fff;text-align:center;font-size:clamp(38px,9vw,56px);margin:8px 0 2px;
 .dots{display:flex;gap:6px;justify-content:center;margin:4px 0 10px}.dots i{width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.12)}.dots i.ok{background:#3fc35a}.dots i.no{background:#ff5d73}
 .done{font-size:34px;font-weight:700;margin:20px 0}
 canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+
+/* phones (short landscape, user rule 2026-11-19: no scrolling): levels in rows of three; question, picture and four answers on one screen */
+@media (orientation:landscape) and (max-height:520px){
+ .grp{font-size:14px!important;margin:2px 4px 4px!important}
+ .lv{grid-template-columns:repeat(3,1fr)!important;gap:8px!important}.lv button{padding:6px 8px!important;font-size:15px!important;border-radius:18px!important}.lv button.kg{padding:6px!important}.lv button .big{font-size:26px!important;margin-bottom:0!important}.lv button small{font-size:11px!important}.lv button .st{font-size:11px!important;top:4px!important}
+ .top{margin-bottom:4px!important;font-size:15px!important}.top button{padding:3px 12px!important;font-size:14px!important}
+ .card{padding:8px 12px!important;border-radius:22px!important}.dots{margin:0 0 4px!important}.dots i{width:10px!important;height:10px!important}
+ .pic{font-size:22px!important;margin:0 0 2px!important;min-height:0!important;line-height:1.2!important}
+ .q{font-size:44px!important;margin:0!important}
+ .opts{grid-template-columns:repeat(4,1fr)!important;gap:10px!important;margin-top:8px!important}.opts button{font-size:30px!important;padding:6px 0!important;border-radius:16px!important}
+ .done{font-size:24px!important;margin:4px 0!important}.card>div[style*="font-size:60px"]{font-size:34px!important}.card>div[style*="font-size:24px"]{font-size:16px!important;margin:4px 0!important}.card .opts[style*="1fr 1fr"]{grid-template-columns:1fr 1fr!important}.card .opts[style*="1fr 1fr"] button{font-size:18px!important;padding:6px!important}
+}
 </style>
 </head>
 <body>

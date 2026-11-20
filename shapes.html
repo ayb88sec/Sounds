@@ -24,6 +24,15 @@ body{background:linear-gradient(160deg,#3fc35a,#22c7b8 50%,#4f8bff)}
 .nm{font-family:"Andika";font-size:42px;font-weight:700;margin:0}
 .ar{font-family:"Baloo Bhaijaan 2";font-size:24px;color:#7a7090}
 .opts button svg{width:70px;height:70px}
+
+/* phones (short landscape, no scrolling): shapes in two rows of five; shape card with the picture beside its facts; compact game */
+@media (orientation:landscape) and (max-height:520px){
+ .grid{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:8px!important}.grid .tile{min-width:0!important;aspect-ratio:auto!important;min-height:0!important;height:calc((100dvh - 210px) / 2);padding:4px!important;font-size:14px!important;border-radius:16px!important}.tile svg{width:calc((100dvh - 210px) / 2 - 36px)!important;height:calc((100dvh - 210px) / 2 - 36px)!important}
+ #sm .card{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:14px;max-width:min(700px,96vw)!important;padding:10px 14px!important}#sm .shape{grid-row:1/span 5}#sm .shape svg{width:calc(100dvh - 120px)!important;height:calc(100dvh - 120px)!important;max-width:260px;max-height:260px}
+ #sm .nm{font-size:28px!important}#sm .facts{margin:2px 0!important}#sm .facts div{padding:4px 10px!important;font-size:14px!important}#sm .facts b{font-size:22px!important}#sm .ex{font-size:30px!important;margin:2px 0!important}#sm .bar{margin:2px 0 0!important}#sm .bar button{padding:4px 14px!important;font-size:15px!important}
+ #gm .card{padding:8px 12px!important}#gm .nr-guide{margin:2px 0!important}#gm .nr-guide img{width:40px!important;height:40px!important}#gm .nr-guide *{font-size:13px!important}#gm .nr-dots{margin:2px 0!important}#gm .q{font-size:20px!important;margin:2px 0!important}
+ #gm .shape svg{width:calc(100dvh - 300px)!important;height:calc(100dvh - 300px)!important}#gm .opts{margin:6px 0!important;gap:10px!important}#gm .opts button{min-height:0!important;height:calc(100dvh - 300px);padding:4px!important}#gm .opts button svg{height:100%;width:auto}
+}
 </style>
 </head>
 <body>

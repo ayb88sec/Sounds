@@ -78,6 +78,17 @@ footer button{color:#fff;background:none;border:0;font:inherit;text-decoration:u
 
 /* the building decides the language, not the child (user 2026-11-19) */
 #tAr,#tEn{display:none!important}
+
+/* phones (short landscape, no scrolling): all numbers in two rows; number card and counting game compact */
+@media (orientation:landscape) and (max-height:520px){
+ .grid{grid-template-columns:repeat(10,minmax(0,1fr))!important;gap:6px!important}.grid .tile{min-width:0!important;width:auto!important;aspect-ratio:auto!important;min-height:0!important;height:calc((100dvh - 230px) / 2);font-size:clamp(18px,6dvh,30px)!important;border-radius:14px!important;padding:0!important}
+ .modal .card{max-width:min(760px,96vw)!important;padding:8px 12px!important;max-height:96dvh}
+ .big{font-size:64px!important;margin:4px 0 0!important;line-height:1.05!important}.words{font-size:20px!important;margin:0!important}.objs{font-size:22px!important;margin:2px 0!important}.cnt{font-size:14px!important;min-height:0!important}
+ .modal .bar{margin:4px 0 0!important}.modal .bar button{padding:4px 12px!important;font-size:15px!important}.navrow{margin-top:4px!important}.navrow button{padding:4px 12px!important;font-size:14px!important}
+ .nr-guide{margin:2px 0!important}.nr-guide img{width:40px!important;height:40px!important}.nr-guide *{font-size:13px!important}.nr-dots{margin:2px 0!important}
+ .modal .q{font-size:20px!important;margin:2px 0!important}
+ .opts{grid-template-columns:repeat(3,1fr)!important;gap:10px!important;margin:6px 0!important}.opts button{font-size:34px!important;aspect-ratio:auto!important;padding:6px 0!important;border-radius:16px!important}
+}
 </style>
 </head>
 <body>
