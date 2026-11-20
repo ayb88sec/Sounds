@@ -12,7 +12,8 @@
 <style>
 :root{--bg:#fff6e6;--ink:#3a2512;--wood:#a8692c;--wood2:#7c4a1a;--ok:#2fbf71;--try:#ff9f43;--gold:#f5b700;--r:24px;--ease:cubic-bezier(.23,1,.32,1);--pop:cubic-bezier(.34,1.56,.64,1)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
-html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"Baloo Bhaijaan 2","Noto Naskh Arabic","Fredoka",system-ui,sans-serif;touch-action:manipulation}
+/* ﷺ drawn from the Quran font (the rounded font squashes it) */@font-face{font-family:"SAW";src:url(fonts/amiri-quran.woff2) format("woff2");unicode-range:U+FDFA}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"SAW","Baloo Bhaijaan 2","Noto Naskh Arabic","Fredoka",system-ui,sans-serif;touch-action:manipulation}
 img{-webkit-user-drag:none;user-select:none}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation}
 #app{position:fixed;inset:0;display:flex;flex-direction:column}
@@ -99,7 +100,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-
 .ls .card img{max-width:100%;max-height:100%;border-radius:22px;object-fit:contain}
 .ls .txt{max-width:44%;display:flex;flex-direction:column;gap:14px}
 .ls h2{margin:0;font-size:44px;line-height:1.2;color:var(--c,#8a5a0c)}
-.ls p{margin:0;font-size:34px;line-height:1.6;font-family:"Baloo Bhaijaan 2"}
+.ls p{margin:0;font-size:34px;line-height:1.6;font-family:"SAW","Baloo Bhaijaan 2"}
 .ls .names{display:flex;flex-wrap:wrap;gap:10px}
 .ls .names span{background:#fff;border-radius:16px;padding:6px 14px;font-size:24px;box-shadow:0 3px 0 #ecd3a8}
 .nav{display:flex;justify-content:center;align-items:center;gap:18px;padding-bottom:6px}
@@ -272,7 +273,7 @@ function view(html){stage.innerHTML=`<div class="view">${html}</div>`;const v=st
 /* a game = sequence of rounds; each round fn(root,next,miss) */
 const SCN={math:"bg-lesson-maths",mathen:"bg-lesson-maths",en:"bg-lesson-english",ar:"bg-lesson-arabic",disc:"bg-lesson-name",lsn:"bg-lesson-islam"};
 function scene(n){$(".bgsc").style.backgroundImage=`url(img/approved/${n}.webp)`}
-function play(act){CUR=act;scene(act.scene||SCN[act.sec]);$("#ttl").textContent=act.name;$("#ttl").dir=act.en?"ltr":"rtl";$("#end").classList.remove("on");location.hash=act.id;
+function play(act){CUR=act;/* English activities read left to right (cards 1 2 3, from ... to, A B C) */stage.dir=act.en?"ltr":"rtl";scene(act.scene||SCN[act.sec]);$("#ttl").textContent=act.name;$("#ttl").dir=act.en?"ltr":"rtl";$("#end").classList.remove("on");location.hash=act.id;
  const rounds=act.rounds();let i=0,miss=0;setProg(rounds.length,0);
  const next=()=>{i++;setProg(rounds.length,i);if(i>=rounds.length)return finish(act,miss);setTimeout(()=>rounds[i](),650)};
  RUN={next,miss:()=>miss++};rounds[0]();}
@@ -452,7 +453,7 @@ function zoomCard(v,s,pal,lang){const z=document.createElement("div");z.classNam
 const FEEL_EN=["happy","sad","angry","scared","surprised","confused","shy","thankful","proud","tired","excited","loving"];
 function board(o){const S=o.slides();setProg(0);const n=S.length;const cols=n<=5?n:n===6?3:n<=10?5:6,rows=Math.ceil(n/cols);
  const v=view(`<div class="ban" style="--c:${o.c||"#8a5a0c"}">${plain(o.name)}</div><div class="board"></div><div class="bot"><button class="btn" dir="auto" style="--c:#2f9a57">${o.en?"Let's play!":"هيا نلعب!"}</button></div>`);
- const H=SH()-74-76,W=SW()-200;const cw=Math.max(110,Math.min((H-(rows-1)*16)/rows-44,(W-(cols-1)*14)/cols,280));
+ const H=SH()-74-76,W=SW()-370;v.style.paddingLeft="300px";const cw=Math.max(110,Math.min((H-(rows-1)*16)/rows-44,(W-(cols-1)*14)/cols,280));
  const B=v.querySelector(".board");B.style.gridTemplateColumns=`repeat(${cols},${cw}px)`;
  S.forEach((s,i)=>{const pal=LPAL[i%LPAL.length],c=document.createElement("button");c.className="lc";c.style.cssText=`--lc:${pal[0]};--lb:${pal[1]};animation-delay:${i*.05}s`;
   c.innerHTML=`${o.num===false?"":`<span class="no">${i+1}</span>`}${s.sky!=null?skyHTML(s.sky,"auto;width:100%"):`<img src="${A(s.img)}">`}<b>${plain((s.cap||s.t||"").replace(/^\d+\.\s*/,""))}</b>`;
@@ -605,6 +606,22 @@ function drawStudio(){const W=1200,H=760;let tool="crayon",col=DCOL[0],sz=14,mod
    const o=tray(L.map((u,i)=>`<button data-g="${i}" style="height:120px;padding:4px"><img src="${u}" style="border-radius:10px"></button>`).join(""),Math.min(4,L.length),180);
    o.querySelectorAll("[data-g]").forEach(z=>z.onclick=()=>{sTap();snap();x.clearRect(0,0,W,H);drawPage("saved",L[+z.dataset.g]);o.remove()})}})}
 act({id:"draw",sec:"disc",name:"ارسم",sub:"Draw",pv:null,pvh:`<svg viewBox="0 0 44 44" style="width:70%">${DI.brush}</svg>`,rounds:()=>[()=>drawStudio()]});
+/* Grade 1 science "Plant Parents and Their Offspring" (school study guide, 2026-11-20): six cards, then the seven questions of the practice sheet */
+act(lesson({id:"plants",sec:"disc",en:1,g1:1,name:"Plant Parents",sub:"Science",pv:"pl_seedling",c:"#2f9e44",intro:"Plant parents and their offspring",
+ slides:()=>[["pl_seedling","Seedling","A seedling is a young plant. It has a small stem and a few leaves."],["pl_offspring","Offspring","Offspring are the young made by parents. A young bean plant is its parent's offspring."],
+  ["pl_inherit","Inherit","To inherit means to receive features from a parent. Features pass from parent to offspring."],["pl_adult_plant","Plant families","Young plants are like their parents, but they are not exactly the same."],
+  ["pl_seed","Seeds grow","A bean seed can sprout and become a seedling. The seedling grows into an adult plant."],["pl_thorns","Thorns protect","Thorns help protect some plants from animals that might eat them."]].map(([img,t,x])=>({img,t,x})),
+ check:()=>{const T=(q,ok,no,w)=>()=>pickRound({q,lang:"en",w:w||260,h:110,opts:[{tx:ok,ok:1},...no.map(t=>({tx:t,say:t}))],praise:"Yes! "+ok+"!"});
+  const P=(k,cap)=>({html:`<div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;height:100%"><img src="${A(k)}" style="flex:1;min-height:0;width:100%;object-fit:contain"><b style="font-size:22px">${cap}</b></div>`});
+  return [T("What is a seedling?","a young plant",["a tiny stone","an adult plant"]),
+   T("What do we call the young made by parents?","offspring",["adults","thorns"],200),
+   ()=>dragRound({q:"Features pass from ... to ...",lang:"en",hideDock:1,itemW:210,itemH:84,need:2,targets:[["parent","from"],["offspring","to"]].map(([k,l])=>({k,w:300,h:170,cls:"bin",bc:"#2f9e44",label:l,html:`<div class="ans" style="width:230px;height:78px;border:3px dashed #2f9e44;border-radius:20px"></div>`})),
+    items:[{k:"parent",html:wcard("parent"),praise:"Yes! parent",lang:"en"},{k:"offspring",html:wcard("offspring"),praise:"Yes! offspring",lang:"en"},{k:"x",html:wcard("thorns"),say:"thorns"}],
+    onGood:(el,t)=>{const a=t.querySelector(".ans");a.innerHTML=wcard(t.dataset.k,"#e6f8ec");a.style.border="0"}}),
+   T("A bean seed sprouts. What is the young plant called?","seedling",["seed","thorn"],200),
+   T("Why do some plants have thorns?","to protect them from animals",["to hold them in the ground"],460),
+   ()=>pickRound({q:"Are young plants exactly like their parents?",lang:"en",w:200,h:110,opts:[{tx:"No",ok:1},{tx:"Yes",say:"Not exactly the same"}],praise:"Right! Like them, but not exactly the same."}),
+   ()=>pickRound({q:"Which picture shows a seedling?",lang:"en",w:230,h:260,keep:1,opts:[{...P("pl_seed","A")},{...P("pl_seedling","B"),ok:1},{...P("pl_adult_plant","C")}],praise:"Yes! B. The young plant is the seedling."})]}}));
 /* sequence round: drag shuffled step cards into numbered slots */
 function seqRound(pre,idx,T,q){dragRound({q,itemW:150,itemH:150,targets:idx.map((s,j)=>({k:String(s),w:180,h:200,html:`<b style="position:absolute;top:6px;font-size:34px;color:#c9a46a">${j+1}</b>`,cls:"slot"})),
  items:idx.map(s=>({k:String(s),img:pre+s,say:T[s]})),onGood:(el,t)=>{const im=document.createElement("img");im.src=el.querySelector("img").src;im.style.cssText="width:86%;border-radius:14px;animation:pop .3s var(--pop)";t.querySelector("b").after(im)}});
