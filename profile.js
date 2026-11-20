@@ -40,6 +40,10 @@
   /* parent's phone: a test view with every app and section, not tied to a child (progress kept apart, never sent) */
   const PREV={id:"preview",name:"ماما",nameAr:"ماما",avatar:"👀",color:"#ffd23f",apps:{},preview:true};
   if(!LOCK&&new URLSearchParams(location.search).get("preview")){cur="preview";SET.call(localStorage,"najma:cur","preview")}
+  /* ماما as a child (user 2026-11-20): ?mama=G1 (any grade, &g=m for a boy) shows the app exactly like a child of that grade sees it,
+     with progress kept apart from the children and never sent; ?mama=off goes back to the normal parent view */
+  {const q=new URLSearchParams(location.search).get("mama");if(!LOCK&&q){if(q==="off")RM.call(localStorage,"najma:mamaKid");else{SET.call(localStorage,"najma:mamaKid",JSON.stringify({grade:q.toUpperCase(),gender:new URLSearchParams(location.search).get("g")==="m"?"m":"f"}));cur="preview";SET.call(localStorage,"najma:cur","preview")}}
+   let mk=null;try{mk=JSON.parse(G.call(localStorage,"najma:mamaKid")||"null")}catch(e){}if(!LOCK&&mk&&cur==="preview"){PREV.preview=false;PREV.avatar=mk.gender==="m"?"img:k1":"img:k2";PREV.grade=mk.grade;PREV.gender=mk.gender;PREV.mamaKid=true}}
   let me=(!LOCK&&cur==="preview")?PREV:(profiles.find(p=>p.id===cur)||(!LOCK&&!G.call(localStorage,"najma:dev")?PREV:null));
   const key=k=>(typeof k==="string"&&!k.startsWith("najma:")&&!k.startsWith("sb-")&&me)?`najma:${me.id}:${k}`:k;
   S.getItem=function(k){return G.call(this,key(k))};

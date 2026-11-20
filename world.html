@@ -766,11 +766,13 @@ addEventListener("hashchange",route);addEventListener("pageshow",e=>{if(e.persis
   $("#kidsOv").onclick=e=>{if(e.target.id==="kidsOv")e.currentTarget.classList.remove("on")}}
 /* family code: the old home asked for it, but it now opens straight into this village, so a device without the code (for example the
    iPad home-screen app, which keeps its own storage apart from Safari) silently lost the parent's recordings everywhere. Ask here too. */
-if(NAJMA.hasKey&&!NAJMA.hasKey()){const o=document.createElement("div");o.style.cssText="position:fixed;inset:0;z-index:999;background:rgba(70,45,10,.45);display:flex;align-items:center;justify-content:center;padding:14px";
+/* only a child's iPad asks, and only once a day; it can be closed (user 2026-11-20: the box kept coming back on her own device) */
+if(NAJMA.hasKey&&!NAJMA.hasKey()&&NAJMA.lock&&(()=>{try{return localStorage.getItem("najma:keyAsked")!==new Date().toDateString()}catch(e){return true}})()){try{localStorage.setItem("najma:keyAsked",new Date().toDateString())}catch(e){}const o=document.createElement("div");o.style.cssText="position:fixed;inset:0;z-index:999;background:rgba(70,45,10,.45);display:flex;align-items:center;justify-content:center;padding:14px";
   o.innerHTML=`<div dir="rtl" style="background:linear-gradient(#fffdf6,#fff4d6);border:5px solid #fff;box-shadow:0 14px 0 #e8c46a,0 22px 34px rgba(120,80,20,.28);color:#16204a;border-radius:34px;padding:22px;max-width:440px;width:100%;text-align:center;font-family:'Baloo Bhaijaan 2',system-ui,sans-serif">
    <div style="font-size:56px">🔑</div><h3 style="margin:4px 0;font-size:28px">رمز العائلة</h3><p style="margin:4px 0 14px;color:#7a7090;font-size:18px">اطلب الرمز من ماما أو بابا</p>
    <input id="famIn" dir="ltr" placeholder="XXXX-XXXX-XXXX" autocomplete="off" style="width:100%;box-sizing:border-box;font-size:24px;padding:12px;border-radius:18px;border:3px solid #f1d9ae;text-align:center;text-transform:uppercase;letter-spacing:2px">
-   <button id="famOk" style="margin-top:14px;width:100%;font:800 24px 'Baloo Bhaijaan 2',system-ui;padding:12px;border:0;border-radius:20px;color:#fff;background:linear-gradient(#3fb5a6,#1f7f74);box-shadow:0 6px 0 #17665d">فتح</button></div>`;document.body.appendChild(o);
+   <button id="famOk" style="margin-top:14px;width:100%;font:800 24px 'Baloo Bhaijaan 2',system-ui;padding:12px;border:0;border-radius:20px;color:#fff;background:linear-gradient(#3fb5a6,#1f7f74);box-shadow:0 6px 0 #17665d">فتح</button><button id="famLater" style="margin-top:10px;width:100%;font:800 20px 'Baloo Bhaijaan 2',system-ui;padding:10px;border:0;border-radius:18px;color:#13275a;background:#fff3d6">لاحقاً</button></div>`;document.body.appendChild(o);
+  o.querySelector("#famLater").onclick=()=>o.remove();
   o.querySelector("#famOk").onclick=async()=>{const i=o.querySelector("#famIn"),v=i.value.trim().toUpperCase();if(await NAJMA.checkCode(v)){try{sessionStorage.removeItem("najma:reloaded")}catch(e){}location.reload()}else{i.value="";i.placeholder="❌"}}}
 </script>
 </body>
