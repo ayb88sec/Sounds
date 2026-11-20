@@ -469,19 +469,32 @@ act({id:"jigsaw",sec:"disc",name:"لغز الدب",sub:"Bear jigsaw",pv:"bear",r
   makeDrag(d,(el,t)=>{if(t.dataset.k===el.dataset.k){t.style.opacity="1";t.style.backgroundBlendMode="normal";t.classList.add("good");el.remove();sOk();fal("thumb");if(--left===0){good("ركّبت الصورة!");setTimeout(RUN.next,900)}return true}bad();return false})})}]});
 /* ===== COLOURING (user 2026-11-20): one card with the fish, the dinosaur and 📸 my selfie turned into a colouring page ===== */
 /* photo → black outline drawing on white (the photo never leaves the iPad) */
-function outlineOf(src,cb){const im=new Image();im.onload=()=>{const S=760,c=document.createElement("canvas");c.width=S;c.height=S;const x=c.getContext("2d",{willReadFrequently:true});
-  x.fillStyle="#fff";x.fillRect(0,0,S,S);const s=Math.min(S/im.width,S/im.height);x.drawImage(im,(S-im.width*s)/2,(S-im.height*s)/2,im.width*s,im.height*s);
-  const d=x.getImageData(0,0,S,S).data,g=new Float32Array(S*S);for(let i=0;i<S*S;i++)g[i]=.3*d[i*4]+.59*d[i*4+1]+.11*d[i*4+2];
-  const blur=(a,r)=>{const t=new Float32Array(S*S),o=new Float32Array(S*S);for(let y=0;y<S;y++){let acc=0;for(let k=-r;k<=r;k++)acc+=a[y*S+Math.min(S-1,Math.max(0,k))];for(let xx=0;xx<S;xx++){t[y*S+xx]=acc/(2*r+1);const a1=Math.min(S-1,xx+r+1),a0=Math.max(0,xx-r);acc+=a[y*S+a1]-a[y*S+a0]}}
-    for(let xx=0;xx<S;xx++){let acc=0;for(let k=-r;k<=r;k++)acc+=t[Math.min(S-1,Math.max(0,k))*S+xx];for(let y=0;y<S;y++){o[y*S+xx]=acc/(2*r+1);const b1=Math.min(S-1,y+r+1),b0=Math.max(0,y-r);acc+=t[b1*S+xx]-t[b0*S+xx]}}return o};
-  const a1=blur(g,1),a2=blur(g,5),dd=new Float32Array(S*S);for(let i=0;i<S*S;i++)dd[i]=a2[i]-a1[i];
-  /* keep the darkest ~9% as lines, so any photo gives a clean page */
-  const srt=Array.from(dd).sort((p,q)=>q-p),th=Math.max(4,srt[Math.floor(S*S*.05)]);let L=new Uint8Array(S*S);for(let i=0;i<S*S;i++)L[i]=dd[i]>th?1:0;
-  const a3=blur(blur(g,3),3),lv=new Uint8Array(S*S);for(let i=0;i<S*S;i++)lv[i]=Math.min(4,Math.floor(a3[i]/256*5));
-  const B=new Uint8Array(S*S);for(let y=0;y<S-1;y++)for(let xx=0;xx<S-1;xx++){const i=y*S+xx;if(lv[i]!==lv[i+1]||lv[i]!==lv[i+S])B[i]=1}
-  const L2=new Uint8Array(S*S);for(let y=1;y<S-1;y++)for(let xx=1;xx<S-1;xx++){const i=y*S+xx;if(!L[i])continue;const n=L[i-1]+L[i+1]+L[i-S]+L[i+S]+L[i-S-1]+L[i-S+1]+L[i+S-1]+L[i+S+1];if(n>=2)L2[i]=1}
-  const out=x.createImageData(S,S),o=out.data;for(let y=0;y<S;y++)for(let xx=0;xx<S;xx++){const i=y*S+xx;let on=B[i]||(xx>0&&B[i-1])||(y>0&&B[i-S])||L2[i]||(xx>0&&L2[i-1])||(y>0&&L2[i-S])||(xx<S-1&&L2[i+1])||(y<S-1&&L2[i+S]);const v=on?20:255;o[i*4]=o[i*4+1]=o[i*4+2]=v;o[i*4+3]=255}
-  x.putImageData(out,0,0);cb(c.toDataURL("image/png"))};im.src=src}
+function outlineOf(src,cb){const im=new Image();im.onload=()=>{
+  /* simple colouring-book lines (user 2026-11-20: "simple lines like the dinosaur"): smooth the photo a lot, split it into 3 light levels,
+     drop tiny patches, then draw only the borders between the big areas as bold smooth lines; borders always close, so colour stays inside */
+  const S=320,c=document.createElement("canvas");c.width=S;c.height=S;const x=c.getContext("2d",{willReadFrequently:true});x.fillStyle="#fff";x.fillRect(0,0,S,S);
+  const s=Math.min(S/im.width,S/im.height);x.drawImage(im,(S-im.width*s)/2,(S-im.height*s)/2,im.width*s,im.height*s);
+  const d=x.getImageData(0,0,S,S).data,N=S*S;let g=new Float32Array(N);for(let i=0;i<N;i++)g[i]=.3*d[i*4]+.59*d[i*4+1]+.11*d[i*4+2];
+  const blur=(a,r)=>{const t=new Float32Array(N),o=new Float32Array(N);for(let y=0;y<S;y++){let acc=0;for(let k=-r;k<=r;k++)acc+=a[y*S+Math.min(S-1,Math.max(0,k))];for(let xx=0;xx<S;xx++){t[y*S+xx]=acc/(2*r+1);acc+=a[y*S+Math.min(S-1,xx+r+1)]-a[y*S+Math.max(0,xx-r)]}}
+    for(let xx=0;xx<S;xx++){let acc=0;for(let k=-r;k<=r;k++)acc+=t[Math.min(S-1,Math.max(0,k))*S+xx];for(let y=0;y<S;y++){o[y*S+xx]=acc/(2*r+1);acc+=t[Math.min(S-1,y+r+1)*S+xx]-t[Math.max(0,y-r)*S+xx]}}return o};
+  const g0=g;g=blur(blur(g0,2),2);
+  /* light levels measured on the person, not the empty background */
+  let fg=Array.from(g).filter(v=>v<235);if(fg.length<N*.15)fg=Array.from(g);fg.sort((a,b)=>a-b);const q=f=>fg[Math.floor(fg.length*f)];const t1=q(.25),t2=q(.5),t3=q(.78);
+  const lv=new Uint8Array(N);for(let i=0;i<N;i++)lv[i]=g[i]<t1?0:g[i]<t2?1:g[i]<t3?2:3;
+  /* merge patches smaller than ~0.8% of the picture into their neighbour */
+  const lab=new Int32Array(N).fill(-1),MIN=N*.003;for(let i=0;i<N;i++){if(lab[i]>=0)continue;const st=[i],mem=[];lab[i]=i;while(st.length){const q=st.pop();mem.push(q);const qx=q%S,qy=(q/S)|0;for(const [nx,ny] of [[qx+1,qy],[qx-1,qy],[qx,qy+1],[qx,qy-1]]){if(nx<0||ny<0||nx>=S||ny>=S)continue;const n=ny*S+nx;if(lab[n]<0&&lv[n]===lv[i]){lab[n]=i;st.push(n)}}}
+   if(mem.length<MIN){const cnt=[0,0,0,0];mem.forEach(q=>{const qx=q%S,qy=(q/S)|0;[[qx+1,qy],[qx-1,qy],[qx,qy+1],[qx,qy-1]].forEach(([nx,ny])=>{if(nx<0||ny<0||nx>=S||ny>=S)return;const n=ny*S+nx;if(lv[n]!==lv[i])cnt[lv[n]]++})});let b=lv[i],bm=-1;cnt.forEach((v,k)=>{if(v>bm&&k!==lv[i]){bm=v;b=k}});mem.forEach(q=>lv[q]=b)}}
+  const B=new Float32Array(N);for(let y=0;y<S-1;y++)for(let xx=0;xx<S-1;xx++){const i=y*S+xx;if(lv[i]!==lv[i+1]||lv[i]!==lv[i+S])B[i]=1}
+  /* plus the clear features (eyes, mouth, nose): strong dark lines, keeping only pieces long enough to be a real line */
+  {const a1=blur(g0,1),a2=blur(g0,4),dd=new Float32Array(N);for(let i=0;i<N;i++)dd[i]=a2[i]-a1[i];const ss=Array.from(dd).sort((a,b)=>b-a),th=Math.max(7,ss[Math.floor(N*.045)]);
+   const E=new Uint8Array(N);for(let i=0;i<N;i++)E[i]=dd[i]>th?1:0;const seen=new Uint8Array(N);
+   for(let i=0;i<N;i++){if(!E[i]||seen[i])continue;const st=[i],mem=[];seen[i]=1;while(st.length){const q=st.pop();mem.push(q);const qx=q%S,qy=(q/S)|0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=qx+dx,ny=qy+dy;if(nx<0||ny<0||nx>=S||ny>=S)continue;const n=ny*S+nx;if(E[n]&&!seen[n]){seen[n]=1;st.push(n)}}}
+    if(mem.length>=45)mem.forEach(q=>B[q]=1)}}
+  /* bold smooth lines at the final size */
+  const O=760,oc=document.createElement("canvas");oc.width=O;oc.height=O;const ox=oc.getContext("2d");const bc=document.createElement("canvas");bc.width=S;bc.height=S;const bx2=bc.getContext("2d"),bd=bx2.createImageData(S,S);
+  const Bs=blur(B,1);for(let i=0;i<N;i++){const v=Bs[i]>.3?0:255;bd.data[i*4]=bd.data[i*4+1]=bd.data[i*4+2]=v;bd.data[i*4+3]=255}bx2.putImageData(bd,0,0);
+  ox.imageSmoothingEnabled=true;ox.drawImage(bc,0,0,O,O);const od=ox.getImageData(0,0,O,O),o=od.data;for(let i=0;i<O*O;i++){const v=o[i*4]<150?20:255;o[i*4]=o[i*4+1]=o[i*4+2]=v;o[i*4+3]=255}ox.putImageData(od,0,0);
+  cb(oc.toDataURL("image/png"))};im.src=src}
 /* the front camera: big round button to take the photo; falls back to the iPad's photo picker */
 function selfie(cb){const o=document.createElement("div");o.style.cssText="position:fixed;inset:0;z-index:90;background:rgba(20,30,60,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px";
  o.innerHTML=`<video playsinline autoplay muted style="max-width:80vw;max-height:66vh;border-radius:28px;border:6px solid #fff;transform:scaleX(-1);background:#000"></video><div style="display:flex;gap:30px;align-items:center"><button id="sx" class="btn" style="--c:#868e96">✕</button><button id="snap" style="width:96px;height:96px;border-radius:50%;border:8px solid #fff;background:#e64980;box-shadow:0 6px 0 rgba(0,0,0,.3)"></button></div>`;
@@ -491,7 +504,7 @@ function selfie(cb){const o=document.createElement("div");o.style.cssText="posit
  navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:{ideal:1280}},audio:false}).then(s=>{st=s;vd.srcObject=s}).catch(pick);
  o.querySelector("#snap").onclick=()=>{if(!vd.videoWidth)return;const c=document.createElement("canvas");c.width=vd.videoWidth;c.height=vd.videoHeight;const x=c.getContext("2d");x.translate(c.width,0);x.scale(-1,1);x.drawImage(vd,0,0);tone(900,.06,0,"square",.05);close();cb(c.toDataURL("image/jpeg",.9))}}
 function colourPick(){const v=view(`<div class="q"></div><div class="row ops" style="flex:1;align-items:center;gap:40px"></div>`);ask(G==="g"?"اختاري صورة تلونينها":"اختار صورة تلونها");
- const O=v.querySelector(".ops");[["colfish","السمكة"],["coldino","الديناصور"],["selfie","صورتي"]].forEach(([k,n])=>{const b=document.createElement("button");b.className="opt card";b.style.cssText="width:250px;height:280px;flex-direction:column;gap:6px;display:flex;align-items:center;justify-content:center";
+ const O=v.querySelector(".ops");/* 📸 selfie hidden for now (user 2026-11-20: "we will work on it later") */[["colfish","السمكة"],["coldino","الديناصور"]].forEach(([k,n])=>{const b=document.createElement("button");b.className="opt card";b.style.cssText="width:250px;height:280px;flex-direction:column;gap:6px;display:flex;align-items:center;justify-content:center";
   b.innerHTML=k==="selfie"?`<svg viewBox="0 0 64 64" style="width:150px;height:150px"><rect x="6" y="18" width="52" height="38" rx="8" fill="#e64980"/><rect x="22" y="10" width="20" height="10" rx="3" fill="#c2255c"/><circle cx="32" cy="37" r="12" fill="#fff"/><circle cx="32" cy="37" r="7" fill="#13275a"/><circle cx="49" cy="26" r="3" fill="#ffe066"/></svg><b style="font-size:30px">${n}</b>`:`<img src="img/x/${k}.png" style="width:200px;height:200px;object-fit:contain;background:#fff;border-radius:18px"><b style="font-size:30px">${n}</b>`;
   b.onclick=()=>{sTap();say(n,"ar");if(k!=="selfie")return colour(k);selfie(src=>{fal("think",G==="g"?"لحظة، أرسمج...":"لحظة، أرسمك...");outlineOf(src,url=>{try{sessionStorage.setItem("najma:drawPage",url)}catch(e){}colour(url);
    const bar=stage.querySelector("#fin");if(bar){const d=document.createElement("button");d.className="btn";d.style.cssText="--c:#7048e8;margin-inline-start:12px";d.textContent="🎨 ارسم";d.onclick=()=>{sTap();const D=ACTS.find(z=>z.id==="draw");if(D)play(D)};bar.after(d)}})})};O.appendChild(b)})}
@@ -583,7 +596,7 @@ const DN={crayon:"قَلَمُ شَمْع",brush:"فُرْشَاة",marker:"قَ
  page:"الْوَرَقَة",stamp:"الْمُلْصَقَات",mirror:"الْمِرْآة",kal:"الْمِشْكَال",undo:"تَرَاجُع",clear:"وَرَقَةٌ جَدِيدَة",save:"احْفَظ",gallery:"رُسُومَاتِي",done:"خَلَصْت"};
 const DCOL=["#e03131","#fd7e14","#fcc419","#2f9e44","#69db7c","#1c7ed6","#4dabf7","#7048e8","#f06595","#8b5a2b","#ffc9a3","#13275a","#ffffff"];
 const STAMPS=["lion","giraffe","elephant","whale","turtle","butterfly","bee","k_camel","bird","owl","clownfish","dolphin","horse","cat","dog","rabbit","dhow","pmosque","sun","strawberry","apple","icecream","house1","tent","car","plane","flamingo","r_star"];
-const PAGES=[["selfie",""],["white","#fff"],["grid","#fff"],["night","#14204a"],["sand","#f4dcae"],["sea","#bfe6ff"],["colfish",""],["coldino",""]];
+const PAGES=[["white","#fff"],["grid","#fff"],["night","#14204a"],["sand","#f4dcae"],["sea","#bfe6ff"],["colfish",""],["coldino",""]];
 function drawStudio(){const W=1200,H=760;let tool="crayon",col=DCOL[0],sz=14,mode="",hue=0,page="white",undo=[],pend=null,trailK=0;
  const v=view(`<div class="dst"><div class="dtop">${["page","stamp","mirror","kal"].map(k=>`<button class="dbtn" data-a="${k}">${k==="stamp"?`<img src="${A("lion")}">`:dsv(k)}</button>`).join("")}<span class="dsep"></span><button class="dbtn dera" data-t="eraser">${dsv("eraser")}</button>${["undo","clear","save","gallery","done"].map(k=>`<button class="dbtn" data-a="${k}">${dsv(k)}</button>`).join("")}</div>
   <div class="dmid"><div class="dside">${["crayon","brush","marker","rainbow","glitter","spray","trail","fill"].map(k=>`<button class="dbtn${k===tool?" on":""}" data-t="${k}">${dsv(k)}</button>`).join("")}</div>
