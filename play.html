@@ -160,6 +160,29 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-
 .pan img.p{width:170px;display:block}
 .pan .blk{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);display:flex;flex-wrap:wrap-reverse;width:130px;justify-content:center}
 .pan .blk img{width:40px;margin:-3px}
+/* shape art */
+.sa{flex:1;display:flex;gap:14px;align-items:center;justify-content:center;min-height:0}
+.sab{position:relative;width:660px;height:450px;border-radius:24px;background:#fff;border:5px solid #fff;box-shadow:0 8px 24px rgba(120,70,20,.22);overflow:hidden;touch-action:none}
+.sab .pc{position:absolute;touch-action:none;cursor:grab}.sab .pc svg{width:100%;height:100%;display:block;pointer-events:none;overflow:visible}
+.sab .pc.sel{outline:3px dashed #1f7f74;outline-offset:4px}
+.sab .ghost{position:absolute;pointer-events:none;opacity:.9}.sab .ghost svg{width:100%;height:100%;overflow:visible}
+.sat{display:grid;grid-template-columns:repeat(2,66px);gap:8px;align-content:center}
+.sat button,.sah button{width:66px;height:66px;border-radius:18px;border:3px solid #fff;background:linear-gradient(#fffdf6,#fbeacb);box-shadow:0 4px 0 #d9b77a;padding:8px;cursor:pointer}
+.sat button svg{width:100%;height:100%}
+.sah{display:flex;flex-direction:column;gap:8px}.sah button{font:800 28px system-ui;color:#13275a}
+.sacol{display:flex;gap:8px;justify-content:center;margin-top:8px}.sacol button{width:42px;height:42px;border-radius:50%;border:4px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.18)}.sacol button.on{box-shadow:0 0 0 4px #1f7f74}
+/* sticker puzzle + hide and seek */
+.pz{flex:1;display:flex;gap:18px;align-items:center;justify-content:center;min-height:0}
+.pzb{position:relative;width:520px;height:520px;border-radius:26px;overflow:hidden;border:5px solid #fff;box-shadow:0 8px 24px rgba(120,70,20,.22)}
+.pzb canvas{position:absolute;inset:0;width:100%;height:100%}
+.pzt{display:grid;grid-template-columns:repeat(4,92px);gap:8px;max-height:560px;overflow:auto;align-content:center}
+.pzt .pp{width:92px;height:92px;border-radius:16px;background:#fffaf0;border:3px solid #fff;box-shadow:0 4px 0 #d9b77a;display:grid;place-items:center;position:relative;touch-action:none;cursor:grab}
+.pzt .pp canvas{max-width:80px;max-height:80px;pointer-events:none}.pzt .pp b{position:absolute;top:2px;inset-inline-start:6px;font:800 18px "Fredoka",system-ui;color:#13275a}
+.hs{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;min-height:0}
+.hsb{position:relative;width:960px;height:520px;border-radius:24px;overflow:hidden;border:5px solid #fff;box-shadow:0 8px 24px rgba(120,70,20,.22);background-size:cover;background-position:center}
+.hsb img.hid{position:absolute;pointer-events:none}.hsb .ring{position:absolute;border:5px solid #e03131;border-radius:50%;pointer-events:none;animation:pop .35s}
+.hsl{display:flex;gap:10px;background:#fff;border-radius:20px;padding:6px 14px;box-shadow:0 4px 0 #d9b77a}
+.hsl span{width:64px;height:64px;display:grid;place-items:center;position:relative}.hsl img{max-width:58px;max-height:58px}.hsl span.got::after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;font:900 44px system-ui;color:#2f9e44;text-shadow:0 0 6px #fff}
 /* play scale */
 .scale .pan{transition:top .6s var(--pop)}
 .pan .blk2{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);display:flex;flex-wrap:wrap-reverse;width:150px;justify-content:center;align-items:flex-end;gap:2px}
@@ -352,6 +375,115 @@ act({id:"scoops",sec:"math",name:"الآيس كريم",sub:"Build the ice cream"
    im.onclick=()=>{im.remove();c--;sTap()};C.appendChild(im);c++;tone(400+c*80,.1,0,"triangle");say(String(c),"ar");if(c===n){setTimeout(()=>good("صار عندك "+n+"!"),300);setTimeout(RUN.next,1200)}};v.querySelector(".ops").appendChild(b)})})});
 act({id:"hands",sec:"math",name:"كم إصبعًا؟",sub:"Count the fingers",pv:"h3",rounds:()=>pickN([0,1,2,3,4,5],5).map(n=>()=>{const o=pickN([0,1,2,3,4,5].filter(x=>x!==n),2);
  pickRound({q:"كم صبع مرفوع؟",top:`<img src="${A("h"+n)}" style="height:min(42vh,320px)">`,w:130,h:130,opts:[{tx:n,ok:1},...o.map(x=>({tx:x}))]})})});
+/* ===== SHAPE ART (user 2026-11-21, inspired by foam shapes): build freely, copy a picture made of shapes, order big to small ===== */
+const SHC=["#e03131","#fd7e14","#fcc419","#2f9e44","#1c7ed6","#7048e8","#f06595","#20c997"];
+function sap(t,c,w,h,ghost){const st=ghost?`fill="none" stroke="#adb5bd" stroke-width="4" stroke-dasharray="10 8"`:`fill="${c}" stroke="rgba(0,0,0,.18)" stroke-width="3"`;const sh=ghost?"":`<g opacity=".18"><use/></g>`;
+ const body={circle:`<ellipse cx="${w/2}" cy="${h/2}" rx="${w/2-3}" ry="${h/2-3}" ${st}/>`,square:`<rect x="3" y="3" width="${w-6}" height="${h-6}" rx="${Math.min(w,h)*.08}" ${st}/>`,rect:`<rect x="3" y="3" width="${w-6}" height="${h-6}" rx="${Math.min(w,h)*.12}" ${st}/>`,
+  triangle:`<polygon points="${w/2},3 ${w-3},${h-3} 3,${h-3}" stroke-linejoin="round" ${st}/>`,semi:`<path d="M3 ${h-3} A ${w/2-3} ${h-6} 0 0 1 ${w-3} ${h-3} Z" ${st}/>`,
+  star:`<polygon points="${[...Array(10)].map((_,i)=>{const a=i*Math.PI/5-Math.PI/2,rr=i%2?.42:1;return (w/2+Math.cos(a)*rr*(w/2-3)).toFixed(1)+","+(h/2+Math.sin(a)*rr*(h/2-3)+h*.04).toFixed(1)}).join(" ")}" stroke-linejoin="round" ${st}/>`,
+  heart:`<path d="M${w/2} ${h-4} C ${-w*.1} ${h*.45}, ${w*.15} ${-h*.15}, ${w/2} ${h*.28} C ${w*.85} ${-h*.15}, ${w*1.1} ${h*.45}, ${w/2} ${h-4} Z" ${st}/>`,
+  eye:`<circle cx="${w/2}" cy="${h/2}" r="${w/2-2}" fill="#fff" stroke="#13275a" stroke-width="3"/><circle cx="${w*.58}" cy="${h*.56}" r="${w*.22}" fill="#13275a"/>`}[t];
+ return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${body}</svg>`}
+const SHN={circle:"دائرة",square:"مربع",rect:"مستطيل",triangle:"مثلث",semi:"نصف دائرة",star:"نجمة",heart:"قلب",eye:"عين"};
+/* pictures to copy: type, colour, centre x/y, width, height on a 660 x 450 board */
+const SAPIC=[["بيت",[["square",4,330,300,200,170],["triangle",0,330,160,250,120],["square",2,280,280,56,56],["rect",1,375,325,54,110],["circle",2,140,90,90,90]]],
+ ["شجرة",[["rect",1,330,380,50,110],["triangle",3,330,290,240,120],["triangle",3,330,210,200,110],["triangle",3,330,135,150,100],["star",2,330,62,70,70]]],
+ ["سمكة",[["circle",4,300,230,240,170],["triangle",1,470,230,110,130],["eye",0,230,200,46,46],["semi",6,300,135,110,60],["circle",4,140,120,40,40]]],
+ ["روبوت",[["square",5,330,120,140,130],["rect",4,330,290,170,170],["eye",0,300,110,40,40],["eye",0,360,110,40,40],["rect",0,215,290,50,140],["rect",0,445,290,50,140],["circle",2,330,40,40,40]]],
+ ["سفينة",[["semi",1,330,330,300,110],["rect",1,330,200,16,180],["triangle",0,395,190,110,150],["triangle",2,265,200,90,120],["star",2,560,80,70,70]]]];
+function saBoard(v){return v.querySelector(".sab")}
+function saCopy(ix){const [nm,P]=SAPIC[ix];const v=view(`<div class="q"></div><div class="sa"><div class="sat"></div><div class="sab"></div></div>`);ask((G==="g"?"ركّبي ":"ركّب ")+nm+"! "+(G==="g"?"اسحبي":"اسحب")+" كل شكل لمكانه");
+ const B=saBoard(v),T=v.querySelector(".sat");T.style.gridTemplateColumns="repeat(2,90px)";let left=P.length;
+ P.forEach(([t,ci,x,y,w,h],i)=>{const g=document.createElement("div");g.className="ghost";g.dataset.i=i;g.style.cssText=`left:${x-w/2}px;top:${y-h/2}px;width:${w}px;height:${h}px`;g.innerHTML=sap(t,"",w,h,1);B.appendChild(g)});
+ shuf(P.map((q,i)=>[q,i])).forEach(([[t,ci,x,y,w,h],i])=>{const k=Math.min(80/w,80/h),b=document.createElement("button");b.style.cssText="width:90px;height:90px;display:grid;place-items:center";b.innerHTML=`<div style="width:${w*k}px;height:${h*k}px">${sap(t,SHC[ci],w,h)}</div>`;T.appendChild(b);
+  b.addEventListener("pointerdown",e=>{e.preventDefault();sTap();say(SHN[t],"ar");const f=document.createElement("div");f.style.cssText=`position:fixed;z-index:60;width:${w}px;height:${h}px;transform:scale(${Z});transform-origin:0 0;pointer-events:none;left:${e.clientX-w*Z/2}px;top:${e.clientY-h*Z/2}px`;f.innerHTML=sap(t,SHC[ci],w,h);document.body.appendChild(f);b.style.visibility="hidden";
+   const mv=ev=>{f.style.left=ev.clientX-w*Z/2+"px";f.style.top=ev.clientY-h*Z/2+"px"};const up=ev=>{removeEventListener("pointermove",mv);removeEventListener("pointerup",up);f.remove();const R=B.getBoundingClientRect(),k2=B.clientWidth/R.width,bx=(ev.clientX-R.left)*k2,by=(ev.clientY-R.top)*k2;
+    /* the spot of this exact shape, or another identical one still empty */
+    const ok=P.map((q,j)=>[q,j]).filter(([q,j])=>q[0]===t&&q[4]===w&&q[5]===h&&!B.querySelector(`.pc[data-i="${j}"]`)).map(z=>[z,Math.hypot(z[0][2]-bx,z[0][3]-by)]).filter(z=>z[1]<Math.max(70,Math.min(w,h)*.6)).sort((a,b)=>a[1]-b[1]).map(z=>z[0])[0];
+    if(!ok){bad();b.style.visibility="";b.classList.add("wob");setTimeout(()=>b.classList.remove("wob"),340);return}
+    const [[,,x,y],j]=ok,pcd=document.createElement("div");pcd.className="pc";pcd.dataset.i=j;pcd.style.cssText=`left:${x-w/2}px;top:${y-h/2}px;width:${w}px;height:${h}px;z-index:${j+2};animation:pop .35s`;pcd.innerHTML=sap(t,SHC[ci],w,h);B.appendChild(pcd);b.remove();sOk();
+    if(--left===0){confetti();setTimeout(()=>{good((G==="g"?"شطورة! ":"شاطر! ")+nm+" جميل");setTimeout(RUN.next,1700)},300)}};
+   addEventListener("pointermove",mv);addEventListener("pointerup",up)})})}
+function saOrder(){const t=pickN(["star","triangle","circle","square","heart"],1)[0],SZ=[150,124,98,74,52],cs=shuf(SHC).slice(0,5);
+ dragRound({q:(G==="g"?"رتّبي ":"رتّب ")+"من الكبير للصغير",hideDock:1,itemW:160,itemH:160,need:5,raw:1,
+  targets:SZ.map((s,i)=>({k:"o"+i,w:170,h:200,html:`<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:${s}px;height:${s}px">${sap(t,"",s,s,1)}</div><b style="font-size:26px">${i+1}</b></div>`})),
+  items:shuf(SZ.map((s,i)=>({k:"o"+i,html:`<div style="width:${s}px;height:${s}px;margin:auto">${sap(t,cs[i],s,s)}</div>`,say:SHN[t]}))),
+  onGood:(el,tg)=>{const s=SZ[+tg.dataset.k.slice(1)];tg.querySelector("div div").innerHTML=sap(t,cs[+tg.dataset.k.slice(1)],s,s)}})}
+function saFree(){const v=view(`<div class="q"></div><div class="sa"><div class="sat"></div><div class="sab"></div><div class="sah">${["rot","big","small","del"].map(k=>`<button data-h="${k}">${{rot:"↻",big:"+",small:"−",del:"🗑"}[k]}</button>`).join("")}</div></div>
+  <div class="sacol">${SHC.map((c,i)=>`<button data-c="${i}" style="background:${c}"${i?"":' class="on"'}></button>`).join("")}<span style="width:16px"></span><button class="btn" id="sasave" style="--c:#e64980;width:auto;height:auto;border-radius:20px;padding:6px 18px">💾</button><button class="btn" id="sadone" style="--c:#2f9a57;width:auto;height:auto;border-radius:20px;padding:6px 18px">${G==="g"?"خلصت!":"خلصت!"}</button></div>`);
+ ask(G==="g"?"ابني أي شي من الأشكال!":"ابنِ أي شي من الأشكال!");
+ const B=saBoard(v),T=v.querySelector(".sat");let col=0,sel=null;const M=[];
+ const place=(m,el)=>{el.style.cssText=`left:${m.x-m.w/2}px;top:${m.y-m.h/2}px;width:${m.w}px;height:${m.h}px;transform:rotate(${m.r}deg)`};
+ const select=el=>{B.querySelectorAll(".pc").forEach(z=>z.classList.toggle("sel",z===el));sel=el};
+ ["circle","square","rect","triangle","semi","star","heart","eye"].forEach(t=>{const b=document.createElement("button");b.innerHTML=sap(t,SHC[0],t==="rect"?60:50,t==="rect"?36:50);b.dataset.t=t;T.appendChild(b);
+  b.onclick=()=>{sTap();say(SHN[t],"ar");const s=t==="eye"?46:110,m={t,c:SHC[col],x:330+Math.random()*60-30,y:225+Math.random()*60-30,w:t==="rect"?s*1.6:t==="semi"?s*1.2:s,h:t==="rect"?s*.7:t==="semi"?s*.6:s,r:0};M.push(m);
+   const el=document.createElement("div");el.className="pc";el.innerHTML=sap(m.t,m.c,m.w,m.h);place(m,el);el._m=m;B.appendChild(el);select(el);
+   el.addEventListener("pointerdown",e=>{e.preventDefault();e.stopPropagation();select(el);el.setPointerCapture(e.pointerId);const R=B.getBoundingClientRect(),k2=B.clientWidth/R.width,sx=e.clientX,sy=e.clientY,ox=m.x,oy=m.y;
+    const mv=ev=>{m.x=Math.max(0,Math.min(660,ox+(ev.clientX-sx)*k2));m.y=Math.max(0,Math.min(450,oy+(ev.clientY-sy)*k2));place(m,el)};el.addEventListener("pointermove",mv);el.addEventListener("pointerup",()=>el.removeEventListener("pointermove",mv),{once:true})})}});
+ const recol=()=>T.querySelectorAll("[data-t]").forEach(b=>{const t=b.dataset.t;b.innerHTML=sap(t,SHC[col],t==="rect"?60:50,t==="rect"?36:50)});
+ v.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{sTap();col=+b.dataset.c;v.querySelectorAll("[data-c]").forEach(z=>z.classList.toggle("on",z===b));recol();if(sel&&sel._m.t!=="eye"){sel._m.c=SHC[col];sel.innerHTML=sap(sel._m.t,sel._m.c,sel._m.w,sel._m.h)}});
+ B.addEventListener("pointerdown",()=>select(null));
+ v.querySelectorAll("[data-h]").forEach(b=>b.onclick=()=>{if(!sel)return;sTap();const m=sel._m,h=b.dataset.h;if(h==="del"){M.splice(M.indexOf(m),1);sel.remove();sel=null;return}
+  if(h==="rot")m.r=(m.r+30)%360;if(h==="big"||h==="small"){const k=h==="big"?1.2:.83;if(m.w*k<24||m.w*k>420)return;m.w*=k;m.h*=k;sel.innerHTML=sap(m.t,m.c,m.w,m.h)}place(m,sel)});
+ v.querySelector("#sasave").onclick=()=>{if(!M.length)return;sTap();const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="660" height="450"><rect width="660" height="450" fill="#fff"/>${M.map(m=>`<g transform="translate(${m.x} ${m.y}) rotate(${m.r}) translate(${-m.w/2} ${-m.h/2})">${sap(m.t,m.c,m.w,m.h).replace(/<svg[^>]*>|<\/svg>/g,"")}</g>`).join("")}</svg>`;
+  const im=new Image();im.onload=()=>{const c=document.createElement("canvas");c.width=600;c.height=380;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,600,380);const s=Math.min(600/660,380/450);x.drawImage(im,(600-660*s)/2,(380-450*s)/2,660*s,450*s);
+   const L=store.get("drawings",[]);L.unshift(c.toDataURL("image/jpeg",.82));while(L.length>12)L.pop();try{store.set("drawings",L)}catch(e){}addStars(1,"shapeart");confetti();sWin();good(G==="g"?"حلوة! حفظتها في رسوماتج":"حلوة! حفظتها في رسوماتك")};
+  im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg)};
+ v.querySelector("#sadone").onclick=()=>{sTap();RUN.next()}}
+function saPick(){const v=view(`<div class="q"></div><div class="row ops" style="flex:1;align-items:center;gap:36px"></div>`);ask(G==="g"?"شو تبين تسوين؟":"شو تبي تسوي؟");const O=v.querySelector(".ops");
+ [["copy","ركّب الصورة",sap("triangle",SHC[0],100,80)+sap("square",SHC[4],100,90)],["order","من الكبير للصغير",[60,46,32].map((s,i)=>`<div style="width:${s}px;height:${s}px;display:inline-block">${sap("star",SHC[2+i],s,s)}</div>`).join("")],["free","ابنِ أي شي",sap("circle",SHC[6],70,70)+sap("heart",SHC[0],70,70)+sap("star",SHC[2],70,70)]].forEach(([k,n,pic])=>{
+  const b=document.createElement("button");b.className="opt card";b.style.cssText="width:250px;height:270px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px";b.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;gap:6px;height:150px">${pic.replace(/<svg /g,'<svg style="width:80px;height:80px" ')}</div><b style="font-size:28px">${n}</b>`;O.appendChild(b);
+  b.onclick=()=>{sTap();say(n,"ar");RUN.mode=k;RUN.next()}})}
+act({id:"shapeart",sec:"disc",name:"فن الأشكال",sub:"Shape art",pv:null,pvh:sap("triangle","#e03131",90,80),rounds:()=>[()=>saPick(),()=>RUN.mode==="free"?saFree():RUN.mode==="order"?saOrder():saCopy(Math.floor(Math.random()*SAPIC.length)),
+  ()=>RUN.mode==="free"?RUN.next():RUN.mode==="order"?saOrder():saCopy(Math.floor(Math.random()*SAPIC.length)),()=>RUN.mode==="free"?RUN.next():RUN.mode==="order"?saOrder():saCopy(Math.floor(Math.random()*SAPIC.length))]});
+/* ===== STICKER PUZZLE (user 2026-11-21, inspired by geometry sticker books): the animal is cut into numbered pieces, drag each piece onto its number ===== */
+function puzzleRound(src,n,numbers,bg){const v=view(`<div class="q"></div><div class="pz"><div class="pzb" style="background:${bg}"><canvas class="ol"></canvas><canvas class="done"></canvas></div><div class="pzt"></div></div>`);
+ ask(numbers?(G==="g"?"حطّي كل قطعة على رقمها":"حط كل قطعة على رقمها"):(G==="g"?"ركّبي الصورة من القطع":"ركّب الصورة من القطع"));
+ const S=520,im=new Image();im.onload=()=>{const c=document.createElement("canvas");c.width=S;c.height=S;const x=c.getContext("2d",{willReadFrequently:true});const k=Math.min(S*.9/im.width,S*.9/im.height);x.drawImage(im,(S-im.width*k)/2,(S-im.height*k)/2,im.width*k,im.height*k);
+  const D=x.getImageData(0,0,S,S),d=D.data,A2=i=>d[i*4+3]>60,pts=[];
+  /* seeds spread over the animal (farthest point sampling), then every animal pixel joins its nearest seed */
+  const inside=[];for(let i=0;i<S*S;i+=7)if(A2(i))inside.push(i);pts.push(inside[Math.floor(inside.length/2)]);
+  const dist=new Float32Array(inside.length).fill(1e9);for(let s=1;s<n;s++){const l=pts[pts.length-1],lx=l%S,ly=(l/S)|0;let bi=0,bv=-1;inside.forEach((q,j)=>{const dd=(q%S-lx)**2+(((q/S)|0)-ly)**2;if(dd<dist[j])dist[j]=dd;if(dist[j]>bv){bv=dist[j];bi=j}});pts.push(inside[bi])}
+  const P=pts.map(q=>[q%S,(q/S)|0]),lab=new Int16Array(S*S).fill(-1);for(let i=0;i<S*S;i++){if(!A2(i))continue;const px=i%S,py=(i/S)|0;let b=0,bv=1e12;P.forEach(([sx,sy],j)=>{const dd=(px-sx)**2+(py-sy)**2;if(dd<bv){bv=dd;b=j}});lab[i]=b}
+  const pieces=P.map(()=>({x0:S,y0:S,x1:0,y1:0,cx:0,cy:0,n:0}));for(let i=0;i<S*S;i++){const j=lab[i];if(j<0)continue;const pc=pieces[j],px=i%S,py=(i/S)|0;pc.x0=Math.min(pc.x0,px);pc.y0=Math.min(pc.y0,py);pc.x1=Math.max(pc.x1,px);pc.y1=Math.max(pc.y1,py);pc.cx+=px;pc.cy+=py;pc.n++}
+  pieces.forEach(pc=>{pc.cx/=pc.n||1;pc.cy/=pc.n||1});
+  /* the outline board: white animal, grey borders between pieces, the numbers */
+  const ol=v.querySelector(".ol"),od=v.querySelector(".done");[ol,od].forEach(z=>{z.width=S;z.height=S});const ox=ol.getContext("2d"),O=ox.createImageData(S,S);
+  for(let i=0;i<S*S;i++){const j=lab[i];if(j<0)continue;const px=i%S,py=(i/S)|0,edge=(px>0&&lab[i-1]!==j)||(px<S-1&&lab[i+1]!==j)||(py>0&&lab[i-S]!==j)||(py<S-1&&lab[i+S]!==j);const vv=edge?150:255;O.data[i*4]=O.data[i*4+1]=O.data[i*4+2]=vv;O.data[i*4+3]=255}
+  ox.putImageData(O,0,0);if(numbers){ox.font="800 20px Fredoka,system-ui";ox.textAlign="center";ox.textBaseline="middle";ox.fillStyle="#868e96";pieces.forEach((pc,j)=>pc.n>40&&ox.fillText(j+1,pc.cx,pc.cy))}
+  const dx2=od.getContext("2d");let left=pieces.filter(pc=>pc.n>0).length;const T=v.querySelector(".pzt");
+  shuf(pieces.map((pc,j)=>[pc,j]).filter(([pc])=>pc.n>0)).forEach(([pc,j])=>{const w=pc.x1-pc.x0+1,h=pc.y1-pc.y0+1,cv=document.createElement("canvas");cv.width=w;cv.height=h;const cx=cv.getContext("2d"),I=cx.createImageData(w,h);
+   for(let yy=0;yy<h;yy++)for(let xx=0;xx<w;xx++){const i=(pc.y0+yy)*S+pc.x0+xx;if(lab[i]!==j)continue;const o=(yy*w+xx)*4;I.data[o]=d[i*4];I.data[o+1]=d[i*4+1];I.data[o+2]=d[i*4+2];I.data[o+3]=255}cx.putImageData(I,0,0);
+   const t=document.createElement("div");t.className="pp";t.dataset.cx=pc.x0+w/2;t.dataset.cy=pc.y0+h/2;t.appendChild(cv);if(numbers)t.insertAdjacentHTML("beforeend",`<b>${j+1}</b>`);T.appendChild(t);
+   t.addEventListener("pointerdown",e=>{e.preventDefault();sTap();const B=v.querySelector(".pzb"),R=B.getBoundingClientRect(),sc=R.width/S,f=document.createElement("canvas");f.width=w;f.height=h;f.getContext("2d").drawImage(cv,0,0);
+    f.style.cssText=`position:fixed;z-index:60;width:${w*sc}px;height:${h*sc}px;left:${e.clientX-w*sc/2}px;top:${e.clientY-h*sc/2}px;pointer-events:none;filter:drop-shadow(0 6px 8px rgba(0,0,0,.3))`;document.body.appendChild(f);t.style.opacity=".3";
+    const mv=ev=>{f.style.left=ev.clientX-w*sc/2+"px";f.style.top=ev.clientY-h*sc/2+"px"};const up=ev=>{removeEventListener("pointermove",mv);removeEventListener("pointerup",up);f.remove();
+     const bx=(ev.clientX-R.left)/sc,by=(ev.clientY-R.top)/sc,ccx=pc.x0+w/2,ccy=pc.y0+h/2;
+     if(Math.hypot(bx-ccx,by-ccy)<Math.max(45,Math.min(w,h)*.5)){dx2.drawImage(cv,pc.x0,pc.y0);t.remove();sOk();if(--left===0){od.style.filter="drop-shadow(0 0 10px #fff)";confetti();setTimeout(()=>{good(G==="g"?"شطورة! اكتملت الصورة":"شاطر! اكتملت الصورة");setTimeout(RUN.next,1800)},300)}}
+     else{t.style.opacity="";bad();t.classList.add("wob");setTimeout(()=>t.classList.remove("wob"),340)}};
+    addEventListener("pointermove",mv);addEventListener("pointerup",up)})})};im.src=src}
+const PZA=[["camel","الجمل","#ffe8cc"],["falcon","الصقر","#d0ebff"],["turtle","السلحفاة","#d3f9d8"],["elephant","الفيل","#e5dbff"],["lion","الأسد","#fff3bf"],["dolphin","الدلفين","#c5f6fa"]];
+const pzSrc=k=>PZREADY?`img/x/pz_${k}.webp`:A({camel:"k_camel",falcon:"bird"}[k]||k);let PZREADY=true;
+act({id:"puzzle",sec:"disc",name:"لوحة الملصقات",sub:"Sticker puzzle",pv:"elephant",rounds:()=>{const L=shuf(PZA).slice(0,3);return [()=>puzzleRound(pzSrc(L[0][0]),8,1,L[0][2]),()=>puzzleRound(pzSrc(L[1][0]),14,1,L[1][2]),()=>puzzleRound(pzSrc(L[2][0]),20,0,L[2][2])]}});
+/* ===== FIND THE HIDDEN THINGS (user 2026-11-21, inspired by concentration books): small things hidden in a busy picture ===== */
+const HSOBJ=["strawberry","apple","ball","key","shell","starfish","duck","banana","clock","cup","bee","butterfly","carrot","cookie","crayon","dice","donut","envelope","gift","hat","icecream","orange","scissors","snowflake","spoon","sun","watermelon","r_star","ring","bird","fork","grapes"].filter(k=>k!=="key");
+const HSSC=["souq","beach","park","classroom"],HSAR={souq:"السوق",beach:"البحر",park:"الحديقة",classroom:"الصف"};let HSREADY=true;
+function hideRound(sc,cnt,size,turn,decoys){const v=view(`<div class="q"></div><div class="hs"><div class="hsb"></div><div class="hsl"></div></div>`);ask((G==="g"?"دوّري":"دوّر")+" على الأشياء المخفية في "+HSAR[sc]);
+ /* harder (user 2026-11-21: "very very easy"): many look-alike things everywhere, the ones to find are small, turned, a bit faded into the picture and partly covered */
+ const B=v.querySelector(".hsb"),Lst=v.querySelector(".hsl");B.style.backgroundImage=`url(${HSREADY?`img/x/hs_${sc}.webp`:"img/approved/scene-maths-souq.webp"})`;
+ const W=960,H=520,all=shuf(HSOBJ),objs=all.slice(0,cnt),dec=[];for(let i=0;i<decoys;i++)dec.push(all[cnt+(i%(all.length-cnt))]);
+ const pos=[],place=(k,sz,isT)=>{let x,y,t=0;do{x=20+Math.random()*(W-40-sz);y=20+Math.random()*(H-40-sz);t++}while(t<80&&isT&&pos.some(p=>p.t&&Math.hypot(p.x-x,p.y-y)<sz*2.2));const p={k,x,y,sz,t:isT,found:false};pos.push(p);return p};
+ objs.forEach(k=>place(k,size,1));dec.forEach(k=>place(k,size*(0.8+Math.random()*.6),0));
+ shuf(pos.slice()).forEach(p=>{const im=document.createElement("img");im.className="hid";im.src=A(p.k);
+  im.style.cssText=`left:${p.x}px;top:${p.y}px;width:${p.sz}px;height:${p.sz}px;object-fit:contain;transform:rotate(${turn?(Math.random()*160-80):(Math.random()*40-20)}deg) scaleX(${Math.random()<.5?-1:1});opacity:${p.t?(turn?.7:.8):.85};filter:saturate(${turn?.55:.75}) brightness(.95)`;B.appendChild(im)});
+ pos.filter(p=>p.t).forEach(p=>{const s=document.createElement("span");s.innerHTML=`<img src="${A(p.k)}">`;Lst.appendChild(s);p.li=s});
+ const T=pos.filter(p=>p.t);let left=cnt,last=Date.now(),hintT=setInterval(()=>{if(!document.body.contains(B))return clearInterval(hintT);if(Date.now()-last>25000){last=Date.now();const p=T.find(q=>!q.found);if(!p)return;
+  const side=(p.y<H/2?"فوق":"تحت")+" "+(p.x<W/2?"على اليسار":"على اليمين");fal("point",(G==="g"?"دوّري ":"دوّر ")+side);say("دَوِّر "+side,"ar")}},2000);
+ B.addEventListener("pointerdown",e=>{const R=B.getBoundingClientRect(),k=B.clientWidth/R.width,bx=(e.clientX-R.left)*k,by=(e.clientY-R.top)*k;last=Date.now();
+  const p=T.find(q=>!q.found&&Math.hypot(q.x+q.sz/2-bx,q.y+q.sz/2-by)<q.sz*.6);
+  if(!p){tone(220,.08,0,"sine",.04);return}p.found=true;const r=document.createElement("div");r.className="ring";r.style.cssText=`left:${p.x-10}px;top:${p.y-10}px;width:${p.sz+20}px;height:${p.sz+20}px;z-index:5`;B.appendChild(r);p.li.classList.add("got");sOk();
+  if(--left===0){clearInterval(hintT);confetti();setTimeout(()=>{good(G==="g"?"عيونج قوية! لقيتي كل شي":"عيونك قوية! لقيت كل شي");setTimeout(RUN.next,1800)},300)}})}
+act({id:"hidden",sec:"disc",name:"ابحث عن المخفي",sub:"Find the hidden things",pv:"r_star",rounds:()=>{const S=shuf(HSSC);return [()=>hideRound(S[0],5,52,0,22),()=>hideRound(S[1],6,44,1,32),()=>hideRound(S[2],7,36,1,45)]}});
 /* ===== PLAY SCALE (user 2026-11-20): drag coloured blocks onto the pans and watch it tip; small block = 1, big block = 2 ===== */
 const BCOL=["#e03131","#1c7ed6","#2f9e44","#fcc419","#7048e8","#f06595"];
 function scaleTable(o){const v=view(`<div class="q"></div><div class="big" style="flex-direction:column;gap:34px"><div class="scale" style="height:330px"><img class="stand" src="${A("stand")}">
