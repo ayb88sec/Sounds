@@ -883,7 +883,7 @@ async function loadAll0(){
   if(k.error){showErr("children: "+k.error.message);return}
   profs=(k.data||[]).map(r=>Object.assign({},r.data,{id:r.id}));secs=(s.data||[]).filter(r=>!(r.data&&(r.data.type==="feedback"||r.data.type==="pstatus"))).map(r=>Object.assign({},r.data,{id:r.id,_fam:r.family_id,_shared:!!r.shared,_proposed:!!r.proposed}));
   if(!secs.length&&!profs.length){/* first time: bring over what this phone already has */const lp=NAJMA.profiles,ls=NAJMA.sections;profs=lp.slice();secs=ls.slice();if(profs.length||secs.length){await dbSaveP();await dbSaveS()}}
-  loadedK=new Set(profs.map(p=>p.id));loadedS=new Set(secs.filter(x=>isMine(x)||IS_ADMIN).map(x=>x.id));
+  loadedK=new Set(profs.map(p=>p.id));loadedS=new Set(secs.filter(x=>isMine(x)||IS_ADMIN).map(x=>x.id));try{secs.forEach(x=>{savedSig[x.id]=sig(x)})}catch(e){}
   try{const dv=await sb.from("devices").select("child_id,last_seen,created_at").eq("family_id",FID);devSeen={};(dv.data||[]).forEach(d=>{const t=d.last_seen||d.created_at;if(!devSeen[d.child_id]||t>devSeen[d.child_id+"_t"]){devSeen[d.child_id+"_t"]=t;devSeen[d.child_id]=d.last_seen?new Date(d.last_seen).toLocaleString("ar",{dateStyle:"short",timeStyle:"short"}):"لم يُفتح بعد"}})}catch(e){}
   PRG={};(pr.data||[]).forEach(r=>{(PRG[r.child_id]=PRG[r.child_id]||{})[r.app_key]=r.data});
   _saveP();_saveS();
@@ -894,8 +894,11 @@ const strip=o=>{const c=Object.assign({},o);["id","_fam","_shared","_proposed","
 async function dbSaveP(){const rows=profs.map(p=>({id:p.id,family_id:FID,data:strip(p),updated_at:new Date().toISOString()}));
   if(rows.length){const {error}=await sb.from("children").upsert(rows);if(error)return status("❌ "+error.message)}
   const gone=[...loadedK].filter(id=>!profs.some(p=>p.id===id));if(gone.length)await sb.from("children").delete().in("id",gone);loadedK=new Set(profs.map(p=>p.id));status("✅ تم الحفظ",true)}
-async function dbSaveS(){const rows=secs.filter(x=>isMine(x)||IS_ADMIN).map(x=>({id:x.id,family_id:x._fam||FID,data:strip(x),shared:!!x._shared,proposed:!!x._proposed,updated_at:new Date().toISOString()}));
-  if(rows.length){const {error}=await sb.from("sections").upsert(rows);if(error)return status("❌ "+error.message)}
+/* save only the sections that changed (2026-11-22): sending every section, recordings included, on each save grew too big and new recordings stopped saving */
+const savedSig={};const sig=x=>{const s=JSON.stringify(strip(x))+"|"+!!x._shared+"|"+!!x._proposed;let h=7;for(let i=0;i<s.length;i+=7)h=(h*31+s.charCodeAt(i))|0;return s.length+":"+h};
+async function dbSaveS(){const mine=secs.filter(x=>isMine(x)||IS_ADMIN),ch=mine.filter(x=>savedSig[x.id]!==sig(x));
+  for(const x of ch){const {error}=await sb.from("sections").upsert([{id:x.id,family_id:x._fam||FID,data:strip(x),shared:!!x._shared,proposed:!!x._proposed,updated_at:new Date().toISOString()}]);
+   if(error){status("❌ "+error.message);alert("⚠️ ما انحفظ التسجيل. تأكدي من الإنترنت وحاولي مرة ثانية.\n"+error.message);return}savedSig[x.id]=sig(x)}
   const gone=[...loadedS].filter(id=>!secs.some(x=>x.id===id));if(gone.length)await sb.from("sections").delete().in("id",gone);loadedS=new Set(secs.filter(x=>isMine(x)||IS_ADMIN).map(x=>x.id));status("✅ تم الحفظ",true)}
 async function drawCodes(){const {data}=await sb.from("invites").select("code,expires_at,used_by").eq("family_id",FID).is("used_by",null).gt("expires_at",new Date().toISOString()).order("expires_at",{ascending:false});
   $("pCodes").innerHTML=(data||[]).length?`<label>رموز لم تُستخدم بعد</label>`+(data||[]).map(r=>`<div class="row"><div class="av" style="background:#e3f8e7">✉️</div><div class="info"><b dir="ltr" style="letter-spacing:3px;text-align:right">${r.code}</b><small>صالح حتى ${new Date(r.expires_at).toLocaleDateString("ar")}</small></div><button class="b" data-c="${r.code}">📋</button></div>`).join(""):"";
