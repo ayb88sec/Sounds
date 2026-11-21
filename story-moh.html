@@ -75,16 +75,20 @@ let L={},DPR=Math.min(2,devicePixelRatio||1),cur=0,turn=null,drag=null,pageT0=0,
 
 /* ---------- her voice reads the page (recorded in the portal: 🎙️ صوتي ← قصة محمد وشجاعة البحر) ---------- */
 let VS={},NA=null,NR={page:-1,st:[]};const narrA=new Audio();narrA.preload="auto";
-function vnote(){const n=voiceCount(),el=document.getElementById("vnote");if(!el)return;el.textContent=n?`🎙️ بصوتج: ${n} من 13 جملة`:"🎙️ ما لقيت تسجيلات صوتج على هذا الجهاز. سجّليها من البوابة ← 🎙️ صوتي ← 📖 قصة محمد، وتأكدي إن رمز العائلة محفوظ هني."}
+function vnote(){const n=voiceCount(),el=document.getElementById("vnote");if(!el)return;el.textContent=n?`🎙️ بصوتج: ${n} من 13 جملة`:(window.__storyFound&&!NAJMA.hasKey())?`🔑 لقيت ${window.__storyFound} تسجيلات بصوتج، بس رمز العائلة مو محفوظ على هذا الجهاز. اكتبيه في البوابة ← ☁️ الاتصال.`:"🎙️ ما لقيت تسجيلات صوتج على هذا الجهاز. سجّليها من البوابة ← 🎙️ صوتي ← 📖 قصة محمد، وتأكدي إن رمز العائلة محفوظ هني."}
 /* her recordings: what this device already has, then the newest copy straight from the family's storage
    (a child's iPad asks with its own pass; the parent's phone or Mac uses her portal sign-in) */
 async function freshVoices(){const G=k=>Storage.prototype.getItem.call(localStorage,k);let secs=null;
  try{const dev=G("najma:dev");if(dev&&NAJMA.rpc){const js=await NAJMA.rpc("kid_sync",{tok:dev});secs=js&&js.sections}}catch(e){}
  if(!secs){try{const SB=window.SUPA;let tok=null;for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&/^sb-.*-auth-token$/.test(k)){try{tok=JSON.parse(G(k)).access_token}catch(e){}}}
-  if(SB&&tok){const r=await fetch(`${SB.url}/rest/v1/sections?select=data`,{headers:{apikey:SB.key,Authorization:"Bearer "+tok}});if(r.ok)secs=(await r.json()).map(x=>x.data)}}catch(e){}}
- if(!secs)return 0;let n=0;const OV={};secs.filter(s=>s&&s.type==="qimg"&&s.ov&&s.ov["v:story_moh"]).forEach(s=>Object.assign(OV,s.ov["v:story_moh"]));
+  if(SB&&tok){let r=await fetch(`${SB.url}/rest/v1/sections?select=data`,{headers:{apikey:SB.key,Authorization:"Bearer "+tok}});
+   /* her portal sign-in may have expired: renew it the same way the portal does, then ask again */
+   if(r.status===401){const K=Object.keys(localStorage).find(k=>/^sb-.*-auth-token$/.test(k)),a=JSON.parse(G(K));const rr=await fetch(`${SB.url}/auth/v1/token?grant_type=refresh_token`,{method:"POST",headers:{apikey:SB.key,"Content-Type":"application/json"},body:JSON.stringify({refresh_token:a.refresh_token})});
+    if(rr.ok){const s=await rr.json();try{Storage.prototype.setItem.call(localStorage,K,JSON.stringify(Object.assign({},a,s,{expires_at:Math.floor(Date.now()/1000)+(s.expires_in||3600)})))}catch(e){}r=await fetch(`${SB.url}/rest/v1/sections?select=data`,{headers:{apikey:SB.key,Authorization:"Bearer "+s.access_token}})}}
+   if(r.ok)secs=(await r.json()).map(x=>x.data)}}catch(e){}}
+ if(!secs)return 0;let n=0;const OV={};window.__storyFound=0;secs.filter(s=>s&&s.type==="qimg"&&s.ov&&s.ov["v:story_moh"]).forEach(s=>Object.assign(OV,s.ov["v:story_moh"]));window.__storyFound=Object.keys(OV).length;
  VS.mine=VS.mine||{};VS.pick=VS.pick||{};await Promise.all(Object.keys(OV).map(t=>NAJMA.decrypt(OV[t]).then(u=>{VS.mine[t.replace(/\s+/g," ").trim()]=u;n++}).catch(()=>{})));return n}
-try{if(window.NAJMA&&NAJMA.voiceSet)NAJMA.voiceSet("story_moh").then(v=>{VS=v||{};vnote();if(NR.page===cur)narrate(cur);return freshVoices()}).then(n=>{if(n){vnote();placeSay();if(NR.page===cur&&!NR.on)narrate(cur)}})}catch(e){}
+try{if(window.NAJMA&&NAJMA.voiceSet)NAJMA.voiceSet("story_moh").then(v=>{VS=v||{};vnote();if(NR.page===cur)narrate(cur);return freshVoices()}).then(n=>{vnote();if(n){placeSay();if(NR.page===cur&&!NR.on)narrate(cur)}})}catch(e){}
 function silentWav(){const n=800,b=new ArrayBuffer(44+n*2),v=new DataView(b),w=(o,s)=>[...s].forEach((c,i)=>v.setUint8(o+i,c.charCodeAt(0)));w(0,"RIFF");v.setUint32(4,36+n*2,true);w(8,"WAVEfmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,16000,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,"data");v.setUint32(40,n*2,true);return URL.createObjectURL(new Blob([b],{type:"audio/wav"}))}
 let unlocked=false;function unlockA(){if(unlocked&&!narrA.paused)return;try{const s=narrA.src;narrA.src=silentWav();const r=narrA.play();if(r&&r.then)r.then(()=>{unlocked=true}).catch(()=>{})}catch(e){}}
 /* how many of the story's sentences have her voice on this device */
