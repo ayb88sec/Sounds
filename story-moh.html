@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>قصص نجمة · محمد وشجاعة البحر</title>
+<script src="supa.js"></script><script src="profile.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&display=swap">
+<style>
+/* 📖 Najma storybook «محمد وشجاعة البحر»: shown only to the children the parent picks (portal ← الأطفال ← 📖 قصة محمد). */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+body{font-family:"Baloo Bhaijaan 2",system-ui,sans-serif;background:radial-gradient(ellipse at 50% 35%,#1c4a5e,#0b2231 70%,#071822)}
+.top{position:fixed;inset:0 0 auto 0;height:62px;display:flex;align-items:center;gap:12px;padding:0 18px;color:#fff6df;z-index:30}
+.top img{width:42px;height:42px;border-radius:12px}.top b{font-size:21px}.top span{opacity:.7;font-size:16px;border-inline-start:1px solid #fff5;padding-inline-start:10px}
+.tag{margin-inline-start:auto;background:#ffb703;color:#3b2a00;font-weight:800;font-size:13px;border-radius:99px;padding:5px 12px;font-style:normal}
+.top .home,.top img,.top b,.top span{display:none}.home{width:50px;height:50px;border-radius:16px;border:0;background:#ffffff1a;color:#fff;font-size:24px}
+#book{position:fixed;left:0;top:0}
+#book canvas{position:absolute;display:block}
+#cover{position:absolute;border-radius:16px;background:linear-gradient(150deg,#245f6b,#173f49);box-shadow:0 0 0 1px #0d2c33,0 34px 80px #000a,inset 0 0 0 3px #2d7480}
+#cover:after{content:"";position:absolute;inset:6px;border-radius:12px;border:1.5px solid #e8c26a55}
+#paperL,#paperR{position:absolute;background:#e9dcc0}
+#spine{position:absolute;top:0;bottom:0;width:60px;pointer-events:none;z-index:3;background:linear-gradient(90deg,#0000,#6b4f2a26 42%,#3d2a1240 50%,#6b4f2a26 58%,#0000)}
+#curl{pointer-events:none;z-index:5}
+.bar{position:fixed;inset:auto 0 0 0;height:88px;display:flex;align-items:center;justify-content:center;gap:22px;z-index:30}
+.nav{display:grid;place-items:center;width:70px;height:70px;border-radius:22px;border:0;font:800 34px/1 system-ui;background:#ffc83d;color:#3b2a00;box-shadow:0 6px 0 #c48f12;cursor:pointer;transition:opacity .3s}
+.nav:active{transform:translateY(4px) scale(.96);box-shadow:0 2px 0 #c48f12}.nav:disabled{opacity:.25}
+.nav.pulse{animation:pulse 2.2s ease-in-out infinite}@keyframes pulse{50%{box-shadow:0 6px 0 #c48f12,0 0 0 10px #ffc83d33}}
+.dots{display:flex;gap:7px}.dots i{width:10px;height:10px;border-radius:50%;background:#ffffff33;transition:.3s}.dots i.on{background:#ffc83d;transform:scale(1.35)}
+#start{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:#071822cc;backdrop-filter:blur(6px)}
+#start button{font:800 30px "Baloo Bhaijaan 2";border:0;border-radius:26px;padding:20px 46px;background:#ffc83d;color:#3b2a00;box-shadow:0 8px 0 #c48f12}
+</style>
+</head>
+<body>
+<header class="top"><button class="home" aria-label="رجوع" onclick="history.length>1?history.back():location.href='world.html'">→</button>
+ <img src="icon2-180.png" alt=""><b>نجمة</b><span>قصص نجمة</span></header>
+<div id="btitle" style="position:fixed;left:0;right:0;text-align:center;color:#1f4f5a;font-weight:800;font-size:30px;text-shadow:0 0 12px #fff,0 0 4px #fff;z-index:2">محمد وشجاعة البحر</div>
+<div id="book"><div id="cover"></div><div id="paperL"></div><div id="paperR"></div>
+ <canvas id="txt"></canvas><canvas id="scn"></canvas><div id="spine"></div><canvas id="curl"></canvas></div>
+<div class="bar"><button class="nav" id="bn" aria-label="اللي قبل"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button><div class="dots" id="dots"></div><button class="nav" id="nn" aria-label="اللي بعد"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+<div id="start"><button>📖 افتح القصة</button></div>
+<script>
+"use strict";
+/* ---------- story ---------- */
+const DIR="img/story/moh/";
+/* scene layers: bg plate, fg characters (alpha), water mask.
+   regions = gentle breathing areas [x0,y0,x1,y1, anchorY, amp, phase, sway] */
+const SCENES={
+ s0:{bg:"s0_bg.webp",fg:"s0_fg.webp",water:"s0_water.png",ar:1448/1086,regions:[[.24,.12,.55,.96,.95,.010,0,.6],[.48,.02,.90,.98,.97,.007,1.7,.3],[.78,.50,.96,.80,.79,.016,3.1,1.4]]},
+ s1:{bg:"s1_bg.webp",fg:"s1_fg.webp",water:"s1_water.png",ar:4/3,bird:"s1_bird.webp",bc:[.645,.12],regions:[[0.641, 0.285, 0.999, 0.999, 0.989, 0.008, 0.0, 0.5], [0.134, 0.309, 0.378, 0.863, 0.853, 0.015, 1.7, 1.2]]},
+ s2:{bg:"s2_bg.webp",fg:"s2_fg.webp",water:"s2_water.png",ar:4/3,bird:"s2_bird.webp",bc:[.845,.40],regions:[[0.133, 0.054, 0.646, 0.606, 0.596, 0.008, 0.0, 0.5]]},
+ s3:{bg:"s3_bg.webp",fg:"s3_fg.webp",water:"s3_water.png",ar:4/3,regions:[[0.183, 0.013, 0.823, 0.999, 0.989, 0.008, 0.0, 0.5]]},
+ s4:{bg:"s4_bg.webp",fg:"s4_fg.webp",water:"s4_water.png",ar:4/3,regions:[[0.046, 0.018, 0.844, 0.984, 0.974, 0.008, 0.0, 0.5]]},
+ s5:{bg:"s5_bg.webp",fg:"s5_fg.webp",water:"s5_water.png",ar:4/3,regions:[[0.304, 0.016, 0.93, 0.587, 0.577, 0.008, 0.0, 0.5]]},
+ s6:{bg:"s6_bg.webp",fg:"s6_fg.webp",water:"s6_water.png",ar:4/3,regions:[[0.239, 0.028, 0.964, 0.999, 0.989, 0.008, 0.0, 0.5]]},
+};
+/* cam: [centerX, centerY, zoom] start -> end */
+const PAGES=[
+ {sc:"s1",cam:[[0,0,1],[0,0,1]],t:["لبس محمد كندورته البيضا.","اليوم بيروح يصيد مع بابا!","ومن فوق السور، طار صقير ولحقهم."]},
+ {sc:"s2",cam:[[0,0,1],[0,0,1]],t:["القارب يتمايل مع الموج، ومحمد رمى الصنّارة.","صقير صاح فوق الصخرة. شو هناك؟","سمجة صغيرة! خيط قديم ماسك ذيلها."]},
+ {sc:"s3",cam:[[0,0,1],[0,0,1]],t:["ارتفع القارب مع موجة. خاف محمد وقعد.","«بابا… أنا خايف.»","قال بابا: «زين إنك ناديتني.»"]},
+ {sc:"s4",cam:[[0,0,1],[0,0,1]],t:["«هني يا بابا! تحت الشبك!»","رفع بابا الشبكة."]},
+ {sc:"s5",cam:[[0,0,1],[0,0,1]],t:["قصّ بابا الخيط،","وسبحت السمجة حرّة!"]}
+];
+const COVERCAM=[[.5,.48,1.02],[.5,.42,1.12]],ENDCAM=[[.5,.5,1.25],[.5,.5,1.0]],ENDSC="s5";
+const N=PAGES.length+2; /* 0 cover, 1..10 story, 11 end */
+const sceneOf=s=>s===0?{sc:"s0",cam:COVERCAM}:s<=PAGES.length?PAGES[s-1]:{sc:ENDSC,cam:ENDCAM};
+const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+const now=()=>performance.now()/1000;
+const $=id=>document.getElementById(id);
+const book=$("book"),txt=$("txt"),scn=$("scn"),curl=$("curl"),cover=$("cover"),paperL=$("paperL"),paperR=$("paperR"),spine=$("spine");
+let L={},DPR=Math.min(2,devicePixelRatio||1),cur=0,turn=null,drag=null,pageT0=0,idleSet=false;
+
+/* ---------- her voice reads the page (recorded in the portal: 🎙️ صوتي ← قصة محمد وشجاعة البحر) ---------- */
+let VS={},NA=null,NR={page:-1,st:[]};const narrA=new Audio();narrA.preload="auto";
+try{if(window.NAJMA&&NAJMA.voiceSet)NAJMA.voiceSet("story_moh").then(v=>{VS=v||{};if(NR.page===cur)narrate(cur)})}catch(e){}
+const herVoice=t=>{try{return NAJMA.voiceURL("story_moh",t,null,VS).mine}catch(e){return null}};
+function narrate(s){NR={page:s,st:[],on:false};narrA.pause();if(s<1||s>PAGES.length)return;const T=PAGES[s-1].t;if(!T.some(herVoice))return;NR.on=true;const run=NR;
+ const say=i=>{if(NR!==run||i>=T.length)return;const u=herVoice(T[i]);run.st[i]=now();if(!u){setTimeout(()=>say(i+1),1400);return}narrA.src=u;narrA.onended=()=>setTimeout(()=>say(i+1),350);narrA.onerror=()=>say(i+1);narrA.play().catch(()=>{run.on=false})};
+ setTimeout(()=>say(0),700)}
+/* how far sentence i has appeared: with her voice, when she starts saying it; otherwise one after the other */
+function revealK(s,i,reveal){if(NR.on&&NR.page===s&&reveal<90){const st=NR.st[i];return st?Math.min(1,(now()-st)/.6):0}return Math.max(0,Math.min(1,(reveal-.4-i*1.1)/.9))}
+/* ---------- words page (drawn on canvas so the same page can curl) ---------- */
+const PAPER="#fbf5e6",AR="٠١٢٣٤٥٦٧٨٩";
+function wrap(ctx,s,maxW){const w=s.split(" "),out=[];let line="";for(const x of w){const t=line?line+" "+x:x;if(ctx.measureText(t).width>maxW&&line){out.push(line);line=x}else line=t}if(line)out.push(line);return out}
+function paperBg(ctx,W,H,spineAt){ctx.fillStyle=PAPER;ctx.fillRect(0,0,W,H);
+ if(spineAt){const x0=spineAt>0?W:0,g=ctx.createLinearGradient(x0,0,x0-spineAt*W*.14,0);g.addColorStop(0,"rgba(110,80,35,.20)");g.addColorStop(1,"rgba(110,80,35,0)");ctx.fillStyle=g;ctx.fillRect(0,0,W,H)}
+ const r=ctx.createRadialGradient(W*.5,H*.45,Math.min(W,H)*.25,W*.5,H*.5,Math.max(W,H)*.8);r.addColorStop(0,"rgba(255,255,255,0)");r.addColorStop(1,"rgba(150,110,50,.10)");ctx.fillStyle=r;ctx.fillRect(0,0,W,H)}
+function star(c,x,y,r){c.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,q=i%2?r*.45:r;c.lineTo(x+q*Math.cos(a),y+q*Math.sin(a))}c.closePath();c.fill()}
+/* reveal = seconds since the page opened: the sentences rise in one after the other */
+function wordsPage(ctx,W,H,s,reveal,spineAt){
+ if(s===0)return coverPage(ctx,W,H,reveal);
+ paperBg(ctx,W,H,spineAt);if(s>PAGES.length)return endPage(ctx,W,H,reveal);
+ const p=PAGES[s-1];ctx.direction="rtl";ctx.textAlign="right";ctx.textBaseline="alphabetic";let fs=Math.round(Math.min(W*.075,H*.088)),lines,lh,gap,total;
+ for(;;){ctx.font=`800 ${fs}px "Baloo Bhaijaan 2"`;lines=[];p.t.forEach((x,i)=>wrap(ctx,x,W*.8).forEach(l=>lines.push([l,i])));lh=fs*1.45;gap=fs*.55;total=lines.length*lh+(p.t.length-1)*gap;if(total<=H*.8||fs<18)break;fs-=2}
+ let y=(H-total)/2+fs*.95,prev=0;
+ for(const [l,i] of lines){if(i!==prev){y+=gap;prev=i}const k=revealK(s,i,reveal),e=1-Math.pow(1-k,3);
+  ctx.globalAlpha=e;ctx.fillStyle=i%2?"#2b2340":"#1f4f5a";ctx.fillText(l,W*.9,y+(1-e)*fs*.4);y+=lh}
+ ctx.globalAlpha=1;ctx.font=`700 ${Math.round(fs*.36)}px "Baloo Bhaijaan 2"`;ctx.fillStyle="#b29a72";ctx.textAlign="center";ctx.fillText(String(s).replace(/\d/g,d=>AR[d]),W/2,H-fs*.55)}
+function coverPage(ctx,W,H,t){const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,"#2a6a76");g.addColorStop(1,"#173f49");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ ctx.strokeStyle="rgba(232,194,106,.55)";ctx.lineWidth=Math.max(1.5,W*.004);const m=W*.06;ctx.strokeRect(m,m,W-2*m,H-2*m);ctx.strokeRect(m*1.3,m*1.3,W-2.6*m,H-2.6*m);
+ const fs=Math.round(Math.min(W*.13,H*.13));ctx.direction="rtl";ctx.textAlign="center";
+ /* gold foil title with a slow light sweep */
+ const sw=((t*.2)%1.8-.4)*W,f=ctx.createLinearGradient(sw-W*.3,0,sw+W*.3,H*.25);f.addColorStop(0,"#d9a640");f.addColorStop(.5,"#fff4cc");f.addColorStop(1,"#d9a640");
+ ctx.font=`800 ${fs}px "Baloo Bhaijaan 2"`;const y0=H*.44;ctx.fillStyle="rgba(0,0,0,.28)";ctx.fillText("محمد",W/2+2,y0+3);ctx.fillText("وشجاعة البحر",W/2+2,y0+fs*1.15+3);
+ ctx.fillStyle=f;ctx.fillText("محمد",W/2,y0);ctx.fillText("وشجاعة البحر",W/2,y0+fs*1.15);
+ ctx.font=`700 ${Math.round(fs*.32)}px "Baloo Bhaijaan 2"`;ctx.fillStyle="rgba(255,246,223,.85)";ctx.fillText("حكاية محمد وبابا عبدالله وصقير",W/2,y0+fs*2.15);
+ ctx.fillStyle="#e8c26a";star(ctx,W/2,H*.24,Math.min(W,H)*.045)}
+function endPage(ctx,W,H,t){const fs=Math.round(Math.min(W*.12,H*.14));ctx.textAlign="center";ctx.direction="rtl";const k=Math.min(1,Math.max(0,t)/.8);ctx.globalAlpha=k;
+ ctx.fillStyle="#e9b44c";star(ctx,W/2,H*.3,Math.min(W,H)*.07*(0.92+.08*Math.sin(t*2)));ctx.font=`800 ${fs}px "Baloo Bhaijaan 2"`;ctx.fillStyle="#1d5660";ctx.fillText("النهاية",W/2,H*.53);
+ ctx.font=`700 ${Math.round(fs*.42)}px "Baloo Bhaijaan 2"`;ctx.fillStyle="#5a4b3a";ctx.fillText("شو كان شعور محمد؟",W/2,H*.66);ctx.globalAlpha=1}
+function drawText(s,t){const c=txt.getContext("2d");const W=txt.width,H=txt.height;if(!W)return;
+ if(L.land)wordsPage(c,W,H,s,t-pageT0,1);else{if(s===0)coverPage(c,W,H,t-pageT0);else{paperBg(c,W,H,0);wordsPage(c,W,H,s,t-pageT0,0)}}}
+
+/* ---------- living picture (WebGL): parallax layers, moving water, breathing characters, camera moves ---------- */
+function shader(gl,vsrc,fsrc){const mk=(t,s)=>{const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))console.error(gl.getShaderInfoLog(x));return x};
+ const p=gl.createProgram();gl.attachShader(p,mk(gl.VERTEX_SHADER,vsrc));gl.attachShader(p,mk(gl.FRAGMENT_SHADER,fsrc));gl.linkProgram(p);return p}
+/* BOOK + CLIPS TEST COPY: the picture page shows the clip whole (no zoom, no crop, no shading), drawn frame by frame so it moves in any viewer, looping while its page is open. All the words for a scene sit together on the facing page. */
+const CD="img/story/moh-clips/";
+const PM=[{img:"img/story/moh/approved.webp"},{c:1},{c:2},{c:3},{c:4},{c:5},{c:5,end:1}];const FN={1:50,2:42,3:50,4:20,5:50},FPS=10;
+const GL=(()=>{const ctx=scn.getContext("2d");const IM={},V={};
+ const ld=src=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src});
+ const F={};let clip=0,clipT0=0;
+ async function prep(){IM.cover=await ld(PM[0].img);for(let i=1;i<=5;i++){IM["f"+i]=await ld(CD+`p${i}_first.jpg`);IM["l"+i]=await ld(CD+`p${i}_last.jpg`);
+  const v=document.createElement("video");v.muted=true;v.loop=true;v.playsInline=true;v.setAttribute("playsinline","");v.setAttribute("muted","");v.preload="auto";
+  v.style.cssText="position:fixed;width:2px;height:2px;opacity:0;pointer-events:none;left:0;top:0";v.src=await vsrc(CD+`moh-p${i}.mp4`);document.body.appendChild(v);V[i]=v;
+  F[i]=null;}}
+ async function vsrc(u){try{const b=await (await fetch(typeof EMB!=="undefined"&&EMB[u]?EMB[u]:u)).blob();return URL.createObjectURL(new Blob([b],{type:"video/mp4"}))}catch(e){return u}}
+ let fbLoading={};function backup(i){if(F[i]||fbLoading[i])return;fbLoading[i]=1;Promise.all(Array.from({length:FN[i]},(_,k)=>ld(CD+`f${i}/${String(k+1).padStart(3,"0")}.jpg`))).then(a=>F[i]=a)}
+ /* the clip keeps playing on a loop while its page is open */
+ function source(s,live){const m=PM[Math.min(s,PM.length-1)];if(m.img)return IM.cover;if(m.end||reduce)return IM["l"+m.c];
+  if(live&&clip===m.c){const v=V[m.c];if(v.readyState>=2&&!v.paused&&v.currentTime>0)return v;
+   if(now()-clipT0>1.2){backup(m.c);const fr=F[m.c];if(fr){const k=Math.floor((now()-clipT0)*FPS)%fr.length;return fr[k]||IM["f"+m.c]}}}return IM["f"+m.c]}
+ function paint(c,W,H,src){c.fillStyle="#fbf5e6";c.fillRect(0,0,W,H);if(!src)return;const sw=src.videoWidth||src.naturalWidth,sh=src.videoHeight||src.naturalHeight;
+  const k=Math.max(W/sw,H/sh),dw=sw*k,dh=sh*k;c.drawImage(src,(W-dw)/2,(H-dh)/2,dw,dh);
+  /* only the soft fold of the paper near the spine, like a printed book */
+  const g=c.createLinearGradient(0,0,W*.06,0);g.addColorStop(0,"rgba(60,40,15,.28)");g.addColorStop(1,"rgba(60,40,15,0)");c.fillStyle=g;c.fillRect(0,0,W*.06,H)}
+ function draw(s,t,k,par,still,live){paint(ctx,scn.width,scn.height,source(s,live))}
+ function start(s){Object.values(V).forEach(v=>v.pause());const m=PM[Math.min(s,PM.length-1)];clip=(m.c&&!m.end&&!reduce)?m.c:0;clipT0=now();
+  if(clip){const v=V[clip];try{v.currentTime=0}catch(e){}const r=v.play();if(r&&r.catch)r.catch(()=>{})}}
+ function snap(s){const c=document.createElement("canvas");c.width=scn.width;c.height=scn.height;paint(c.getContext("2d"),c.width,c.height,source(s,false));return c}
+ return {prep,draw,start,snap}})();
+/* camera: slow ease from start to end over 14s */
+const camK=t=>{const k=Math.min(1,Math.max(0,t)/14);return k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2};
+/* parallax from tilting the iPad (and a slow drift when it is still) */
+let tilt=[0,0],tiltT=[0,0];
+addEventListener("deviceorientation",e=>{if(e.gamma==null)return;tiltT=[Math.max(-1,Math.min(1,e.gamma/25)),Math.max(-1,Math.min(1,(e.beta-45)/25))]});
+
+/* ---------- page curl: a paper mesh bent around a cylinder, lit and shadowed ---------- */
+const CU=(()=>{const gl=curl.getContext("webgl",{premultipliedAlpha:true,alpha:true,antialias:true});
+ const pr=shader(gl,`attribute vec2 uv;uniform float f,R,tl,W,H,X0,Y0,D,cw,ch;varying vec2 vuv;varying float th;
+ void main(){float u=uv.x,vv=uv.y;float fe=f+tl*(vv-.5);float d=(fe-u)*W;float x,z,a=0.;
+  if(d<=0.){x=u*W;z=0.;}else if(d<3.14159*R){a=d/R;x=fe*W-R*sin(a);z=R*(1.-cos(a));}else{a=3.14159;x=fe*W+(d-3.14159*R);z=2.*R;}
+  float y=vv*H,k=D/(D-z),cx=W,cy=H*.5;float sx=X0+cx+(x-cx)*k,sy=Y0+cy+(y-cy)*k;
+  vuv=uv;th=a;gl_Position=vec4(sx/cw*2.-1.,1.-sy/ch*2.,-z/(W*2.),1);}`,
+ `precision mediump float;varying vec2 vuv;varying float th;uniform sampler2D A,B;uniform float hasB;
+ void main(){vec4 c;float l;if(!gl_FrontFacing){c=texture2D(A,vuv);l=.8+.2*cos(th);}else{c=hasB>.5?texture2D(B,vec2(1.-vuv.x,vuv.y)):vec4(.97,.94,.87,1.);l=.84+.16*abs(cos(th));}
+  float spec=pow(max(0.,sin(th)),5.)*.16;gl_FragColor=vec4(c.rgb*l+spec,1.);}`);
+ const p2=shader(gl,`attribute vec2 uv;varying vec2 q;void main(){q=uv;gl_Position=vec4(uv*2.-1.,0,1);}`,
+ `precision mediump float;varying vec2 q;uniform float edge,amt,cw,X0,Y0,W,H,ch,span;void main(){float x=q.x*cw,y=(1.-q.y)*ch;if(y<Y0||y>Y0+H||x<X0||x>X0+span)discard;float d=edge-x;float a=d>0.?amt*exp(-d/(W*.08)):0.;gl_FragColor=vec4(0,0,0,a);}`);
+ const G=40,GH=28,vert=[],idx=[];for(let j=0;j<=GH;j++)for(let i=0;i<=G;i++)vert.push(i/G,j/GH);for(let j=0;j<GH;j++)for(let i=0;i<G;i++){const a=j*(G+1)+i,b=a+1,c=a+G+1,d=c+1;idx.push(a,b,c,b,d,c)}
+ const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vert),gl.STATIC_DRAW);
+ const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(idx),gl.STATIC_DRAW);
+ const qb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,qb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([0,0,1,0,0,1,1,1]),gl.STATIC_DRAW);
+ const mk=()=>{const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);return t};
+ const tA=mk(),tB=mk();let hasB=0;
+ function set(a,b){gl.bindTexture(gl.TEXTURE_2D,tA);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,a);hasB=b?1:0;if(b){gl.bindTexture(gl.TEXTURE_2D,tB);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,b)}}
+ function clear(){gl.viewport(0,0,curl.width,curl.height);gl.clearColor(0,0,0,0);gl.clearDepth(1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT)}
+ /* p: 0 = flat on the left, 1 = turned over onto the right. tl tilts the fold for a corner curl */
+ function draw(p,tl){clear();if(p<=0.0005)return;const cw=curl.width/DPR,ch=curl.height/DPR,X0=-parseFloat(curl.style.left),Y0=-parseFloat(curl.style.top);
+  const W=L.pw,H=L.ph,pc=Math.min(1,Math.max(0,p)),R=W*(.15*Math.sin(Math.PI*pc)+.012),f=p;
+  gl.enable(gl.BLEND);gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
+  gl.useProgram(p2);gl.bindBuffer(gl.ARRAY_BUFFER,qb);let l=gl.getAttribLocation(p2,"uv");gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,2,gl.FLOAT,false,0,0);
+  const U2=n=>gl.getUniformLocation(p2,n);[["edge",X0+f*W-R*.95],["amt",.38*Math.sin(Math.PI*pc)],["cw",cw],["ch",ch],["X0",X0],["Y0",Y0],["W",W],["H",H],["span",L.land?2*W:W]].forEach(([k,v])=>gl.uniform1f(U2(k),v));
+  gl.disable(gl.DEPTH_TEST);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+  gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.useProgram(pr);gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);l=gl.getAttribLocation(pr,"uv");gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,2,gl.FLOAT,false,0,0);
+  const U=n=>gl.getUniformLocation(pr,n);[["f",f],["R",R],["tl",tl],["W",W],["H",H],["X0",X0],["Y0",Y0],["D",W*3],["cw",cw],["ch",ch],["hasB",hasB]].forEach(([k,v])=>gl.uniform1f(U(k),v));
+  gl.uniform1i(U("A"),0);gl.uniform1i(U("B"),1);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tA);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,tB);
+  gl.drawElements(gl.TRIANGLES,idx.length,gl.UNSIGNED_SHORT,0)}
+ return {set,draw,clear}})();
+
+/* ---------- layout ---------- */
+function place(c,x,y,w,h){c.style.left=x+"px";c.style.top=y+"px";c.style.width=w+"px";c.style.height=h+"px";if(c.tagName==="CANVAS"){c.width=Math.round(w*DPR);c.height=Math.round(h*DPR)}}
+function layout(){const vw=innerWidth,vh=innerHeight,top=64,bot=92,avH=vh-top-bot,avW=vw-36;
+ const land=vw>vh*1.05;let pw,ph;
+ if(land){ph=Math.min(avH-20,(avW/2)*0.75);pw=ph/0.75}else{pw=Math.min(avW-20,(avH-20)*0.62);ph=pw/0.62}
+ const bw=land?pw*2:pw,bh=ph,bx=(vw-bw)/2,by=top+(avH-bh)/2;L={land,pw,ph,bw,bh,bx,by};
+ place(book,bx,by,bw,bh);const bt=document.getElementById("btitle");bt.style.top=Math.max(64,by-70)+"px";bt.style.display=by-64>60?"block":"none";place(cover,-16,-14,bw+32,bh+28);
+ if(land){paperL.style.cssText=`display:block;left:-5px;top:3px;width:${pw}px;height:${ph-6}px;border-radius:6px 0 0 6px`;paperR.style.cssText=`left:${pw}px;top:3px;width:${pw+5}px;height:${ph-6}px;border-radius:0 6px 6px 0`;
+  place(scn,pw,0,pw,ph);place(txt,0,0,pw,ph);spine.style.cssText=`left:${pw-30}px`}
+ else{paperL.style.display="none";paperR.style.cssText=`left:-5px;top:3px;width:${pw+10}px;height:${ph-6}px;border-radius:6px`;place(scn,0,0,pw,pw*.75);place(txt,0,pw*.75,pw,ph-pw*.75);spine.style.cssText="display:none"}
+ const mx=pw*.25,my=ph*.15;place(curl,-mx,-my,bw+(land?mx*2:mx*2+pw),ph+my*2);idleSet=false;drawText(cur,now())}
+
+/* snapshots of a whole page side for the curl */
+function snapScene(s){return GL.snap(s)}
+function snapWords(s){const c=document.createElement("canvas"),W=Math.round(L.pw*DPR),H=Math.round(L.ph*DPR);c.width=W;c.height=H;const x=c.getContext("2d");
+ if(L.land)wordsPage(x,W,H,s,99,1);else{x.fillStyle=PAPER;x.fillRect(0,0,W,H);const sh=W*.75;x.drawImage(snapScene(s),0,0,W,sh);x.save();x.translate(0,sh);if(s===0)coverPage(x,W,H-sh,99);else{paperBg(x,W,H-sh,0);wordsPage(x,W,H-sh,s,99,0)}x.restore()}return c}
+
+/* ---------- turning ---------- */
+function paintStatic(){idleSet=false;$("dots").innerHTML=Array.from({length:N},(_,i)=>`<i class="${i===cur?"on":""}"></i>`).join("");$("bn").disabled=cur===0;$("nn").disabled=cur===N-1}
+let AC;function swish(v=1){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const d=.55,b=AC.createBuffer(1,AC.sampleRate*d,AC.sampleRate),c=b.getChannelData(0);let lp=0;
+ for(let i=0;i<c.length;i++){const t=i/c.length;lp=lp*.55+(Math.random()*2-1)*.45;c[i]=lp*Math.pow(Math.sin(Math.PI*Math.pow(t,.6)),2)*.55*Math.min(1,v+.2)}
+ const s=AC.createBufferSource(),f=AC.createBiquadFilter();f.type="bandpass";f.frequency.setValueAtTime(800,AC.currentTime);f.frequency.linearRampToValueAtTime(2800,AC.currentTime+d);f.Q.value=.7;s.buffer=b;s.connect(f).connect(AC.destination);s.start()}catch(e){}}
+/* the leaf always carries words(n) on its front and picture(n+1) on its back:
+   forward from n turns it from left to right; backward to n turns it back from right to left */
+function begin(dir){if(turn||(dir>0&&cur>=N-1)||(dir<0&&cur<=0))return null;const to=cur+dir,leafS=dir>0?cur:to;
+ CU.set(snapWords(leafS),L.land?snapScene(leafS+1):null);
+ turn={dir,to,p:dir>0?0:1,tl:0,under:L.land?{words:dir>0?to:cur,scene:dir>0?cur:to}:{words:dir>0?to:cur,scene:dir>0?to:cur}};return turn}
+function finish(){cur=turn.to;turn=null;CU.clear();pageT0=now();paintStatic();GL.start(cur);narrate(cur);$("nn").classList.remove("pulse")}
+function animateTo(target,dur){const t=turn;if(!t)return;const p0=t.p,tl0=t.tl,t0=now();swish(Math.abs(target-p0));
+ (function step(){if(turn!==t)return;const k=Math.min(1,(now()-t0)/dur),e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;t.p=p0+(target-p0)*e;t.tl=tl0*(1-e);
+  if(k<1)requestAnimationFrame(step);else{const done=(t.dir>0&&target>=1)||(t.dir<0&&target<=0);if(done)finish();else{turn=null;CU.clear()}}})()}
+function go(dir){if(reduce){if((dir>0&&cur<N-1)||(dir<0&&cur>0)){cur+=dir;pageT0=now();paintStatic();GL.start(cur);narrate(cur)}return}if(begin(dir)){turn.tl=dir>0?-.12:.12;animateTo(dir>0?1:0,1.1)}}
+$("nn").onclick=()=>go(1);$("bn").onclick=()=>go(-1);
+addEventListener("keydown",e=>{if(e.key==="ArrowLeft")go(1);if(e.key==="ArrowRight")go(-1)});
+/* drag the paper with a finger: grab the outer edge of the left page (forward) or of the right page (backward) */
+book.addEventListener("pointerdown",e=>{if(turn||reduce)return;const r=book.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;if(L.land&&x>L.pw*.4&&x<L.pw&&cur>0&&cur<=PAGES.length){pageT0=now();narrate(cur);return}
+ let dir=0;if(L.land){if(x<L.pw*.4)dir=1;else if(x>L.pw*1.6)dir=-1}else{if(x<L.pw*.35)dir=1;else if(x>L.pw*.65)dir=-1}
+ if(!dir||!begin(dir))return;drag={x0:x,y0:y,dir,moved:false};try{book.setPointerCapture(e.pointerId)}catch(_){}});
+book.addEventListener("pointermove",e=>{if(!drag||!turn)return;const r=book.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,span=L.land?2*L.pw:1.6*L.pw;
+ if(Math.abs(x-drag.x0)>6)drag.moved=true;turn.p=Math.max(0,Math.min(1,drag.dir>0?(x-drag.x0)/span:1-(drag.x0-x)/span));turn.tl=((drag.y0+y)/2/L.ph-.5)*-.6});
+book.addEventListener("pointerup",()=>{if(!drag||!turn){drag=null;return}const d=drag;drag=null;
+ if(!d.moved){animateTo(d.dir>0?1:0,1.1);return}const ok=d.dir>0?turn.p>.28:turn.p<.72;animateTo(ok?(d.dir>0?1:0):(d.dir>0?0:1),.55)});
+
+/* ---------- frame loop ---------- */
+function frame(){const t=now();tilt[0]+=(tiltT[0]-tilt[0])*.06;tilt[1]+=(tiltT[1]-tilt[1])*.06;
+ const par=reduce?[0,0]:[Math.sin(t*.13)*.4+tilt[0],Math.cos(t*.11)*.3+tilt[1]];
+ const ws=turn?turn.under.words:cur,ss=turn?turn.under.scene:cur;
+ GL.draw(ss,t,0,par,reduce,!turn&&ss===cur);drawText(ws,turn?pageT0+99:t);
+ if(turn)CU.draw(turn.p,turn.tl*Math.sin(Math.PI*Math.min(1,turn.p)));
+ else if(!reduce&&cur<N-1&&t-pageT0>7){/* the corner lifts a little now and then: "you can turn me" */
+  const k=(t-pageT0-5)%6;if(k<1.4){if(!idleSet){CU.set(snapWords(cur),L.land?snapScene(cur+1):null);idleSet=true}CU.draw(.02*Math.sin(Math.PI*k/1.4),.22)}else CU.clear();$("nn").classList.add("pulse")}
+ requestAnimationFrame(frame)}
+$("start").querySelector("button").onclick=async()=>{try{if(window.DeviceOrientationEvent&&DeviceOrientationEvent.requestPermission)await DeviceOrientationEvent.requestPermission()}catch(e){}swish(.3);try{narrA.src="data:audio/mp4;base64,AAAAHGZ0eXBNNEEgAAAAAE00QSBtcDQyaXNvbQAAAAhmcmVlAAAAAG1kYXQ=";narrA.play().catch(()=>{})}catch(e){}$("start").remove();pageT0=now();Object.values(document.querySelectorAll("video")).forEach(v=>{const r=v.play();if(r&&r.then)r.then(()=>v.pause()).catch(()=>{})});GL.start(cur)};
+(async()=>{await Promise.all([document.fonts.load('800 40px "Baloo Bhaijaan 2"'),document.fonts.load('700 40px "Baloo Bhaijaan 2"')]);await GL.prep();layout();paintStatic();pageT0=now();requestAnimationFrame(frame)})();
+addEventListener("resize",layout);
+</script>
+</body>
+</html>
