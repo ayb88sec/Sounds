@@ -348,6 +348,8 @@ document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{document.quer
 /* 🎙️ صوتي: every place the parent can record her voice, in its own tab (user 2026-11-20) */
 function drawVoice(){const V=$("voiceList");if(!V)return;V.innerHTML="";const rec="سجّلي صوتك بدل الصوت الأصلي";
   const app=k=>{if(!window.BASE||!BASE[k])return;const t=BASE[k].t,m=t.match(/^(\S+)\s+(.*)$/);const icon=m&&!/[a-zA-Z\u0600-\u06FF]/.test(m[1])?m[1]:"🧩",name=m&&icon!=="🧩"?m[2]:t;V.appendChild(hubRow(icon,name,rec,()=>{bApp=k;bG=0;openSub("base",t);drawBase()}))};
+  /* 📖 storybook narration (user 2026-11-21): her voice reads «محمد وشجاعة البحر» */
+  V.appendChild(hubRow("📖","قصة محمد وشجاعة البحر","سجّلي صوتك يقرأ القصة، جملة جملة",()=>{avSet="story_moh";openSub("allv","📖 قصة محمد وشجاعة البحر");drawAllV()}));
   app("clips");
   V.appendChild(hubRow("🔤","حروف المد","تسجيلاتك للمدود (من كلماتي الأولى)",()=>{bApp="spell";bG=1;openSub("base","🔤 حروف المد");drawBase()}));
   V.appendChild(hubRow("🎙️","كل الجمل العربية","سجّلي صوتك أو اختاري فاطمة / حمدان لكل جملة",()=>{openSub("allv","🎙️ كل الجمل العربية");drawAllV()}));
@@ -719,7 +721,7 @@ async function drawBase(){if(!window.BASE)return;if(!BASE.uaepics)BASE.uaepics={
     r.querySelector(".vr").onclick=e=>qRecord(e.target,u=>{bStore(bApp)[key]=u.enc;qPlain["b"+bApp+key]=u.url;setTimeout(drawBase,50)},(say&&!lab.includes(say)?lab+"\n\n"+say:lab).replace(/^💡 شرح: /,"💡 "));
     if(v)r.querySelector(".rs").onclick=()=>{delete bStore(bApp)[key];delete qPlain["b"+bApp+key];saveS();drawBase()};L.appendChild(r)})}
 /* 🎙️ every Arabic sentence (voice sets in voice/<set>): record or choose Fatima / Hamdan. Same storage as the 🧩 re-recordings (qimg section, locked) */
-const AV_SETS=[["falcon","🦅 الصقر والقرية"],["long","🔤 حروفي: الأصوات الطويلة"],["clock","⏰ الساعة"],["daymonth","📅 الأيام والأشهر"],["shukr","🤲 شكر نعم الله"]];
+const AV_SETS=[["story_moh","📖 قصة محمد وشجاعة البحر"],["falcon","🦅 الصقر والقرية"],["long","🔤 حروفي: الأصوات الطويلة"],["clock","⏰ الساعة"],["daymonth","📅 الأيام والأشهر"],["shukr","🤲 شكر نعم الله"]];
 let avSet="falcon",avIdx={},avA=null,avTodo=true;
 const avPlay=u=>{if(!u)return;if(avA)avA.pause();avA=new Audio(u);avA.play().catch(()=>{})};
 async function drawAllV(){
