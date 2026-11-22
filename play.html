@@ -439,7 +439,7 @@ act({id:"shapeart",sec:"disc",name:"فن الأشكال",sub:"Shape art",pv:null
 /* ===== STICKER PUZZLE (user 2026-11-21, inspired by geometry sticker books): the animal is cut into numbered pieces, drag each piece onto its number ===== */
 function puzzleRound(src,n,numbers,bg){const v=view(`<div class="q"></div><div class="pz"><div class="pzb" style="background:${bg}"><canvas class="ol"></canvas><canvas class="done"></canvas></div><div class="pzt"></div></div>`);
  ask(numbers?(G==="g"?"حطّي كل قطعة على رقمها":"حط كل قطعة على رقمها"):(G==="g"?"ركّبي الصورة من القطع":"ركّب الصورة من القطع"));
- const S=520,im=new Image();im.onload=()=>{const c=document.createElement("canvas");c.width=S;c.height=S;const x=c.getContext("2d",{willReadFrequently:true});const k=Math.min(S*.9/im.width,S*.9/im.height);x.drawImage(im,(S-im.width*k)/2,(S-im.height*k)/2,im.width*k,im.height*k);
+ const S=1040,im=new Image();im.onload=()=>{const c=document.createElement("canvas");c.width=S;c.height=S;const x=c.getContext("2d",{willReadFrequently:true});const k=Math.min(S*.9/im.width,S*.9/im.height);x.drawImage(im,(S-im.width*k)/2,(S-im.height*k)/2,im.width*k,im.height*k);
   const D=x.getImageData(0,0,S,S),d=D.data,A2=i=>d[i*4+3]>60,pts=[];
   /* seeds spread over the animal (farthest point sampling), then every animal pixel joins its nearest seed */
   const inside=[];for(let i=0;i<S*S;i+=7)if(A2(i))inside.push(i);pts.push(inside[Math.floor(inside.length/2)]);
@@ -449,17 +449,17 @@ function puzzleRound(src,n,numbers,bg){const v=view(`<div class="q"></div><div c
   pieces.forEach(pc=>{pc.cx/=pc.n||1;pc.cy/=pc.n||1});
   /* the outline board: white animal, grey borders between pieces, the numbers */
   const ol=v.querySelector(".ol"),od=v.querySelector(".done");[ol,od].forEach(z=>{z.width=S;z.height=S});const ox=ol.getContext("2d"),O=ox.createImageData(S,S);
-  for(let i=0;i<S*S;i++){const j=lab[i];if(j<0)continue;const px=i%S,py=(i/S)|0,edge=(px>0&&lab[i-1]!==j)||(px<S-1&&lab[i+1]!==j)||(py>0&&lab[i-S]!==j)||(py<S-1&&lab[i+S]!==j);const vv=edge?150:255;O.data[i*4]=O.data[i*4+1]=O.data[i*4+2]=vv;O.data[i*4+3]=255}
-  ox.putImageData(O,0,0);if(numbers){ox.font="800 20px Fredoka,system-ui";ox.textAlign="center";ox.textBaseline="middle";ox.fillStyle="#868e96";pieces.forEach((pc,j)=>pc.n>40&&ox.fillText(j+1,pc.cx,pc.cy))}
+  for(let i=0;i<S*S;i++){const j=lab[i];if(j<0)continue;const px=i%S,py=(i/S)|0,edge=(px>0&&lab[i-1]!==j)||(px<S-1&&lab[i+1]!==j)||(py>0&&lab[i-S]!==j)||(py<S-1&&lab[i+S]!==j)||(px>1&&lab[i-2]!==j)||(px<S-2&&lab[i+2]!==j)||(py>1&&lab[i-2*S]!==j)||(py<S-2&&lab[i+2*S]!==j);const vv=edge?150:255;O.data[i*4]=O.data[i*4+1]=O.data[i*4+2]=vv;O.data[i*4+3]=d[i*4+3]}
+  ox.putImageData(O,0,0);if(numbers){ox.font="800 40px Fredoka,system-ui";ox.textAlign="center";ox.textBaseline="middle";ox.fillStyle="#868e96";pieces.forEach((pc,j)=>pc.n>160&&ox.fillText(j+1,pc.cx,pc.cy))}
   const dx2=od.getContext("2d");let left=pieces.filter(pc=>pc.n>0).length;const T=v.querySelector(".pzt");
   shuf(pieces.map((pc,j)=>[pc,j]).filter(([pc])=>pc.n>0)).forEach(([pc,j])=>{const w=pc.x1-pc.x0+1,h=pc.y1-pc.y0+1,cv=document.createElement("canvas");cv.width=w;cv.height=h;const cx=cv.getContext("2d"),I=cx.createImageData(w,h);
-   for(let yy=0;yy<h;yy++)for(let xx=0;xx<w;xx++){const i=(pc.y0+yy)*S+pc.x0+xx;if(lab[i]!==j)continue;const o=(yy*w+xx)*4;I.data[o]=d[i*4];I.data[o+1]=d[i*4+1];I.data[o+2]=d[i*4+2];I.data[o+3]=255}cx.putImageData(I,0,0);
+   for(let yy=0;yy<h;yy++)for(let xx=0;xx<w;xx++){const i=(pc.y0+yy)*S+pc.x0+xx;if(lab[i]!==j)continue;const o=(yy*w+xx)*4;I.data[o]=d[i*4];I.data[o+1]=d[i*4+1];I.data[o+2]=d[i*4+2];I.data[o+3]=d[i*4+3]}cx.putImageData(I,0,0);
    const t=document.createElement("div");t.className="pp";t.dataset.cx=pc.x0+w/2;t.dataset.cy=pc.y0+h/2;t.appendChild(cv);if(numbers)t.insertAdjacentHTML("beforeend",`<b>${j+1}</b>`);T.appendChild(t);
    t.addEventListener("pointerdown",e=>{e.preventDefault();sTap();const B=v.querySelector(".pzb"),R=B.getBoundingClientRect(),sc=R.width/S,f=document.createElement("canvas");f.width=w;f.height=h;f.getContext("2d").drawImage(cv,0,0);
     f.style.cssText=`position:fixed;z-index:60;width:${w*sc}px;height:${h*sc}px;left:${e.clientX-w*sc/2}px;top:${e.clientY-h*sc/2}px;pointer-events:none;filter:drop-shadow(0 6px 8px rgba(0,0,0,.3))`;document.body.appendChild(f);t.style.opacity=".3";
     const mv=ev=>{f.style.left=ev.clientX-w*sc/2+"px";f.style.top=ev.clientY-h*sc/2+"px"};const up=ev=>{removeEventListener("pointermove",mv);removeEventListener("pointerup",up);f.remove();
      const bx=(ev.clientX-R.left)/sc,by=(ev.clientY-R.top)/sc,ccx=pc.x0+w/2,ccy=pc.y0+h/2;
-     if(Math.hypot(bx-ccx,by-ccy)<Math.max(45,Math.min(w,h)*.5)){dx2.drawImage(cv,pc.x0,pc.y0);t.remove();sOk();if(--left===0){od.style.filter="drop-shadow(0 0 10px #fff)";confetti();setTimeout(()=>{good(G==="g"?"شطورة! اكتملت الصورة":"شاطر! اكتملت الصورة");setTimeout(RUN.next,1800)},300)}}
+     if(Math.hypot(bx-ccx,by-ccy)<Math.max(90,Math.min(w,h)*.5)){dx2.drawImage(cv,pc.x0,pc.y0);t.remove();sOk();if(--left===0){od.style.filter="drop-shadow(0 0 10px #fff)";confetti();setTimeout(()=>{good(G==="g"?"شطورة! اكتملت الصورة":"شاطر! اكتملت الصورة");setTimeout(RUN.next,1800)},300)}}
      else{t.style.opacity="";bad();t.classList.add("wob");setTimeout(()=>t.classList.remove("wob"),340)}};
     addEventListener("pointermove",mv);addEventListener("pointerup",up)})})};im.src=src}
 const PZA=[["camel","الجمل","#ffe8cc"],["falcon","الصقر","#d0ebff"],["turtle","السلحفاة","#d3f9d8"],["elephant","الفيل","#e5dbff"],["lion","الأسد","#fff3bf"],["dolphin","الدلفين","#c5f6fa"]];
