@@ -191,6 +191,7 @@ setTimeout(function(){var g=document.getElementById("gate");if(g&&getComputedSty
     <div><label>Name in English</label><input class="in" id="kEn" maxlength="20" dir="ltr"></div></div>
   <label>الصورة</label><div class="chips av" id="kAv"></div>
   <div class="chips" id="kCol" style="display:none"></div>
+  <label>📚 القصص (اختاري القصص اللي تظهر لهذا الطفل)</label><div id="kStories" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:6px 0 16px"></div>
   <label>التطبيقات الظاهرة</label><div class="chips" id="kApps"></div>
   <label>المستويات المفعّلة</label><div class="note" style="margin:0 0 8px">اضغط على أي مستوى لتشغيله أو إيقافه. المستوى المفعّل لونه بنفسجي وعليه ✓.</div><div id="kLevels"></div>
   <label>👦👧 ولد أم بنت؟</label><div class="chips" id="kGender"></div>
@@ -286,7 +287,12 @@ function editKid(p){
   chips("kCol",PC,c=>c===ed.color,c=>ed.color=c);
   const apps=[...BUILT,...vis().map(s=>["s:"+s.id,`${s.icon} ${s.title}`])];
   /* the storybook is off unless she picks the child (2026-11-21) */
-  const OPTIN=["story_moh","story_alya","story_noura","story_sara"];chips("kApps",apps.map(a=>a[1]),(x,k)=>OPTIN.includes(apps[k][0])?ed.apps[apps[k][0]]===true:ed.apps[apps[k][0]]!==false,(x,k)=>{const id=apps[k][0];if(OPTIN.includes(id))ed.apps[id]=ed.apps[id]!==true;else ed.apps[id]=ed.apps[id]===false});
+  /* 📚 stories section (2026-11-28): one card per book, off until she switches it on for this child */
+  const STORIES=[["story_moh","محمد وشجاعة البحر","img/story/moh/approved.webp"],["story_alya","عليا وسرّ الصديقة الجديدة","img/story/alya-rw/rh4_first.jpg"],["story_noura","نورة وسرّ المملكة الذهبية","img/story/noura/n1_first.jpg"],["story_sara","سارة ومغامرة مملكة قوس قزح","img/story/sara/s1_first.jpg"]];
+  const OPTIN=STORIES.map(x=>x[0]);{const sb=$("kStories");sb.innerHTML="";STORIES.forEach(([id,nm,img])=>{const b=document.createElement("button");b.type="button";
+   const paint=()=>{const on=ed.apps[id]===true;b.style.cssText=`border:3px solid ${on?"#2fbf71":"#e3d9c6"};border-radius:18px;background:#fff;padding:6px;cursor:pointer;text-align:center;font:700 14px inherit;opacity:${on?1:.6}`;b.innerHTML=`<img src="${img}" alt="" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;display:block"><div style="margin:6px 2px 2px">${nm}</div><div style="color:${on?"#2fbf71":"#8a7d68"}">${on?"✅ ظاهرة":"⬜ مخفية"}</div>`};
+   b.onclick=()=>{ed.apps[id]=ed.apps[id]!==true;paint()};paint();sb.appendChild(b)})}
+  const APPS2=apps.filter(a=>!OPTIN.includes(a[0]));chips("kApps",APPS2.map(a=>a[1]),(x,k)=>ed.apps[APPS2[k][0]]!==false,(x,k)=>{const id=APPS2[k][0];ed.apps[id]=ed.apps[id]===false});
   ed.levels=ed.levels||{};const LV=NAJMA.LEVELS,LN={arabic:"حروفي",spell:"🧩 كلماتي الأولى (مراحل الكتيب)",sounds:"Sounds",wt:"Word Time (RWI)",sent:"Sentences",shapes:"2D Shapes",writeEn:"Handwriting",quran:"📖 قصص القرآن",math:"➕➖ Maths + −",clock:"⏰ Clock"};
   const lb=$("kLevels");lb.innerHTML="";
   Object.keys(LV).forEach(app=>{if(!Array.isArray(ed.levels[app])||!ed.levels[app].length)ed.levels[app]=LV[app].map((_,i)=>i);
